@@ -17,7 +17,7 @@ Two meanings of "efficient" apply at once. Efficient games: frame budgets, low-e
 - `references/knowledge-base.md` is the full 645,989-byte source. Never read it whole. Grep it by section heading, then read that range only:
   `grep -n "^## 4.7" references/knowledge-base.md` (section start), then `grep -n "^## 4.8"` for the end, then Read with offset/limit. Section map: 1.x design, 2.x game craft and architecture patterns, 3.x platform/economy/monetization/analytics/discovery, 4.x engineering/security/data/purchases, 5.x performance/art/UI/input/launch. `## 3.12` and `## 5.14` list known conflicts.
 - Facts marked `[VS]` are version-sensitive (API names, limits, prices, policy, dashboard features). Re-check them at https://create.roblox.com/docs before relying on them. Market numbers date from a 2026-11-07 snapshot.
-- For market data (trending genres, what to build, discovery, thumbnails), read the Obsidian vault folder `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` — start with `_MOC.md`, then `_AGENTS.md`. Read `Agent Vault Guide.md` and `hot.md` in the vault root first. Those numbers are a 2026-11-07 snapshot.
+- For market data (trending genres, what to build, discovery, thumbnails), open `references/market-scan-2026-11.md` first: it distils the owner's Nov 2026 research bundle and the v2 report (a converted copy sits in `references/market-research-v2-raw.md` for grep). For the full note set read the Obsidian vault folder `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` — start with `_MOC.md`, then `_AGENTS.md`. Read `Agent Vault Guide.md` and `hot.md` in the vault root first. Those numbers are a 2026-11-07 snapshot.
 
 ## House rules (verbatim, override all generic advice)
 
@@ -39,7 +39,7 @@ Work the phases in order. Each phase names its outputs, the reference to open an
 
 | Phase | Outputs | Open | Gate |
 |---|---|---|---|
-| 1. Concept and genre | Pitch, fantasy, the one new verb, comparables, genre loop, age tier, platform priority | `references/genre-playbooks.md`, `references/design-foundations.md` §fun, vault market scan | Pitch fits one sentence; genre loop named; mobile-first confirmed |
+| 1. Concept and genre | Pitch, fantasy, the one new verb, comparables, genre loop, age tier, platform priority | `references/market-scan-2026-11.md`, `references/genre-playbooks.md`, `references/design-foundations.md` §fun | Pitch fits one sentence; genre loop named; the new action or visible journey named; mobile-first confirmed |
 | 2. One-pager and pillars | `templates/game-one-pager.md` filled | `references/process-and-playtesting.md`, `references/design-foundations.md` | Core-loop rubric ≥ 7/10; three pillars are decision rules |
 | 3. Loops, FTUE and economy model | Loop timings, 5-minute FTUE script, `templates/economy-balance-sheet.md` filled with numbers | `references/economy-and-progression.md`, `references/liveops-quests-retention.md` §onboarding | First reward < 30 s; sink ratio 0.95–1.05 modelled; rebirth wait ratio ×1.2–1.5 |
 | 4. Lean GDD and architecture plan | `templates/lean-gdd.md`; remotes list; data schema; products table; streaming and collision policy | `references/engineering-architecture.md`, `references/architecture-patterns-luau.md`, `references/networking-and-security.md` §surface design | Gate 0 in `references/checklists.md` passes |
@@ -59,7 +59,7 @@ For a small request (one system, one bug, one balance tweak) skip to the matchin
 Design
 
 - Mobile first: design the UI, controls and performance budget for a 3 GB Android phone, then widen to PC, console and VR.
-- One new verb per game; copy the genre loop, change the verb and the fantasy.
+- One new verb per game; copy the genre loop, change the verb and the fantasy. A visible journey beats a number on a menu: management and manager games stay hands-on in a small 3D space (menu, map and spreadsheet sims sit under 1K CCU); any map layer must play like a toy.
 - Loops are nested: micro 10–30 s, meso 5–15 min, session 15–25 min, meta days to weeks. Every loop needs a visible goal and a next purchase.
 - FTUE: first reward under 30 s, first upgrade under 2 min, one verb at a time, hint at about 11 s of no progress, no offers in the first 10 minutes.
 - Economy: time-first curves (`req(L) = minutes(L) × xpPerMin(L)`), geometric costs (`floor(base × g^n)`, g 1.07–1.15), first ten purchases 3–10 s each, sink ratio 0.95–1.05, offline income capped and stated.
@@ -131,7 +131,8 @@ Use the Studio MCP as a build and test tool, not as a content generator.
 | Fun, motivation, flow, difficulty, FTUE, progression and retention theory, rubrics | `references/design-foundations.md` |
 | Process, one-pager, GDD, milestones, scope triage, playtesting, postmortems | `references/process-and-playtesting.md` |
 | Game feel, camera, level design, audio, AI, procgen, save design | `references/game-craft.md` |
-| Choosing or shaping a genre (tycoon, simulator, obby, horror, RPG, fighting, racing, social, roleplay, tower defence) | `references/genre-playbooks.md` |
+| What to build, what is winning or saturated, the 14 shared patterns, cozy-management and +1 format norms, thumbnail rules 1–13, the 250-play gate, launch timing | `references/market-scan-2026-11.md` (raw report: `references/market-research-v2-raw.md`) |
+| Choosing or shaping a genre (tycoon, simulator, cozy management, obby, horror, RPG, fighting, racing, social, roleplay, tower defence) | `references/genre-playbooks.md` |
 | Game Programming Patterns in Luau (state, command, observer, component, object pool, ECS choice) | `references/architecture-patterns-luau.md` |
 | Currencies, XP curves, costs, rebirth, offline income, luck and pity math, packs, trading | `references/economy-and-progression.md` |
 | Products, passes, subscriptions, boosts, offers, gifts, rewarded video, policy, DevEx | `references/monetization-and-policy.md` |

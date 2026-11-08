@@ -26,6 +26,14 @@ Roblox's three-layer loop test: minute-to-minute interaction (exploring) → mos
 - Rewarded video: time skip (double offline earnings), progressive rewards (payout grows per consecutive view), progression accelerators. Benchmark opt-in 15%+, frequency 3+.
 - Sells: 2× Cash, auto-collect, extra plots, cosmetic base themes, VIP area, gift passes.
 
+## Cozy management (shop, farm, business, warehouse)
+
+- Loop: do the job yourself with your own character in a small 3D space (pick, pack, cook, serve, craft) → earn within a minute → hire workers to automate it → expand the space → idle income. Every hit above 5K CCU is hands-on; menu, map and spreadsheet managers stay under 1K however deep they are (Fleet Empire peaked at 1.8–2K). LINE UP! Metro Tycoon is the one map-based hit because drawing routes plays like a toy.
+- Format norms (Nov 2026): Hire 1/5/25 pads; merge 3 workers of a tier into the next tier (staff take the place of pets); a collection index; offline income with a cap; friend bonus 10–20%; 6–8 player servers with one plot each; sessions 15–27 min. See `market-scan-2026-11.md` for the comparison table.
+- Pitfalls: heavy decorating raises favourites but shortens sessions; driving is hard for young players, keep it optional; "Sell a Million" and "Run a" names are crowded; near-duplicate risk against My Small Business and Sell a Million Sushi, so theme, art and place file must be distinct.
+- Thumbnails: most management tiles are photoreal with no text; a price-flip or income ladder ("$1/s → $9.8M/s", "1 box → 1,000,000 boxes", garage → mega-centre) stands out.
+- Sells: mostly cheap repeatable dev products (2× income, rush boosts, cash packs, auto-pack, extra slots), then convenience passes (VIP with offline bonus, extra route or truck slots), gift passes. Staff crates are paid random items (odds shown) or, under the no-luck default, deterministic merge tiers instead.
+
 ## Obby and platformer
 
 - Loop: attempt → fail → retry → checkpoint → next stage.
