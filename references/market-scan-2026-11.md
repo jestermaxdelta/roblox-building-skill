@@ -24,7 +24,7 @@ Distilled from the owner's research: the Nov 2026 bundle (`roblox-market-researc
 10. Loss aversion through theft drives sessions and defence spending but brings cheating and bad press.
 11. Mostly dev products, not passes: Venom 36 products, Gun Forge 123, My Small Business 39; LINE UP! and Run A Farm! have no passes at all. Repeat spending feeds the spend-days signal.
 12. Playable within a minute, no long tutorial.
-13. Free boosts for social actions: friend boost +10–20%, private servers. (House rule: never gate rewards on likes, favourites or group joins; the platform now penalises incentivised engagement.)
+13. Free boosts for social actions: like + favourite + group join bonus, friend boost +10–20%, private servers. (House rule: bonuses only, never a gate, never in the title, thumbnail or description; see liveops-quests-retention.md §social rewards.)
 14. Small servers with a plot each for management and tycoon games (6–8 players); larger shared lobbies for +1 and steal games.
 
 ## Cozy management: format norms (fact, 7 Nov 2026)

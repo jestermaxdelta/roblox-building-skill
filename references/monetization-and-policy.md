@@ -124,7 +124,7 @@ Game passes cannot be transferred, so a gift is a developer product that writes 
 - Thumbnails and video: no spoken audio, no real footage, no ad text in video thumbnails.
 - Notifications: no dark patterns, never gate gameplay on opting in.
 - Filter all user text with `TextService:FilterStringAsync`.
-- Incentivised likes, favourites and group joins are a common market pattern but are not covered by the docs; treat them as a policy risk and never gate progress on them.
+- Rewards for group joins, likes, favourites and friend joins are in the house default set as bonuses only (one-time boost, cash bump, badge or skin), never as a gate on progress, products or content, and never mentioned in the title, thumbnail or description (leading with giveaways or Robux is the exposure penalty). See liveops-quests-retention.md §social rewards for the verification rules.
 
 Policy module sketch (cache per player, 3 retries, fail closed):
 

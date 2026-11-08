@@ -62,7 +62,7 @@ Tooling
 - [ ] A free alternative sits next to every paid shortcut.
 - [ ] Content-maturity questionnaire truthful; rating-raising features deliberate; no playable gambling.
 - [ ] All user-generated text filtered on the server.
-- [ ] No progress gated on likes, favourites or group joins.
+- [ ] Social rewards (group join, like, favourite, friend join) are bonuses only: no progress, product or content gated on them; group join verified server-side; shown after the first win; nothing about them in title, thumbnail or description.
 - [ ] Thumbnails and video follow policy (no spoken audio, real footage or ad text in video).
 
 ## Gate 4: performance and content (HR)

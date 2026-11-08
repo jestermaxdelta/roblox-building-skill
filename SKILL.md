@@ -106,7 +106,8 @@ Purchases and data
 Policy and monetization
 
 - Never fake discounts, restart countdowns or claim false scarcity; never show offers during onboarding, loading or combat; never stack popups or block play with them.
-- Never sell paid random items without full odds disclosure and `PolicyService` gating; never gate rewards on likes, favourites or group joins; never ship unfiltered user text.
+- Never sell paid random items without full odds disclosure and `PolicyService` gating; never ship unfiltered user text.
+- Social rewards (group join, like, favourite, friend join) are wanted in every game, as a bonus only: never gate progress or core content on them, never put "free Robux", giveaways or "like for rewards" in the title, thumbnail or description (that is the exposure penalty), and ask after the first win, not in the first minutes. Rules in `references/liveops-quests-retention.md` §social rewards.
 - Never run rewarded video with random rewards or as a progress gate.
 
 Content and tooling

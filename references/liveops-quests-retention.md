@@ -17,7 +17,17 @@ Blueprint:
 7. Ask for notification opt-in only at a warranted moment (after a win, before a timed event), never on join.
 8. No offers, starter packs or purchase prompts during onboarding (house rule).
 
-Policy note: rewarding likes, favourites or group joins is a market pattern that the docs do not endorse. Treat it as a risk and never gate progress on it.
+## Social rewards (group join, like, favourite, friend join)
+
+Every 2025–26 hit rewards them (Steal An Egg gives 10K free Speed for like + favourite + group join; Climb For Animals Eggs the same). They are part of the house default set. The creator docs do not cover in-game rewards for them; what the docs do penalise is *metadata* that leads with giveaways, Robux or "like for rewards" and thumbnails that do not match the game `[VS]`. Build them like this:
+
+- **Bonus, never a gate.** The reward is a one-time boost or cosmetic (a 10–15 min 2× boost, a starter cash bump, a badge, a skin), never progress, a zone, a product or a core feature. A player who never joins loses nothing they need.
+- **Timing.** Show the "Join our group" card after the first win and after the 600 s grace, as one of the rate-limited cards from the offer gate (it counts toward the ≤ 3 cards per session). A permanent small "Rewards" button in the HUD lets the player claim later.
+- **Group join is the only one Roblox can verify.** Check it on the server with `Player:IsInGroup(groupId)`; the result is cached per session, so after the player joins the group offer a "Check again" button that calls `GroupService:GetGroupsAsync(player.UserId)` (not cached, rate-limited; `pcall` it and retry once). Grant once, save the flag in the profile.
+- **Likes and favourites cannot be verified** (no API returns them). Treat the "I liked it" claim as honour-based: grant a small reward once per account via the same claim flow, and accept that it is a thank-you, not a verified action. Never block anything on it.
+- **Friend join and invites** are verified: `Player:GetJoinData().ReferredByPlayerId` for invites, friend presence for co-play. Pay the friend bonus (10–20%) to both players while they are in the same server; never require invites to progress.
+- **Copy.** The card says what the reward is and that it is optional. No countdown, no "limited", no fake scarcity. Nothing about it in the title, thumbnail or description.
+- **Instrument it.** Funnel: RewardsOpened → GroupPromptShown → GroupVerified → Claimed. If GroupVerified is below about 15% of shown, the reward is too small or shown too early.
 
 ## Retention benchmarks `[VS]`
 
@@ -105,6 +115,6 @@ Recommendation. Lower-risk: a fixed weekly update day plus one monthly themed ev
 - [ ] Notification opt-in prompt only at warranted moments.
 - [ ] Co-play incentives (friend bonus, party join) in place.
 - [ ] All user text filtered.
-- [ ] No progress gated on likes, favourites or group joins.
+- [ ] Social rewards are bonuses only, shown after the first win, group join verified server-side, nothing about them in the title, thumbnail or description.
 
 Grep `references/knowledge-base.md` for `## 1.7`, `## 1.8`, `## 3.3` and `## 3.4` for the source text.
