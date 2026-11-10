@@ -61,7 +61,7 @@ The skill ships no visual style. Each game derives its own; the method is the sa
 3. **Turn the direction into tokens** (table above), then into components. Nothing else is allowed to carry a raw value.
 4. **Stress-test before committing** `[lihfolk]`. Mock the same five screens in the candidate style: HUD over gameplay, shop, a dense list, a reward moment, settings on `Phone-S`. A style judged on one screen fails on the dense list.
 5. **Components own every number** `[lihfolk]`. Screens call builders ("painters") such as `Components.header(panel, title)` or `Components.closeButton(panel)`; a one-off look is an explicit attribute on the screen that every re-skin pass checks, never a silent override.
-6. **Make mass edits reversible** `[lihfolk]`. Before a sweep changes a property on hundreds of instances, store the old value in an attribute (`Pre_Font`, `Pre_Color`); `UDim2`, `Color3` and `Font` survive in attributes and outlive Studio's undo history.
+6. **Make mass edits reversible** `[lihfolk]`. Before a sweep changes a property on hundreds of instances, store the old value in an attribute (`Pre_Font`, `Pre_Color`); `UDim2`, `Color3` and `Font` are valid attribute types `[official]` and outlive Studio's undo history.
 7. **Audit with a score** (flags in `ui-input-crossplatform.md` §UI audit scan) and re-run it after every UI change.
 
 Component state matrix: draw and build every state before shipping the component. Most visual bugs are missing states. `[lihfolk]`

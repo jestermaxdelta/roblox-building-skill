@@ -110,21 +110,18 @@ Particles alone look thin; the silhouette of a strong effect is usually a mesh w
 | Crossed ribbons (two perpendicular strips) | Lightning bolts, light shafts | Reads as a glowing line from any angle without a tube look |
 | Shards, chunks, nested flame shells | Debris, crystals, fire bodies | 3–4 nested shells give depth for few triangles |
 
-- Triangle budget `[house]`: 20–300 per piece; a full effect under about 1,500.
-- Import each layer as its own mesh (merge off) so layers fade and scale separately; reuse one MeshId per piece (instancing rules in `performance.md`).
+- Triangle budget `[house]`: 20–300 per piece, a full effect under about 1,500. Import each layer as its own mesh (merge off) so layers fade and scale separately; reuse one MeshId per piece (instancing rules in `performance.md`).
 - Instance settings: `Anchored = true`, `CanCollide/CanTouch/CanQuery = false`, `CastShadow = false`, `CollisionFidelity = Box`, `DoubleSided = true` for cards and ribbons.
 - House rule 2 interpretation: transient VFX meshes are the one visible class that must not collide (a slash that blocks players or trips hit queries is a bug). Treat them as `NonSolid` (same class as foliage in `performance.md`) and keep them short-lived; anything that persists and looks solid (ice wall, summoned rock, lingering crystal) gets real collision.
 - Roblox positions a mesh by its bounding-box centre, which for a crescent is not the centre of its circle: set `PivotOffset` once per mesh and check one swing `[community]` `[VS]`.
 - A MeshPart's texture cannot be UV-scrolled `[community]`. Animate `Size`, `CFrame` and `Transparency`; for dissolve, cross-fade two or three baked erosion stages; where the texture must flow, use a Beam.
-- Stacked semi-transparent meshes sort per object and can flicker: offset layers slightly and keep overlaps few. Drive all layers of an effect from one shared loop, not thirty tweens `[lihfolk]`.
-- Every effect ships a low version with 2–3 layers.
+- Stacked semi-transparent meshes sort per object and can flicker: offset layers slightly and keep overlaps few. Drive all layers of an effect from one shared loop, not thirty tweens `[lihfolk]`. Every effect ships a low version with 2–3 layers.
 
 **Texture authoring.**
 - Paint in white and grey with alpha; colour comes from the emitter, beam or part at runtime through palette roles (main, hot, dark, glow, spark, debris) so one template serves every element `[lihfolk]`.
-- Fade edges to transparent white, never transparent black, or sprites get a dark halo `[lihfolk]`.
+- Fade edges to transparent white, never transparent black, or sprites get a dark halo `[lihfolk]`. Check orientation with an asymmetric arrow texture before painting the real one.
 - Sizes: sprites 256² (specks 128²), strips and rings 512², flipbooks per §2. Cell margins about 16/12/8 px for 512/256/128 px cells `[lihfolk]`. Memory is unique pixel count (`performance.md`); share ring, strip and glow textures across effects. House budget: at most 8–12 VFX textures per kit, 3–4 flipbook sheets in memory on the low tier.
 - Sources of frames: paint them (Krita, Photoshop, Figma); render a Blender simulation or animated noise to 16 or 64 orthographic frames and pack the grid; fluid tools such as EmberGen and After Effects are common in the community `[community]`.
-- Check orientation with an asymmetric arrow texture before painting the real one.
 - Bloom is scene-wide: get glow from the texture and brightness first, keep `BloomEffect` moderate, and remember post effects weaken or vanish at low quality levels `[official]`.
 
 ## 6. Timing in milliseconds and ability anatomy
@@ -140,8 +137,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 | Hot flash | 1–3 frames at 60 FPS (16–50 ms), about 0.6× the body size, at the contact point, one frame after contact | `[lihfolk]` |
 | Hit-stop | None on light hits; 50–90 ms medium to ultimate (§7) | `[lihfolk]` |
 | Body (the shape that reads) | 200–400 ms | `[lihfolk]` |
-| Secondary (sparks, shards, debris) | 300–800 ms | `[lihfolk]` |
-| Ground (rings, cracks, dust) | 300–700 ms | `[lihfolk]` |
+| Secondary (sparks, shards, debris) and ground (rings, cracks, dust) | 300–800 ms | `[lihfolk]` |
 | Tail or linger (haze, embers, scorch) | 600–2,000 ms at very low brightness; cap whole effects near 1.4 s, ground pieces 2.2 s | `[lihfolk]` |
 | Shake start | When the hit-stop releases, not during it | `[lihfolk]` |
 | UI pop return | 120–180 ms Back Out (`game-craft.md`) | `[house]` |
@@ -160,16 +156,13 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 
 - One shape table shared by the telegraph drawing and the server hit test. For long warnings send `Workspace:GetServerTimeNow()` so late receivers draw only the remainder `[lihfolk]`.
 - Fire effects from animation markers (`GetMarkerReachedSignal`), the same data that times damage; when the clip is retimed everything moves together `[lihfolk]`.
-- Tie layer count to importance with a written ladder (base kit; rare adds a shockwave; epic adds a ground piece; top tier adds a pillar) and audit effects against it `[lihfolk]`.
-- When several systems can draw one beat (kit effect, rarity layer, ultimate climax), each claims the beat for its duration and the others skip it `[lihfolk]`.
+- Tie layer count to importance with a written ladder (base kit; rare adds a shockwave; epic adds a ground piece; top tier adds a pillar) and audit effects against it. When several systems can draw one beat (kit effect, rarity layer, ultimate climax), each claims the beat for its duration and the others skip it `[lihfolk]`.
 - Grandeur comes from escalating a few layers and cutting others, with at most one growing environmental element; re-check the character's silhouette at game distance after each addition `[lihfolk]`.
 - Readability budget per cast `[lihfolk]`: one ground piece at a time, at most 3 large pieces, at most 35% of the screen (55% for an ultimate), anything on the line between camera and the player's head at least 0.75 transparent.
 
 ## 7. Hit-stop, camera shake and FOV kicks
 
-Base values and the shake module are in `game-craft.md` §1. Net-new rules:
-
-- **One strength value per hit** (about 0.3–1.3) drives every layer, so designers move one number per move `[lihfolk]`.
+Base values and the shake module are in `game-craft.md` §1. Net-new: give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
 
 | Tier | Strength | Hit-stop | Trauma added | Directional kick (% of screen height) |
 |---|---|---|---|---|
@@ -179,15 +172,14 @@ Base values and the shake module are in `game-craft.md` §1. Net-new rules:
 | Finisher | 1.00 | 75 ms | 0.35 | 0.8 |
 | Ultimate | 1.30 | 89 ms | 0.60 | 1.2 |
 
-  Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. These trauma values are lower than the `game-craft.md` table; start there for solo games and here for crowded combat, where hits stack.
+Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. These trauma values are lower than the `game-craft.md` table; start there for solo games and here for crowded combat, where hits stack.
+
 - **Frame maths.** A 50 ms stop is 3 frames at 60 FPS but 1 or 2 at 30 FPS, so it reads as inconsistency on phones. A stop that must be felt needs at least 66 ms; cap any stop at 200 ms `[lihfolk]`. This qualifies the 40–60 ms medium stop in `game-craft.md`: treat it as seasoning.
 - **Budgets** `[lihfolk]`: at most 140 ms of hit-stop per rolling 0.6 s; under 15% of a move's duration; reserve room for the finisher; one stop per swing however many targets it hits; trauma grows with `1 + 0.35 × log2(targets)`; visible shake under about 10% of combat time.
 - **Catch-up hit-stop**: slow the track to 0.12× for `d`, then play at 1.88× for `d`; after `2d` the animation is back on the wall clock, so effects scheduled at cast time still line up `[lihfolk]`.
-- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation for impacts and translation only for "the ground moved" `[lihfolk]`.
-- **Aliasing on phones**: cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
-- **Directional kick**: one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake `[lihfolk]`.
+- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation for impacts and translation only for "the ground moved". Aliasing on phones: cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
+- **Directional kick**: one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake. Others' hits: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]`.
 - **FOV and offsets.** Every effect is a finite envelope that ends at exactly 0 (exponential decays leave residue). Sum envelopes per channel and clamp: FOV +12°, offset 1.6 studs, roll 4°. One module owns `Camera.FieldOfView`; two systems tweening it fight every frame. Reference dash: +9° in 60 ms, out over 250 ms `[lihfolk]`. First person: FOV only.
-- **Others' hits**: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]`.
 - **Impact frames**: one high-contrast full-screen frame. Conflict: LihFolk counts rendered frames (remove after 2 `PreRender` callbacks); at 240 FPS that is 8 ms and invisible. Time flashes on the real clock: about 33–50 ms and at least one rendered frame `[house]`.
 
 ```lua
@@ -210,17 +202,15 @@ end
 
 ## 8. Screen effects and number popups
 
-- Instances: `ColorCorrectionEffect`, `BlurEffect` and `BloomEffect` parented to `Workspace.CurrentCamera` affect only that player; post effects never affect GUI and may work differently or not at all at low quality levels `[official]`. So no gameplay information may live only in a post effect. There is no vignette post effect: use a full-screen `ImageLabel` with a radial-gradient texture `[lihfolk]`.
+- Instances: `ColorCorrectionEffect`, `BlurEffect` and `BloomEffect` parented to `Workspace.CurrentCamera` affect only that player; post effects never affect GUI and may work differently or not at all at low quality levels `[official]`. So no gameplay information may live only in a post effect. There is no vignette post effect: use a full-screen `ImageLabel` with a radial-gradient texture `[lihfolk]`. Full-screen overlays and post passes are the most expensive juice on phones (fill rate): off on the low tier (§11).
 - One client module owns every screen-effect instance and composes requests each frame; several scripts tweening the same effect leave it stuck on `[lihfolk]`.
 - Hits are pulses (instant attack, 150–350 ms decay); low health is a level (below about 30%, fades over 1 s on heal). Clamp summed pulse strength so ten pellets do not white out the screen. No blur while aiming `[lihfolk]`.
 - Incoming-damage effects wait for the server-confirmed event and carry the attacker's position for a directional arc; outgoing hit feedback may be predicted `[lihfolk]`.
-- Full-screen overlays and post passes are the most expensive juice on phones (fill rate): off on the low tier (§11).
 
 **Number popups** (damage, +coins).
 - Motion `[house]`: pop 1.3 → 1 in 120 ms, rise 40–60 px over 600–800 ms, fade during the last 30%, random sideways drift; crits by size and colour, never by flashing.
 - Clutter `[lihfolk]`: merge hits on one target within 150 ms into one number; cap about 12 on screen and drop the oldest; default to "mine only" in multiplayer; abbreviate (12.4K).
-- Cost: BillboardGuis carry real overhead and hidden or fully transparent ones still cost `[community]` (`Pass3dAdorn` in `performance.md`). Pool them, set `Enabled = false` when idle, or draw labels in one ScreenGui placed with `Camera:WorldToViewportPoint`; measure both on a phone `[house]`.
-- The server sends the damage fact; the client draws the number.
+- Cost: BillboardGuis carry real overhead and hidden or fully transparent ones still cost `[community]` (`Pass3dAdorn` in `performance.md`). Pool them, set `Enabled = false` when idle, or draw labels in one ScreenGui placed with `Camera:WorldToViewportPoint`; measure both on a phone `[house]`. The server sends the damage fact; the client draws the number.
 
 ## 9. Tween or spring
 
@@ -233,8 +223,7 @@ end
 | `1 − exp(−rate × dt)` lerp | Cheapest smoothing, frame-rate independent | Camera follow (`game-craft.md` §3) | Anything needing overshoot |
 
 - Squash and stretch `[lihfolk]`: preserve area or volume (height 0.8 → width 1.25 in 2D); set the extreme pose instantly and spring back (tweening into it adds 50–100 ms of mush); damping ratio 0.4–0.6 gives one visible overshoot; squash the art layer, never the text; sub-step stiff springs to about 120 Hz so 30 FPS phones stay stable. Depth: 3–5% sober UI, 8–15% cartoon UI, 15–30% collectibles.
-- Rigid R15 parts cannot squash; use pose. Single-mesh props can by `MeshPart.Size` `[lihfolk]`.
-- Easing choices are in `game-craft.md` §1; UI motion rules in `ui-input-crossplatform.md`.
+- Rigid R15 parts cannot squash, so use pose; single-mesh props can through `MeshPart.Size` `[lihfolk]`. Easing choices are in `game-craft.md` §1; UI motion rules in `ui-input-crossplatform.md`.
 
 ## 10. Replication: the server says what happened, each client draws it
 
@@ -249,8 +238,7 @@ The server does no rendering; a server-built effect replicates every instance an
 
 - Payload = ids and numbers only: `(caster, presetId, cframe, seed, aux?)`. Preset lists are append-only (reordering makes old servers and new clients disagree). Tuning (sizes, colours, durations) lives in a shared client table; the client never sends size, colour or CFrame for the server to trust.
 - Server checks, in order: argument types; preset is client-castable (telegraphs and rewards are server-only); finite values; character alive; clamp aim to range rather than reject (the prediction stays roughly right); per-preset cooldown with about 50 ms grace; per-player token bucket (for example burst 6, refill 3/s). Details in `networking-and-security.md`.
-- Recipients: players within about 250 studs, a little beyond the client cull. `FireAllClients` for local effects wastes bandwidth.
-- Channel: `UnreliableRemoteEvent` for frequent cosmetic events (payload limit 1,000 bytes `[official]` `[VS]`); reliable for anything players react to.
+- Recipients: players within about 250 studs, a little beyond the client cull; `FireAllClients` for local effects wastes bandwidth. Channel: `UnreliableRemoteEvent` for frequent cosmetic events (payload limit 1,000 bytes `[official]` `[VS]`); reliable for anything players react to.
 - Seed: emitters randomise inside the engine, so a seed only reproduces your own scripted choices (debris directions, bolt shapes); draw them from `Random.new(seed)`.
 - Moments travel as events; **states travel as attributes** on the character (aura on, shield up, burning), so late joiners and streamed-in characters show them.
 - A rejected cast leaves a harmless cosmetic; for effects that imply an outcome (teleport), keep a handle and cancel on rejection. Never pass Instances the client may not have yet `[community]`.
@@ -261,7 +249,6 @@ The server does no rendering; a server-built effect replicates every instance an
 local Players = game:GetService("Players")
 local RADIUS = 250
 local rng = Random.new()
-
 local function broadcast(playFx: RemoteEvent, caster: Player?, presetId: number, cf: CFrame, aux: Vector3?)
 	local seed = rng:NextInteger(1, 2147483646)
 	for _, player in Players:GetPlayers() do
@@ -273,7 +260,6 @@ local function broadcast(playFx: RemoteEvent, caster: Player?, presetId: number,
 		end
 	end
 end
-return broadcast
 ```
 
 ## 11. Pooling, budgets and quality scaling
@@ -290,12 +276,10 @@ local FxPool = { detail = 1 } -- 0..1, written by the governor below
 local MAX_LIVE = 12
 local free: { [BasePart]: { BasePart } } = {}
 local live: { [BasePart]: number } = {}
-
 local function num(d: Instance, name: string, default: number): number
 	local v = d:GetAttribute(name)
 	return if type(v) == "number" then v else default
 end
-
 function FxPool.play(template: BasePart, cf: CFrame, gameplay: boolean?)
 	local bucket = free[template] or {}
 	free[template] = bucket
@@ -340,10 +324,9 @@ return FxPool
 
 - Three budgets are needed together: per cast, per caster over a window, and per client. Worked check `[lihfolk]`: 8 players swinging twice a second at about 62 particles alive per swing is about 560 alive for you (own full, others half): fine. Eight simultaneous ultimates at 5,600 each for the caster and half for onlookers is 25,200: not fine on any phone, so the per-client cap must exist.
 - **Never cull gameplay information** (telegraphs, hazards, objectives, your own hit confirmation): simplify, never skip. Degrade others' decoration to zero first.
-- Decide once when the effect starts (owner, gameplay flag, distance, in view, current load, detail); re-evaluating each frame causes popping. Long-lived effects (auras, waterfalls) sleep by distance with two thresholds so they do not flicker `[lihfolk]`.
-- Authored degradation: artists mark decoration layers with `MinDetail`; code never guesses which layers matter `[lihfolk]`.
+- Decide once when the effect starts (owner, gameplay flag, distance, in view, current load, detail); re-evaluating each frame causes popping. Long-lived effects (auras, waterfalls) sleep by distance with two thresholds so they do not flicker. Degradation is authored: artists mark decoration layers with `MinDetail`; code never guesses which layers matter `[lihfolk]`.
 
-**Quality scaling by device and by the player's graphics level.** `UserGameSettings.SavedQualityLevel` is readable but is `Automatic` for most players; the engine's effective level (`GraphicsQualityLevel`) is not readable from game scripts `[official]`. So: treat a manual level as a ceiling, then let measured frame time move a detail value with hysteresis, and keep it running all session because phones throttle after 10–15 minutes `[lihfolk]`. Also offer an explicit Effects setting (Low, Medium, High) that overrides it.
+**Quality scaling by device and by the player's graphics level.** `UserGameSettings.SavedQualityLevel` is readable but is `Automatic` for most players; the engine's effective level (`GraphicsQualityLevel`) is not readable from game scripts `[official]`. So: treat a manual level as a ceiling, then let measured frame time move a detail value with hysteresis, and keep it running all session because phones throttle after 10–15 minutes `[lihfolk]`. Also offer an explicit Effects setting (Low, Medium, High) that overrides it. The sketch raises detail when the frame time is holding the target, not beating it by 20% as the LihFolk governor does, because a 60 Hz-capped phone can never beat a 60 FPS target `[house]`.
 
 ```lua
 --!strict
@@ -355,7 +338,6 @@ local ceiling = if saved == Enum.SavedQualitySetting.Automatic then 1 else math.
 local TARGET = 1 / 60
 local average, overFor, okFor = TARGET, 0, 0
 FxPool.detail = math.min(ceiling, 0.7)
-
 RunService.PreRender:Connect(function(dt: number)
 	if dt > 0.25 then return end -- a hitch, not a trend
 	average += (dt - average) * math.min(1, dt * 2)
@@ -367,14 +349,11 @@ RunService.PreRender:Connect(function(dt: number)
 end)
 ```
 
-The rise test is "holding the target", not "beating it by 20%" as in the LihFolk governor, because a 60 Hz-capped phone can never beat a 60 FPS target `[house]`.
-
 **Measure** `[lihfolk]`: draw calls with Shift+F2 on a quiet frame versus a full-party ultimate; `debug.profilebegin("FxStep")` around the stepper; a debug counter of particles alive; stress protocol with one phone, one tablet and one PC in a server while 4–8 players cast at one spot, then at the phone's camera, then 200 studs away, at lowest and highest graphics. Target: the phone stays under 33 ms per frame in the worst repeatable fight. Cut order: onlooker share, others' decoration, big transparent pieces, stream lifetimes, then your own effects.
 
 ## 12. Reduced motion and photosensitivity
 
-- `GuiService.ReducedMotionEnabled` mirrors the player's Reduce Motion toggle; the docs frame it around UI tweens (snap or fade instead of slide) `[official]`. Extend it to camera and screen effects, add your own setting with three states (Follow Roblox, On, Off), and listen for changes at runtime `[lihfolk]`.
-- One comfort module answers every effect; effects that each read settings themselves drift apart `[lihfolk]`.
+- `GuiService.ReducedMotionEnabled` mirrors the player's Reduce Motion toggle; the docs frame it around UI tweens (snap or fade instead of slide) `[official]`. Extend it to camera and screen effects, add your own setting with three states (Follow Roblox, On, Off), and listen for changes at runtime. One comfort module answers every effect; effects that each read settings themselves drift apart `[lihfolk]`.
 
 | System | Under reduced motion |
 |---|---|
@@ -384,10 +363,9 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 | Impact frames, blur, full-screen flashes | Off; replace with a steady edge vignette and a directional indicator |
 | UI motion | Snap or fade (`ui-input-crossplatform.md`) |
 
-- Settings to ship with any tier-2 juice: shake slider (default 60–80%), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
+- Settings to ship with any shake, flash or FOV juice (tier 2 in `core-loop-tuning.md` §7): shake slider (default 60–80%), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
 - Flash safety: no more than 3 full-screen flashes in any second (WCAG 2.3.1); avoid saturated red full-screen flashes; rapid hits merge into one sustained tint; prefer reducing contrast, frequency and area over a warning screen (Xbox Accessibility Guideline 118). No Roblox-specific rule was found, so this is the developer's job.
-- Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`.
-- Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
+- Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`. Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
 
 ## 13. Juice ladder ordered by frame cost
 
