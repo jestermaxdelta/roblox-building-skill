@@ -1,6 +1,16 @@
 # +1 per second and Evolution playbook
 
-Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat grows while you train, a lane of stage gates tests it, Wins buy eggs and better training, and rebirth multiplies everything. Open it for the owner's snowball project, any stat-lane concept, or a live +1 game stuck in the under-2K tail. Format norms are the vault's 2026-11-07 snapshot, taken mostly from fan guides, so treat exact values as approximate `[VS]`.
+Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat grows while you train, a lane of stage gates tests it, Wins buy eggs and better training, and rebirth multiplies everything. Open it for the owner's snowball project, any stat-lane concept, or a live +1 game stuck in the under-2K tail. Format norms are the vault's 2026-11-07 snapshot, taken mostly from fan guides, so treat exact values as approximate `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | One training pad, one lane with 8 gates at about ×4, Wins, one egg with 4–5 pets, a server-side 1 Hz stat tick, teleport buttons, save stat-independent progress (Wins, pets) | Rebirth, multiple Worlds, Robux pads, quests, friend boosts, seasonal skins |
+| Intermediate | Rebirth with caps; 3 Worlds; pad tiers; free-rewards timer; stat shown on the body with clamped scale; server-validated gates; mantissa/exponent numbers | Cash-out-or-push tension, idle pad |
+| Expert | A twist where the stat changes how the run plays; weekly World runway with Experience Events; 30+ product ladder scaled by World; telemetry per gate; rating held above 85% before ads | — |
+
+Terms: *Wins* = the soft currency paid by lane gates; *World* = a themed lane with its own gates and egg; *rebirth* = reset the stat for a permanent multiplier.
 
 ## Snapshot
 
@@ -10,6 +20,7 @@ Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat gro
 - The owner's gap: snowball Size plus eggs on a Stage lane; nearest rival is an ad-driven game at a 66% rating with almost no players.
 - Audience: young, idle-tolerant, phone-first. Sessions: Venom 14.0 min, Gun Forge 33.8 min (longest found); aim for 19+. Larger shared lobbies suit the format (players watch each other's stat).
 - Lifecycle: format hits peak at 0.5–4M and lose 90%+ within 1–4 months; a clone after the parent's peak settles at 4–32K (vault). Ship into a seasonal window.
+- LihFolk's teardown of the +1 obby leader `[lihfolk]`: its twist is that more speed makes the course harder to control, so progress raises power and difficulty together and the game stays a skill test. It read the hook as the shortest on the platform (you get stronger even while failing) with a concrete, sensory theme (a keyboard you can hear).
 
 ## Core loop with timings
 
@@ -67,6 +78,21 @@ Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat gro
 - Bottom-row buttons seen across the format: Pets, Shop, Rebirth, Worlds, Free Rewards, Quests. Keep five or fewer visible on a phone; the rest behind one menu.
 - Teleport-to-pad and teleport-to-lane buttons remove dead walking.
 
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Stat tick service (pad occupancy, multipliers, 1 Hz) and counter HUD.
+2. Lane gates with server validation and Wins payout.
+3. Player data: Wins, pets, pads, Worlds, rebirths.
+4. Teleports (pad, lane, Worlds).
+5. Eggs and pets (see `pet-collection-hatching.md`).
+6. Pad tiers and shop.
+7. Rebirth.
+8. Worlds and their gates.
+9. Free-rewards timer, quests, boosts (group, friend).
+10. Product ladder; offline or idle pad; weekly World pipeline.
+
 ## Technical hot spots
 
 - **Stat tick**: accumulate on the server at 1 Hz from pad occupancy; replicate the value at 1–2 Hz (attribute or a single state remote) and let the client interpolate the counter. Never fire a remote per +1.
@@ -77,12 +103,15 @@ Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat gro
 - **Numbers**: stat reaches 1e15 fast; store mantissa/exponent; format with suffixes.
 - **AFK**: idling is the format, so do not kick idlers; do exclude idle time from quest and free-reward timers that should require presence, and design the 20-minute Roblox idle disconnect into the offline cap `[VS]`.
 - **Lobby size**: each player's pets render on clients with a cap (see the pet playbook).
+- When high speed is legitimate, movement checks compare against the player's server-known stat, not a global cap; very fast characters tunnel through thin parts, so use thick collision and server-side gate validation `[lihfolk]`.
+- 20-plus players with trails and auras: budget particles per player and offer a hide-others toggle `[lihfolk]`.
 
 ## The one-new-verb angle
 
 - The run is the verb: roll, bike, climb, ski, dig. A visible trip down the lane beats a number on a menu (vault patterns 2 and 3).
 - Put the stat on the body or the vehicle so progress reads in a thumbnail: "1" snowball → planet-sized "1,000,000,000".
 - Cut everything else at launch (bosses, carrying, weather, mutations); they return as weekly updates.
+- Let the stat change the run, not only unlock it: speed that is harder to steer, size that changes what you can smash or fit through. Each World should add a movement rule (ice, bounce, moving gates), not a bigger number `[lihfolk]`.
 
 ## Common failure modes
 
@@ -93,6 +122,7 @@ Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat gro
 - Running ads below an 85% rating (vault thumbnail rule 13).
 - Remote-per-tick networking; server stalls with 30 players.
 - Paid multipliers leaking into a PvP zone.
+- The client reports its own stat; every cosmetic is expensive with no ladder from tiny to premium; the same lane with a bigger number each update (sessions shrink) `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -111,6 +141,8 @@ Covers "+1 ___ Every Second", "+1 ___ Evolution" and stat-lane games: a stat gro
 | 11 | Rebirth keeps pets and paid pads, and is reachable in 20–40 min | Retune the first requirement |
 | 12 | New World every week on a fixed day | Plan a 12-World runway; log each as an Experience Event |
 | 13 | Rating ≥ 85% before any ad spend | Fix the first 3 minutes first |
+| 14 | Each World adds a movement rule or obstacle idea | Redesign the next World around one new rule |
+| 15 | Movement checks use the server-known stat | Replace global caps |
 
 ## Review gate
 
@@ -130,3 +162,5 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - Web search for developer write-ups of the +1 format (2026-11-10): no developer analysis found, only code-list and guide pages; no new claims taken from them.
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `59 Viral and Trend Game Teardowns/Teardown - +1 Speed Keyboard Escape.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

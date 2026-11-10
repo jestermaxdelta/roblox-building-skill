@@ -1,6 +1,16 @@
 # Social roleplay and life-sim playbook
 
-Covers town and life roleplay, role-driven RP (jobs, emergency services, school), fashion and dress-up shows, avatar games and social hangouts. Open it when players are each other's content, when deciding how the maturity questionnaire will classify the game, or when auditing a live RP game for reach, moderation load and monetisation depth. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers town and life roleplay, role-driven RP (jobs, emergency services, school), fashion and dress-up shows, avatar games and social hangouts. Open it when players are each other's content, when deciding how the maturity questionnaire will classify the game, or when auditing a live RP game for reach, moderation load and monetisation depth. For judged dress-up rounds see `fashion-dress-up.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | A small town about 3 minutes across; one free house type with a lock; one free vehicle with a per-player cap; an emote and quick-phrase wheel; three jobs with simple tasks; role-central design that passes the questionnaire | Furniture placement, trading, pets, many districts, premium estates |
+| Intermediate | Saved house decoration (ids and positions relative to the house origin) with an item cap; kick-from-house and permissions; streaming interiors; contextual premium sales; update rhythm; report and block always reachable | Seasonal maps, creator events |
+| Expert | Population budgets for 20–50 avatars; griefing answers for every system; structured rounds or shifts for under-16 reach; moderation tooling for private-server owners; catalogue pipeline for weekly props | — |
+
+Terms: *social hangout* = Roblox's classification for games whose primary activity is chatting (16+); *private space* = an enclosed space for one or very few people (pushes a hangout to 18+); *quick-phrase wheel* = fixed phrases players can send without free text.
 
 ## Snapshot
 
@@ -23,6 +33,8 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - Structured activities are the safe design for under-16 reach: rounds, jobs, shows and minigames give the game a primary activity that is not chat.
 - Roles should create interaction by design: staff and customers, police and civilians, judges and contestants.
 - Space design: dense but uncrowded, many sit and pose spots, light minigames, many interactable Blender props (doors, vehicles, job tools).
+- The design question is not "what is the loop" but "what stories can players tell here, and what do they need to tell them": emotes and poses, held props (food, phones, tools of a job), houses to choose, decorate, lock and invite into, and vehicles that spawn beside the player `[lihfolk]`.
+- Short walks, vehicles for the rest: a town about 3 minutes across on foot needs cars or teleports `[lihfolk]`.
 
 ## First 5 minutes
 
@@ -40,6 +52,8 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - Currency sinks: furniture, vehicle customisation, outfit pieces, pet care, plot upgrades. Daily login adds a cumulative track, not a streak that resets.
 - Fashion rounds: voting needs anti-collusion (hide voter identity, drop outliers, cap self-vote); rewards are stars toward ranks.
 - Trading (pets, items) is a years-long retention engine and a scam surface; see `pet-collection-hatching.md`.
+- Jobs pay for a reason to play a role (deliver, cook, cut hair); simple tasks, no punishment `[lihfolk]`.
+- Roleplay players are sensitive to status gaps: if every nice house is paid, free players feel second class in their own stories. Free options must stay attractive, including a free car and a free starter house `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -56,6 +70,7 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - Friends are the retention system: join-friend prompts, shared houses, party vehicles, private servers. Intentional co-play feeds discovery.
 - Seasonal events with real end dates; collaborations if available.
 - Emotes, poses and photo spots produce shareable images.
+- Conflict (cadence): Roblox's general retention guidance, as LihFolk reports it, is smaller updates every 2–4 weeks and larger features every 2–3 months; the vault's leaders ship weekly on a fixed day. For this genre follow the leaders: a small weekly prop drop, larger drops monthly.
 
 ## UI patterns
 
@@ -64,6 +79,21 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - Catalogue grids with large thumbnails, try-on before buy, owned and premium clearly marked.
 - Voting UI: stars or sliders with a short timer, results as a podium.
 - Report and mute within two taps; house lock and "ban from house" controls for owners.
+
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Emote and quick-phrase wheel; role tags.
+2. Vehicle spawner with ownership, caps and despawn.
+3. Houses: claim, lock, permissions, kick.
+4. Jobs or roles with server-tracked tasks and pay.
+5. Player data: currency, owned items, house layout, outfits.
+6. Avatar and outfit editor.
+7. Furniture placement with caps and saves.
+8. Shop with contextual, in-world sales; gifting.
+9. Structured activities (rounds, shifts, shows).
+10. Safety and moderation tools; then seasonal events.
 
 ## Technical hot spots
 
@@ -75,6 +105,9 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - **Avatar editing**: `HumanoidDescription` applied on the server; validate asset ids against an allow-list for in-game items; saved outfits as id lists.
 - **Griefing surface**: fling and physics abuse (collision groups, no player-pushable heavy props), seat traps, tool spam, vote collusion, house invasion. Every social feature gets a "how could a stranger ruin this" answer.
 - **Exploit surface**: currency grants from job remotes (server tracks task completion), vehicle and item spawn remotes (ownership checks, rate limits), teleport into locked houses (server-side door state).
+- **Houses are the main griefing vector** `[lihfolk]`: ownership and permissions live on the server; "kick from my house" is a core feature; decoration saves as item ids and positions relative to the house origin so it rebuilds in any plot on any server; cap placed items per house.
+- **Safety surface** `[lihfolk]`: personal-space options, house locks, block and report reachable at all times; limits on what can be spawned or shown to others; distinct markers for real moderators that players cannot fake; moderation tools for private-server owners.
+- Vehicle caps: one active per player plus a server cap; despawn when abandoned `[lihfolk]`.
 
 ## The one-new-verb angle
 
@@ -111,6 +144,8 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 | 12 | Report, mute and owner controls within two taps | Add controls |
 | 13 | Votes resist collusion; nothing sells wins | Anonymise, trim outliers; remove paid advantage |
 | 14 | Friend join and party features are prominent | Add join-friend and invite prompts after a shared moment |
+| 15 | House owners can lock and kick; decoration is capped and saved relative to the house | Add permissions, caps and relative saves |
+| 16 | Free house and free car are attractive | Improve the free tier before adding premium |
 
 ## Review gate
 
@@ -136,3 +171,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (search summary)
 - https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (search summary)
 - GitHub search for open roleplay frameworks (2026-11-10): no maintained, licensed reference of note found.
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Roleplay and Social Hangouts.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Luau mastery: first script to expert idioms
 
-What this is: a Luau language reference in three tiers (beginner, intermediate, expert) plus game-math essentials, a deprecated-to-modern API table and style conventions. Open it when writing or reviewing any script, when a developer asks "how do I do X in Luau", or when modernising an old codebase. Language facts were checked on 2026-11-10 against `Roblox/creator-docs` (commit ccc2b01), `luau-lang/site` (luau.org source), `luau-lang/rfcs` and `luau-lang/luau` (tag 0.746 era). Snippets are unexecuted sketches. Tags: `[official]` Roblox docs or luau.org, `[community]`, `[VS]` version-sensitive, `[house]`, `[lihfolk]` adapted from LihFolk Vault V2.
+What this is: a Luau language reference in three tiers (beginner, intermediate, expert) plus game-math essentials, a deprecated-to-modern API table and style conventions. Open it when writing or reviewing any script, when a developer asks "how do I do X in Luau", or when modernising an old codebase. Language facts were checked on 2026-11-10 against `Roblox/creator-docs` (commit ccc2b01), `luau-lang/site` (luau.org source), `luau-lang/rfcs` and `luau-lang/luau` (commit 12a6ba7). Snippets are unexecuted sketches. Tags: `[official]` Roblox docs or luau.org, `[community]`, `[VS]` version-sensitive, `[house]`, `[lihfolk]` adapted from LihFolk Vault V2.
 
 It extends, and does not repeat: `engineering-architecture.md` (project layout, loader, naming, toolchain), `architecture-patterns-luau.md` (Signal, pool, FSM and other pattern sketches), `performance.md` (profiling, `--!native` limits, Parallel Luau basics), `debugging-and-testing.md` (errors, retries, tests).
 
@@ -88,7 +88,6 @@ First-week mistakes:
 | `Touched` with no debounce | Fires per body part, many times a second | Mark the object taken first; map the part to a player |
 | `PlayerAdded` only | The first player in Studio is skipped | Also loop `Players:GetPlayers()` |
 | DataStore or other web calls without `pcall` | One failed request breaks the script | Wrap, and decide what failure does (`data-and-purchases.md`) |
-| Tuning values during Play | Changes vanish on Stop | Stop, then edit; or copy values out first |
 | `a == b` on computed decimals | `0.1 + 0.2 ~= 0.3` | Compare with a tolerance, or use integers |
 
 ## Intermediate
@@ -107,15 +106,11 @@ Modes `[official]`: `--!strict` checks everything from inferred and annotated ty
 
 | Need | Write |
 |---|---|
-| Optional | `name: string?` |
-| One of several | `"idle" \| "run" \| "jump"` (singleton strings as enums) |
-| Record | `type Item = { id: string, price: number, tags: { string } }` |
-| Map | `{ [Player]: number }` |
-| Function | `(player: Player, amount: number) -> boolean` |
-| Generic | `function first<T>(list: { T }): T?` |
+| Optional; one of several | `name: string?`; `"idle" \| "run" \| "jump"` (singleton strings as enums) |
+| Record; map | `type Item = { id: string, price: number, tags: { string } }`; `{ [Player]: number }` |
+| Function; generic | `(player: Player, amount: number) -> boolean`; `function first<T>(list: { T }): T?` |
 | Untrusted input | `value: unknown`, then narrow |
-| Export | `export type Item = ...`, used as `Module.Item` |
-| Type of a value | `typeof(defaults)` |
+| Export; type of a value | `export type Item = ...`, used as `Module.Item`; `typeof(defaults)` |
 | Cast after a runtime check | `value :: number` |
 
 Narrowing (the checker follows these): `if x then`, `type(x) == "number"`, `typeof(x) == "Vector3"`, `x:IsA("BasePart")`, `assert(x)`, and comparing a tagged union's `kind` field inline. It does not follow narrowing hidden inside a helper function `[lihfolk]`. `any` switches checking off and spreads; `unknown` forces a check before use.
@@ -125,7 +120,6 @@ Tagged union with an exhaustiveness guard and a boundary validator (unexecuted s
 ```lua
 --!strict
 type Effect = { kind: "damage", amount: number } | { kind: "heal", amount: number } | { kind: "stun", seconds: number }
-
 local function describe(effect: Effect): string
 	if effect.kind == "damage" then return `-{effect.amount} HP`
 	elseif effect.kind == "heal" then return `+{effect.amount} HP`
@@ -135,7 +129,6 @@ local function describe(effect: Effect): string
 		return unreachable
 	end
 end
-
 local function readAmount(value: unknown): number? -- remote arguments arrive as unknown
 	if type(value) ~= "number" or not math.isfinite(value) then return nil end -- rejects NaN and infinity
 	return math.clamp(value, 0, 1000)
@@ -161,17 +154,14 @@ local Cooldown = {}
 Cooldown.__index = Cooldown
 type Fields = { duration: number, readyAt: number }
 export type Cooldown = typeof(setmetatable({} :: Fields, Cooldown))
-
 function Cooldown.new(duration: number): Cooldown
 	return setmetatable({ duration = duration, readyAt = 0 }, Cooldown) -- one literal with every field
 end
-
 function Cooldown.tryUse(self: Cooldown, now: number): boolean
 	if now < self.readyAt then return false end
 	self.readyAt = now + self.duration
 	return true
 end
-
 return Cooldown
 ```
 
@@ -185,12 +175,10 @@ A *closure* is a function that keeps access to the local variables around it (it
 
 One thread runs at a time per VM and nothing pre-empts it: code between two yields is atomic, and a loop that never yields freezes everything. Rules:
 
-- `task.spawn(fn, a, b)` instead of `task.spawn(function() fn(a, b) end)`: no closure.
-- Errors in spawned threads print to Output but do not reach the spawner. `coroutine.resume` returns `false, err` instead of throwing: ignoring its result hides errors.
+- `task.spawn(fn, a, b)` instead of `task.spawn(function() fn(a, b) end)`: no closure. Errors in spawned threads print to Output but do not reach the spawner. `coroutine.resume` returns `false, err` instead of throwing: ignoring its result hides errors.
 - Do not `coroutine.resume` a thread the engine yielded (inside `task.wait`, `WaitForChild`, a web call): it will be resumed twice. Resume only threads you yielded with `coroutine.yield`, using `task.spawn(thread, ...)` `[lihfolk]`.
-- Every loop thread has an exit condition or is stored and `task.cancel`led by its owner.
+- Every loop thread has an exit condition or is stored and `task.cancel`led by its owner. You cannot yield inside a metamethod, a `table.sort` comparator or a `string.gsub` callback.
 - `coroutine.finally(co, callback)` runs `callback("finished" | "error" | "cancelled", ...)` when the coroutine ends `[official][VS]`: the hook for structured cleanup.
-- You cannot yield inside a metamethod, a `table.sort` comparator or a `string.gsub` callback.
 - Signals, deferred-event pitfalls and Trove ownership: `engineering-architecture.md`; a Signal sketch: `architecture-patterns-luau.md`.
 
 What cleanup does and does not do:
@@ -207,57 +195,44 @@ What cleanup does and does not do:
 
 | Task | Idiom | Note |
 |---|---|---|
-| Build text | `` `{name} has {coins} coins` `` | Interpolation; `string.format("%.2f", x)`, `"%03d"`, `"%x"` for formats |
+| Build text | `` `{name} has {coins} coins` `` | Interpolation; `string.format("%.2f", x)`, `"%03d"`, `"%x"` for formats. `#s` is bytes; `utf8.len(s)` counts characters; `string.split(s, ",")` splits |
 | Join many pieces | `table.concat(parts, ", ")` | `s = s .. x` in a loop copies the whole string each time |
-| Split | `string.split(s, ",")` | |
 | Match | `string.match(s, "^(%a+)_(%d+)$")` | Lua patterns, not regex: `%d %a %w %s %p`, `-` is lazy, no alternation |
-| Count characters | `utf8.len(s)` | `#s` is bytes; player names can be multi-byte |
 | Presized array | `table.create(n)` then `t[i] = v` | Fastest when `n` is known `[official]` |
 | Append | `table.insert(t, v)` | Fastest when size is unknown `[official]` |
 | Remove from the middle, order irrelevant | `t[i] = t[#t]; t[#t] = nil` | `table.remove(t, i)` shifts everything after `i` |
 | Queue | `head`/`tail` indices | `table.remove(t, 1)` is O(n) per pop |
-| Find | `table.find(t, v)` | Linear; use a set for frequent lookups |
-| Set | `seen[key] = true` | Count needs a loop: `#` is for arrays only |
-| Copy | `table.clone(t)` | Shallow |
-| Lock config | `table.freeze(t)` | Shallow; writes then error |
+| Find; set | `table.find(t, v)`; `seen[key] = true` | `find` is linear: use a set for frequent lookups. Counting a set needs a loop (`#` is for arrays) |
+| Copy; lock config | `table.clone(t)`; `table.freeze(t)` | Both shallow; writes to a frozen table error |
 | Reuse a scratch table | `table.clear(t)` | Keeps its capacity |
-| Sort | `table.sort(t, function(a, b) return a.score > b.score end)` | Comparator must return `false` for equal items or it raises "invalid order function"; not stable |
+| Sort | `table.sort(t, function(a, b) return a.score > b.score end)` | Comparator must return `false` for equal items or it can raise "invalid order function"; not stable |
 | Iterate | `for key, value in t do` | `ipairs` only when you want to stop at the first `nil` |
 
 Arrays with holes: `#t` is unreliable once a middle element is `nil`. A cleanup list built with `ipairs` over values that may be `nil` silently skips the rest `[lihfolk]`.
-
-Error handling (`pcall`, `xpcall`, result types, retries with backoff) is in `debugging-and-testing.md`.
 
 ## Expert
 
 ### Language and type-system status `[VS]`
 
-Re-check each row before relying on it; "RFC only" means do not write it yet.
-
-| Feature | Status on 2026-11-10 | Guidance |
+| Feature | Status on 2026-11-10 (re-check before relying on a row) | Guidance |
 |---|---|---|
-| New type solver | General release announced on the DevForum, with the beta toggle scheduled for removal on 7 January 2026 `[community: search summary]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, set in Studio, not scriptable) selects it per place `[official]`. Fixes still land in release notes, and Roblox acknowledged slower analysis and higher Studio memory in some cases | Use it for new code. Keep type shapes simple; test surprising errors against the other solver before rewriting code |
+| New type solver | General release announced on the DevForum, with the beta toggle scheduled for removal on 7 January 2026 `[community: search summary]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, set in Studio, not scriptable) selects it per place `[official]`. Fixes still land in release notes, and Roblox acknowledged slower analysis and higher Studio memory in some cases | Use it for new code. Keep type shapes simple; test surprising errors against the other solver before rewriting code. Conflict: `engineering-architecture.md` says the solver "is still rolling out"; the general-release post supersedes that, and its advice to prefer simple shapes still stands because fixes continue |
 | `const` bindings | Documented by Roblox and luau.org: `const X = 1`, `const function f()`; reassignment and `+=` are errors; the binding is immutable, the value is not (`table.freeze` for that); contextual keyword `[official]` | Fine in Studio. In a Rojo project first confirm your StyLua, Selene and luau-lsp versions parse it (not verified here) |
 | `type function` and the `types` library | Implemented (RFC); new solver only. Environment: `types`, `math`, `table`, `string`, `bit32`, `utf8`, `buffer` and a few globals; no runtime values, no Roblox APIs `[official: luau.org]` | Library-level types only (`Readonly<T>`, `Pick<T, K>`). Each use re-runs analysis; errors surface at every use site |
-| `keyof`, `rawkeyof`, `index`, `rawget`, `setmetatable`/`getmetatable` type functions | Implemented (RFCs) | `keyof<typeof(Config)>` for "one of the config keys" |
+| `keyof`, `rawkeyof`, `index`, `rawget`, `setmetatable`/`getmetatable` type functions; default type parameters, `never`, `unknown` | Implemented (RFCs) | `keyof<typeof(Config)>` for "one of the config keys" |
 | Explicit instantiation `f<<T>>(...)` | Implemented (RFC); documented on luau.org | Useful for `makeList<<number>>()`; confirm in your Studio version |
 | `read` / `write` property modifiers | In the luau.org grammar (`{ read name: string }`); new solver | Read-only parameters accept subtypes: fixes "`{Sword}` is not `{Item}`" |
-| Default type parameters, singleton types, `never`, `unknown`, typed variadics | Implemented | Everyday tools |
 | `@native`, `@deprecated`, `@[deprecated { use = "newApi()", reason = "..." }]` | luau.org attribute reference; attributes are not user-definable | Mark old internal APIs so the linter warns callers |
 | `--!optimize 0\|1\|2` | Level 1 is the default in Studio testing, level 2 in live games `[official]` | Leave it alone in game code; use `--!optimize 2` in benchmark scripts |
-| `vector` library, `math.lerp`, `math.map`, `math.isnan`/`isinf`/`isfinite`, `math.tau`, `buffer.readbits`/`writebits`, `vector.lerp` | In the Roblox library reference | Use freely |
-| `coroutine.finally` | In the Roblox library reference | Structured cleanup for threads |
+| `vector` library, `math.lerp`, `math.map`, `math.isnan`/`isinf`/`isfinite`, `math.tau`, `buffer.readbits`/`writebits`, `vector.lerp`, `coroutine.finally` | In the Roblox library reference | Use freely |
 | `class` syntax, `export` for values, 64-bit `integer` type, cyclic requires | RFC only (no "Implemented" status in `luau-lang/rfcs`) | Do not write; do not promise |
 | Bounded generics (`<T: Instance>`), `__gc` finalizers, ephemeron tables | Not in Luau | Take a capability function instead of a bound; clean up explicitly |
-
-Conflict: `engineering-architecture.md` says the new solver "is still rolling out". The DevForum general-release post supersedes that; its practical advice (prefer simple type shapes) still stands because fixes continue.
 
 Type-system behaviour that surprises experts `[lihfolk]`:
 
 - Inference flows from **arguments**, not from where the result goes. `local n: number = first(names)` does not make `T` a number. Annotate the argument, or instantiate explicitly.
 - An empty literal gives the checker nothing: `local list = {}` becomes too wide or too narrow later. Write `local list: { Item } = {}`.
 - Mutable containers are invariant: a function taking `{ Item }` rejects `{ Sword }` because it could insert a plain `Item`. Make the parameter generic (`<T>(items: { T })`) or read-only.
-- One discriminant name everywhere (`kind`), string singletons, compared inline.
 - Generic classes: declare `export type RingBuffer<T> = { push: (self: RingBuffer<T>, value: T) -> (), ... }` and cast once in the constructor; `typeof(setmetatable(...))` captures one concrete type.
 - Budget cleverness: full generics in shared libraries (signals, pools, codecs, validators); `unknown` plus validators at the network boundary; plain annotations and tagged unions in game systems. If teammates write `:: any` to get past your types, simplify.
 
@@ -269,8 +244,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 | Fastcalls: builtins called directly skip the call frame (`math.*` except `noise` and `random`, `bit32.*`, `type`, `typeof`, `rawget`, `tonumber`, some `string` and `table`) | `string.byte(s, i)` is fast; the method form `s:byte(i)` is not |
 | Inline caching on `t.field`, fast method calls on `obj:Method()` | Keep fields directly on the object; do not cache methods in locals; `__index` should be a table |
 | Table templates | Build an object in **one literal with every field**; keep one shape per kind of object |
-| Specialised iteration | `for k, v in t` equals `pairs`/`ipairs` in speed; `for i = 1, #t` is slightly slower |
-| `#t` is cached | Effectively constant time on real arrays |
+| Specialised iteration; cached `#t` | `for k, v in t` equals `pairs`/`ipairs` in speed; `for i = 1, #t` is slightly slower; `#t` is effectively constant time on real arrays |
 | Upvalues that are never reassigned are captured by value; closures with only such upvalues may be cached | A reassigned captured variable costs an allocation; a cached closure can share identity, so do not use fresh closures as table keys |
 | Inlining and loop unrolling at optimisation level 2 only: `local function`, non-recursive, small; loops with constant bounds | Studio play tests run level 1 and live servers level 2, so Studio timings understate live speed and exclude inlining |
 | `getfenv`, `setfenv`, `loadstring` mark the environment impure | Imports, fastcalls and inlining are lost for that script. Never use them |
@@ -281,8 +255,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 |---|---|
 | `nil`, `boolean`, `number`, `Vector3` (the native `vector`) | No: stored inline. Vector maths in a hot loop creates no garbage `[official]` |
 | `string` | Yes, unless an identical string already exists; every `..` intermediate is garbage |
-| `table`, `buffer` | Yes |
-| `function` | Usually (see closure caching) |
+| `table`, `buffer`, `function` | Yes (closures: usually, see closure caching) |
 | `thread` | Yes, with its own stack; a suspended thread keeps everything on that stack alive |
 | `CFrame`, `Color3`, `UDim2`, connections, Instance references | Yes: a userdata wrapper per result. Do the maths in `Vector3` and build the `CFrame` once `[lihfolk]` |
 
@@ -291,7 +264,6 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 - No finalizers and no forced collection: `collectgarbage` only supports `"count"`; `gcinfo()` reads the heap in KB. Cleanup is always an explicit call.
 - No ephemerons: in a weak-keyed table, a value that references its own key keeps the entry forever. Adding `s` to `__mode` lets a weak table shrink during collection, at the risk of missed keys if it resizes mid-iteration `[official: luau.org]`.
 - Capacity is sticky: clearing a table that once held 100,000 entries keeps the memory. Reuse scratch tables with `table.clear`; drop one-off giants by assigning a new table.
-- Measure allocation as KB per iteration over thousands of iterations, comparing two versions in one run; a single before-and-after reading can even go negative.
 
 ### `buffer`, native code and parallelism
 
@@ -302,9 +274,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 local TAU = 2 * math.pi
 local function packMove(position: Vector3, yaw: number): buffer
 	local b = buffer.create(14)
-	buffer.writef32(b, 0, position.X)
-	buffer.writef32(b, 4, position.Y)
-	buffer.writef32(b, 8, position.Z)
+	buffer.writef32(b, 0, position.X); buffer.writef32(b, 4, position.Y); buffer.writef32(b, 8, position.Z)
 	buffer.writeu16(b, 12, math.round((yaw % TAU) / TAU * 65535)) -- heading in 16 bits
 	return b
 end
@@ -315,8 +285,7 @@ Native code generation (`--!native`, `@native`): server scripts and Android clie
 Parallel Luau beyond the basics in `performance.md`:
 
 - Every Actor is its own VM: a module required by 64 Actors runs 64 times and holds 64 copies of its data; a "global" registry module is per Actor. This is the most common design error `[lihfolk]`.
-- Messages are copied; send ids and small parameters. `SharedTable` avoids the copy but each access is synchronised: a staff reply put it near 10× slower than a table `[community]`. Read what you need into locals at the start of a job and write results once at the end.
-- `SharedTable.increment` is atomic and much faster than `update`; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure; a plain read-then-write is a race `[official]`.
+- Messages are copied; send ids and small parameters. `SharedTable` avoids the copy but each access is synchronised: a staff reply put it near 10× slower than a table `[community]`. Read what you need into locals at the start of a job and write results once at the end. `SharedTable.increment` is atomic and much faster than `update`; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure; a plain read-then-write is a race `[official]`.
 - Shape every system as read (parallel), compute (parallel), write (serial, one place). If the serial write phase grows, parallelism is a net loss: measure in the MicroProfiler.
 
 ### Performance idioms with measured rules
@@ -326,16 +295,13 @@ Cost per frame = cost per item × items × times per second ÷ frame rate. Frequ
 | Rule | Why | Source |
 |---|---|---|
 | Run work on change or at 4–10 Hz, staggered, not per frame | The formula above | `[lihfolk]` |
-| One loop over a registry, not one connection or thread per object | A dispatch, a resume and a closure per object per frame | `[official]` docs problem lists |
+| One loop over a registry, not one connection or thread per object | A dispatch, a resume and a closure per object per frame | `[community]` |
 | No tables, closures, threads or strings created per frame per object | GC assists land in your frame | luau.org |
 | `pcall(fn, a, b)` and `task.spawn(fn, a, b)`, never a wrapper closure, in hot paths | One allocation less per call | luau.org |
 | Read an Instance property once into a local; mirror attributes into a Lua table on change | Every property access crosses into the engine | `[lihfolk]` rule of thumb: measure |
 | Write a property only when the value changed | Writes can trigger replication and physics work | `[lihfolk]` |
-| `workspace:BulkMoveTo(parts, cframes, mode)` for many parts | One engine call | `performance.md` |
 | Squared distances: `d:Dot(d) < r * r` | No square root, no allocation | `[community]` |
-| Slice long jobs by elapsed time (about 5 ms), not by item count | Item cost varies | `performance.md` |
-| Benchmark with warm-up, many runs, the median, results consumed, heap delta reported, `--!optimize 2`, and no breakpoints | Each omission is a known way benchmarks lie | `[lihfolk]`, `[official]` |
-| Confirm every win in the MicroProfiler on the target device | A 3× win on 0.02 ms is worth nothing | `[house]` |
+| Benchmark with warm-up, many runs, the median, results consumed, heap growth per iteration (`gcinfo()`), `--!optimize 2` and no breakpoints; then confirm in the MicroProfiler on the target device | Each omission is a known way benchmarks lie; a 3× win on 0.02 ms is worth nothing | `[lihfolk]`, `[official]` |
 
 ### Sandboxing and hard limits
 
@@ -344,28 +310,23 @@ Cost per frame = cost per item × items × times per second ÷ frame rate. Frequ
 | No `io`; `os` has only `clock`, `date`, `difftime`, `time` | `[official: luau.org]` |
 | `loadstring` | Off unless `ServerScriptService.LoadStringEnabled`; never available on clients; cannot load bytecode. Keep it off |
 | Security levels and capabilities | Game scripts cannot call plugin or core APIs; the error names a missing capability |
-| Globals | Each script has its own; `_G` and `shared` are shared per side: prefer modules |
-| No pre-emption | A thread runs until it yields; watchdog details in `debugging-and-testing.md` |
 | 200 active locals per function (the main chunk counts), 255 registers, 200 upvalues per closure | Compile errors "Out of local registers…", "Out of registers…", "Out of upvalue registers…" (texts verified in `luau-lang/luau`; values `[lihfolk][VS]`). Fix by splitting into modules, grouping values in a table, or scoping with `do … end` |
 | Script `Source` about 200,000 characters `[lihfolk][VS]` | Split generated modules early |
 | Integers exact to 2^53 | Above that `x + 1 == x`; idle-game currencies need a mantissa and exponent pair (`economy-and-progression.md`) |
 
 ## Game math essentials
 
-**CFrame** (a position plus a rotation; immutable). `LookVector` is the **-Z** axis, `RightVector` +X, `UpVector` +Y.
+**CFrame** (a position plus a rotation; immutable). `LookVector` is the **-Z** axis, `RightVector` +X, `UpVector` +Y. Keep your own scalar yaw and pitch for cameras: reading Euler angles back from a CFrame flips near ±90° pitch.
 
 | Need | Write | Trap |
 |---|---|---|
 | Face a point | `CFrame.lookAt(from, target)` | Degenerate when the direction is parallel to the up vector: pass another `up` |
-| Move in its own space | `cf * CFrame.new(0, 0, -5)` | `A * B` means "B relative to A"; order matters |
-| Move in world space | `cf + Vector3.new(0, 5, 0)` | |
+| Move in its own space; in world space | `cf * CFrame.new(0, 0, -5)`; `cf + Vector3.new(0, 5, 0)` | `A * B` means "B relative to A"; order matters |
 | Rotate | `cf * CFrame.Angles(0, math.rad(90), 0)` | Radians. `Angles` applies X, Y, Z; `fromOrientation` uses Y, X, Z like the `Orientation` property |
 | World to local | `a:ToObjectSpace(b)`, `a:PointToObjectSpace(p)`, `a:VectorToObjectSpace(v)` | Vectors ignore position |
 | Keep a fixed offset | Store `offset = parent.CFrame:ToObjectSpace(child.CFrame)` once; each frame `child.CFrame = parent.CFrame * offset` | The same identity as weld `C0`/`C1` |
 | Blend two frames | `a:Lerp(b, t)` | Position linearly, rotation along the shortest arc |
 | Move a model | `model:PivotTo(cf)` | Supersedes `SetPrimaryPartCFrame` |
-
-Keep your own scalar yaw and pitch for cameras; reading Euler angles back from a CFrame flips near ±90° pitch.
 
 **Vectors.** `a:Dot(b)` is `|a||b|cos θ`. In front of me: `look:Dot(toTarget) > 0`. Inside a view cone: `look:Dot(toTarget.Unit) > math.cos(math.rad(halfAngle))`. Left or right: the sign of `look:Cross(toTarget).Y` (verify the sign once in your scene). Project onto a direction: `dir * v:Dot(dir)` with `dir` unit length. `.Unit` of a zero vector is NaN, and one NaN in a CFrame makes a part or the camera vanish: guard with `if v.Magnitude > 1e-4`.
 
@@ -391,7 +352,7 @@ end
 
 **Easing.** An easing curve is a shape applied to `t`. `TweenService:GetValue(alpha, style, direction)` samples the engine's curves for your own loops (one loop writing 300 CFrames instead of 300 Tweens). Responses to input ease **Out** (fast start); In reads as input lag; two InOut moves chained stop visibly in the middle. `Back` Out overshoots by about 10% of the distance at about 58% of the duration: budget it on long moves and check hinges for clipping `[lihfolk]`. Effects such as shake and FOV kicks are envelopes with an explicit end time that reach exactly zero; sum them, then cap.
 
-**Random.** `Random.new(seed)` per system (loot, spawns, cosmetics) so one system cannot shift another's sequence and bugs replay from a logged seed. `NextInteger(min, max)` is inclusive; `NextNumber()` is 0 to 1; `Shuffle(t)` shuffles in place; `NextUnitVector()` gives a direction `[official]`. Anything of value rolls on the server. Weighted choice (unexecuted sketch):
+**Random.** `Random.new(seed)` per system (loot, spawns, cosmetics) so one system cannot shift another's sequence and bugs replay from a logged seed. `NextInteger(min, max)` is inclusive; `NextNumber()` is 0 to 1; `Shuffle(t)` shuffles in place; `NextUnitVector()` gives a direction `[official]`. Anything of value rolls on the server, and displayed odds come from the same flattened table the server rolls (`monetization-and-policy.md`; the statistical test is in `debugging-and-testing.md`). Weighted choice (unexecuted sketch):
 
 ```lua
 --!strict
@@ -406,8 +367,6 @@ local function weightedPick<T>(rng: Random, entries: { { item: T, weight: number
 	return entries[#entries].item -- floating-point edge
 end
 ```
-
-Displayed odds must come from the same flattened table the server rolls (`monetization-and-policy.md`); the statistical test is in `debugging-and-testing.md`.
 
 **Noise.** `math.noise(x, y, z)` is Perlin noise, usually within -1 to 1 but sometimes outside: clamp if the range matters `[official]`. It returns 0 at integer coordinates, so scale inputs (`x * 0.05`) and add a per-seed offset. Layer octaves for natural variation: sum `math.noise(x * f, z * f) * a`, doubling `f` and halving `a`, three to five times.
 
@@ -429,33 +388,23 @@ Displayed odds must come from the same flattened table the server rolls (`moneti
 | `Player.MembershipType`, `MarketplaceService:PromptPremiumPurchase` | `Player.HasRobloxSubscription` (prompt: see `monetization-and-policy.md`) | Deprecated |
 | `TextFilterResult:GetChatForUserAsync`, legacy `Chat` | `TextChatService`; `GetNonChatStringForBroadcastAsync` / `ForUserAsync` for names and signs | Deprecated |
 | `getfenv`, `setfenv` | Modules and explicit parameters | Deprecated; they also de-optimise |
-| `Lighting.Technology` | `LightingStyle` plus `PrioritizeLightingQuality` | Deprecated (`performance.md`) |
 | `Model:SetPrimaryPartCFrame` | `Model:PivotTo` | Superseded (drift-free) |
 | `RunService.RenderStepped`, `Stepped` | `PreRender`, `PreSimulation` (and `PreAnimation`, `PostSimulation`) | Superseded: the old events are not marked deprecated |
-| `tick()` | `os.clock()` for durations, `os.time()` for timestamps, `workspace:GetServerTimeNow()` for clocks shared with clients | House standard; `tick` is not marked deprecated at this commit |
-| `CFrame.new(position, lookAt)`, `Vector3.new(0, 0, 0)` | `CFrame.lookAt`, `Vector3.zero` / `Vector3.one` | Style |
-| `math.random` (one shared generator) | `Random.new(seed)` per system | Style |
-| `Instance.new("X", parent)` | Set properties, then `Parent` last | Performance |
+| `tick()` | `os.clock()` for durations, `os.time()` for timestamps, `workspace:GetServerTimeNow()` for clocks shared with clients | House standard. Conflict: the knowledge base lists `tick` with removed APIs, but it is not marked deprecated at this commit: avoid it, do not call it deprecated |
+| `CFrame.new(position, lookAt)`, `Vector3.new(0, 0, 0)`, `math.random` (one shared generator) | `CFrame.lookAt`, `Vector3.zero`, `Random.new(seed)` per system | Style |
 | `pairs(t)` / `ipairs(t)` | `for k, v in t` | Style; same speed |
 | `BindableEvent` between modules | A Luau Signal or a direct call | Bindables copy tables and drop metatables |
 | `RemoteFunction:InvokeClient` | RemoteEvent out, RemoteEvent back, with a timeout | A client can hang the server thread forever |
-| `MarketplaceService.ProcessReceipt` assigned in several scripts | One handler, or filtered `BindReceiptHandler` | `data-and-purchases.md` |
-
-Conflict: the knowledge base lists `tick` with the removed APIs. Keep avoiding it, but do not tell a developer it is officially deprecated.
 
 ## Style conventions
 
 Naming, the `Async` suffix and tooling are in `engineering-architecture.md`. In addition `[house]`:
 
-- File order: directives (`--!strict`), services, requires, constants, types, private state, private functions, public table, `return`.
-- One responsibility per module; split near 300 lines or when the top level approaches the 200-local limit.
-- Early returns over nested `if`; guard clauses first.
-- String interpolation over `..`; generalized iteration over `pairs`; `if … then … else` expressions for simple choices.
-- No magic numbers: named constants or config tables, frozen.
-- Functions that yield say so in the name and are never called from `Init` or a metamethod.
+- File order: directives (`--!strict`), services, requires, constants, types, private state, private functions, public table, `return`. One responsibility per module; split near 300 lines or when the top level approaches the 200-local limit.
+- Early returns and guard clauses over nested `if`; string interpolation over `..`; generalized iteration over `pairs`; `if … then … else` expressions for simple choices.
+- No magic numbers: named constants or frozen config tables. Functions that yield say so in the name and are never called from `Init` or a metamethod.
 - Comments explain why, not what; a `--[[ ]]` block directly above a declaration shows as a hover tooltip in the Script Editor `[official]`.
-- `@deprecated` on internal APIs you are retiring `[VS]`; delete them one release later.
-- StyLua decides layout; never hand-format.
+- `@deprecated` on internal APIs you are retiring `[VS]`; delete them one release later. StyLua decides layout; never hand-format.
 
 ## Level-up: symptoms → cause → fix
 
@@ -469,9 +418,6 @@ Naming, the `Async` suffix and tooling are in `engineering-architecture.md`. In 
 | Fast in a Studio benchmark, different live | Level 1 vs level 2 optimisation; desktop vs phone | `--!optimize 2` in benchmarks; profile on the device |
 | Objects lose their methods after a remote or a save | Metatables are not serialised | Send plain data; rebuild objects on arrival |
 | "Shared" module state differs between server and client, or between Actors | One copy per VM | Replicate state through attributes, remotes or `SharedTable` |
-| Buttons or handlers all act on the last item | One outer variable captured by every closure | A local per iteration |
-| Server threads stuck forever | `InvokeClient`, `:Wait()` on a signal that never fires, `WaitForChild` with no timeout | Events with timeouts; owners that cancel threads |
-| A spring or camera goes black after a lag spike | Unclamped `dt`, NaN written to a CFrame | The spring sketch above; guard the write |
 | Old tutorials' code everywhere | Deprecated APIs | Sketch F in `engineering-architecture.md` counts them; replace on touch using the table above |
 
 ## Review gate
