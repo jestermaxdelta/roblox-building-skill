@@ -8,7 +8,7 @@ What this is: an implementation spec for the 24 gameplay systems Roblox games ke
 |---|---|---|
 | Beginner | Read section 0. Build wallet → inventory → shop in that order on top of `DataService`. One remote per intent through `RemoteGuard`. Run the seven-step test list in section 0 on every system | Trading, matchmaking, lag compensation, cross-server anything, ECS |
 | Intermediate | All-or-nothing grants, stable ids and GUIDs, absolute end times instead of countdown remotes, one odds function for roll and display, exploit table per system, a Configs kill switch per risky feature | Journalled trades, custom queues, rewind |
-| Expert | Trade journal with a decision record (17), MemoryStore queues with a leased matcher (11), rewind-capped hit validation (12), spawn director and flow fields (13), budget maths for ordered stores (9), dupe detection jobs | — |
+| Expert | Two-profile commit protocol for trades (17, specified in data-and-purchases.md), MemoryStore queues with a leased matcher (11), rewind-capped hit validation (12), spawn director and flow fields (13), budget maths for ordered stores (9), dupe detection jobs | — |
 
 ## Contents
 
@@ -281,38 +281,15 @@ end
 ## 17. Trading (escrow, two-phase confirm, anti-dupe, audit log, kill switch)
 
 - **Scope ladder** (each step multiplies the bug surface) `[lihfolk]`: no trading, gifting from the shop only → same server, both online, item for item → plus soft currency → asynchronous mailbox with escrow → cross-server marketplace. Premium currency is never tradeable.
-- **Data:** a server-owned offer `{ id, a, b, offerA: { uid }, offerB: { uid }, version, state, confirmAt }`; `Lock = tradeId` on every offered item; `PendingTrades: { id }` in each profile; `TradeLog/<id>` records; `TradeHistory` (last 20) per player.
+- **Data:** a server-owned offer `{ id, a, b, offerA: { uid }, offerB: { uid }, version, state, confirmAt }`; `Lock = tradeId` on every offered item; `PendingTrades: { [id]: { peer, give } }` in each profile; one write-once `Trade_<id>` decision record per trade; `TradeHistory` (last 20) per player.
 - **Split and remotes:** small intents only: `Invite(userId)`, `Accept()`, `Add(uid)`, `Remove(uid)`, `Ready(version)`, `Confirm(version)`, `Cancel()`. The client never sends an offer list.
 - **Two-phase confirm:** every edit increments `version` and clears both ready flags; `Ready` and `Confirm` carry the version the client saw and are refused on mismatch (kills the last-frame swap scam); both ready starts a 3–5 s countdown with the confirm button disabled; any edit cancels it.
-- **Commit:** re-validate from the **profiles**, not the offer; build a plan; apply it in one block with no yield; items keep their uid across owners so a uid in two profiles is a detectable dupe. Baseline: both profiles session-locked on this server, swap, save both at once, append to the audit log.
-- **Journal (expert)** `[lihfolk]`: a crash between the two saves duplicates one side. Close the window with a decision record: (1) hint: add the trade id to `PendingTrades` in both profiles and save both; any failure cancels, nothing has moved; (2) decide: one `UpdateAsync` writes `TradeLog/<id>` with both item lists, the single moment the trade becomes real; (3) apply and save both; (4) close: clear hints, mark the record done. On every profile load, each pending id is looked up: committed means roll **forward**, absent means clear the lock, unreadable means stay locked and retry. About six writes per trade. DevForum threads reach the same shape ("log the transaction and repair on join") `[community]`. A transaction library such as Lyra is the alternative (data-and-purchases.md).
+- **Commit:** when both players have confirmed the same version, re-validate from the **profiles**, not the offer, and build the plan (every uid present, locked to this trade, tradable, bags fit). Then run the **two-profile commit protocol in data-and-purchases.md** ("Two-profile commit protocol"): intent saved in both profiles, a write-once decision record, one settle mutation per profile that applies the trade and clears its pending id together, and load-time recovery that writes an abort tombstone before unlocking and stays locked when the record cannot be read. That section is the only specification: it lists the invariant each step protects, the crash outcome after each step, the request cost (5–7 `UpdateAsync` per trade) and what it cannot guarantee. Do not build from this summary, and do not ship without its fault-injection test (server killed between every pair of steps). Items keep their uid across owners.
+- **No shortcut is safe for a swap:** "swap in memory and save both at once" duplicates one side whenever a crash, a failed save or a shutdown lands between the two saves, in either order. Use the protocol, or a transaction library such as Lyra (data-and-purchases.md, library status). For a one-way gift, debit the giver and confirm that save before crediting the receiver.
 - **Gates, all failing closed:** `IsPaidItemTradingAllowed` for `Paid` items; equal price levels for paid items; unlock requirements that make mules expensive (playtime, level, account age); a per-day cap from young accounts; the `trading_enabled` flag.
 - **Exploit surface:** a yield between check and swap; an item consumed elsewhere while offered (one `consume` path checks `Lock`); cross-server "trades" with two leases (make it a mailbox with single-key escrow and call it that); profile released mid-commit (the release path waits for the commit); teleport during a trade (refuse or cancel first).
-- **Operations:** append-only audit log covered by deletion handling; nightly uid-collision scan; supply-curve alert (copies of a roll-only item should track rolls × odds); on a dupe, remove copies from the accounts that created them, mark the rest untradeable and compensate good-faith receivers.
-- **Common bugs:** a new uid minted on transfer; saving both profiles "soon" through autosave; unknown policy treated as allowed; a fake fairness meter; the other side's list truncated in the UI.
-
-```lua
---!strict
--- unexecuted sketch: commit after both players confirmed the same version; offered items already carry Lock = trade.id
-local function commitAsync(trade: Trade)
-	trade.state = "Committing" -- no further edits; DataService must not end either session until this returns
-	if not saveHints(trade) then return cancel(trade, "SaveFailed") end     -- PendingTrades += id in BOTH profiles, both saved
-	if not writeDecision(trade) then return cancel(trade, "SaveFailed") end -- one UpdateAsync on TradeLog/<id>: the trade is now real
-	local pa, pb = DataService:GetProfile(trade.a), DataService:GetProfile(trade.b)
-	if pa and pb then
-		local plan = buildPlan(trade, pa.Data, pb.Data) -- re-validate from the profiles after the yields above
-		if plan then
-			for _, move in plan do -- synchronous swap; the uid does not change
-				move.from.Items[move.uid] = nil
-				move.item.Lock = nil
-				move.to.Items[move.uid] = move.item
-			end
-		end
-		pa:Save(); pb:Save()
-	end
-	closeAsync(trade) -- anything skipped (leave, crash, shutdown) is rolled forward by load-time recovery
-end
-```
+- **Operations:** append-only audit log covered by deletion handling; nightly uid-collision scan; supply-curve alert (copies of a roll-only item should track rolls × odds); on a dupe, follow "Runbook: dupe incident" in data-and-purchases.md: kill switch first, quarantine (kept, usable, untradeable, flagged) for good-faith holders, removal only from accounts with direct evidence.
+- **Common bugs:** a new uid minted on transfer; saving both profiles "soon" through autosave, or "at once" without the protocol; unlocking on an unreadable decision record; unknown policy treated as allowed; a fake fairness meter; the other side's list truncated in the UI.
 
 ## 18. Crafting
 
@@ -325,7 +302,7 @@ end
 
 ## 19. Stealing and base defence
 
-- **Purpose and data:** per base `{ owner, lockedUntil, slots: { uid } }` in server memory; per player `Carrying: uid?`, newcomer shield end and per-victim cooldowns. Stolen items move between two profiles, so this is a trade without consent: the same synchronous two-profile rules as section 17 apply.
+- **Purpose and data:** per base `{ owner, lockedUntil, slots: { uid } }` in server memory; per player `Carrying: uid?`, newcomer shield end and per-victim cooldowns. Stolen items move between two profiles, so this is a trade without consent: it uses the same two-profile commit protocol as section 17 (data-and-purchases.md).
 - **Split and remotes:** `LockBase()`; `StartSteal(slot)` begins a server-timed hold (prompt `HoldDuration` plus a server timer); `Deposit()` happens by server zone check at the home base. `lockedUntil` replicates as a `GetServerTimeNow` timestamp and clients draw the countdown.
 - **Validate:** base unlocked on the server clock; distance and line of sight at the start **and** end of the hold; one carried item; carrier speed applied through the single WalkSpeed owner; deposit only inside the home zone; owner offline means the base is not stealable (genres/steal-and-defend.md).
 - **Exploit surface:** teleport-to-base and back, speed and fling are the genre's main load: run the carrier checks from physics-and-vehicles.md, drop the item back on violation, and consider server authority mode. A client "I stole it" event; auto-lock macros (rate-limit, cooldown on the server clock).
@@ -405,7 +382,7 @@ Admin tools (22) and the kill switches ship before the first public test in ever
 | Impossible balances or items | A remote carries an amount, or a check and its write are separated by a yield | Wallet and Inventory as the only mutators; intents only; synchronous check-and-write (0, 1, 2) |
 | "I claimed it and got nothing" | Marked before a grant that failed, or a bag-full partial grant | `canGrant` then mark-and-grant in one tick; refuse free rewards into a full bag (0) |
 | Odds on screen differ from results | Labels typed by hand, or luck applied in two places | One weights function for display and roll (4) |
-| Dupes after trades or steals | Two saves with a crash between; item consumed while offered | Locks through one `consume`; immediate saves; journal with a decision record (17) |
+| Dupes after trades or steals | Two saves with a crash between; item consumed while offered | Locks through one `consume`; the two-profile commit protocol and the dupe incident runbook in data-and-purchases.md (17) |
 | Quests completed instantly | A progress remote | Server-only `report`; claim as the only intent (6) |
 | Leaderboard throttles or shows stale or lowered scores | Write per change; `SetAsync`; too many boards per server | 120 s changed-only writes, `UpdateAsync` monotonic, budget table (9) |
 | Servers stuck on "Waiting for players" | No timeout; roster not re-read when someone leaves | Timeouts and re-evaluation on every transition (10) |
@@ -429,7 +406,7 @@ Admin tools (22) and the kill switches ship before the first public test in ever
 - [ ] Content is referenced by stable ids, unique items by GUID; nothing saved is world-space or index-based.
 - [ ] Countdowns replicate as end timestamps; day logic uses UTC day indexes; no client clock anywhere.
 - [ ] Odds shown and odds rolled come from one function; paid random items are policy-gated and fail closed.
-- [ ] Trading, gifting, codes and events each read a Configs kill switch; trading has version-checked two-phase confirm, item locks, immediate saves and an audit log.
+- [ ] Trading, gifting, codes and events each read a Configs kill switch; trading has version-checked two-phase confirm, item locks, the two-profile commit protocol with its fault-injection test passed, and an audit log.
 - [ ] NPC roots are server-owned; AI thinks at 5–10 Hz behind a path budget; alive caps are global and per area.
 - [ ] Private or bulky player state does not replicate to other clients.
 - [ ] Admin and debug commands sit behind a server capability check and a production-off flag; test remotes are removed.

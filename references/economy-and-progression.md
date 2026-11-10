@@ -226,13 +226,13 @@ A dupe turns a scarce item into inflation overnight. Grow a Garden disabled pet 
 | Dupe vector | Guard |
 |---|---|
 | Yield between "check both inventories" and "swap" | One synchronous swap on the server, no yields inside it |
-| Player leaves or server dies mid-trade | Swap in memory, then save both profiles immediately; if either save fails, mark both for review |
+| Player leaves or server dies mid-trade | "Swap, then save both" is not enough: a crash between the two saves leaves one item in two profiles. Use the two-profile commit protocol in data-and-purchases.md (intent in both profiles, write-once decision record, one settle mutation per profile, recovery that stays locked when unsure) |
 | Stale data in two servers | Session-locked profiles (data-and-purchases.md); trade only when both profiles are loaded in the same server |
-| Offline gift applied twice | Deliver through a message keyed by a unique gift id; applying is idempotent |
+| Offline gift applied twice, or lost | Debit the giver and confirm that save first, then deliver through a message keyed by a unique gift id; applying is idempotent, and the giver's ledger entry allows a retry |
 | Remote spam racing two trades | Per-player trade lock and token-bucket rate limit |
 | Item with no identity | Give every tradeable item a GUID at mint (`HttpService:GenerateGUID(false)`); keep a mint ledger (count minted per item type) |
 
-Operations: a `trading_enabled` and a `gifting_enabled` Configs kill switch; an append-only trade log; an alert when one GUID appears in two inventories or when owned count exceeds minted count; quarantine flagged items (unusable, visible) instead of deleting them, so honest recipients can appeal; new-account cooldown and a per-day value cap. Pausing the feature for a week costs less than a crashed item market.
+Operations: a `trading_enabled` and a `gifting_enabled` Configs kill switch; an append-only trade log; an alert when one GUID appears in two inventories or when owned count exceeds minted count; quarantine flagged items instead of deleting them (quarantine means kept and usable, but untradeable and flagged until reviewed; removal only from accounts with direct evidence), so good-faith holders lose nothing; new-account cooldown and a per-day value cap. Pausing the feature for a week costs less than a crashed item market. When a dupe is live, follow "Runbook: dupe incident" in data-and-purchases.md step by step.
 
 ### Once trading works: designing the market
 
@@ -387,7 +387,7 @@ The knowledge base (`## 3.5`, "Inflation and deflation") has the basic signal ta
 | Sink ratio under 0.9; wallets pile up | Nothing left worth buying | Aspirational cosmetics, upgrade tiers, consumables |
 | Sink ratio above 1.1; sessions shorten | Starved faucets | Quest and offline income up; cheaper early upgrades |
 | Top 1% wallet share and trade prices climb fast | Uncapped faucet, exploit or dupe | Server caps, anomaly review, GUID audit |
-| Owned count of an item exceeds minted count; leaderboard jumps overnight | Dupe | Kill switch, quarantine by GUID, patch, announce |
+| Owned count of an item exceeds minted count; leaderboard jumps overnight | Dupe | Dupe incident runbook in data-and-purchases.md: kill switch, find duplicated GUIDs, quarantine (kept, usable, untradeable), patch, announce |
 | Main-currency pack sales drop after an event | The event paid out main currency | Event currency with sinks that expire |
 | Free players call the game pay-to-win | Free-to-payer time gap above 3–4×, or paid power in a ranked mode | Cap the stack; move paid value to convenience and cosmetics |
 | Anger after a balance patch | No notice, or paid value reduced | Protocol above: announce, grandfather, compensate |
@@ -413,7 +413,7 @@ The knowledge base (`## 3.5`, "Inflation and deflation") has the basic signal ta
 - [ ] Event rewards use event currency.
 - [ ] Payer modelled at the full multiplier stack: stack within the cap, content runway and free-to-payer gap written down.
 - [ ] Hard currency justified or absent; if present, every random sink is gated and disclosed.
-- [ ] Tradeable items carry GUIDs; trade and gift kill switches exist; the swap has no yields.
+- [ ] Tradeable items carry GUIDs; trade and gift kill switches exist; two-sided swaps use the two-profile commit protocol in data-and-purchases.md.
 - [ ] Time-to-afford bands written per purchase type; p ÷ g checked per zone; every system priced from the same income table.
 - [ ] Each upgrade track has cost and benefit curves, a known natural cap, monotonic rounded prices and server-side buy-max.
 - [ ] Pity rule and effective rate computed and disclosed; item supply per day modelled for every top-tier item; a copy sink exists.
