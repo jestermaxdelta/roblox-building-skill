@@ -111,8 +111,8 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §10
 - **Matchmaking**: lobby place plus reserved match servers; skill buckets stored in a memory store; backfill rules for leavers.
 - **Cadence checks** `[lihfolk]`: shots per second never exceed the weapon's fire rate plus a small tolerance; ammo and reload time are tracked on the server.
 - **Headshots** need their own tighter check (rewind the head position, or accept the body hit and decide the multiplier strictly); generous headshot tolerance is the easiest thing for silent-aim to exploit `[lihfolk]`.
-- **Statistics** `[lihfolk]`: headshot ratio, time from target visible to first hit, angular snap speed. Flag outliers for review; never auto-ban on one stat.
-- **Killcams** need recorded positions of every player for the last few seconds; budget memory before promising them `[lihfolk]`.
+- **Statistics** `[lihfolk]`: angular snap speed, headshot ratio, and the time between a target becoming visible and the first hit. Flag outliers for review; never auto-ban on one stat.
+- **Killcams** depend on a recording of every player's positions over the last few seconds; budget memory before promising them `[lihfolk]`.
 - Touch against mouse is the genre's hardest fairness problem: aim slow-down near targets, optional auto-fire when the crosshair rests on an enemy, and input-based matchmaking where population allows `[lihfolk]`.
 
 ## The one-new-verb angle

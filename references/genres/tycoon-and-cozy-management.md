@@ -105,7 +105,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §16 Plots, tycoo
 - **Exploit surface**: every pad purchase checks plot ownership, prerequisite, price and distance on the server; "collect" remotes carry no amount; merge consumes three and grants one in a single server step; decoration placement is clamped to the plot grid; offline income uses server `os.time()`, never a client clock.
 - **Numbers**: move to mantissa/exponent before balances approach 1e15.
 - Scale of the dropper trap `[lihfolk]`: 8 plots × 15 droppers × one drop a second, each living 8 s, is about 960 live physics parts; the data version is one loop over the plots and two attribute updates per player per second. Cap visual drops at about 40 per nearby plot (15 on low-end phones), pooled, and none for far plots.
-- If the game's identity really is physical (ore sorting, contraptions), cap active parts per plot and keep money independent of physics outcomes so a lag spike never costs the player cash `[lihfolk]`.
+- If the game's identity really is physical (ore sorting, contraptions), cap active parts per plot and never let a physics outcome decide money, so that no lag spike can cost the player cash `[lihfolk]`.
 - Rebuild silently: a returning player with 150 purchases sees them all at once; animate only new purchases. When the chain changes after launch, migrate old ids in a versioned load step `[lihfolk]`.
 - Players do not keep the same physical plot across servers: rebuild owned ids into any free plot. Auto-assignment avoids every plot being held by idle players `[lihfolk]`.
 

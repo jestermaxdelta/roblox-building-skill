@@ -33,7 +33,7 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 
 - Telegraph the next wave (icons and counts). Enemy variety (fast, armoured, flying, swarm, boss) is what forces tower variety.
 - Solo play needs 2× and 3× speed controls; waiting is the genre's dead time.
-- The balance question `[lihfolk]`: does damage per second along the path keep up with incoming health per second? Keep a sheet of incoming health per second by wave and achievable DPS per cash by tower; everything else (speed, shields, range, upgrade cost) moves one side of that equation.
+- The balance question `[lihfolk]`: does damage per second along the path keep up with incoming health per second? Maintain a sheet with two columns: per wave, incoming health per second; per tower, achievable DPS per cash; everything else (speed, shields, range, upgrade cost) moves one side of that equation.
 - Conflict (match length): LihFolk describes matches of 15–40 min; this skill targets 8–20 min so a discovery player finishes one. Use short story stages early and longer modes for veterans.
 - The lobby is part of the session: queueing, loadouts, summoning and trading happen there. Budget about a third of session time in it and make it a social hub of 20–50 players where rare units are shown off `[lihfolk]`.
 

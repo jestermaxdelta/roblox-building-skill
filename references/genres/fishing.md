@@ -41,13 +41,13 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 3. 0:45 first catch: size, a small variant chance, bestiary entry 1 of N.
 4. 2:00 an arrow to the seller; first coins buy rod 2.
 5. 5:00 three to five species logged, the zone checklist visible with its completion reward, the next island in sight.
-- A finite checklist on the first island gives the first session an end and the second session a goal `[lihfolk]`.
+- Put a finite checklist on the first island: session one gets an ending and session two gets a goal `[lihfolk]`.
 
 ## Progression and economy shape
 
 - Gear ladder: rods (permanent stats: luck, control, speed), bait (consumable modifiers), boats (zone access). Guides for the leader advise upgrading rods before bait because rod stats are permanent `[lihfolk]`.
 - Zones: each island or sea has its own bestiary and conditions. Boats gate zones; short travel suits younger players.
-- Catch value = species base × size roll × variant multiplier. One weight table per zone; display each species as "1 in X". Showing the denominator is the chase: a 1-in-millions fish is a story `[lihfolk]`.
+- Catch value = species base × size roll × variant multiplier. One weight table per zone; display each species as "1 in X". The denominator on display is what players chase: catching a 1-in-millions fish becomes a story `[lihfolk]`.
 - World state as retention `[lihfolk]`: fish tied to weather, time of day and season create "come back at night in the rain" goals with no calendar UI.
 - Sinks: rods, bait, boats, enchanting or appraisal rerolls, aquarium or trophy display, zone fees.
 - Expansions add, never reset: new seas use existing currency or a convertible one, keep old gear useful and gate by achievable goals. Poll concepts before shipping, not after `[lihfolk]`.

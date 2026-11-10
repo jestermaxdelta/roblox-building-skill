@@ -261,7 +261,7 @@ Totals hide most problems; the useful numbers are distributions inside a progres
 | Metric | Definition | Catches | Reading |
 |---|---|---|---|
 | Hours of income held | balance ÷ income per hour, p10 / p50 / p90 per zone or level band | Surplus with nothing to buy; walls | Mid-game median under 1–2 h is healthy; 20+ h late game means no top-end sink |
-| Net flow by source | sources − sinks per transaction type per day | A faucet left on; a sink that stopped firing | A sink halving overnight is usually a broken shop or remote |
+| Net flow by source | sources − sinks per transaction type per day | A sink that no longer fires; a faucet left running | A sink halving overnight is usually a broken shop or remote |
 | Sink ÷ faucet trend | per currency per day | Sinks losing ground | Falling for weeks with unchanged content = inflation |
 | Velocity | spent per day ÷ average held | Hoarding, before balances look alarming | Falling while balances rise = saving or a dead shop |
 | Observed time to afford | unlock → purchase, p50 and p90 | Drift against the model | A quarter of the model = an unmodelled faucet (code, event, exploit) |
@@ -282,7 +282,7 @@ Conflict: LihFolk states the built-in experiment metrics exclude economy health 
 
 ## Simulate before launch and before every rebalance
 
-A spreadsheet models the average player. An agent-based simulation (many simulated players with different habits) shows who holds the money, which archetype finishes the content in a week, and what a one-number change does to churn `[lihfolk]`. It is a comparison tool: trust the direction and rough size of a difference between two runs on the same seeds, never an absolute number.
+A spreadsheet models the average player. An agent-based simulation (many simulated players with different habits) shows who holds the money, which archetype finishes the content in a week, and what a one-number change does to churn `[lihfolk]`. It is a comparison tool: between two runs on the same seeds, the direction and rough size of the gap can be trusted; an absolute number never can.
 
 | Ingredient | Starting values to replace with your own |
 |---|---|
@@ -366,8 +366,8 @@ Reading a change after it ships `[lihfolk]`:
 |---|---|
 | Target metric moved, churn rose in a later zone | Players now reach the next wall sooner; check that zone |
 | Hours held rose in every zone | A faucet grew or a sink weakened more than intended |
-| Velocity fell while balances rose | Players are saving for something, or the shop lost appeal |
-| Rare price index fell a week after a luck event | Supply shock; decide whether to add a copy sink |
+| Velocity fell while balances rose | The shop has lost its appeal, or players are saving up for something |
+| A week after a luck event the rare price index dropped | Supply shock; decide whether to add a copy sink |
 | Metric moved on one platform only | A UI problem on that platform, not the economy |
 
 Fixing an economy that is already inflated, least to most disruptive `[lihfolk]`: a repeatable top-end sink (does not touch existing balances) → higher prices for new content only → slower faucets (announce it) → revaluing balances (reads as confiscation; never touch paid value) → a reset. Fix the model, then re-derive every price from it; patching the one price players complain about leaves the rest on the old model.

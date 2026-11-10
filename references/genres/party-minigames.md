@@ -31,7 +31,7 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 
 - A full cycle is 2–4 min. A lost round costs little; the next is different.
 - Eliminated players need something to do: switch spectate target, predict the winner for a small reward, act as "ghosts" who drop harmless obstacles `[lihfolk]`.
-- With too few players, let one player play something (solo course, practice, bots). "Waiting for 2 more players" with nothing to do loses the first arrival `[lihfolk]`.
+- With too few players, let one player play something (solo course, practice, bots). Show a first arrival only "Waiting for 2 more players", with nothing to do, and that player leaves `[lihfolk]`.
 
 ## First 5 minutes
 

@@ -194,7 +194,7 @@ Choosing how colour reaches the mesh (the pipeline file's "Texturing strategy" c
 | | Flat colour per part | Palette or gradient atlas | Vertex colour |
 |---|---|---|---|
 | MeshParts for a 3-colour prop | 3 | 1 | 1 |
-| Recolour a whole zone | Script over instances | Swap one image | Re-export, or multiply `Color` |
+| Recolouring an entire zone | A script across instances | One image swapped | Re-export, or multiply `Color` |
 | Gradients | No | Along a strip | Between vertices |
 | Survives decimation | Yes | Mostly | Poorly: colours smear |
 | Main risk | Instance count | Swatch bleed at distance | Locked-in noise you cannot fix in Studio |
@@ -268,7 +268,7 @@ Mechanical gates for scripted or generated-by-script assets `[lihfolk]`, run aft
 | Mid | Value, colour, shape grammar | 1–4 h |
 | Final | Edges, detail placement, technical | Remainder |
 
-Critique in a fixed order and stop at the first level that fails `[lihfolk]`: purpose, silhouette, proportion, value, colour, edges, detail, technical. Feedback names what, where, why and how much, with a paintover (line, shape-fill, value or colour; 2–30 minutes) drawn slightly stronger than needed because fixes get applied at half strength. Review in-game screenshots from the follow camera at 15 and 40 studs on a 19.5:9 frame, beside neighbouring assets, never Blender renders alone. When a note names one spot, fix the principle across the whole model. If a reviewer liked a version, lock it before trying a recomposition.
+Critique in a fixed order and stop at the first level that fails `[lihfolk]`: purpose, silhouette, proportion, value, colour, edges, detail, technical. Feedback names what, where, why and how much, with a paintover (line, shape-fill, value or colour; 2–30 minutes) drawn slightly stronger than needed because fixes get applied at half strength. Review screenshots taken in-game (follow camera, 15 and 40 studs, 19.5:9 frame, neighbouring assets alongside); Blender renders alone never suffice. When a note names one spot, fix the principle across the whole model. If a reviewer liked a version, lock it before trying a recomposition.
 
 ## Quality rubric (0–10 per asset)
 
@@ -362,7 +362,7 @@ Which pet a player has equipped is server state (an attribute or a profile field
 | Budget met but the model looks plain | Triangles spread evenly | Move them to the top silhouette and one focal feature |
 | Heavy cylinders and wheels | Default 32 segments | Sagitta table; delete hidden caps |
 | Zone looks muddy | No value structure | Value bands; greyscale check |
-| Players cannot find the chest or exit | Interactables share a value band with scenery | Reserve the lightest band or a saturation spike |
+| The chest or exit goes unnoticed by players | Scenery and interactables sit in one value band | Reserve the lightest band or a saturation spike |
 | Dead grey shadows, chalky highlights | Ramps mixed toward black and white | Hue-shifted ramps |
 | Rocks look like noise blobs | Facets too small and all one size | Size facets in pixels; big planes plus a few small edge facets |
 | Library drifts over months | Rules are adjectives; no golden assets | Numbers in the bible, 3–5 golden assets, side-by-side review |

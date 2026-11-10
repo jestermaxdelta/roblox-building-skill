@@ -125,7 +125,7 @@ return { probabilities = probabilities, roll = roll }
 ```
 
 - **Luck semantics** `[lihfolk]`: multiply the weights of affected tiers and renormalise; or roll twice and keep the best; or bump the result up a tier with some chance. Each gives different real odds; pick one, document it, and feed it through `probabilities`.
-- **Server only**: a `Random` on the server; never accept a result or a seed from the client; rate-limit the roll remote even though the animation paces it. Pity counters are server state saved in the profile.
+- **Server only**: a `Random` on the server; the client supplies neither result nor seed; the roll remote is rate-limited even though the animation already paces it. Pity counters are server state saved in the profile.
 - **Auto-roll** runs in one server loop with a per-frame budget; the client only animates.
 - **VFX budget**: twenty players wearing large auras is a heavy particle load on a 3 GB phone. Offer "hide others' auras", reduce distant auras, cap emitters per aura. Auras are Blender meshes plus particle and beam effects; rarity must read from the silhouette and colour alone.
 - **World state from server time** (`Workspace:GetServerTimeNow()` and a deterministic schedule) so every server agrees without messaging.

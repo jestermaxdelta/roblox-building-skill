@@ -251,7 +251,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Server authority mode** | Engine feature in which the server simulates gameplay and clients predict and correct `[VS]` | networking-and-security.md |
 | **ServerScriptService** | Container for server scripts; clients cannot see it | engineering-architecture.md |
 | **ServerStorage** | Container for server-only assets; clients cannot see it | engineering-architecture.md |
-| **Session lock** | Marking a save as owned by one server so two servers cannot overwrite each other | data-and-purchases.md |
+| **Session lock** | A marker that gives one server ownership of a save, which stops two servers overwriting each other | data-and-purchases.md |
 | **Session time** | How long one visit lasts | analytics-and-discovery.md |
 | **Shapecast** | Sweeping a box or sphere through space to see what it hits | performance.md |
 | **Simulator** | Genre: act, number goes up, upgrade, new zone, rebirth | genres/simulator-incremental.md |

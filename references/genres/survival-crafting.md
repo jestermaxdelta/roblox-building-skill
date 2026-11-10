@@ -105,7 +105,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §18 Crafting, §
 - **Exploit surface**: item spawning through crafting remotes, gather-aura, teleport looting, duplication via drop-and-rejoin (session-locked profiles; ground items owned by the server).
 - **Base data** `[lihfolk]`: each piece is type, position relative to the base origin, rotation, health, owner and contents. Grid-snap so positions store as small integers; a 2,000-piece base as full-precision JSON approaches key limits, a packed format does not. Document the axis convention in the module: mixed-up axes are a common save bug.
 - **Scale** `[lihfolk]`: eight players with 1,500 pieces each is 12,000 models. Anchor everything, use simple meshes, turn off `CanTouch` and `CanQuery` where unused, and stream distant bases.
-- **Structural support**: require pieces to connect to a foundation; compute support as a graph walk from foundations when pieces are added or destroyed, and cache it `[lihfolk]`.
+- **Structural support**: require pieces to connect to a foundation; whenever a piece is added or destroyed, walk the graph outward from the foundations to recompute support, and cache the result `[lihfolk]`.
 - **Raids on player-built shapes**: pathfinding into bases is expensive; many games let creatures attack the nearest wall piece instead `[lihfolk]`.
 - **PvP and griefing** `[lihfolk]`: raiding offline bases is the most-complained-about mechanic in the genre. Use opt-in PvP (zones, flags or separate servers), offline protection, build permissions per plot, chest locks and team access.
 

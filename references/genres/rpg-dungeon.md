@@ -32,7 +32,7 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 
 - Roblox's three-layer test `[official]`: exploring (interaction) → fighting (repeated cycle) → upgrades and collections (progression engine). Each layer must feed the next.
 - Real-time action fits Roblox sessions better than turn-based.
-- Time-to-kill bands at the zone's expected power `[lihfolk]`: a regular enemy takes 2–5 hits (a starter weapon kills a zone-1 regular in about 3); an elite 10–20 s; a mini-boss 20–40 s; a region or world boss 1–3 min. One shipped project used about 25× regular health for mini-bosses and about 150× for world bosses, and aimed for 8–12 min per zone.
+- Time-to-kill bands at the zone's expected power `[lihfolk]`: a regular enemy takes 2–5 hits (about 3 for a zone-1 regular under a starter weapon); an elite 10–20 s; a mini-boss 20–40 s; a region or world boss 1–3 min. One shipped project used about 25× regular health for mini-bosses and about 150× for world bosses, and aimed for 8–12 min per zone.
 
 ## First 5 minutes
 
@@ -50,12 +50,12 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 - Stats in layers: base → flat → percent → clamp. Never store derived stats; recompute on change (dirty flag).
 - Damage: ratio formula `attack × K / (K + defense)` with K about 100 degrades smoothly; ±10% variance; 1.5× crit.
 - Loot: rarity tiers with server-side rolls; bad-luck protection on boss drops; gear score bands per zone so numbers stay readable.
-- Random abilities (fruits, races, clans) are the anime-RPG collection layer. If rerolls are bought with Robux or Robux-bought currency they are paid random items: full odds, live boosted odds, `PolicyService` gate `[official]`.
+- Random abilities (fruits, races, clans) are the anime-RPG collection layer. Rerolls paid for in Robux, or in a currency bought with Robux, count as paid random items: full odds, live boosted odds, `PolicyService` gate `[official]`.
 - Roguelite: keep run state and profile state strictly apart; meta-progression widens options more than it raises power.
 - Sinks: repair or upgrade costs, crafting, rerolls, respec, fast travel, cosmetics, bank slots. Trading needs a tax or bind-on-equip to control inflation.
 - Quests are state machines (available, active, complete, turned in) fed by an event bus; dialogue is a data graph with string ids.
-- Zone scaling from one project's plan `[lihfolk]`: enemy health about +55% per zone and coins per kill about ×1.6 per zone, so players slowly outscale by upgrading. Two regular enemy types plus one mini-boss per zone and one boss per world; a new enemy every zone keeps the treadmill feeling away. Variants (+15% size, +30% health, +15% damage, a tint and one trait) and elites (about 1 in 8 spawns later, ×2.5 health, an extra drop roll) stretch each mesh.
-- **Bosses are the best moments and the biggest retention risk.** One project's onboarding funnel lost 82% of players at its first boss step `[lihfolk]`. Its fixes: open arenas with no locked doors (walk away and the fight resets after 20 s empty), short telegraphed fights, a Recommended Power number on every boss gate, walls that take one upgrade or one better weapon to pass, and bosses that can be refought for drops.
+- Zone scaling from one project's plan `[lihfolk]`: enemy health about +55% per zone and coins per kill about ×1.6 per zone, so players slowly outscale by upgrading. Two regular enemy types plus one mini-boss per zone and one boss per world; introducing an enemy in each zone holds off the treadmill feeling. Variants (+15% size, +30% health, +15% damage, a tint and one trait) and elites (about 1 in 8 spawns later, ×2.5 health, an extra drop roll) stretch each mesh.
+- **Bosses are the best moments and the biggest retention risk.** One project's onboarding funnel lost 82% of players at its first boss step `[lihfolk]`. Its fixes: open arenas without locked doors (leave, and after 20 s empty the fight resets), short telegraphed fights, a Recommended Power number on every boss gate, walls that take one upgrade or one better weapon to pass, and bosses that can be refought for drops.
 - Build depth comes from choices with readable trade-offs ("+30% damage, −20% health" beats a paragraph); let players respec cheaply, since young players experiment `[lihfolk]`.
 - Boss drops: guaranteed materials plus a chance at something rare; a first-clear bonus `[lihfolk]`.
 

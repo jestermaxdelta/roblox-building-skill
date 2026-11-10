@@ -98,7 +98,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, matc
 - **Effects leak roles**: role-specific sounds, animations and particles at round start must play only on the role holder's client.
 - **Server `Random`** with no client-visible seed for assignment.
 - **Dead and living chat** are separate `TextChatService` channels; spectators cannot message the living.
-- **Anti-teaming** `[lihfolk]`: spread spawns; where parties are detectable (joined by follow or invite), avoid giving murderer and sheriff to the same party; a sheriff who shoots an innocent loses the gun and is penalised; AFK players leave the role pool.
+- **Anti-teaming** `[lihfolk]`: spread spawns; where parties are detectable (joined by follow or invite), avoid giving murderer and sheriff to the same party; shooting an innocent costs the sheriff the gun and a penalty; AFK players are dropped from the role pool.
 - **Hit validation**: knife reach, throw speed and gun line of sight are checked on the server; see `fighting-battlegrounds.md` and `shooter-pvp.md`.
 - **Trading**: atomic, logged, session-locked transfers; confirmations, value warnings and cooldowns limit scams (`pet-collection-hatching.md`).
 - **Round state** lives in one server module; late joiners become spectators with no role data sent.

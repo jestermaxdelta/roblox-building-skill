@@ -28,15 +28,15 @@ Traffic multiplies whatever the game already does to a new player. Buy or borrow
 | Value of a new player known | 30-day revenue per new user by source, from the Acquisition new-users funnel | Sets the cost-per-play ceiling |
 | Kids/Select status known | Trial (16+ only) or eligible | Decides audience and channel |
 
-Do not launch at all while any of these is true `[lihfolk]`: nobody outside the team has played the first session start to finish on a mid-range phone; join time on a phone is unknown; no funnel logs join to minute 10; the save system has not survived a forced server shutdown test. Delay a week instead; the first impression is spent once.
+Do not launch at all while any of these is true `[lihfolk]`: no outsider to the team has played the whole first session on a mid-range phone; nobody knows the join time on a phone; no funnel logs join to minute 10; the save system has not survived a forced server shutdown test. Delay a week instead; the first impression is spent once.
 
 Soft launch `[official]` setting, `[lihfolk]` method: publish publicly with Audience → Advanced → "Exclude from recommendations" on, bring a few hundred players you control (community, testers' friends, a small Plays campaign), and read four things in order: crash-free sessions with zero data loss, the shape of the onboarding funnel, median first-session length, D1 direction. Those players would not count toward ranking anyway, so the rehearsal is free. Rule-of-thumb bars before turning recommendations on `[lihfolk]`:
 
 | Soft-launch cohort metric | Fix before opening | Fine to open |
 |---|---|---|
 | New players reaching the first reward within 60 s | Under 70% | 85%+ |
-| Biggest single-step drop in the first 3 minutes | Over 25% | Under 15% |
-| Median first session | Under 5 min | 10+ min |
+| Largest drop at any one step within the first 3 minutes | Over 25% | Under 15% |
+| First session, median | Under 5 min | 10+ min |
 | D1 | Clearly below the genre benchmark | Near or above it |
 
 What counts for ranking `[official]`: Recommended For You ranks only on users who arrived organically through it. Players from ads, search, friends, share links and social media never enter those signals, but any plays help a game get considered. So outside traffic cannot repair weak organic signals, and cannot damage them either.
@@ -171,7 +171,7 @@ Why it fits: Roblox states that Roblox and YouTube are the top two platforms for
 
 Clip structure `[lihfolk]` (rule of thumb): hook in 0–2 s (the most interesting frame, never a logo or title card) → context in 2–6 s (one line of on-screen text saying what the game is) → payoff by 6–15 s (the reveal, the hit, the transformation) → a last frame that loops or says "Play <exact name> on Roblox". 15–30 s is the safe length; longer needs a second payoff. Platform UI covers the bottom and right edge of vertical video: keep text in the middle 70% of the height and off the right 15%.
 
-It works badly when the fun takes ten minutes to arrive (film the payoff, and make the game deliver it fast) or when the first session leaks: video traffic comes in bursts, and a burst into a leaky funnel wastes the one chance a viral clip gives `[lihfolk]`.
+It works badly when the fun takes ten minutes to arrive (film the payoff, and make the game deliver it fast) or when the first session leaks: video traffic comes in bursts, and a viral clip gives one chance, which a leaky funnel throws away `[lihfolk]`.
 
 Capture `[lihfolk]`, adapted to the house rules:
 

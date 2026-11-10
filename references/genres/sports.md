@@ -27,7 +27,7 @@ Terms: *possession model* = while a player has the ball it is positioned at thei
 | Play | 1–10 s | Receive, move, pass, shoot, tackle |
 | Possession | 10–60 s | One team's attack |
 | Match | 3–8 min | Score, win |
-| Session | 20–60 min | Several matches, casual or ranked |
+| Session | 20–60 min | Several matches, ranked or casual |
 | Meta | Weeks | Rank, skills, cosmetics, club |
 
 - Adapt real rules `[lihfolk]`: 3v3 to 6v6 so everyone touches the ball; no offside; fouls simplified or automated; an AI keeper or no keeper in casual modes.

@@ -97,7 +97,7 @@ end
 - **Purpose and data:** `Upgrades: { [id]: level }`, `Rebirths`, `Prestige`. Cost and multiplier formulas live in one shared module so the button shows what the server charges.
 - **Split and remotes:** `BuyUpgrade(id, count | "max")`, `Rebirth(count)`. The server derives the multiplier from saved counts; the client never sends it.
 - **Validate:** bulk cost in closed form, `cost = base × g^L × (g^n − 1) / (g − 1)`, and `maxN = floor(log(1 + balance × (g − 1) / (base × g^L)) / log g)`, then corrected by an exact check at `maxN ± 1` because of float error `[lihfolk]`. The reset list is explicit, and nothing bought with Robux is on it.
-- **Exploit surface:** parallel requests buying several rebirths for one price (no yield between check and reset: the second sees zero); NaN, negative, fractional or string counts; overflow to infinity (clamp every addition).
+- **Exploit surface:** parallel requests that buy several rebirths at the price of one (never yield between the check and the reset, so the second request finds zero); NaN, negative, fractional or string counts; overflow to infinity (clamp every addition).
 - **Common bugs:** no immediate save after a rebirth or prestige (the moment a lost save hurts most); formulas typed twice and drifting; an autosave capturing half a reset (do every data change in one synchronous function, then rebuild the world); the exponential wall: with cost growth 1.5 against an additive +0.5 multiplier a 25-rebirth gate takes about 130 hours, and about 3.2 hours at 1.25 `[lihfolk]`. Tune with the wait-ratio rule in economy-and-progression.md and add the second layer before launch, not after.
 
 ## 6. Quests and achievements

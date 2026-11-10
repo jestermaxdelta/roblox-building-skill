@@ -30,7 +30,7 @@ Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier
 
 - First zone unlock inside 3 min and first rebirth at 15–25 min so a discovery player sees the whole loop in one session `[house]`.
 - X Incremental format norms (vault): 2+ reset layers, often a boss gate before rebirth, and an RNG side system (titles, runes, fossils). Robux is light in this format.
-- Collect-and-sell levers `[lihfolk]`: the capacity limit is what makes the loop a loop rather than a counter. Keep walking under about a quarter of the cycle, or add sell pads per zone; keep seconds-to-fill-the-bag roughly steady as tools and capacity upgrade together. Dropping the sell trip removes friction but also the rhythm and the most natural pass (auto-sell, sell anywhere); decide deliberately.
+- Collect-and-sell levers `[lihfolk]`: the capacity limit is what makes the loop a loop rather than a counter. Walking should take less than roughly a quarter of the cycle; where it does not, add sell pads per zone; keep seconds-to-fill-the-bag roughly steady as tools and capacity upgrade together. Dropping the sell trip removes friction but also the rhythm and the most natural pass (auto-sell, sell anywhere); decide deliberately.
 
 ## First 5 minutes
 

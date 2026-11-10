@@ -55,7 +55,7 @@ Terms: *base lock* = a timed shield during which nothing can be stolen; *carry s
 - Loss limits (house rule: no retention through punishment) `[house]`: newcomer shield for the first 10–15 min of lifetime play; items cannot be stolen while their owner is offline (the base leaves with the player); per-victim cooldown so one base is not emptied in a streak; a stolen item keeps paying the victim a reduced rate until the thief banks it, or can be reclaimed if the thief is tagged in transit.
 - Speed, carry weight and lock duration are the PvP stats. Earn them in play.
 - Newcomer grace can be a time window or theft limits based on the income gap between thief and victim, so a first theft is a lesson, not a loss `[lihfolk]`.
-- Each biome adds one movement idea (ice, jump pads, darkness) so speed upgrades unlock new play, not only new items `[lihfolk]`.
+- Give every biome a single movement idea (darkness, jump pads, ice); speed upgrades then open new ways to play as well as new items `[lihfolk]`.
 - No wagers or coin flips of items between players: Roblox prohibits simulated and real gambling `[lihfolk]` `[VS]`.
 
 ## Monetisation set that fits
@@ -112,7 +112,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §19 Stealing and
 - **Shared restock or spawn clock**: derive stock from server time with a deterministic seed (or broadcast it) so every server shows the same items at the same moment; that turns a restock into a shared event `[lihfolk]`.
 - **Pens on phones**: many animated items per base; cap visible ones, use shared animations and client-side idle motion `[lihfolk]`.
 - **Guardian or chaser NPCs**: the server decides caught-or-not; clients smooth the visuals. Make the chase readable with a safe-line effect, a wind-up sound and a distance meter `[lihfolk]`.
-- **Free models and kits**: "complete steal-game kits" circulate; free models are the most common source of backdoors (look for `require` with asset ids and obfuscated code) `[lihfolk]`. House rule 1 already forbids shipping them.
+- **Free models and kits**: "complete steal-game kits" circulate; backdoors arrive through free models more than any other route (check for obfuscated code and `require` calls on asset ids) `[lihfolk]`. House rule 1 already forbids shipping them.
 
 ## The one-new-verb angle
 

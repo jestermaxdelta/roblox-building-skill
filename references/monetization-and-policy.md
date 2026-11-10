@@ -143,7 +143,7 @@ Conflict: the default Starter Pack is 49–99 R$. A DevForum poll thread (older,
 
 For a category sold in sizes (packs, boost bundles), compute value per Robux for each rung, `v = amount ÷ price`, and run three tests `[lihfolk]`:
 
-1. **Monotone value.** v rises with size. A rung with worse value than the one below it is a trap; players notice, and it shows as near-zero sales of that rung.
+1. **Monotone value.** v rises with size. If a rung gives worse value than the rung under it, it is a trap; players notice, and it shows as near-zero sales of that rung.
 2. **Diminishing extra bonus.** Each step up adds less bonus than the last, or the top rung makes the middle look foolish and you lose mid-tier buyers who would never spend 1,999.
 3. **Computed labels.** "+15%" and "Best value" come from the same table the grant uses, asserted at server start. A typed label drifts the first time an amount changes.
 
