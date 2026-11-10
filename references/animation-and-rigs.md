@@ -37,7 +37,7 @@ Clips bind by name: a pose named `RightUpperArm` drives the joint whose child pa
 | R6 | 6 parts, legacy | Only when the game's identity is R6. `Workspace.AvatarUnificationMode` (the R6-to-R15 adapter) is marked deprecated with "R6 avatars always load as R6 rigs" `[official][VS]` | New games: no layered clothing, no dynamic heads, no IK-ready limbs, a separate clip library |
 | Custom part rig | Separate Blender meshes joined by Motor6Ds | Hard-surface creatures, robots, weapons, doors, vehicles' moving parts. Default for anything rigid `[lihfolk]` | Organic bending is the point |
 | Skinned (bone) rig | One mesh, armature, weights | Organic creatures, tails, wings, cloth, faces | Limbs must collide or be raycast (see below) |
-| Hybrid | Skinned body, rigid props on `RigidConstraint` to a socket Bone `[official: RigidConstraint accepts Bones]` | Most finished characters | — |
+| Hybrid | Skinned body, rigid props on `RigidConstraint` to a socket Bone `[official: RigidConstraint accepts Bones]` | Most finished characters | n/a |
 
 Decision rules:
 
@@ -50,7 +50,7 @@ Decision rules:
 
 ## 2. Blender rig requirements
 
-Scene: 1 Blender unit = 1 stud, character faces −Y, feet on Z = 0, final in-game height (as in `art-pipeline-blender.md`); scene frame rate 30 fps (the Clip Editor's grid; clips store seconds).
+Scene: 1 Blender unit = 1 stud, character faces −Y, feet on Z = 0, final in-game height (as in `art-pipeline-blender.md`); scene frame rate 30 fps (the Clip Editor's grid `[lihfolk]`; clips store seconds).
 
 | Rule | Value | Tag |
 |---|---|---|
@@ -73,11 +73,9 @@ Weight painting that survives import `[lihfolk]`: pose a range-of-motion action 
 # unexecuted sketch: select the armature, run in Blender before export.
 import bpy
 arm, problems = bpy.context.object, []
-if any(abs(s - 1) > 1e-4 for s in arm.scale) or any(abs(r) > 1e-4 for r in arm.rotation_euler):
-    problems.append("armature object has unapplied scale or rotation")
+if any(abs(s - 1) > 1e-4 for s in arm.scale) or any(abs(r) > 1e-4 for r in arm.rotation_euler): problems.append("armature has unapplied scale or rotation")
 roots = [b for b in arm.data.bones if b.parent is None]
-if len(roots) != 1 or roots[0].head_local.length > 1e-4:
-    problems.append("need exactly one root bone at the origin")
+if len(roots) != 1 or roots[0].head_local.length > 1e-4: problems.append("need exactly one root bone at the origin")
 for b in arm.data.bones:
     if "." in b.name: problems.append(f"bone '{b.name}': no dots or .001 suffixes")
 for mesh in (o for o in arm.children if o.type == "MESH"):
@@ -95,7 +93,7 @@ Export settings (pin the Blender version; option names drift):
 | Setting | FBX | GLB |
 |---|---|---|
 | When | Roblox's documented rig and clip path; avatar bodies, heads, emotes `[official]` | Part rigs and creatures with several Actions; no unit dance `[lihfolk]`, verify per Studio version `[VS]` |
-| Scale | Apply Scalings = FBX Unit Scale, every other scale 1.0 `[official]` | None needed; importer Scale Unit = Stud `[official]` |
+| Scale (fix a 100× error here, never by scaling the import in Studio: parts scale but clip translations keep the old units `[lihfolk]`) | Apply Scalings = FBX Unit Scale, every other scale 1.0 `[official]` | None needed; importer Scale Unit = Stud `[official]` |
 | Axes | Forward = Z Forward, Up = Y Up; importer World Forward = Front, World Up = Top `[official]` | +Y Up on |
 | Leaf bones | Add Leaf Bones off `[official]` | Not applicable |
 | Deform only | Only Deform Bones on | Export Deformation Bones Only on |
@@ -103,8 +101,6 @@ Export settings (pin the Blender version; option names drift):
 | Clips per file | One animation track per export `[official]` | Animation mode Actions; Reset Pose Bones Between Actions on `[lihfolk]` |
 | Textures | Path Mode Copy with Embed Textures `[official]` | Packed |
 | Before export | Clear the active Action and reset the pose, or the rest pose becomes a frame of that clip `[lihfolk]` | Same |
-
-Fix a 100× size error at export, never by scaling the import in Studio: parts scale but clip translations keep the old units `[lihfolk]`.
 
 ## 3. Blender to Roblox clip pipeline
 
@@ -118,7 +114,7 @@ Fix a 100× size error at export, never by scaling the import in Studio: parts s
 8. **Verify** with a calibration clip (right arm +90° forward, torso +30° yaw left) once per export route `[lihfolk]`, then in a published test place with two clients. Studio alone proves nothing: temporary ids from `AnimationClipProvider:RegisterAnimationClip` and `KeyframeSequenceProvider:RegisterKeyframeSequence` "cannot be used outside of Studio" `[official]`.
 9. **Strip.** Delete saved `KeyframeSequence`/`CurveAnimation` sources and importer saves from the shipped place; a published clip costs no instances.
 
-Community practice `[community]`: most Roblox animators work in the Studio editor or Moon Animator; the long-running Blender rig exporter/animation importer add-on does not handle skinned meshes and has broken across Studio updates. The route above uses only Blender's own exporters and Studio's importer, so it has no third-party plugin to break.
+Community practice `[community]`: forum threads describe the Studio editor and Moon Animator as the lower-friction routes, and report that the long-running Blender rig exporter/animation importer add-on does not support skinned meshes and has broken after Studio updates. The route above uses only Blender's own exporters and Studio's importer, so it has no third-party plugin to break.
 
 Ownership `[official][VS]`: animations are not covered by the Asset Privacy default switch; a clip loads only for its owner's experiences or where the owner granted the collaborator and the experience permission on the asset's Permissions page. Game grants cannot be revoked. A clip uploaded to a personal account will not play in a group game until shared or re-uploaded.
 
@@ -180,6 +176,7 @@ Rules `[official]` unless tagged:
 - So an attack that keys only the upper body leaves the legs to the walk (the basis of upper-body layering), and two loops at the same priority average into a pose that matches neither.
 - `Play(fadeTime = 0.1, weight = 1, speed = 1)`, `Stop(fadeTime = 0.1)`, `AdjustWeight(weight, fadeTime)`, `AdjustSpeed(speed)`: negative speed plays backwards, 0 pauses.
 - `Length` is 0 until the asset loads; anything computed from it on the first frame is wrong. `TimePosition` can be set only while playing: `Play` first. `Looped` changes apply after the current loop. After `Stop`, `AdjustWeight` does nothing until `Play`.
+- `Play` on a playing track restarts it at time 0 `[lihfolk]`: check `IsPlaying` or play only on state change.
 - `Stopped` fires when playback ends, while the fade-out may still move the rig; `Ended` fires when the track no longer affects anything. Gameplay on `Stopped`, cleanup on `Ended`.
 - `LoadAnimation` creates a new track on every call and requires the Animator under Workspace (a `WorldModel` for ViewportFrame rigs `[community]`). Load once and cache, or look up with `GetTrackByAnimationId`. Per-swing loading hits the engine's 256-tracks-per-Animator warning, after which new tracks do not play `[community]`. `Humanoid:LoadAnimation` and `AnimationController:LoadAnimation` are deprecated.
 - A partial top layer with nothing below it blends toward the rest pose (a half T-pose) `[lihfolk]`: keep a full-weight base layer.
@@ -188,7 +185,7 @@ House priority convention (write yours down; the clash bugs come from having non
 
 | Layer | Priority | Fade in |
 |---|---|---|
-| Default `Animate` idle and gaits | Core / Idle / Movement (as authored by Roblox) | — |
+| Default `Animate` idle and gaits | Core / Idle / Movement (as authored by Roblox) | n/a |
 | Custom locomotion | Movement | 0.15 |
 | Carry or hold pose (weapon arm only) | Action | 0.2 |
 | Equip, emote, interaction | Action2 | 0.1 |
@@ -201,7 +198,6 @@ The default `Animate` script plays a tool-hold clip (`toolnone`) that sticks the
 --!strict
 -- unexecuted sketch (client): load once per Animator, preload, priority before Play, markers wired once.
 local ContentProvider = game:GetService("ContentProvider")
-
 export type ClipDef = { id: string, priority: Enum.AnimationPriority, fade: number }
 export type ClipSet = { [string]: AnimationTrack }
 local function loadSet(animator: Animator, defs: { [string]: ClipDef }, onMarker: (clip: string, marker: string) -> ()): ClipSet
@@ -219,12 +215,6 @@ local function loadSet(animator: Animator, defs: { [string]: ClipDef }, onMarker
 	end
 	task.spawn(ContentProvider.PreloadAsync, ContentProvider, assets) -- removes the first-use delay
 	return set
-end
-local function play(set: ClipSet, defs: { [string]: ClipDef }, name: string, speed: number?)
-	local track = set[name]
-	if not track.IsPlaying then -- Play on a playing track restarts it at time 0
-		track:Play(defs[name].fade, 1, speed or 1)
-	end
 end
 ```
 
@@ -266,7 +256,7 @@ All replication of playing tracks goes through the `Animator` `[official]`:
 
 Cost model `[official]`: server-played NPC animation is simulated on the server and replicated ("unnecessary overhead"); the mitigation is to play NPC animations on the client, use `AnimationController` instead of `Humanoid` where possible, disable unused Humanoid states, pool NPC models, and spawn only near players. MicroProfiler labels: `stepAnimation`, `stepHumanoid`, `updateInvalidatedFastClusters` (over 4 ms means avatar or skinned-mesh churn).
 
-State protocol `[lihfolk]`: the server AI writes `Anim` (clip name), `AnimSpeed`, then `AnimT` (server time of the start, written last) as attributes on the NPC model; clients react to `AnimT`. Hit reactions, layers and death fades get their own attributes. Damage timing comes from the generated marker table, so the server loads no clips and its hit tests are data-driven (distance, arc, time), not limb positions.
+State protocol `[lihfolk]`: the server AI writes `Anim` (clip name), `AnimSpeed`, then `AnimT` (server time of the start, written last) as attributes on the NPC model; clients react to `AnimT`. Hit reactions, layers and death fades get their own attributes. Damage timing comes from the generated marker table, so the server loads no clips and its hit tests are data-driven (distance, arc, time), not limb positions. Bind the client function below on a `CollectionService` tag-added signal and unbind on removal so streaming works.
 
 ```lua
 --!strict
@@ -275,7 +265,7 @@ local function bindNpc(model: Model, clips: { [string]: Animation })
 	local controller = model:FindFirstChildOfClass("AnimationController")
 	if not controller then return end
 	local animator = controller:FindFirstChildOfClass("Animator") or Instance.new("Animator")
-	animator.Parent = controller -- a client-created Animator never replicates: intended here
+	animator.Parent = controller -- client-side play on a non-character rig never replicates: intended here
 	local tracks: { [string]: AnimationTrack } = {}
 	local current: AnimationTrack? = nil
 	local function apply()
@@ -298,8 +288,6 @@ local function bindNpc(model: Model, clips: { [string]: Animation })
 	apply()
 end
 ```
-
-Bind on `CollectionService` tag added and unbind on removed so streaming works; stop tracks and drop the table when the model streams out.
 
 Engine throttling `[official][VS]`: `Workspace.ClientAnimatorThrottling` (Default / Disabled / Enabled) lets the client reduce evaluation of remotely simulated models by visibility, frame rate and animation count; `Animator.PreferLodEnabled` (default true) opts a rig in; `Animator.EvaluationThrottled` is true on a frame that reused the previous pose. Set `PreferLodEnabled = false` only on a boss or a cutscene actor.
 
@@ -324,7 +312,6 @@ Frame order `[official]`: `PreRender` → `PreAnimation` (change tracks, weights
 --!strict
 -- unexecuted sketch (runs on every viewer's client): head look layered over whatever clip is playing.
 local RunService = game:GetService("RunService")
-
 local function findJoint(character: Model, childName: string): Instance?
 	for _, d in character:GetDescendants() do
 		if (d:IsA("AnimationConstraint") or d:IsA("Motor6D")) and (d :: any).Part1 and (d :: any).Part1.Name == childName then
@@ -358,16 +345,16 @@ Multiplying onto `Transform` is safe only on joints a playing clip rewrites ever
 | Hand on prop | `IKControl` Transform, `EndEffector = LeftHand`, `Target` = a `Grip_Att` attachment authored in Blender, `SmoothTime = 0` for contact | One clip serves every weapon |
 | Foot planting | Per foot: weight by animated foot height (fade out as the clip lifts the foot 0.15–0.6 studs), raycast down from above the sole excluding the character, move an `IKControl` Position target to the hit, tilt up to 25–35°, lower the pelvis by the lowest foot's deficit with smoothing; off in the air `[lihfolk][community]` | Two raycasts per rig per frame: local character and nearest few only; never on the server |
 | Springs | Tails, ears, trinkets, weapon sway: critically damped spring per joint; clamp `dt` (≤ 1/30) or use the exact solution so a lag spike cannot explode it; guard NaN `[lihfolk]` | Small CPU per joint; first layer to drop in LOD |
-| Smoothing | `1 - exp(-k * dt)`, never a constant lerp per frame (frame-rate dependent) | — |
+| Smoothing | `1 - exp(-k * dt)`, never a constant lerp per frame (frame-rate dependent) | Free |
 | Ragdoll / physical joints | AnimationConstraint `IsKinematic = false` with `MaxForce`/`MaxTorque`, or BallSocket limits; `Humanoid.RequiresNeck = false` and `BreakJointsOnDeath = false` first `[official][lihfolk]` | Owner simulates; see `physics-and-vehicles.md` |
 
 Known issue `[community][VS]`: with `UseFixedSimulation` (required for server authority) a forum bug report says `Transform` writes are ignored while a track plays; the poster's workaround is writing in `PreAnimation`. Test procedural layers under that setting before relying on them.
 
 ## 10. Tools and weapons, cutscenes, props, UI-in-world
 
-**Tools and weapons.** Author the weapon in Blender with a `Grip_Att` empty; hold it with a Motor6D (hand to handle) rather than the default tool weld when clips must move it; weapon parts `Massless`, `CanCollide`/`CanTouch`/`CanQuery` off (the invisible hitbox does the gameplay). Put the hold tilt in `C0` once and never change it per state; exactly one controller writes the grip joint; lock procedural sway on the grip from attack accept to recovery end, or the blade twists inside the hand `[lihfolk]`. Moving weapon pieces (bow limbs, a flail) are a small part rig with their own clips on the same Animator, named so poses bind. Preload a kit's clips on equip (first use can otherwise start seconds late). Scale movement speed to 0.55–0.9 during swings to stop sliding `[lihfolk]`. First-person arms are a local-only viewmodel under the camera, bound after camera priority, with every part non-colliding and non-queryable.
+**Tools and weapons.** Author the weapon in Blender with a `Grip_Att` empty; hold it with a Motor6D (hand to handle) rather than the default tool weld when clips must move it; held weapon parts are `Massless` with `CanCollide`/`CanTouch` off so they cannot shove the wielder, and gameplay uses an invisible hitbox proxy `[lihfolk]` (house rule 2: see section 13). Put the hold tilt in `C0` once and never change it per state; exactly one controller writes the grip joint; lock procedural sway on the grip from attack accept to recovery end, or the blade twists inside the hand `[lihfolk]`. Moving weapon pieces (bow limbs, a flail) are a small part rig with their own clips on the same Animator, named so poses bind. Preload a kit's clips on equip (first use can otherwise start seconds late). Scale movement speed to 0.55–0.9 during swings to stop sliding `[lihfolk]`. First-person arms are a local-only viewmodel under the camera, bound after camera priority, with every part non-colliding and non-queryable (same house-rule note).
 
-**Cutscenes.** Client-local, skippable after about 2 s, never freezing other players. Actors are local clones (client Animator, no replication) with `PreferLodEnabled = false`. Blender cameras do not import: animate a `Cam` bone or part in the actor rig, export it with the clip, and each `PreRender` (bound after `Enum.RenderPriority.Camera`) copy its CFrame to a `Scriptable` camera `[community]`; drive FOV from marker parameters. The system is the restore path `[lihfolk]`: lock input and other controllers, hide and remember every ScreenGui, shoot, then restore camera type, FOV, HUD and control on **every** exit, including death, respawn, script error and a watchdog timeout. Offer a reduced-motion variant (`GuiService.ReducedMotionEnabled`).
+**Cutscenes.** Client-local, skippable after about 2 s, never freezing other players. Actors are local clones (client Animator, no replication) with `PreferLodEnabled = false`. Blender cameras do not import: animate a `Cam` bone or part in the actor rig, export it with the clip, and in a `BindToRenderStep` callback after `Enum.RenderPriority.Camera` copy its CFrame to a `Scriptable` camera `[community]`; drive FOV from marker parameters. The system is the restore path `[lihfolk]`: lock input and other controllers, hide and remember every ScreenGui, shoot, then restore camera type, FOV, HUD and control on **every** exit, including death, respawn, script error and a watchdog timeout. Offer a reduced-motion variant (`GuiService.ReducedMotionEnabled`).
 
 **Non-character props.**
 
@@ -388,15 +375,13 @@ Solid props that animate (house rule 2): the server owns collision truth. It mov
 |---|---|---|
 | Triangles per NPC | 4,000–10,000 (`art-pipeline-blender.md`); crowd NPC at the low end | `[house]` |
 | Deform bones | 25 crowd / 40 enemy / 60 boss | `[house][lihfolk]` |
-| Influences per vertex | 4 | `[official]` |
 | Tracks loaded per Animator | Hard stop 256; house ≤ 40 | `[community]` / `[house]` |
 | Tracks playing per rig | ≤ 4 layers; stop unused layers rather than parking them at weight 0 | `[house][lihfolk]` |
 | Key density after thinning | About 15–30 keys/s for body clips, 5–8 keys/s for weapon hinges | `[lihfolk]` |
 | Clip sources in the shipped place | 0 `KeyframeSequence` instances; a 2 s clip keyed on every joint at 20 fps is about 640 instances and every client downloads ReplicatedStorage | `[lihfolk]`; removal advised `[official]` |
 | Fully animated rigs in view, 3 GB phone | Start at 15 near plus LOD tiers; tune from `stepAnimation` in the MicroProfiler | `[house]` |
-| Foot IK, springs, look-at | Local character plus at most 5 nearest rigs | `[house]` |
+| Foot IK, springs, look-at | Local character plus at most 5 nearest rigs; every equipped kit's clips preloaded (no first-use delay) | `[house]` |
 | `updateInvalidatedFastClusters` | Under 4 ms | `[official]` |
-| First-use delay | 0: every equipped kit's clips preloaded | `[house]` |
 
 ## 12. Level-up: symptom → cause → fix
 
@@ -414,11 +399,9 @@ Solid props that animate (house rule 2): the server owns collision truth. It mov
 | Clip frozen at frame 0 | `Play` called every frame, or speed computed from `Length == 0` | Play on state change only; wait for `Length > 0` |
 | Animations stop playing after long sessions | 256-track limit from `LoadAnimation` per use | Cache tracks; `Destroy` tracks you will not reuse |
 | Limb spins the long way or flips | Key-to-key turn over about 120°, exact 180°, or Euler wrap in generated data | Breakdown key; blend as CFrames |
-| One-key hitch to the rest pose | Joint hole (joint missing from a key) | Key all owned bones on key poses; fill holes at load |
-| Easing feels backwards | Legacy `Cubic`, or easing set on the arriving key | `CubicV2`; easing belongs to the key that starts the segment |
-| Character does not travel or lift | Root motion keyed on the top-level root pose | Key the root's first child; or strip travel and move the root in code |
+| One-key hitch to the rest pose; easing feels backwards | Joint hole (joint missing from a key); legacy `Cubic` or easing set on the arriving key | Key all owned bones on key poses; `CubicV2`, easing on the key that starts the segment |
+| Character does not travel or lift, or plays turned 180° after a GLB import | Motion or the importer's axis correction sits on the unapplied top-level root pose `[lihfolk]` | Key the root's first child; calibration clip once per export route |
 | Root motion snaps back at clip end | Roblox has no engine root motion: the clip moved the body, not the `HumanoidRootPart` `[community]` | Animate in place and move the root in code from a travel curve, between `MoveStart`/`MoveEnd` markers |
-| Body plays turned 180° from the root (GLB import) | Importer axis correction landed on the unapplied root pose `[lihfolk]` | Calibration clip; fix in data once per route, or use FBX for that rig |
 | Shoulders crumple or vertices spike to the origin in Roblox, fine in Blender | More than 4 influences, unnormalised or missing weights | Limit Total 4, Normalize All, run the rig validator, re-export |
 | Feet slide | Playback rate not matched to ground speed, or a walk clip at run speed | `rate = speed / groundSpeed`; author a gait for the common speed |
 | Feet hover or sink on scaled characters | Clip translations do not follow Humanoid body scale; `Model:ScaleTo` multiplies them `[lihfolk]` | Author translations for the scale method in use; test at real size; check `Workspace.Retargeting` |
@@ -436,6 +419,7 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 
 ## 13. Conflicts and open questions
 
+- House rule 2 and held items: a colliding held weapon or first-person viewmodel destabilises its own wielder, so this file treats items welded or jointed to a character as covered by the character's collider plus a hitbox proxy, and requires the normal `_COL` proxy the moment the item is dropped or placed in the world. This reads the rule by intent, not by its literal wording: confirm with the owner.
 - Conflict: `performance.md` and knowledge-base 5.9 say Blender animation goes through FBX, one track per file, matching the modeling specification `[official]`. LihFolk measured GLB exports with every Action importing as separate clips, and a 2026 Clip Editor importer beta reportedly added glTF and track selection `[community]`. Trust the docs as the default route; treat multi-clip GLB as valid only after a test import on the pinned Studio version.
 - Conflict: "create the Animator on the server" (Animator reference) versus "create the Animator on the client" (performance docs). Both hold: a server-created Animator is required for replication; a client-created one is the documented way to keep NPC animation local.
 - Conflict: "cache tracks" (Animator reference, community 256 limit) versus "do not cache tracks" (server authority techniques). Cache everywhere except inside server-authority simulation code.
@@ -450,12 +434,11 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 - [ ] Every clip is published under the game's owner (or permission granted); no temporary ids; no clip sources or importer saves in the shipped place.
 - [ ] One generated animation table holds ids, lengths, ground speeds and marker times; the server times hits from it.
 - [ ] A written priority convention exists; `Priority` is set before `Play`; tracks are loaded once and preloaded on equip.
-- [ ] Player actions move on the input frame; enemy telegraphs ≥ 0.45 s; hit-stop is runtime and client-side.
+- [ ] Player actions move on the input frame; enemy telegraphs ≥ 0.45 s; hit-stop is runtime and client-side; cutscenes restore camera, HUD and input on every exit path and honour reduced motion.
 - [ ] NPC animation runs on clients from attributes with server start times; a late-join test passes.
 - [ ] Procedural layers write in `PreSimulation`, accept `AnimationConstraint`, check `EvaluationThrottled`, and run on every viewer.
 - [ ] LOD skips pose writes only; far and off-screen rigs still advance time and gameplay events.
 - [ ] Tested in a published place with two clients and on a 3 GB Android phone; `stepAnimation` and `updateInvalidatedFastClusters` within budget.
-- [ ] Cutscenes restore camera, HUD and input on every exit path and honour reduced motion.
 
 ## Sources
 

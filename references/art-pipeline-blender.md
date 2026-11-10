@@ -2,6 +2,18 @@
 
 The house art pipeline: style bible, Blender authoring, headless GLB export, upload, Studio fix-up, lighting. Open it before modelling anything, when writing export or import tooling, and when auditing a live game's look, collisions or draw calls (jump to "Level-up"). House rules 1 and 2: every visible object is a Blender model, nothing visible is a primitive Part or a marketplace asset, and everything visible is solid. Distilled from knowledge-base 5.7, 5.8 and 4.10.4, re-verified against `Roblox/creator-docs` (commit of 2026-11-07). Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
+## Start here by level
+
+| Level | Do these first | Leave for later |
+|---|---|---|
+| Beginner | Work at 1 Blender unit = 1 stud beside an R15 dummy. Apply transforms, one material, origin where the asset attaches. Export with `export_kit.py`, import with the preset below, then walk on the asset. Build the first kit in `references/blender-modeling-craft.md` | PBR maps, trim sheets, Open Cloud keys, Geometry Nodes, SLIM |
+| Intermediate | Fill in the style bible. Pick one texturing method. Give every asset a collision plan (`Fidelity` or `_COL`). Wrap pieces as packages, choose one upload route and keep the ids manifest. Run the acceptance checklist on every asset | Custom CI, layout export |
+| Expert | Hash-skipping uploads in CI, duplicate-MeshId and instancing audits, merge-or-modular decisions measured in Shift+F2, Reimport and package versioning, layout transforms from Geometry Nodes, phone measurements under final lighting | Nothing: read "Platform limits" and "Import traps" in full |
+
+Terms used below: a **MeshPart** is the Roblox instance one imported mesh becomes; a **draw call** is one batch of geometry sent to the GPU; **instancing** is the engine drawing copies of the same mesh in one draw call; a **SurfaceAppearance** is the child object holding a MeshPart's PBR texture maps; a **package** is a versioned, auto-updating asset wrapper. The craft of modelling itself (silhouette, proportion, bevel and colour rules, recipes, review rubric) is in `references/blender-modeling-craft.md`; rigs and animation are in `references/animation-and-rigs.md`.
+
+Contents: Pipeline overview · Platform limits · Units and transforms · Grid and pivots · Mesh budgets · Texturing strategy · Naming · Collision · Blender automation · Upload routes · Importer preset · Post-import fix-up · Import traps · Kits, instancing, merging · Style bible · Lighting · Acceptance checklist · Level-up · Review gate · Sources
+
 ## Pipeline overview
 
 1. **Style bible and kit plan first**: fill in the one-page template below before the first mesh.
@@ -119,7 +131,7 @@ Tested on Blender 5.2.3 LTS (standalone `bpy`, headless, 2026-11-10): exported, 
 ```python
 # tools/export_kit.py: validate, then export every root (or --only names) to its own GLB at the origin.
 # blender -b --factory-startup assets/blender/street_kit.blend -P tools/export_kit.py -- build/street_kit [--only SM_Street_Lamp_A]
-import bpy, hashlib, json, sys
+import bpy, hashlib, json, re, sys
 from pathlib import Path
 
 argv = sys.argv[sys.argv.index("--") + 1:]
@@ -138,6 +150,7 @@ def check(root):
     for o in family:
         col = o.name.endswith("_COL")
         o.data.name = o.name + "_Mesh"   # glTF mesh name becomes the MeshPart name; keep it unique and stable for Reimport
+        if not re.fullmatch(r"[A-Za-z0-9_]+", o.name): bad.append(f"{o.name}: use only A-Z a-z 0-9 _ in names")
         if any(abs(s - 1) > 1e-4 for s in o.scale) or any(abs(r) > 1e-4 for r in o.rotation_euler):
             bad.append(f"{o.name}: unapplied rotation/scale")
         if not col and len(o.data.uv_layers) != 1: bad.append(f"{o.name}: {len(o.data.uv_layers)} UV maps (need 1)")
@@ -223,7 +236,7 @@ curl -s -X POST "https://apis.roblox.com/assets/v1/assets" -H "x-api-key: $ROBLO
 
 ## Studio 3D Importer preset (manual imports)
 
-Import Only As Model on; Upload to Roblox on; Creator = the group that owns the game; Import as Package on for kit pieces and props; Add to Workspace on (it also grants the game permission to use a restricted asset); Insert Using Scene Position on for layouts, off for single assets; Set Pivot to Scene Origin on; Use Imported Pivot on; Anchored on for static assets; Scale Unit = Studs; World Forward/Up = Front/Top; Merge Meshes off; Make Double Sided off; Invert Negative Faces off; Ignore Vertex Colors off. Save it as an import preset and apply it to the whole import queue. The importer de-duplicates only within a session (known asset cache): import each kit piece once, then place package copies.
+Name set to the asset name (a GLB otherwise arrives as a Model called `Scene` `[lihfolk]`); Import Only As Model on; Upload to Roblox off while iterating and on for the final import, so test passes do not litter the inventory `[lihfolk]`; Creator = the group that owns the game; Import as Package on for kit pieces and props; Add to Workspace on (it also grants the game permission to use a restricted asset); Insert Using Scene Position on for layouts, off for single assets; Set Pivot to Scene Origin on; Use Imported Pivot on; Anchored on for static assets; Scale Unit = Studs; World Forward/Up = Front/Top; Merge Meshes off; Make Double Sided off; Invert Negative Faces off; Ignore Vertex Colors off. Save it as an import preset and apply it to the whole import queue. The importer de-duplicates only within a session (known asset cache): import each kit piece once, then place package copies.
 
 ## Post-import fix-up (edit time, via Studio MCP `execute_luau` or the command bar)
 
@@ -262,6 +275,36 @@ end
 ```
 
 `CollisionFidelity` is not settable from a running game script; this runs at edit time only. Confirm the `_COL` naming once on a test import `[VS]`.
+
+## Import traps and failure modes
+
+Each row was hit in practice by this file's tests or by the LihFolk vault's Blender 5.2 builds `[lihfolk]`; all are `[VS]`.
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Bevels, mirrors or weighted normals missing in Studio | glTF `export_apply` defaults to off (confirmed on 5.2.3) | Always pass `export_apply=True`; compare evaluated and base triangle counts |
+| Asset 100 times too big from FBX | FBX written with scale option None `[lihfolk]` | Apply Scalings = FBX Unit Scale (`apply_scale_options="FBX_SCALE_UNITS"`), or use GLB. Never repair units by scaling in Studio: texel density and pivots stay wrong |
+| Vertex-coloured mesh looks dark or tinted | Vertex colour multiplies `MeshPart.Color` `[lihfolk]` | Set `Color` to white on import |
+| Mesh is plain grey although it was painted | Exporter left the attribute out | `export_vertex_color="ACTIVE"`; check for `COLOR_0` in the GLB |
+| Patchy streaks no `Color` or `Material` change removes | A stray or noisy colour attribute; Blender 5.2 writes extra colour layers (seen as `COLOR_1` in the test) | Keep exactly one colour attribute, or tick Ignore Vertex Colors |
+| N-gon failures after bevelling fan caps | Bevel turns pole fans into n-gons `[lihfolk]` | Triangulate modifier after the bevel |
+| Rotated or offset pivot after an add-on upload | A leftover `PivotOffset` `[lihfolk]` | Reset `PivotOffset = CFrame.new()` per part. With a `PrimaryPart`, set its `PivotOffset`: `WorldPivot` is ignored then `[official]` |
+| Mirrored copy needed | A CFrame cannot hold a reflection, so `PivotTo` never mirrors | Mirror in Blender and export it as its own piece |
+| Names changed on upload, installer cannot find parts | Dots or spaces in object names `[lihfolk]` | `[A-Za-z0-9_]` only; the export script rejects anything else |
+| Roughness or metalness ignored | Packed ORM or ARM texture | Separate 8-bit greyscale maps `[official]`; bake AO into the colour map or vertex colour |
+| AO bake comes out black | Other objects occlude the target `[lihfolk]` | Hide everything else from render before baking |
+| Lantern glows in Blender, is dark in game | Blender emission lights nothing in Roblox | PointLight on a `Light_Att`; emissive mask or Neon for the glow itself |
+| Headless script fails with a poll or context error | Operator needs a UI area under `-b` (for example `uv.sphere_project`) `[lihfolk]` | Use `bmesh.ops` and data APIs; compute UVs from positions |
+| Rebuilt kit differs from last week's | Unseeded or shared random stream | Seed per asset (hash of its name) |
+| Long batch runs out of memory | Orphan meshes, materials and images pile up | One Blender process per asset, or purge orphans between assets |
+| Preview renders fail on CI | Eevee and Workbench need a GPU | Cycles on CPU for automated previews |
+| Artist's open scene wiped | `read_factory_settings` sent over the live MCP connection `[lihfolk]` | Never reset or delete through the bridge; build headless and append |
+
+Conflicts with LihFolk guidance, house position in each case:
+- Conflict (collision default): LihFolk switches `CanCollide`, `CanTouch` and `CanQuery` off on anything it calls decoration and prefers non-colliding visuals with invisible Part colliders. House rule 2 is the reverse default: every visible mesh is solid unless it carries the `NonSolid` tag for the narrow cases in performance.md (canopies, cables). Invisible collider helpers are fine in both. Trust the house rule; it exists so nothing is walk-through.
+- Conflict (blockout): LihFolk blocks out with grey Parts in the working place. Here Part blockouts live only in a throwaway place; the shipping place gets the Blender blockout kit.
+- Conflict (LOD): LihFolk reports that a Mesh Streaming and improved cloud LOD system announced in April 2026 ignores `RenderFidelity` and will remove it. The creator-docs commit of 2026-11-07 still documents `RenderFidelity` with no deprecation, and DevForum threads describe the beta stuck at the lowest LOD for some players `[community]`. Both sides agree on the practice: never hand-author LOD chains, build one mesh whose silhouette survives simplification, and check hero pieces at 250 and 500 studs. Do not build systems on `RenderFidelity`.
+- Agreement worth noting: LihFolk also flags the 4096² versus 1024² texture wording and the Unit System None versus Metric setup as unresolved in the docs; both conventions end at 1 unit = 1 stud.
 
 ## Modular kits, instancing and when to merge
 
@@ -381,6 +424,8 @@ Grep `references/knowledge-base.md` for `## 5.7`, `## 5.8` and `### 4.10.4`. Too
 Accessed 2026-11-10.
 
 - https://github.com/Roblox/creator-docs (read, commit ccc2b01 of 2026-11-07), under `content/en-us/`: `art/modeling/specifications.md`, `art/modeling/texture-specifications.md`, `art/modeling/export-requirements.md`, `art/modeling/reimport.md`, `art/modeling/roblox-blender-plugin.md`, `art/blender.md`, `studio/importer.md`, `studio/mcp-open-cloud.md`, `parts/meshes.md`, `parts/textures-decals.md`, `cloud/guides/usage-assets.md`, `cloud/reference/rate-limits.md`, `reference/cloud/assets/v1.json`, `projects/assets/index.md`, `projects/assets/privacy.md`, `performance-optimization/improve.md`, `workspace/streaming/slim.md`, `reference/engine/classes/{MeshPart,TriangleMeshPart,SurfaceAppearance,Lighting,BloomEffect,ColorCorrectionEffect}.yaml`, `reference/engine/enums/CollisionFidelity.yaml`
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-asset-import/SKILL.md`, `skills/roblox-blender-modeling/SKILL.md` and `references/quality-research.md`, `Skill - Roblox Asset Import.md`, `14 3D Modeling/Exporting and Validating Models for Roblox.md`, `14 3D Modeling/Mesh Gates for Generated Models - Symmetry, Seating and Caps.md`, `17 Pipelines/Art Pipeline - Concept to In-Game Asset.md`, `45 Procedural Blender Assets/Blender 5 Python Gotchas for Headless Builds.md`, `54 Untextured Stylised Modelling/Flat Colour vs Gradient Atlas vs Vertex Colour.md` (read)
+- https://devforum.roblox.com/t/meshstreamingandimprovedlods-persistently-stuck-at-lowest-lod-level-for-all-meshes/4835534 (search summary)
 - https://github.com/Roblox/roblox-blender-plugin (read: README, package versioning)
 - https://github.com/jackTabsCode/asphalt (read: README note that the web API exposes no import settings)
 - Blender 5.2.3 LTS `bpy` wheel from PyPI (ran the scripts above; read `export_scene.gltf` option defaults)
