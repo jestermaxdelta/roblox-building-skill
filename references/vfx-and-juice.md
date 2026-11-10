@@ -188,7 +188,7 @@ Base values and the shake module are in `game-craft.md` §1. Net-new rules:
 - **Directional kick**: one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake `[lihfolk]`.
 - **FOV and offsets.** Every effect is a finite envelope that ends at exactly 0 (exponential decays leave residue). Sum envelopes per channel and clamp: FOV +12°, offset 1.6 studs, roll 4°. One module owns `Camera.FieldOfView`; two systems tweening it fight every frame. Reference dash: +9° in 60 ms, out over 250 ms `[lihfolk]`. First person: FOV only.
 - **Others' hits**: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]`.
-- **Impact frames**: one high-contrast full-screen frame. Conflict: LihFolk counts rendered frames (remove after 2 `PreRender` callbacks); at 240 FPS that is 8 ms and invisible. Hold flashes for `max(2 frames, 33 ms)` and never beyond 50 ms `[house]`.
+- **Impact frames**: one high-contrast full-screen frame. Conflict: LihFolk counts rendered frames (remove after 2 `PreRender` callbacks); at 240 FPS that is 8 ms and invisible. Time flashes on the real clock: about 33–50 ms and at least one rendered frame `[house]`.
 
 ```lua
 --!strict
@@ -206,7 +206,6 @@ local function hitStop(track: AnimationTrack, seconds: number, baseSpeed: number
 		end)
 	end)
 end
-return hitStop
 ```
 
 ## 8. Screen effects and number popups
@@ -260,12 +259,10 @@ The server does no rendering; a server-built effect replicates every instance an
 --!strict
 -- Unexecuted sketch. Server: after validating a cast and applying gameplay, tell nearby clients once.
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local playFx = ReplicatedStorage:WaitForChild("PlayFx") :: RemoteEvent
 local RADIUS = 250
 local rng = Random.new()
 
-local function broadcast(caster: Player?, presetId: number, cf: CFrame, aux: Vector3?)
+local function broadcast(playFx: RemoteEvent, caster: Player?, presetId: number, cf: CFrame, aux: Vector3?)
 	local seed = rng:NextInteger(1, 2147483646)
 	for _, player in Players:GetPlayers() do
 		if player == caster then continue end -- the caster drew it on input
@@ -412,28 +409,22 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 
 ## 14. Common mistakes
 
-1. Building effects on the server, or tweening world objects there.
-2. Waiting for the server before showing the caster anything.
-3. `LightInfluence` left at the Studio default; effect dark indoors.
-4. Everything additive and white; no dark layer; big sprites at full brightness.
-5. Radial sparks on a directional hit; identical layers repeated per beat.
-6. Clone and destroy per hit; destroying an emitter right after `Emit`.
-7. Trail left enabled through the whole swing; no `Clear()` before enabling.
-8. Creating and destroying Highlights per flash; several systems highlighting one model.
-9. Relying on the engine to thin bursts on low graphics.
-10. Tuning on a desktop, close up, in daylight, alone.
-11. Telegraph drawn from different numbers than the server's hit test, or culled on low settings.
-12. Per-frame random shake; exponential FOV decay that never returns to 0; two writers of `FieldOfView`.
-13. Effects that outlive their cause; a state replicated as a one-time event.
-14. A flipbook as the whole effect; unique 1024² textures per effect.
-15. No shake slider, flash toggle or reduced-motion path.
+1. Building effects on the server, tweening world objects there, or making the caster wait for the server echo.
+2. `LightInfluence` left at the Studio default; everything additive and white with no dark layer; big sprites at full brightness.
+3. Radial sparks on a directional hit; identical layers repeated per beat; effects that outlive their cause.
+4. Clone and destroy per hit; destroying an emitter right after `Emit`; a Highlight created and destroyed per flash, or several systems highlighting one model.
+5. Trail left enabled through the whole swing, or enabled without `Clear()`.
+6. Relying on the engine to thin bursts on low graphics; tuning on a desktop, close up, in daylight, alone.
+7. Telegraph drawn from different numbers than the server's hit test, or culled on low settings; a state replicated as a one-time event.
+8. Per-frame random shake; exponential FOV decay that never returns to 0; two writers of `FieldOfView`.
+9. A flipbook as the whole effect; a unique 1024² texture per effect.
+10. No shake slider, flash toggle or reduced-motion path.
 
 ## 15. Level-up: symptom → cause → fix
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| Effect is a white blob | All additive, no dark layer, large sprites too bright | Saturated dark layer; brightness by screen area; white only as a thin core |
-| Effect looks muddy or flat | Grey darks, one hue, one value | Deep saturated ink, element body, hot core, one accent |
+| Effect is a white blob, or muddy and flat | All additive with no dark layer and oversized bright sprites; or grey darks and one hue | Saturated dark layer, element body, thin white core, one accent; brightness by screen area |
 | Effect dark in caves, grey in shade | `LightInfluence` 1 | Set 0 on every emitter, beam and trail |
 | Feels slow or floaty | Phases too long; sound peak late; feedback waits for the server | Cut every phase; flash under 50 ms; predict locally; align sound peak (`audio-sfx-music.md`) |
 | Solid coloured slab instead of a slash | Beam texture not loaded | Preload on equip; hold transparent until loaded; wait out fresh uploads |
@@ -449,8 +440,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 | "Dodged but got hit" | Telegraph pop and damage on different frames or shapes | One shared shape table; damage at the pop |
 | Light hits feel inconsistent on phones | 50 ms stops are 1–2 frames at 30 FPS | 66 ms or more where it matters; otherwise rely on sound and spark |
 | Fast weapons feel sticky | Hit-stop adds up in flurries | Rolling 140 ms per 0.6 s budget; reserve for finishers |
-| Shake reads as jitter, or is violent when zoomed | Noise above half the frame rate; no FOV scaling | Cap at 0.4 × FPS; scale by `tan(FOV/2)` |
-| FOV drifts after long sessions | Exponential decays, several writers | Finite envelopes ending at 0; one owner |
+| Shake reads as jitter or is violent when zoomed; FOV drifts over a session | Noise above half the frame rate; no FOV scaling; exponential decays and several FOV writers | Cap at 0.4 × FPS; scale by `tan(FOV/2)`; finite envelopes ending at 0; one owner |
 | Motion sickness or flash complaints | No comfort settings; roll; strobing | §12 table; three-flash limit; replacement feedback |
 | Fights unreadable | No readability budget; everyone's effects at full strength | One ground piece, 3 large pieces, 35% screen; onlookers reduced |
 
@@ -459,13 +449,11 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 - [ ] Every effect is built on clients from one small validated payload; the caster predicts and the server skips the echo; states replicate as attributes.
 - [ ] Each effect has a written layer table with flash, body, secondary, ground and tail, and a dark layer under every bright stack.
 - [ ] `LightInfluence` set explicitly; emitters fire with `Emit`; streams at mobile rates; no per-frame emitter property writes.
-- [ ] Beam and trail textures preloaded with their owner; trails cleared and windowed; arcs over 120° drawn as crescents.
-- [ ] Highlights persistent, one owner per object, counted against a budget.
+- [ ] Beam and trail textures preloaded with their owner; trails cleared and windowed; arcs over 120° drawn as crescents; Highlights persistent with one owner per object.
 - [ ] VFX meshes are Blender kit pieces, non-colliding, pooled, with a 2–3 layer low version; textures greyscale, shared and counted.
 - [ ] Timing checked against §6; effects fire from animation markers; telegraph drawing and server hit test share one shape table.
 - [ ] Hit-stop is client-only, budgeted, one per swing; shake starts after the stop; FOV has one owner and returns to exactly 0.
-- [ ] Pools capped; per-cast, per-caster and per-client budgets written; gameplay information never culled.
-- [ ] Detail scales from the player's setting and measured frame time; verified on a hot 3 GB Android phone with 8 casters at one spot.
+- [ ] Pools capped; per-cast, per-caster and per-client budgets written; gameplay information never culled; detail scales from the player's setting and measured frame time; verified on a hot 3 GB Android phone with 8 casters at one spot.
 - [ ] Shake slider, screen-effects intensity, flash toggle, hit-stop toggle and reduced-motion path exist; at most 3 full-screen flashes per second.
 - [ ] Reviewed in slow motion, at game camera distance, on a phone, in the darkest and brightest zones.
 
@@ -477,9 +465,7 @@ Accessed 2026-11-10. "(read)" = opened; "(search summary)" = seen only through w
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault, commit 43ba05d) (read): `07 Lighting VFX and Audio/` Particle Emitters In Depth; Beams and Trails; Highlights and Selection Effects; VFX Design Playbook; VFX Performance Budgets and Culling; Replicating VFX - Server Validates, Clients Render; AoE Telegraphs; Projectile VFX; Screen Damage Effects; Designing VFX Textures and Flipbooks in Figma; VFX Readability and Value; Escalation and Grandeur Without Clutter; Gore Policy and Kid-Friendly Hit Feedback (summaries of the last five). `47 Game Feel and Juice/` Hit-Stop and Screen Shake Tuning by Numbers; Feedback Timing; Juice on a Budget; Squash Stretch and Anticipation; Reward Moments; Input Responsiveness. `08 Animation/05 Systems/` VFX Timing with Animation; Camera Shake and Camera FX. `45 Procedural Blender Assets/Mesh VFX Packs Built in Blender`. `58 Player QoL and Game Tweaks/Comfort Toggles`. `42 Accessibility and Inclusive Design/Motion Sensitivity and Camera Comfort`. `skills/lihfolk-vfx/SKILL.md`.
 - https://devforum.roblox.com/t/a-way-to-make-particleemitter-rate-ignore-graphics-quality/474762 and https://devforum.roblox.com/t/graphics-quality-affects-particle-emitters/2657543 (search summary; Emit and Rate versus graphics level)
 - https://devforum.roblox.com/t/how-should-i-prevent-exploiters-spamming-my-remoteevent-for-vfx-replication/4749010, https://devforum.roblox.com/t/client-replication-101-the-guide-to-replicating-effects-to-clients/1789487, https://devforum.roblox.com/t/best-way-to-replicate-vfxanimations-for-a-battlegrounds-game-tsbjjs-style-architecture/4814813 (search summary; replication practice)
-- https://devforum.roblox.com/t/animated-particles-with-the-particle-flipbooks-beta/1718023 and https://devforum.roblox.com/t/how-do-you-make-flipbook-particles-from-scratch/2645538 (search summary; flipbook sizes and tools)
-- https://devforum.roblox.com/t/scrollable-textures-for-meshparts/2820890 (search summary; no UV scroll on MeshParts)
-- https://devforum.roblox.com/t/damage-numbers-best-approach/3889210 and https://devforum.roblox.com/t/billboard-gui-causing-fps-lag/3542255 (search summary; BillboardGui overhead)
-- https://devforum.roblox.com/t/springservice-drop-in-replacement-for-tweenservice-using-smoothdamp/3621210 (search summary; led to the `SmoothDamp` check in the docs)
+- https://devforum.roblox.com/t/animated-particles-with-the-particle-flipbooks-beta/1718023, https://devforum.roblox.com/t/how-do-you-make-flipbook-particles-from-scratch/2645538 (search summary; flipbook sizes and tools); https://devforum.roblox.com/t/scrollable-textures-for-meshparts/2820890 (search summary; no UV scroll on MeshParts)
+- https://devforum.roblox.com/t/damage-numbers-best-approach/3889210, https://devforum.roblox.com/t/billboard-gui-causing-fps-lag/3542255 (search summary; BillboardGui overhead); https://devforum.roblox.com/t/springservice-drop-in-replacement-for-tweenservice-using-smoothdamp/3621210 (search summary; led to the `SmoothDamp` check in the docs)
 - https://learn.microsoft.com/en-ie/gaming/accessibility/xbox-accessibility-guidelines/118 (search summary; photosensitivity) and https://www.w3.org/WAI/WCAG21/Understanding/three-flashes-or-below-threshold.html (cited through LihFolk; not opened)
 - No evidence found: Reddit threads with concrete VFX numbers; an official Roblox statement on whether `Emit` bursts are thinned by graphics level; an official flash-rate rule.

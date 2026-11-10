@@ -71,10 +71,7 @@ Offer surfaces under house rule 3: small cards (≤ 25% of the screen) in a safe
 
 The shape that survives growth past a handful of screens:
 
-```
-server truth ──replication──> one client store ──> screens (read only) ──requests──> server
-                                   presenter: one window open, bands, focus, back action
-```
+`server truth → replication → one client store → screens (read only) → requests → server`, with one presenter owning open/close, bands, focus and the back action.
 
 - **The server owns the facts.** UI mirrors replicated data (attributes, a profile replica, snapshot-then-delta remotes) and sends requests; it never decides currency, items or ownership. Labels bind to server values, not local guesses.
 - **One client store** holds the replicated profile, session state, the device profile (layout family and input kept separate) and preferences (reduced motion, text size). Screens subscribe; they do not talk to each other.
@@ -436,6 +433,8 @@ end
 for _, d in StarterGui:GetDescendants() do
 	if d:IsA("ScreenGui") then
 		if d.ResetOnSpawn then flag(d, "ResetOnSpawn = true") end
+		if d.Parent ~= StarterGui then flag(d, "not a direct child of StarterGui: resets on every respawn") end
+		if d.SafeAreaCompatibility ~= Enum.SafeAreaCompatibility.None then flag(d, "SafeAreaCompatibility is not None") end
 		if d.ScreenInsets == Enum.ScreenInsets.None and d:FindFirstChildWhichIsA("GuiButton", true) then
 			flag(d, "interactive UI with ScreenInsets = None")
 		end
@@ -445,6 +444,11 @@ for _, d in StarterGui:GetDescendants() do
 			flag(d, "TextScaled without UITextSizeConstraint")
 		elseif not d.TextScaled and d.TextSize < 14 then
 			flag(d, `TextSize {d.TextSize} below 14`)
+		end
+		local stroke = d:FindFirstChildOfClass("UIStroke")
+		if stroke and stroke.ApplyStrokeMode == Enum.ApplyStrokeMode.Contextual and not d.TextScaled
+			and stroke.StrokeSizingMode == Enum.StrokeSizingMode.FixedSize and stroke.Thickness > d.TextSize * 0.12 then
+			flag(d, "text stroke above 12% of text size: glyph holes may close")
 		end
 	end
 	if d:IsA("GuiObject") then
@@ -458,12 +462,15 @@ for _, d in StarterGui:GetDescendants() do
 		end
 	end
 	if d:IsA("CanvasGroup") and d:FindFirstAncestorOfClass("CanvasGroup") then flag(d, "nested CanvasGroup") end
+	if d:IsA("GuiButton") and d.Selectable and d.BackgroundTransparency >= 1 and not d:FindFirstChildWhichIsA("GuiObject") then
+		flag(d, "invisible button is gamepad-selectable (tap pad or catcher?)")
+	end
 end
 print(`UI audit: {#findings} findings`)
 for _, line in findings do print(line) end
 ```
 
-Extend it with the game's own rules: buttons under 44 px at the phone frame, colours not in the theme, more than 300 `UIStroke`s under one ScreenGui.
+Extend it with the game's own rules: buttons under 44 px at the phone frame, colours not in the theme, more than 300 `UIStroke`s under one ScreenGui. A fuller audit renders each screen off-screen at desktop and phone sizes and scores it on flags that are pure `AbsolutePosition`/`AbsoluteSize` maths `[lihfolk]`: `pocket` (a fill touching the corners of a rounded ancestor), `stroke2` (stacked outlines), `radius` (nested rounding that does not run parallel), `bleed` (content outside its panel), `uneven` (rows of different height in one list) and `centre` (captions more than a pixel off-centre). Start with `centre`, `uneven` and `pocket`; re-run after every UI change and keep the score at its maximum.
 
 ## Review gate
 
@@ -474,6 +481,9 @@ Extend it with the game's own rules: buttons under 44 px at the phone frame, col
 - [ ] All user-generated text filtered on the server; prompt actions validated on the server.
 - [ ] Offer popups small, dismissible, well-timed, rate-limited and honest; shop one tap away.
 - [ ] HUD ≤ 7 elements; counters count up; contrast and text sizes meet the thresholds above.
+- [ ] One presenter, a written `DisplayOrder` band plan, modal blockers that sink input; every ScreenGui a direct child of `StarterGui` with `ScreenInsets` set explicitly.
+- [ ] Measured at the listed viewports: drawn text ≥ 12 px, taps ≥ 44 px, gaps ≥ 8 px, zero overlaps; ten rapid open/close taps end in the last requested state.
+- [ ] UI idle costs no per-frame Lua; loops stop when their screen closes; MicroProfiler checked on a low-end phone with the busiest window open.
 - [ ] Lists over a few hundred items are virtualised or paginated; no beta-only UI property is required in the live client.
 - [ ] UI audit scan returns no unexplained findings; the symptom table was checked against analytics and player feedback for a live game.
 
@@ -490,5 +500,8 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/virtual-scrolling-list-virtualization/2732175, https://devforum.roblox.com/t/parenting-objects-to-uigridlayouts-causing-extreme-lag-all-of-a-sudden/3607305, https://devforum.roblox.com/t/virtualscroller-infinite-scrollingframes/3990429 (search summary)
 - https://devforum.roblox.com/t/introducing-text-scaling-setting-studio-beta/3136967, https://devforum.roblox.com/t/new-preferred-text-size-setting-makes-it-impossible-to-have-text-objects-using-richtext-without-textscaled-enabled-that-arent-affected-by-the-setting/3914959 (search summary)
 - https://devforum.roblox.com/t/new-gamepad-ui-selection-apis/1791278, https://devforum.roblox.com/t/introducing-improvements-to-directional-ui-selection-on-gamepad/3864317, https://devforum.roblox.com/t/make-nextselection-properties-dictate-selectiongroup-navigation/3314485 (search summary)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `05 UI and UX/ScreenGui Fundamentals.md`, `Layout - Scale Offset and Constraints.md`, `Responsive UI for Phone Tablet Console and PC.md`, `Safe Areas and Insets.md`, `HUD Design.md`, `UI Motion Language and Timing.md`, `Virtualized Lists and Large Inventories.md`, `Declarative UI - React-Lua and Fusion.md`, `Gamepad and Console UX.md`, `Text Fonts and Rich Text.md`, `Localization.md`, `Accessibility.md`, `UI Design Systems.md`, `World-Space UI - BillboardGui and SurfaceGui.md`, `Nametags and Overhead Bars - Cost and Visibility Rules.md`; `56 Field Notes/` (Shift-Lock Sprint and Gamepad B for Menus, Streaming Joins and Loading Screen Teardown, UIStroke on Text); `skills/roblox-ui-builder/SKILL.md` (read)
+- `Roblox/creator-docs` (read, wave 2): `performance-optimization/microprofiler/tag-table.md`, class reference for `LayerCollector`, `TweenService`, `TweenBase`, `UIScale`, `UITextSizeConstraint`, enums `Font`, `InputSink`
+- GitHub search API metadata (read) for https://github.com/centau/vide, https://github.com/Roblox/react-luau, https://github.com/jsdotlua/react-lua, https://github.com/dphfox/Fusion, https://github.com/Roblox/roact, https://github.com/flipbook-labs/flipbook, https://github.com/PepeElToro41/ui-labs, https://github.com/Kampfkarren/hoarcekat, https://github.com/fraktality/spr, https://github.com/littensy/ripple, https://github.com/Reselim/Flipper
 - https://github.com/xtrair/figma-to-roblox-ui (read: the Scale-only rules cited in the conflict note), https://github.com/grim-technologies-arch/ui-figma-roblox (read: rotated-children clipping note)
 - Not reachable directly: reddit.com, devforum.roblox.com, create.roblox.com (blocked); DevForum items above are search-result summaries only.
