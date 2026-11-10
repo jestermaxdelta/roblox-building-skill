@@ -230,6 +230,120 @@ A dupe turns a scarce item into inflation overnight. Grow a Garden disabled pet 
 
 Operations: a `trading_enabled` and a `gifting_enabled` Configs kill switch; an append-only trade log; an alert when one GUID appears in two inventories or when owned count exceeds minted count; quarantine flagged items (unusable, visible) instead of deleting them, so honest recipients can appeal; new-account cooldown and a per-day value cap. Pausing the feature for a week costs less than a crashed item market.
 
+### Once trading works: designing the market
+
+Once players can trade you no longer set item values; your levers are supply, friction and information `[lihfolk]`.
+
+| Lever | Practice (rules of thumb) |
+|---|---|
+| Binding | Decide per item class: tradeable (collectibles, cosmetics), bound on use, account-bound (progression power, quest rewards, the very top tier), or tradeable after a cooldown. Tighten binding only for new items; rebinding existing ones confiscates value. |
+| Trade cooldown | New, purchased or dupe-sensitive items cannot be traded for 3–7 days. Honest players barely notice; dupes, stolen-account sweeps and real-money sales are delayed long enough for detection to act. |
+| Format | Start with same-server barter; add a hub place when players cannot find partners; add a cross-server listing board only with tooling to watch it. A soft-currency market merges the item and coin economies: a big step. |
+| Price display | Never the last trade (one alt trade sets it). Median of the last 20–50 trades, at most one per pair of accounts, young accounts excluded, "not enough data" under about 10, and show the trade count. That defeats wash trading. |
+| New-player protection | Lopsided-trade warning with a second confirmation when one side is worth under a third of the other; playtime or progress requirement before trading unlocks; receive caps for young accounts. |
+| Fees | A trade destroys nothing unless you add a sink: a sales tax on soft-currency markets (above about 10–15% trades move off-market), a flat fee or a consumable trade ticket for barter. Never tax the Robux side. |
+| Supply | Every tradeable copy lives forever: 200 copies a day is 18,000 in 90 days. Fusion and crafting that consume copies, new top tiers, published fixed supply for limited items. |
+| Thin markets | Per-account holding caps on limited items against cornering; listing caps (5–20) and server rate limits against bots; a short random delay before a listing becomes buyable against snipers. |
+
+- Cross-server boards: MemoryStore is only the index. Escrow the item inside the seller's own profile first, claim a listing with `UpdateAsync` and act on its **return value** (the transform can run more than once), check the price the buyer saw, and settle through a durable decision record plus a mailbox `[lihfolk]`. Implementation belongs with data-and-purchases.md.
+- Real-money trading and scams create more support load than exploits. Budget moderation time before launch, keep an in-game trade history as evidence, and do not launch a market for a young audience or before item supply is modelled.
+- Do not A/B test the supply or price of tradeable goods or any server-wide multiplier: variants leak into each other's market. Use a staged rollout with a before-and-after comparison.
+
+
+## Measuring a live economy
+
+Totals hide most problems; the useful numbers are distributions inside a progress band and flows broken down by source `[lihfolk]`.
+
+| Metric | Definition | Catches | Reading |
+|---|---|---|---|
+| Hours of income held | balance ÷ income per hour, p10 / p50 / p90 per zone or level band | Surplus with nothing to buy; walls | Mid-game median under 1–2 h is healthy; 20+ h late game means no top-end sink |
+| Net flow by source | sources − sinks per transaction type per day | A faucet left on; a sink that stopped firing | A sink halving overnight is usually a broken shop or remote |
+| Sink ÷ faucet trend | per currency per day | Sinks losing ground | Falling for weeks with unchanged content = inflation |
+| Velocity | spent per day ÷ average held | Hoarding, before balances look alarming | Falling while balances rise = saving or a dead shop |
+| Observed time to afford | unlock → purchase, p50 and p90 | Drift against the model | A quarter of the model = an unmodelled faucet (code, event, exploit) |
+| Gate conversion | share buying the gate within 3 days of unlocking | Walls hidden by survivorship | Falling conversion with flat time to afford is the signature of a wall |
+| Concentration | Gini inside one progress band; top 0.1% share | Exploits and dupes | Whole-population Gini is structural in exponential games (0.92 in LihFolk's model) and proves nothing |
+| Item supply | new copies of each top-tier item per day, per DAU | Dupes, luck events, table mistakes | Compare against rolls × odds × luck |
+| Price index | robust prices of a fixed basket vs a base week | Item inflation in trading games | Falls a week after a luck event |
+| Free share of premium | free ÷ all premium granted | Eroding pack sales | Above about half is a warning |
+
+- **Segment first, then aggregate.** A whole-population median moves with who is playing (a featuring brings poor new players, churn removes them); every band can be improving while the total worsens. Group by zone, level or rebirth band, or by join week.
+- **Survivorship.** Players who quit at a wall stop producing data, so the ones you still see look fine. Pair every time-to-afford number with its gate-conversion funnel.
+- **Logging discipline** `[official]` limits, `[lihfolk]` practice: call `LogEconomyEvent` from one wallet module, after the change is committed, with the ending balance; treat SKU and transaction-type strings like data-store keys (a rename splits history). Limits `[VS]`: 10 resource types tracked, 5 currencies on the dashboard, values grouped as "Other" beyond 20 transaction types and 100 item SKUs, 3 custom fields (8,000 combined values), 120 + 20 × CCU requests per minute. Spend the custom fields on progress band, config version and experiment variant.
+- **Alerts.** Compare today with the same weekday over the last four or more weeks using a robust score, `z = (today − median) ÷ (1.4826 × MAD)`, after dividing by DAU. Investigate above 3; page someone above 5 for free premium currency and top-tier item supply. Day-one alerts: premium faucet spike, rare-supply spike, top-0.1% share doubling day over day, a sink falling by half, gate conversion dropping in one zone only `[lihfolk]`.
+- **Own aggregates** (only when the dashboard cannot answer: distributions, per-cohort views, item supply): count in memory per server, flush every five minutes to daily keys sharded by a hash of `game.JobId` (16 shards) so no key becomes hot, keep bounded samples rather than censuses, store no user ids, stay under about 5% of the write budget, and never let the flush delay a profile save at shutdown `[lihfolk]`.
+- Below a few hundred DAU the distributions are noise: watch individual journeys instead.
+
+Conflict: LihFolk states the built-in experiment metrics exclude economy health (October 2026). The docs mirror of 2026-11-07 describes a Custom metric set with up to three metrics built from economy, funnel or custom events `[official]` `[VS]`. Use it, and still tag economy events with the variant for anything it cannot express.
+
+## Simulate before launch and before every rebalance
+
+A spreadsheet models the average player. An agent-based simulation (many simulated players with different habits) shows who holds the money, which archetype finishes the content in a week, and what a one-number change does to churn `[lihfolk]`. It is a comparison tool: trust the direction and rough size of a difference between two runs on the same seeds, never an absolute number.
+
+| Ingredient | Starting values to replace with your own |
+|---|---|
+| Archetypes (share, sessions per day, mean minutes, income multiplier) | Casual 55% / 0.8 / 12 / 1×; regular 30% / 1.5 / 25 / 1×; grinder 12% / 2.5 / 55 / 1×; payer 3% / 2.0 / 35 / 2× `[lihfolk]`; session lengths drawn from an exponential distribution for a long tail |
+| Spending policy | Explicit and greedy: gate first, then an upgrade that pays back within an hour, then rolls from a fixed share of income |
+| Churn | A base daily chance plus an extra chance on days the player ends stuck (next goal more than 60 min away) |
+| Population | New players every day for 30 days, so day 30 mixes cohorts like a live game |
+| Outputs | The same names as live telemetry: hours held, sink ÷ faucet, stuck share, top-item supply, share of coins held by finishers |
+
+What their baseline exposed (simulated): finishers held 99% of all coins (no endgame sink), grinders finished ten zones well inside a month (content runway shorter than a monthly cadence), and casual players sat at a median of zone 1. Two tests: steeper gates (p ÷ g 1.15 → 1.23) quadrupled the stuck share; an endgame roll sink lifted sink ÷ faucet from 0.30 to 0.90 but minted 136% more Mythics. Every sink is also a faucet of something: check what it mints.
+
+Minimal model (unexecuted sketch; session-step, gates only; extend with upgrade tracks, rolls and event currency only when a decision needs them):
+
+```lua
+--!strict
+type Archetype = { share: number, sessionsPerDay: number, meanMinutes: number, mult: number }
+type Config = {
+	days: number, joinsPerDay: number, zones: number, incomeBase: number, incomeGrowth: number,
+	gateBase: number, gateGrowth: number, baseChurn: number, stuckChurn: number, stuckMinutes: number,
+	archetypes: { Archetype },
+}
+type Agent = { kind: Archetype, zone: number, coins: number, active: boolean }
+
+local function simulate(cfg: Config, seed: number): (number, number) -- active players, stuck share (last day)
+	local rng = Random.new(seed)
+	local agents: { Agent } = {}
+	local active, stuck = 0, 0
+	for _ = 1, cfg.days do
+		for _ = 1, cfg.joinsPerDay do
+			local roll, kind = rng:NextNumber(), cfg.archetypes[#cfg.archetypes]
+			for _, a in cfg.archetypes do
+				roll -= a.share
+				if roll <= 0 then kind = a; break end
+			end
+			table.insert(agents, { kind = kind, zone = 0, coins = 0, active = true })
+		end
+		active, stuck = 0, 0
+		for _, p in agents do
+			if not p.active then continue end
+			local sessions = p.kind.sessionsPerDay // 1 + (if rng:NextNumber() < p.kind.sessionsPerDay % 1 then 1 else 0)
+			for _ = 1, sessions do
+				local minutes = math.max(3, -math.log(1 - rng:NextNumber()) * p.kind.meanMinutes)
+				p.coins += cfg.incomeBase * cfg.incomeGrowth ^ p.zone * p.kind.mult * minutes
+				while p.zone < cfg.zones - 1 and p.coins >= cfg.gateBase * cfg.gateGrowth ^ p.zone do
+					p.coins -= cfg.gateBase * cfg.gateGrowth ^ p.zone
+					p.zone += 1
+				end
+			end
+			local income = cfg.incomeBase * cfg.incomeGrowth ^ p.zone * p.kind.mult
+			local wait = if p.zone < cfg.zones - 1 then (cfg.gateBase * cfg.gateGrowth ^ p.zone - p.coins) / income else 0
+			local isStuck = wait > cfg.stuckMinutes
+			if rng:NextNumber() < cfg.baseChurn + (if isStuck then cfg.stuckChurn else 0) then
+				p.active = false
+			else
+				active += 1
+				stuck += if isStuck then 1 else 0
+			end
+		end
+	end
+	return active, if active > 0 then stuck / active else 0
+end
+```
+
+Operating rules `[lihfolk]`: compare baseline and change on identical seeds and average five or more; read prices from the game's own config module so a patch cannot leave the model behind; after launch replace archetypes and churn with measured ones and replay a known week (more than about 25% off: fix the model before using it); keep golden day-30 numbers in CI and fail a config change that moves sink ÷ faucet or stuck share by more than 10%, or top-item supply by more than 20%, without an explanation. Do not simulate cosmetic-only economies, prototypes whose structure changes weekly, or decisions you will not act on.
+
 ## Live rebalancing without angering players
 
 1. Measure first: sources and sinks from `LogEconomyEvent`, median and top-decile wallet by cohort, days-to-afford the next key item.
@@ -240,6 +354,21 @@ Operations: a `trading_enabled` and a `gifting_enabled` Configs kill switch; an 
 6. Announce before it ships, with the reason and the numbers. The Roblox backlashes that reached the press were changes that arrived without notice or that players read as taking earned value away (Welcome to Bloxburg's job-pay change; the 2026 cross-game pass sales shutdown, which a creator petition says came "without any warning") `[community]`.
 7. Compensate on login when anyone loses value: currency, a timed boost or a cosmetic.
 8. Roll back or wipe only for exploits, only on affected accounts, and say so publicly.
+9. State the hypothesis with a number before shipping ("zone 6 gate p50 is 41 min against a 20-min target; −40% should bring it near 25 and lift 3-day gate conversion from 52% to 65%"), check it in the simulation, then judge after a full week: many changes look good on day one (a windfall) and bad by day seven (content finished) `[lihfolk]`.
+
+Reading a change after it ships `[lihfolk]`:
+
+| You see | Likely meaning |
+|---|---|
+| Target metric moved, churn rose in a later zone | Players now reach the next wall sooner; check that zone |
+| Hours held rose in every zone | A faucet grew or a sink weakened more than intended |
+| Velocity fell while balances rose | Players are saving for something, or the shop lost appeal |
+| Rare price index fell a week after a luck event | Supply shock; decide whether to add a copy sink |
+| Metric moved on one platform only | A UI problem on that platform, not the economy |
+
+Fixing an economy that is already inflated, least to most disruptive `[lihfolk]`: a repeatable top-end sink (does not touch existing balances) → higher prices for new content only → slower faucets (announce it) → revaluing balances (reads as confiscation; never touch paid value) → a reset. Fix the model, then re-derive every price from it; patching the one price players complain about leaves the rest on the old model.
+
+Resets and wipes `[lihfolk]`. Good reasons: competitive seasons (new leaderboard store per season, never a cleared one), opt-in seasonal modes, a beta declared provisional, a cleanly reversible exploit. Weak reasons: unmeasured "inflation", a rebalance that could be migrated, a relaunch of a dead game. Rules: nothing bought with Robux is lost without equal or better compensation; receipt records and settings are never wiped; announce 3–4 weeks ahead with a "what stays, what goes" table; stop selling anything resettable a week before and exempt purchases made in the final window; convert rather than erase (soft currency into a permanent cosmetic tier plus a small head start), running the conversion once per profile on load; dry-run the conversion on a sample of real profiles to see who loses most; and greet each player with their own numbers on return, because abstract rules read as loss and personal numbers read as a trade.
 
 ## Level-up: economy symptoms → likely cause → fix
 
@@ -259,6 +388,14 @@ The knowledge base (`## 3.5`, "Inflation and deflation") has the basic signal ta
 | Free players call the game pay-to-win | Free-to-payer time gap above 3–4×, or paid power in a ranked mode | Cap the stack; move paid value to convenience and cosmetics |
 | Anger after a balance patch | No notice, or paid value reduced | Protocol above: announce, grandfather, compensate |
 | Boost sales fall as players progress | Boost value shown as "2×" while prices grew faster than income | Show the gain in currency at the player's rate; lower late-game g |
+| Late zones blur past; observed time to afford shrinks with zone | p ÷ g below 1 | Raise gate growth for new content; re-derive from the income table `[lihfolk]` |
+| One upgrade track maxed, the others untouched | Benefit per coin far apart on the greedy path | Reprice in one value unit; simulate greedy buying `[lihfolk]` |
+| Income explodes after an update | A multiplicative track with g near its own multiplier, or an uncounted stacking source | g well above the multiplier; additive buckets `[lihfolk]` |
+| Cosmetics become free mid-game | Fixed prices in an exponential currency | Move them to a flat currency `[lihfolk]` |
+| "Inflation" that tracks marketing pushes | Whole-population medians | Segment by progress band `[lihfolk]` |
+| Gem-pack sales fall month over month | Free share of premium too high, or no premium sinks | Track free share; add sinks before packs `[lihfolk]` |
+| Complaints about leftover gems or vanished event tokens | Pack sizes off the price unit; silent expiry | Common unit; grace period, warnings, conversion `[lihfolk]` |
+| Rare prices crash a week after an event | Luck event doubled supply | Model inflow first; add a copy sink `[lihfolk]` |
 
 ## Review gate
 
@@ -273,6 +410,11 @@ The knowledge base (`## 3.5`, "Inflation and deflation") has the basic signal ta
 - [ ] Payer modelled at the full multiplier stack: stack within the cap, content runway and free-to-payer gap written down.
 - [ ] Hard currency justified or absent; if present, every random sink is gated and disclosed.
 - [ ] Tradeable items carry GUIDs; trade and gift kill switches exist; the swap has no yields.
+- [ ] Time-to-afford bands written per purchase type; p ÷ g checked per zone; every system priced from the same income table.
+- [ ] Each upgrade track has cost and benefit curves, a known natural cap, monotonic rounded prices and server-side buy-max.
+- [ ] Pity rule and effective rate computed and disclosed; item supply per day modelled for every top-tier item; a copy sink exists.
+- [ ] Premium currency (if any): anchor fixed, prices and packs on one unit, paid and free buckets, one-way conversions, loop check run.
+- [ ] Simulation compares changes on the same seeds and reads the game's config; hours held, gate conversion and item supply are tracked per progress band with alerts.
 - [ ] Live game: baseline sink ratio, wallet medians and pack sales recorded before any rebalance; the change is announced, grandfathered and compensated.
 
 For the grep-able original, search `references/knowledge-base.md` for `## 1.5`, `## 1.6` and `## 3.5`.
@@ -288,4 +430,6 @@ Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror (comm
 - Grow a Garden gifting shutdown: https://www.sportskeeda.com/roblox-news/why-pet-gifting-disabled-grow-garden, https://gamertweak.com/pet-gifting-disabled-in-grow-a-garden/ (search summary)
 - Backlash cases: https://www.404media.co/roblox-community-protests-communism-update, https://www.change.org/p/bring-back-cross-game-sales-of-gamepasses-on-roblox-e1da39b1-809d-42a3-a03a-997af08075d6 (search summary)
 - https://www.creation.dev/glossary/rebirth (search summary; the 30–60 minute and 20–50 rebirth figures)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/48 Economy Design Deep Dive/` (`Simulating an Economy Before Launch`, `Economy Telemetry and Balancing Live`, `Pricing Curves and Upgrade Costs`, `Currency Architecture - Soft Hard and Event Currencies`, `Player-Driven Trading Economies`, `Drop Tables Rarity and Pity Systems`), `11 Monetization Publishing and Live Ops/Economy Inflation Sinks and Faucets Math.md`, `38 Live Ops Deep Dive/Economy Resets and Seasonal Wipes.md` (read). Ideas adapted in our words; its simulated and rule-of-thumb numbers are labelled as such. Not imported: its Python simulator, wallet, telemetry and listing-board code.
+- Wave-2 verification in the docs mirror: `production/analytics/event-types.md`, `custom-fields.md`, `production/experiments.md` (read)
 - No evidence found: a DevForum or Reddit thread with measured rebirth tuning data from a current top simulator; reddit.com was not reachable and surfaced in no search.

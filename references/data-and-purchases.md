@@ -2,6 +2,18 @@
 
 What this is: player data (ProfileStore), DataStore and MemoryStore limits, idempotent receipts, game passes, gifts, teleports and messaging. Open it when building the data layer, or jump to "Level-up audit" when a live game loses data, dupes items or throttles. Distilled from knowledge-base sections 4.6, 4.7 and 4.8; limits and library status re-checked on 2026-11-10 (`Roblox/creator-docs`, library repos). Snippets are unexecuted sketches. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
+Contents: Start here by level · Choosing a storage service · DataStore limits · Practices that prevent data loss · Duplication: four classes and the commit pattern · ProfileStore essentials · DataService with schema migration · Runbook: shipping a schema migration · Runbook: data incident and rollback · Developer products: idempotent ProcessReceipt · Game passes · Subscriptions, gifts, boosts, prices · Teleports, reserved servers and messaging · Level-up audit · Review gate · Sources
+
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | (1) Use ProfileStore with the DataService below; do not write raw `SetAsync` code. (2) If loading fails, kick; never play on default data that could save. (3) One key per player, `Player_{UserId}`. (4) Grant paid products only in `ProcessReceipt`, with the ReceiptService below. (5) Test in a separate universe or with `store.Mock` | Trading, MemoryStore, cross-server systems |
+| Intermediate | Schema version plus migrations with fixture tests; staggered autosave; item GUIDs; snapshot before data releases; RTBF templates; Data Stores dashboard at peak | Marketplaces, custom session locks |
+| Expert | Two-profile commits with a decision record; `MinReader` and expand-then-contract releases; bulk restore drills; ownership index for rare items; rate-limit budgets per request type under load | Nothing: read it all |
+
+Terms: a *profile* is one player's saved table. A *session lock* (or lease) marks which server currently owns a profile so two servers cannot write it. A *schema* is the shape of the saved table; a *migration* upgrades an old shape. *Idempotent* means running it twice has the same effect as once.
+
 ## Choosing a storage service
 
 | Need | Use |
@@ -41,7 +53,28 @@ All cloud services are server-only. Studio needs "Enable Studio Access to API Se
 - Ordered stores have no versioning or metadata; write leaderboard values at most every few minutes and on leave; `leaderstats` is display, never storage.
 - Trades: never move items between two players with two independent saves. Both profiles session-locked on the same server, both `IsActive()`, mutate both with no yield, then save both. Cross-server trades use an escrow record with a unique id and idempotent completion.
 - `game:BindToClose` gives about 30 seconds; ProfileStore and Lapis already handle shutdown, so do not add your own save loop on top.
+- Three load outcomes, kept distinct `[lihfolk]`: loaded; new (the read succeeded and returned nothing); failed (error or lock timeout). Only the first two ever get a save path. A thrown error is never "new player".
+- Tell the player when data is unhealthy: set an attribute, show a banner that stays up, and show no purchase prompts while the profile cannot save `[lihfolk]`.
+- Count load results (new, loaded, failed, locked) and save results per server and send aggregates to analytics. A rising locked rate means sessions are not being released; a rising validation-failure rate means a bug is producing bad data `[lihfolk]`.
+- Auditing a hand-rolled session lock in an existing game `[lihfolk]`: the lock must be read and renewed inside the same `UpdateAsync` that writes the data; every save carries the session's token so a server that lost the lock stops writing; leases under about 30 s are unsafe (clock skew); autosave no longer than a third of the lease (their reference: 90 s lease, renewed every 30 s). Conflict: LihFolk builds its own lease module; this skill keeps ProfileStore for new games because it is the more widely exercised implementation, and uses these numbers only to judge custom code.
 - Right to be forgotten: RTBF deletion templates in Creator Hub (up to 100), using the `{UserId}` token; call `profile:AddUserId(userId)` so metadata lists the owner; data keyed otherwise needs a webhook handler.
+
+## Duplication: four classes and the commit pattern
+
+Adapted from `[lihfolk]`. Knowing the class tells you where to look; class 1 is fixed in code, classes 2–4 in architecture.
+
+| Class | Mechanism | Typical trigger | Fix |
+|---|---|---|---|
+| 1. In-server race | Two requests pass a check before either writes, because the handler yields in between | Double click, two remotes in one frame | Synchronous core: read, validate, write with no yield; busy lock shared across trade, sell, equip |
+| 2. Save-boundary split | Two profiles change in memory, only one saves before a crash or leave | Server dies right after a trade | Commit pattern below; at minimum save both at once, receiver first, so a crash destroys rather than duplicates |
+| 3. Cross-server overlap | One profile live on two servers | Fast rejoin, teleport, a writer that ignores the lock (admin tool, Studio session, "load anyway" fallback) | Session lock respected by every writer; audit them with sketch E |
+| 4. Rollback abuse | The player moves value out, then gets their own save reverted | "Restore my data" support requests; a forced failed save | Restores never bring back items the ledger shows left after the restore point; check item GUIDs |
+
+- **Plan, validate, apply, record.** Express every economic action as a list of changes; validate it against current state; apply it synchronously; append a ledger entry (action, changes, resulting balance, time, `game.JobId`, `game.PlaceVersion`). Keep the last 50–200 entries in the profile for support and repair.
+- **Item identity.** Every non-stackable item gets a GUID at creation (`HttpService:GenerateGUID(false)`), used as the inventory key and never regenerated on transfer, with `source` and `acquiredAt`. The same GUID in two inventories is proof of a dupe and lets you remove exactly the copies. For rare items add an ownership index (a key per GUID, updated with `UpdateAsync` on transfer); it costs one write per transfer.
+- **Two-profile commit** for trades: (1) add the trade id to a pending list in both profiles and save both; (2) write one decision record with `UpdateAsync` on `Trade_<id>` holding both item lists (the record, not either profile, is the truth); (3) apply in memory with no yield and save both; (4) clear the pending ids. On load, a profile with a pending id reads the record: present means apply if not applied, absent means the trade never happened.
+- **Validate on load.** Saved data crosses a trust boundary to every future server: currencies finite, non-negative integers under a cap well below 2^53 (doubles stop being exact there; some "dupes" are rounding); every item id known; rare-item counts plausible for account age. Repair obvious corruption from the ledger, quarantine suspicious items (owned but untradeable until reviewed) and log. Never wipe.
+- **Refuse broken saves.** Before writing, reject a profile that fails the same invariants, keep the last good version as latest, and alert `[lihfolk]`.
 
 ## ProfileStore essentials
 
@@ -174,6 +207,47 @@ return DataService
 
 A failed load kicks; it never falls through to default data, because defaults would be saved over the real profile. Schema rules: additive changes need only a template change plus `Reconcile`; renames and type changes need a migration and ship with Migrate To Latest Update; migrations are pure and never edited after shipping; test them against copies of real data.
 
+## Runbook: shipping a schema migration
+
+Steps marked `[lihfolk]` are adapted from its migration case studies; platform steps are `[official]`.
+
+1. **Write the step** so it is pure (no yields, no service calls: the load path holds the session lock), total (handles every shape old code could have written, including missing tables), and leaves an audit record in the profile when it removes, merges or converts anything `[lihfolk]`.
+2. **Never shrink paid value.** Rescale only soft currency; keep paid and earned balances in separate fields from day one. Cancel and refund in-flight escrow (trades, listings) in old units before rescaling `[lihfolk]`.
+3. **Fixtures.** Keep a folder of anonymised real profiles from every schema era, plus the messiest long-lived account you have. In CI or the command bar run `migrate` over all of them and assert no error, invariants hold, and `migrate(migrate(x))` equals `migrate(x)`. Record profile size before and after (test method in debugging-and-testing.md).
+4. **Plan for version skew.** Old and new servers overlap after every publish. The guard in `migrate` (refuse data newer than this build) stops old code overwriting new fields. For risky changes use expand, then contract: release N reads both shapes and writes both; release N+1, after every server has restarted, drops the old field. Store a `MinReader` number beside `SchemaVersion` if you need to know the oldest build that may safely rewrite a profile `[lihfolk]`.
+5. **Snapshot** all data stores through Open Cloud just before publishing (one per day) `[official]`.
+6. **Publish.** Multi-place games publish the receiving place first, then the sender, then flip the Configs flag `[lihfolk]`. Creator Hub > Restart Servers with "Restart only servers with outdated versions" and a bleed-off delay of 1–60 minutes; handle `game.ServerRestartScheduled` to warn players, stop starting long activities and save early. Final saves belong there, not squeezed into the 30 s of `BindToClose` `[official]`.
+7. **Watch for one hour:** load failures by reason (read failed, refused newer, step error, lock timeout), count of profiles per step, Data Stores dashboard statuses. A step error above zero means hotfix forward; roll back code only if every profile written so far is still readable by the old build.
+8. **Follow-ups the lazy migration misses** `[lihfolk]`: leaderboards in old units (start a new board name and backfill on join), cross-player records that embed old item ids, support tools that read raw profiles (they must call the same `migrate`).
+
+## Runbook: data incident and rollback
+
+1. **Confirm** with three sources: player reports (ask for UserId and approximate time), dashboard error or throttle spikes, your own load and save counters.
+2. **Stop the bleeding.** If saving is doing harm, publish a hotfix that keeps loading but refuses to save, or revert the place version, then restart outdated servers. Rolling back code does not roll back data: prefer a forward fix when new-schema profiles already exist `[lihfolk]`.
+3. **Snapshot now** if none was taken today, so the current state survives the repair.
+4. **Find the window and the keys:** players who loaded during the bad window (from analytics), or list keys and compare update times.
+5. **Rehearse** the restore on a copy in a test universe with real exported data.
+6. **Restore offline players first;** kick online players with a clear message, then restore. Version history gives one restore point per key per UTC hour, kept 30 days after being superseded, so choose a time before the bad release, not just before the report. Ordered stores have no versions: rebuild them from profiles.
+7. **Verify** with an uncached read (`UseCache = false`) and by joining as the player.
+8. **Compensate and tell players** what happened and what was restored. Apply the class-4 rule: do not restore items the ledger shows were traded away later.
+9. **Post-mortem:** which guard was missing, and the test that would have caught it.
+
+Restore one profile with ProfileStore (unexecuted sketch; API names from the ProfileStore docs; the player must be offline because `SetAsync` ends any active session):
+
+```lua
+--!strict
+local function restoreBeforeAsync(store: any, key: string, beforeUtc: DateTime): boolean
+	local query = store:VersionQuery(key, Enum.SortDirection.Descending, nil, beforeUtc) -- newest version older than the incident
+	local profile = query:NextAsync()
+	if profile == nil then return false end
+	profile:SetAsync() -- writes that version as the latest
+	local check = store:GetAsync(key)
+	return check ~= nil
+end
+```
+
+Without a library use `DataStore:GetVersionAtTimeAsync(key, timestampMs)` and write the value back inside `UpdateAsync`, returning `nil` when a live session owns the key and passing the key info's user ids and metadata through. One key at a time: Data Stores Manager > Compare versions > Revert (it does not know about session locks, so only for offline players). Many keys: the Open Cloud data store API or the Data Stores Batch Processor, rate-limited because they share the live budget.
+
 ## Developer products: idempotent ProcessReceipt
 
 Facts `[VS]`: set `MarketplaceService.ProcessReceipt` exactly once from one script (a second assignment silently replaces the first). It runs after purchase and again on every join for unacknowledged receipts; there is no time-based retry. It can yield. The same receipt can be processed on two servers at once, so dedupe in saved data, not server memory. Returning `PurchaseGranted` acknowledges; `NotProcessedYet` or an error keeps it pending. Never grant from `PromptProductPurchaseFinished`. Roblox reviews weak implementations in Creator Hub.
@@ -303,9 +377,10 @@ end
 1. **Dashboards.** Monitoring > Data Stores: non-200 statuses, throttles, quota usage per request type, storage against the limit. Error report: queue and throttle warnings at peak hours.
 2. **Static scan** with sketch E, then read three paths by hand: load (what happens when it fails?), save (leave, shutdown, autosave), purchase (one handler, idempotent, grant recorded before acknowledging).
 3. **Measure a heavy profile** on a test server: `#HttpService:JSONEncode(value)` against 4,194,304; find what grows without a cap (logs, id lists, placed objects).
-4. **Rollback drill** in a test universe: restore one key with `ListVersionsAsync` + `GetVersionAsync` (or Revert in the Data Stores Manager). Take an Open Cloud snapshot before every update that changes save logic.
+4. **Rollback drill** in a test universe: follow the incident runbook above on one key. Take an Open Cloud snapshot before every update that changes save logic.
 5. **Fix order:** failed load that saves defaults; missing session lock in a game with trading; non-idempotent receipts; `SetAsync` on shared keys and reads during gameplay; leaderboard write rate; versioned migrations; RTBF templates.
-6. **Moving a live game to ProfileStore or Lyra** is never a big bang: on first load read the old key, write the new one, mark the profile as migrated, leave the old key untouched for at least 30 days, and rehearse on copies of real data. For DataStore2 use Roblox's beta migration tool `[official]`.
+6. **Dupe review:** classify each reported dupe with the four-class table; check that every profile writer respects the lock and that value-moving handlers have a synchronous core.
+7. **Moving a live game to ProfileStore or Lyra** is never a big bang: on first load read the old key, write the new one, mark the profile as migrated, leave the old key untouched for at least 30 days, and rehearse on copies of real data. For DataStore2 use Roblox's beta migration tool `[official]`.
 
 Sketch E, data and purchase call sites (unexecuted sketch; read-only; command bar or Studio MCP `execute_luau`, Edit):
 
@@ -355,6 +430,9 @@ print(totals) -- more than one store name per player, or zero BindToClose with n
 - [ ] Prices from `GetProductInfoAsync`; gifts gated by price level; boosts extend, never stack.
 - [ ] RTBF templates cover every user-keyed store (exact `{UserId}` token; `scope_pattern` "global" for default scopes).
 - [ ] Snapshot taken before any update that changes save logic; restore drill done in a test universe; Data Stores dashboard checked at peak.
+- [ ] Migration steps are pure, total and audited; fixtures from every schema era pass, including the idempotence check; paid balances never shrink.
+- [ ] Value-moving actions use a synchronous commit with a ledger entry; non-stackable items carry GUIDs; saves and loads validate invariants.
+- [ ] `ServerRestartScheduled` handled; restarts use "outdated only" with a bleed-off delay.
 
 Grep `references/knowledge-base.md` for `## 4.6`, `## 4.7` and `## 4.8`.
 
@@ -364,6 +442,8 @@ Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
 
 - https://github.com/Roblox/creator-docs: `content/en-us/cloud-services/data-stores/{best-practices,error-codes-and-limits,versioning-listing-and-caching,observability,data-stores-manager,right-to-be-forgotten,player-data-purchasing}.md`, `cloud-services/extended-services.md`, `cloud-services/memory-stores/index.md` (read)
 - https://github.com/MadStudioRoblox/ProfileStore, https://github.com/MadStudioRoblox/ProfileService, https://github.com/paradoxum-games/lyra, https://github.com/nezuo/lapis, https://github.com/Kampfkarren/Roblox (DataStore2) (read: README and last commit)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-datastore-safety/SKILL.md`, `LihFolk Vault V2/04 Data and Persistence/{Data Loss Prevention and Recovery, Schema Migrations - Worked Case Studies, Trading Systems Without Duplication, Saving Correctly - Autosave and BindToClose}.md`, `22 Anti-Exploit and Security/Economy Exploits - Dupes Races and Purchase Abuse.md`, `41 Multiplayer Services/Server Shutdowns Soft Updates and Migration.md` (read)
+- https://github.com/MadStudioRoblox/ProfileStore `docs/api.md` for `VersionQuery` and `Profile:SetAsync` (read); `projects/update-games.md` and `reference/engine/classes/DataModel.yaml` in creator-docs for restarts and `ServerRestartScheduled` (read)
 - Limits and Extended Services (search summary): https://devforum.roblox.com/t/datastores-access-and-storage-updates/3597255, https://devforum.roblox.com/t/extended-services-for-data-stores-is-now-available/4504347, https://devforum.roblox.com/t/extended-services-update/4070634, https://devforum.roblox.com/t/weekly-recap-july-13-%E2%80%93-17-animation-graphs-go-live-5%C3%97-more-data-store-storage/4743286
 - Libraries, dupes and migration (search summary): https://devforum.roblox.com/t/datastores-migration-packages-for-the-berezaa-method-and-datastore2-module-public-beta/3631514, https://devforum.roblox.com/t/session-locking-explained-datastore/846799, https://devforum.roblox.com/t/exploiting-how-to-prevent-exploiters-from-abusing-data-store-rollbacks-and-sanitizing-against-data-store-vulnerabilities/2019989, https://devforum.roblox.com/t/what-is-the-best-datastore-module-to-use-currently/3598021, https://devforum.roblox.com/t/should-i-use-profilestore-or-profileservice/3871636
 - No evidence found: a public post-mortem of a specific large data-loss or dupe incident with numbers.

@@ -147,7 +147,7 @@ Guidance tools. One pointer at a time; two pointers and the player follows neith
 | NPC or ghost demonstration | A physical verb (jump timing, combo) | Text would do; never block input while it plays |
 | Level shape: show, try, test | Obbies, horror, platforming | Economy steps the space cannot show |
 
-House rules apply: any arrow, sign or chevron that is a 3D object is a Blender mesh with collision off for decoration-only guides; beams, highlights and particles are effects and are fine. Every cue uses colour plus shape or words, sits inside the safe area, and stops pulsing when `GuiService.ReducedMotionEnabled` is true `[VS]`.
+House rules apply: any arrow, sign or chevron that is a 3D object is a Blender mesh, placed above head height or beside the route so its collision never blocks the path; beams, highlights and particles are effects and are fine. Every cue uses colour plus shape or words, sits inside the safe area, and stops pulsing when `GuiService.ReducedMotionEnabled` is true `[VS]`.
 
 What the server machine must guarantee `[lihfolk]`:
 

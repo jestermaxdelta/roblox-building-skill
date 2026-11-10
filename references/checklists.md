@@ -4,6 +4,16 @@ Collected from knowledge-base sections 1.12.3 (design review), 3.8 (compliance),
 
 Two entry points. Building from scratch: run Gate 0 → Gate 5 in order. Levelling up an existing game: run Gate A first; it tells you which of Gates 0–5 to re-run and in what order, and every change it produces ships through the live-change items at the end of Gate A.
 
+## Start here by level
+
+| Level | Run | Skip for now |
+|---|---|---|
+| Beginner | Gate 0 (one-pager and first-five-minutes script), Gate 1, the house-rule scan in Gate 4, the three data items at the top of Gate 2 "Data and purchases", and Gate 3 if anything is sold. For an existing game: Gate A "Before touching anything" plus the top-3 actions | Tooling, CI, experiments, matchmaking, the growth gate |
+| Intermediate | Every gate in order; Gate 2 before every release; Gate A every 6 weeks | Nothing in Gates 0–5; treat the growth gate as optional until retention holds |
+| Expert | All gates as release criteria in CI or a release checklist, with a named owner per gate; second-opinion review on ship and rebuild calls; deliverable scores logged | Nothing |
+
+A gate item is pass or fail with evidence (a number, a screenshot, a file and line). "Mostly" is a fail.
+
 ## Gate A: level-up audit (existing games)
 
 Method, scoring criteria and benchmark table: `references/audit-existing-game.md`. Report: `templates/game-audit-report.md`.
@@ -13,6 +23,7 @@ Before touching anything
 - [ ] Intake answered: universe and place IDs, 6-week goal and target metric, source owner (Rojo, Script Sync or Studio), data layer and schema version, last 30 days of changes.
 - [ ] Baseline recorded: 14 days (minimum 7) of PTR, bounce < 60 s and 61–180 s, D1/D7/D30, session time, conversion, ARPPU, ARPDAU, crash rate, plus the live place version number. No PTR comparison across 12 Oct 2026.
 - [ ] Benchmark named for every number: the game's own Creator Analytics benchmark and its type, or the dated fallback when under 100 DAU.
+- [ ] Developer level set (beginner, intermediate, expert) and the report shaped to it: a beginner gets blockers plus the top 3 actions explained; an expert gets the full ranked list with measurements.
 - [ ] Audit ran read-only: Studio MCP in Edit mode, "Save & load data" and publish permissions off, no `multi_edit`, no DataStore calls, nothing saved or published.
 
 Findings
@@ -20,6 +31,8 @@ Findings
 - [ ] All ten dimensions scored 0–5 with one evidence line each: first session, core loop, progression and economy, retention and LiveOps, monetisation, UI/UX, art and house rules, performance, security and data, discovery and growth.
 - [ ] Caps applied: no live numbers → at most 3; (HR) any visible primitive, marketplace or generated asset, walk-through mesh, invasive or non-compliant offer, client-trusted value or data-loss path → at most 1 and listed as a blocker.
 - [ ] (HR) House-rule scan run in every place; output pasted into the report.
+- [ ] Sub-checks run on a phone and their caps applied: 2a game feel and audio, 6a accessibility and quality of life, 4a community and safety (unfiltered player text or an in-game link is a blocker).
+- [ ] Every finding carries an evidence grade (measured, observed, static, inferred); findings from reading alone are labelled "static, not measured"; dismissed findings are listed.
 - [ ] Timed first-session log filled: seconds to playable, first reward, first upgrade, first prompt, first Robux offer.
 - [ ] Triage step named (T0–T8) with the numbers that selected it; platform causes (seasonality, competitors, algorithm change) ruled in or out.
 
@@ -27,6 +40,7 @@ Plan
 
 - [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to; top 10 ranked; blockers first.
 - [ ] Decision stated with its rule: quick-wins sprint, rebuild the loop in the same universe, or park. A rebuild keeps the universe, DataStore keys, purchases and community.
+- [ ] A rebuild, park, save-schema migration, live price change or ship decision has a blind second opinion: neutral question, rubric fixed first, same evidence pack, dissent and confidence recorded.
 - [ ] 2-week plan has one target metric and one variable per dimension per week; 6-week plan ends with a re-audit.
 - [ ] The gates to re-run are listed (for example Gate 3 after any offer change, Gate 4 after any art or performance change, Gate 2 before every release).
 
@@ -41,7 +55,9 @@ Shipping changes to a live game
 - [ ] Alerts on crash rate, out-of-memory exits and server frame rate; Performance dashboard watched by place version for 2 hours.
 - [ ] Rollback triggers written before release; Config flip first, version restore second.
 - [ ] Update announcement (60 characters), Experience Event and in-game changelog posted; thumbnails and title changed only with the update.
+- [ ] Risky systems (trading, new shop items, currency sources) have a kill switch; test-only flags are guarded by `RunService:IsStudio()`; errors log `JobId` and place version.
 - [ ] Result read after the lag (PTR and bounce 24–72 h, D1 2 days, D7 8 days) and logged as kept or reverted.
+- [ ] Each shipped deliverable scored 0–10 (any failed gate caps it at 5.0); nothing under 8.5 is reported as done.
 
 ## Gate 0: before any code (design review)
 
@@ -196,7 +212,12 @@ Detail in `references/growth-and-marketing.md`.
 - [ ] (HR) No giveaway, Robux or "free" wording in title, thumbnails or description; social rewards stay bonuses after the first win; no restarting countdowns or false scarcity in event marketing.
 - [ ] No URLs, invite codes or handles in-game; social links only on the details page; paid creator content disclosed.
 - [ ] Engagement-objective spend (for the 250-play gate) has its own budget and is paused at the goal.
+- [ ] Soft launch done with "Exclude from recommendations" on: 85%+ of new players reach the first reward within 60 s, no step in the first 3 minutes loses over 15%, median first session 10+ min.
+- [ ] Ad and share-link joins tagged through LaunchData; cohort value computed per unique user, not per play.
+- [ ] Server size fits current CCU; the loop works with one to three players.
 
 ## Sources
 
 This file restates gates defined in the topic references; evidence and source lists live there. Gate A and the growth gate were added on 2026-11-10 from `references/audit-existing-game.md` and `references/growth-and-marketing.md` (creator docs read from the `Roblox/creator-docs` mirror, commit dated 2026-11-07).
+
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/quality-score/SKILL.md`, `skills/council-method/SKILL.md`, `commands/audit.md`, `27 Marketing and Growth/Launch Strategy - The First Two Weeks.md`, `Rescuing a Weak Launch - Empty Servers, Low CCU and Relaunch Tactics.md` (read). Source of the evidence-grade, second-opinion, deliverable-score and soft-launch items, rewritten in our own words `[lihfolk]`.

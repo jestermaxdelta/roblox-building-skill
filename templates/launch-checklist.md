@@ -4,6 +4,10 @@ Run top to bottom in the final three weeks. Each line has an owner and a date. D
 
 Mode: [ ] New launch · [ ] Relaunch or major update of a live game. For a live game run Gate A first (references/audit-existing-game.md), keep the universe and DataStore keys, and treat every line marked (LIVE) as mandatory.
 
+Level: a beginner can sign off with the lines marked (HR), the T-14 playtest and scan lines, the receipt test, the thumbnail lines and the soft-launch block; leave experiments, matchmaking, ads and creator lines blank and say so. Intermediate and expert teams fill every line.
+
+Do not start this checklist while any of these is true: nobody outside the team has finished the first session on a mid-range phone; join time on a phone is unmeasured; no funnel logs join to minute 10; the save system has not survived a forced server shutdown test.
+
 ## T-21 days: reach and audience
 
 - [ ] Kids/Select path chosen and started: creator verified with 2FA, questionnaire done, Plus/Premium for 2 months or the 1,000 R$ fee; plan for 250 engaged age-checked 16+ plays inside 60 days (older-audience content, community, or an Engagement-objective campaign with its own budget), or the 50,000 R$ expedited review. Owner: __ Date: __
@@ -60,6 +64,17 @@ Mode: [ ] New launch · [ ] Relaunch or major update of a live game. For a live 
 - [ ] Safety: `BanAsync` tooling, report handling and appeal path ready; ban rules published.
 - [ ] Rollback plan: previous version id recorded; data migrations backwards compatible or Migrate To Latest Update chosen.
 
+## T-7 to T-3 days: soft launch (public, "Exclude from recommendations" on)
+
+- [ ] A few hundred players you control brought in (community, testers' friends, a small Plays campaign with a LaunchData tag). Owner: __ Date: __
+- [ ] Zero data loss and no stuck tutorial states across the cohort; console clean.
+- [ ] 85%+ of new players reach the first reward within 60 s (fix first if under 70%).
+- [ ] Biggest single-step drop in the first 3 minutes is under 15% (fix first if over 25%).
+- [ ] Median first session 10+ min (fix first if under 5); D1 direction noted (small samples are noisy).
+- [ ] Kill switches exist for trading, new shop items and any currency source; test-only flags guarded by `RunService:IsStudio()`.
+- [ ] Server size set for expected launch CCU so players land together; the loop works with one to three players.
+- [ ] One fix shipped per leak, cohort re-read; recommendations stay excluded until the bars pass.
+
 ## T-1 day
 
 - [ ] CI produced the release build; test universe green; production publish approved manually.
@@ -69,6 +84,8 @@ Mode: [ ] New launch · [ ] Relaunch or major update of a live game. For a live 
 
 ## Launch day (Saturday, inside a seasonal window if possible)
 
+- [ ] Build published earlier in the week and gated by server time or a Config; go-live (recommendations on, event start, announcement) opens into the weekend. Launch-day changes are bug fixes only.
+- [ ] Roles set for the first 12 hours: errors, funnel and player count, community reports (solo: hourly alarms).
 - [ ] Publish at <time>; verify join on phone and PC; watch Performance Dashboard (by place version) and console errors for the first 2 hours.
 - [ ] (LIVE) Restart only servers with outdated versions, with a 5–10 minute delay; confirm the restore path (restore version → publish → restart).
 - [ ] Send the update announcement; start the event; switch the title tag and thumbnail set; post the first clip and the group and community posts with share links.
@@ -81,6 +98,8 @@ Mode: [ ] New launch · [ ] Relaunch or major update of a live game. For a live 
 - [ ] Read the share-link funnel per channel (users with qualified plays, 7-day playtime, D7, 30-day revenue per user); drop the channels that bring players who leave.
 - [ ] No paid traffic until the growth gate in references/checklists.md passes (bounce and D1 at or above benchmark median, like ratio ≥ 85%, max cost per play computed). Exception: a capped measurement buy or the Engagement objective for the 250-play gate.
 - [ ] Thumbnails left alone for 7+ days; change one variable per release.
+- [ ] Day 5–7 branch chosen and written down: healthy (first content drop, consider ads) · leaky start (fix onboarding, buy nothing, add no content) · weak promise (new thumbnail concepts) · no pull (competitor teardown before spending more).
+- [ ] Days 7–14: first content aimed at existing players, paired with an event, one new thumbnail, one update announcement.
 
 ## Sign-off
 

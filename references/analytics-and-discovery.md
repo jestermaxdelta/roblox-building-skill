@@ -2,6 +2,16 @@
 
 Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs on 2026-11-10. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: `references/audit-existing-game.md` holds the triage order and benchmark table, `references/growth-and-marketing.md` holds ads, creators and community. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
 
+## Start here by level
+
+| Level | Do first | Ignore for now |
+|---|---|---|
+| Beginner | 1. Upload 2–3 honest custom thumbnails (without one the game gets no Home impressions). 2. Log the seven onboarding funnel steps. 3. Each week read three numbers: first-play bounce, D1, average session time. 4. Put every tunable number in Configs | Experiments, custom dashboards, matchmaking weights, the ranking-signal table beyond its first four rows |
+| Intermediate | Read the Home Recommendations signals in priority order; compare with the benchmark P50–P90; keep 3–5 thumbnails as distinct hooks; shop and offer funnels plus economy events; alerts by place version | Sub-point effects you cannot detect at your traffic (see sample sizes below) |
+| Expert | Open Cloud analytics pulls, cohort and source splits, the CCU model, pre-registered experiments with minimum detectable effect and guardrails, thumbnail tests with confidence intervals | Nothing; rebaseline after every platform measurement change |
+
+Terms: **impression** a tile shown on Home; **PTR** play-through rate, plays ÷ impressions; **qualified play** a play that lasts (filters accidental taps); **bounce** a first play ending inside 60 s or 61–180 s; **play days** days a user returns in a window; **cohort** users grouped by first-play date; **P50/P90** median and top-decile of the benchmark group; **MDE** minimum detectable effect, the smallest change a test can reliably see.
+
 ## Platform facts that shape design `[VS]`
 
 - Mobile is the majority; Android is about 65% of players, most on 2–4 GB phones (see performance.md).
@@ -37,6 +47,10 @@ Reading traps `[official]`:
 - A retention dip after a traffic influx is normal; so is a PTR dip while impressions rise.
 - The New User First Session Retention chart (share still playing after X minutes, this period vs last) is the fastest onboarding alarm: a drop at minute 5 after an update points at a new step, an error or a performance regression.
 - Engagement, retention and PTR differ by acquisition source. Compare like with like in Acquisition → new users funnel (users with plays, conversion rate, D7, 7-day playtime, 30-day payer conversion, 30-day revenue per user), by source or by share link.
+
+The CCU model `[lihfolk]` (an identity, so it always holds): `average CCU = sessions per day × average session minutes ÷ 1,440`. Sessions per day = new-user sessions (Σ over sources of impressions × play-through rate) + returning-user sessions (Σ over past cohorts of cohort size × retention on that day). Peak CCU is roughly 1.5–2.5× the daily average for a single-region audience (rule of thumb). Put your own dashboard values in a sheet and change one input at a time: in LihFolk's illustrative mid-size example a 50% rise in impressions moved CCU most, then session length, long-tail retention (days 8–30) and sessions per user, with a 20% PTR gain worth about as much as a good retention gain. Impressions cannot be bought organically; they are earned by the other inputs, which is why retention work pays twice.
+
+Weekly review, eight lines `[lihfolk]`: Home impressions (7-day average) · PTR · new users per day by source · bounce (< 60 s, 61–180 s) · D1 and D7 of last week's cohorts · session minutes and sessions per user · average and peak CCU · changes shipped with dates. If CCU moved, the cause sits at the earliest line that also moved. Split every spike three ways: did impressions rise (ranking or ads), did PTR rise (art), or did returning sessions rise (update)?
 
 Other dashboards worth a weekly look `[official][VS]`:
 
@@ -78,6 +92,37 @@ Standard schema (see templates/analytics-event-plan.md):
 - Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. A new value is staged first (visible only in Studio sessions), then "Publish now" reaches players in about 15 s–1 min, or "Publish over 15 min" rolls it out gradually; History → Restore re-stages the previous value `[official]`. (Correction: an earlier version of this file said "about 5 minutes"; clients may still take a few minutes to reflect a publish.) Configs and experiments can target by country, tenure and spender tier.
 - Matchmaking experiments: one at a time, 3 variants, 100% rollout.
 
+Test design and sample size `[lihfolk]` (standard A/B approximation; Roblox shows an MDE on the experiment setup screen instead of a formula):
+
+```
+n per group ≈ 16 × p × (1 − p) ÷ d²      p = baseline rate, d = absolute difference to detect
+(about 95% confidence, 80% power)
+```
+
+| Metric and baseline | Difference to detect | Needed per group | At 400 new players a day, two groups |
+|---|---|---|---|
+| D1 20% | +1 point | about 25,600 | about 128 days (over the 60-day limit: do not run it) |
+| D1 20% | +3 points | about 2,850 | about 15 days |
+| D1 20% | +5 points | about 1,020 | about 5 days, but run the 14-day minimum |
+| Qualified PTR 4% | +25% relative (to 5%) | about 6,100 impressions | — |
+| Qualified PTR 4% | +8% relative | about 60,000 impressions | — |
+
+- Small games test bold changes (a different first minute, a new thumbnail promise), not button colours. If the dashboard MDE is larger than the effect you expect, do not start the test.
+- Write the plan first: hypothesis, the one Config key, where the player is enrolled (call `GetConfigForPlayerAsync` and `GetValue` only at the moment of exposure), goal metric, guardrail metrics, what "inconclusive" will mean, and a freeze on related changes for the duration.
+- Run the full planned duration; stopping on the first significant-looking day inflates false wins, and early leads often fade (novelty). Two full weeks covers the weekday and weekend cycle.
+- Payer conversion is less noisy than revenue per user, which a few big spenders dominate.
+
+| Experiment symptom | Cause | Fix |
+|---|---|---|
+| Groups are not the expected sizes | Enrolment happens after a step the variant changes | Enrol before the difference starts; restart |
+| Everything "not significant" | Underpowered; effect below the MDE | Bolder change, larger rollout, longer run, or accept it does not matter |
+| Big early win that fades | Novelty or peeking | Judge at the planned end |
+| Client shows the variant, server grants the control | Two decision points | Decide once on the server, pass the value to the client by attribute |
+| Results odd after a patch | The tested area changed mid-test | Freeze; restart if needed |
+| Players richer in one arm after the test | Economy variants persist | Plan how to unify balances before starting |
+
+Rules that still apply inside an experiment: odds disclosed in every variant, no deceptive variant (house rule 3), and prefer testing offer placement or structure over showing two players different prices for the same item.
+
 ## Recommended For You `[VS]`
 
 The system retrieves candidates and then ranks them per user. Ranking counts only organic Recommended For You users, and it uses per-user averages, not totals.
@@ -113,6 +158,23 @@ Thumbnail and icon testing `[official][VS]`:
 - Judge a variant on qualified PTR and average playtime together. A tile that lifts clicks and shortens sessions is a loss.
 - Under about 1,000 DAU expect little effect (vault). There is no official icon A/B tool; `[community]` developers have asked for one. Sponsored campaigns accept up to 10 creatives split evenly, which is the practical way to compare hooks quickly (growth-and-marketing.md §3).
 - Thumbnails can be managed through Open Cloud; per-thumbnail metrics are in the Analytics Query API.
+- Design each round `[lihfolk]`: one control (the current best), two idea challengers (different promises), two single-variable tweaks of the control. Write the hypothesis, the one variable, the metric (qualified PTR) and the guardrail (average playtime per qualified play) before uploading. Run 10–14 days so every weekday and a weekend are covered, and do not start on a big update day. A rough 95% interval per thumbnail is `qPTR ± 1.96 × √(qPTR × (1 − qPTR) ÷ impressions)`; if the challenger's interval overlaps the control's, keep running or test a bolder idea. Report uplift with its impressions ("+18% on 22K vs 31K").
+- The bandit gives weaker thumbnails fewer impressions on purpose, and a "loser" overall can be the best match for one user group; removing it can lower the total.
+
+| Qualified PTR | Playtime per qualified play | Bounce and D1 | Verdict |
+|---|---|---|---|
+| Up | Up or flat | Flat or better | Keep |
+| Up | Down | Worse | Over-promise: retire it, or make the first minutes deliver it |
+| Flat | Up | Better | Keep in the pool; it attracts the right players |
+| Down | Any | Any | Retire unless it wins a segment |
+
+Thumbnail review before upload (rubric shape adapted from `[lihfolk]`, criteria reconciled with market-scan rules 1–13). Inputs: the full-size image, the same image at 320×180 and 160×90, a greyscale copy, the icon, and two or three raw in-game screenshots of what it shows.
+
+- Gates, pass or fail; a fail means do not upload: **truthful** (every character, item, place, number and UI element exists in the game, in the game's own art style; cannot be judged without the raw screenshots) and **policy-safe** (no links, handles or QR codes, no Robux, discount or giveaway claim, fits the maturity label, nobody else's characters or branding).
+- Ten criteria, each 0, 0.5 or 1: one clear focal subject (about a third to half of the frame) · reads at 320×180 and the subject still reads at 160×90 · subject separates from the background in greyscale · genre obvious in one second · a face with the right emotion or an action in progress · text discipline (none, or a few large outlined words or one big number) · nothing essential in the bottom 15–20% or corners · shares hero, palette or logo with the icon · stands out in a row of competitor tiles while keeping genre cues · clutter controlled.
+- 8.5+ upload as a challenger; 7–8 fix the lowest criterion first; 5–6.5 re-shoot (camera distance, lighting, subject); under 5 new concept.
+
+Conflict: LihFolk's rubric wants three elements or fewer and no arrows, stickers or emoji, with text optional; the vault's feed coding found giant numbers, before→after climbs and tagged titles common among current simulator hits and allows up to five elements. Use the vault rules for number-driven genres (simulator, +1, tycoon) and the stricter LihFolk bar for horror, RPG and other mood-led genres, and let the personalisation data decide.
 
 What clickbait costs:
 
@@ -181,6 +243,8 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 - [ ] Every tunable is a Configs key; the two riskiest numbers are in an Experiment or a dated before/after test.
 - [ ] Alerts exist for crash rate, out-of-memory exits and server frame rate; Performance checked by place version after each publish.
 - [ ] No PTR comparison across 12 Oct 2026; signal lag (24 h) and impression lag (days) respected before judging.
+- [ ] Any test has a written hypothesis, one variable, a guardrail metric and a sample size the traffic can reach; it ran its full duration.
+- [ ] New thumbnails passed the truthful and policy gates and scored 8.5+ on the review rubric before upload.
 - [ ] `[VS]` facts re-checked at create.roblox.com/docs.
 
 ## Sources
@@ -198,3 +262,4 @@ Accessed 2026-11-10. Creator docs read from the `Roblox/creator-docs` GitHub mir
 - https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)
 - https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/improvements-to-game-search-ranking/673608 (search summaries)
 - Vault: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `61 Thumbnails and CTR/` notes "From CTR to CCU - Impressions, Play-Through and the Discovery Loop", "Thumbnail and Icon A-B Testing - Method, Sample Size and Reading Results", "Thumbnail Review Checklist and Scoring Rubric"; `27 Marketing and Growth/A-B Testing and Experiments on Roblox.md`, `Update Cadence and Hype Cycles.md` (read). Adapted in our own words.

@@ -1,6 +1,16 @@
 # Design foundations: fun, motivation, difficulty, FTUE, narrative
 
-Distilled from knowledge-base sections 1.1 to 1.4 and 1.9, plus a 2026-11-10 research pass on tutorial style, spawn and goal clarity. Use this while writing the one-pager, pillars, loops and FTUE script, and when reviewing a design or auditing a live game's first session. The working procedure for a built loop (spec format, scorecard, diagnosis table, experiments) is in core-loop-tuning.md. Benchmarks are starting estimates, not laws. Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[VS]` version-sensitive as of 2026-11-10, `[house]` house estimate.
+Distilled from knowledge-base sections 1.1 to 1.4 and 1.9, plus a 2026-11-10 research pass on tutorial style, spawn and goal clarity. Use this while writing the one-pager, pillars, loops and FTUE script, and when reviewing a design or auditing a live game's first session. The working procedure for a built loop (spec format, scorecard, diagnosis table, experiments) is in core-loop-tuning.md. Benchmarks are starting estimates, not laws. Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its "reference project" is one anonymised production game, its timings are rules of thumb), `[VS]` version-sensitive as of 2026-11-10, `[house]` house estimate.
+
+## Start here by level
+
+Terms: **MDA** = mechanics, dynamics, aesthetics (rules, the behaviour they cause, the feeling that results). **FTUE** = first-time user experience, from pressing Play to understanding the loop. **SDT** = self-determination theory (autonomy, competence, relatedness). **Meso / macro / meta loop** = the goal of the next minutes, of one sitting, and of days to weeks.
+
+| Level | Do this | Leave for later |
+|---|---|---|
+| Beginner | Name one target feeling (§1). Write the loop as verb → feedback → reward (§3). Write the FTUE table in §7 and build the guided first loop (§7.1). Put one next-goal line on screen (§7.3). Read the banned list in §5 | Motivation models, DDA, narrative audits |
+| Intermediate | Score the paper rubric (§3); fill the SDT matrix (§4); check the difficulty rules and hint ladder (§6); use the genre row in §7.4; run the 10-screenshot goal test | Experience Density, Quantic clusters |
+| Expert | Pre-mortem the dynamics you will actually get; plot the sawtooth against death heatmaps; segment onboarding by `GetPlayerSegmentsAsync`; test first-reward size and tutorial order as experiments (core-loop-tuning.md §7); audit every reveal and tell against §5 | — |
 
 ## 1. Design backwards from the feeling (MDA)
 
@@ -93,6 +103,8 @@ Treat every design as if a 9-year-old plays it with a parent's card `[VS]`. Bann
 - Hidden odds. Every paid random item shows odds before purchase; gate with `PolicyService` `[VS]`.
 - Absence punishment: crops stop growing, they don't die; pets wait, they don't starve.
 - Social shaming: no "poor" tags, spend ranks or exclusion of non-spenders.
+- Also banned `[lihfolk]`: confirm-shaming on a decline button (use a neutral "Not now"); a reel that stops one card from the jackpot on anything bought with Robux; suspense "tells" that are randomised instead of derived from the real result (a gold glow must mean the result is gold tier or better); reels that show items the roll could not produce; soft-currency packs at irregular exchange rates that hide the Robux price; auto-modes that spend paid consumables without a fresh opt-in; prompts that urge a player to buy for a friend; a buy button placed where a common button normally sits.
+- The parent test `[lihfolk]`: would you explain this feature, as built, to the player's parent without changing a word? If not, it does not ship.
 
 PvP theft (the "Steal a ___" loop) drives sessions and defence purchases but distresses kids and invites cheating `[VS]`. Lower-risk (recommended): thieves take a copy or an income share, 1–3 protected slots, offline protection, a steal-back window, defence products as convenience only. Bold: full theft in opt-in raid servers with a theft-free main mode; higher engagement in that group, split player base, reputational risk.
 
@@ -155,6 +167,17 @@ On Roblox: sessions under 60 s and 61–180 s count against you in discovery `[V
 
 Evidence: `[official]` docs say use a brief tutorial or contextual tips, avoid long tutorials, end onboarding on a designed moment of joy, and A/B-test steps (their example: a shorter dialogue sequence against a guided arrow). `[community]` single self-reported cases: D1 6% → 15% after a 5-step tutorial became 3; players leaving in the first 30 s fell from 45% to 18% after the spawn area got one clear first action; a counter-case where a more hand-holding tutorial moved session time only from 6 to 6.5 min. No controlled forced-versus-contextual comparison was found. Reading: shortening and clarifying helps; more tutorial does not fix a loop that is not fun.
 
+What a new player may touch before it is taught `[lihfolk]`:
+
+| Gating model | How it works | Good for | Risk |
+|---|---|---|---|
+| Hard gate | Everything except the current step is disabled | Very small games with two or three verbs | Feels like a cage; experienced players leave |
+| Soft gate | Everything works; pointers and rewards follow the script | Most games | Players wander off-script, so the goal line must always be right |
+| HUD reveal | Buttons stay hidden until their step, then animate in | Menu-heavy simulators on phones | Skips and mid-tutorial rejoins must reveal everything they passed |
+| Contextual unlock | A feature appears when first needed | Large games | Optional features are never found unless a goal points at them |
+
+House default: soft gate plus HUD reveal. The build method (step data, server state machine, patterns, test matrix, a five-version case study with funnel numbers) is in core-loop-tuning.md §3.
+
 Returning players: `AnalyticsService:GetPlayerSegmentsAsync(player)` (server-only) returns coarse buckets such as `UserNewReturningStatus`, `ExperienceActivationStatus` (new, active, lapsed, reactivated), `EngagementLevel` and `UserAcquisitionSource`; `HasData` is false when unavailable `[official]` `[VS]`. Use it with the saved profile to skip the tutorial for returners and show lapsed players a "what's new" recap. House rule: never use the payer buckets to change difficulty, odds or prices.
 
 ### 7.2 Load, spawn and the first 60 seconds
@@ -163,6 +186,8 @@ Returning players: `AnalyticsService:GetPlayerSegmentsAsync(player)` (server-onl
 - No start menu, play button or cutscene before the verb. `[community]` developers describe menus as friction for casual games; put settings and server choice behind a small HUD button. Round-based games spawn the player into a lobby where the verb already works (practice target, mini-loop) and keep the wait under 30 s.
 - The spawn pad faces the first verb target, which is within about 3 s of walking `[house]`. Veterans' builds and effects may be in view as a promise of the future, but nothing they do may cover the first prompt.
 - Keep the spawn zone light so control arrives fast on a 3 GB Android phone: instance streaming on, preload only the first-screen UI and spawn-zone assets, load the rest behind play (performance.md). The docs' loading-screen sample holds its screen for a fixed 5 s; do not copy that delay.
+- Reference numbers `[lihfolk]` (one production game): loading screen capped at 12 s, skippable after 5 s, new players let in at 8 s whatever had loaded; a polished 27 s intro cutscene disabled because it sat inside the bounce window; the walk from the portal to the first gate cut from about 460 to about 227 studs. Rules of thumb from the same source: control within about 10 s of join, the walk to the first target under 10 s, any cutscene skippable and under 5 s.
+- A custom loading screen closes on a ready signal **or** a hard timeout, never on a signal alone; shows real progress or a spinner, never a fake bar; and anything revealed early must tolerate data that has not arrived yet (placeholders) `[lihfolk]`.
 - Measure it: seconds from join to `FirstAction` (the `FtueBeat` event in core-loop-tuning.md §7), under-60 s bounce, and the Performance dashboard (crash rate, out-of-memory exits) by device type and place version.
 
 ### 7.3 Goal clarity: the "what do I do next" problem
@@ -179,11 +204,33 @@ Next-goal HUD spec `[house]`:
 6. One pulsing element at a time; at most 3 goal lines on a phone; nothing in the goal line can require a purchase.
 7. When a player out-runs the content, say so: show the next update's real date and point at an evergreen goal (collection, leaderboard, mastery).
 
+Worked example of a goal chain `[lihfolk]` (reference project, added because players said they felt "thrown in" after the tutorial): 35 goals generated from the save, not hand-written. Walk into the first zone; defeat 5 enemies; then for each gate: reach the rebirth requirement and rebirth if the gate needs it, earn the gate price, open it; defeat the realm boss; enter the next realm; and so on to the final boss. Each goal pays once, sized to the player's stage (a gate goal paid 5% of that gate's cost plus a few gems; first kills a small flat amount), shows a progress bar and a trail to its target, and holds the completed bar for 2.5 s before the next goal slides in. For a first session, 3–5 tracked goals are enough ("catch your first fish", "sell for 100 coins", "buy a better rod", "reach the second island"), with any social goal optional. Where the game has quests, seed a real one so a tutorial step completes it: the tutorial then ends on a genuine payout and has taught the quest system.
+
 Tests: take 10 random screenshots across the first 30 minutes (every one shows a goal, its progress and its reward); ask a tester at minute 2 what they are doing and why; log `GoalShown` and `GoalDone` and check that no stretch of the session has no active goal.
 
 Anti-patterns: a quest log that lives only in a menu; five quests at once in session 1; a goal whose reward is hidden; goals stated only in text; moving the goal as the player nears it.
 
-### 7.4 Level-up: first-session symptoms → likely cause → fix
+### 7.4 The first five minutes by genre `[lihfolk]`
+
+The principles hold everywhere; the shape does not. Start from the row, then open the genre file in `references/genres/` for the full loop.
+
+| Genre | First 30 s | By 5 min | Teach later | Genre-specific failure |
+|---|---|---|---|---|
+| Simulator, idle | First collect | Collect, sell, upgrade, first pet or egg; loop closed 3+ times | Rebirth, trading, later zones | A long walk to the first pad; a shop before the first sale |
+| Tycoon | Plot claimed, first dropper running | First upgrade bought from income; next purchase visible with its price | Rebirth, automation | An empty plot with nothing affordable |
+| Trend (steal, escape, grab) | The verb in the title | First risk event survived or lost with a clear lesson; first stash secured | Defence upgrades, rare variants | Being robbed by a far richer player in minute one: give newcomers a grace window or income-gap limits |
+| Obby, platformer | Moving and jumping | Several checkpoints; one new mechanic shown, tried, tested | Skips, speedrun routes | A hard jump before the first checkpoint (first checkpoint within about 20 s) |
+| Combat, RPG, battlegrounds | First hit lands | First kill of a weak enemy that belongs to this player; one ability; one upgrade | Combos, builds, PvP | Full-strength enemies; five abilities at once |
+| Horror, story | Atmosphere, no threat | First threat met with a long readable warning; first death explained in one sentence | Rare entities, lore | An unfair first death with no lesson |
+| Social, roleplay | Owning something (house, car, outfit) | A role picked; first interaction with another player | Jobs, premium items | Any gate before the props and the friends |
+| Tower defense | First tower placed at a pointed-out good spot | First waves won; one upgrade before wave 3 | Synergies, modes | Wave 1 can be lost; every stat explained first |
+| Survival, co-op | First resource gathered | Shelter or fire; first night survived with friends | Crafting trees | A lonely, dark start with no direction |
+
+By minute five in any genre the player has: closed the loop three or more times, seen a number rise, made one real choice, spent something that changed the verb, seen the long loop (a locked gate with a price, the rebirth button, the rarity ladder), had one designed moment of joy, and been handed the next goal.
+
+Conflict: the LihFolk timeline puts the first verb at 15–30 s and the first big reward at 20–40 s (under 60 s in its checklist), and suggests a favourite prompt 25 s after the tutorial ends. Ours are stricter on purpose: verb by 15 s, first reward by 30 s, and no social or purchase card until the first win and the 600 s grace (house rule). Keep ours; treat theirs as the outer limit.
+
+### 7.5 Level-up: first-session symptoms → likely cause → fix
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
@@ -217,8 +264,10 @@ On Roblox: players skip text, so the world tells the story. Build a Blender stor
 - [ ] FTUE written as beats: verb by 15 s, first reward by 30 s, aha by 2 min, first meso goal by 10 min; no purchase prompt inside it.
 - [ ] Tutorial is a guided first loop plus contextual tips; any forced part is at most 3 steps, skippable, and never replayed for returners.
 - [ ] Spawn faces the verb with no menu in front of it; control time measured on a 3 GB Android phone.
-- [ ] Next-goal line always on screen; 10-screenshot test passed; goal slot never empty.
-- [ ] Live game: §7.4 symptoms checked against Creator Analytics before any redesign.
+- [ ] Next-goal line always on screen; 10-screenshot test passed; goal slot never empty; a goal chain or quest takes over when the tutorial ends.
+- [ ] The genre row in §7.4 is met and its named failure has a counter-measure.
+- [ ] Every reveal, tell and decline button checked against the §5 list; the parent test passes.
+- [ ] Live game: §7.5 symptoms checked against Creator Analytics before any redesign.
 
 ## Sources
 
@@ -237,3 +286,4 @@ Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at co
 - https://devforum.roblox.com/t/does-having-an-in-game-start-menumain-menu-affect-player-retention/2701477 (search summary)
 - https://devforum.roblox.com/t/players-dont-know-how-to-play-my-game/1619037 (search summary)
 - https://devforum.roblox.com/t/my-day-1-retention-is-awful-23-losing-half-my-players-in-under-2-minutes-what-am-i-doing-wrong-with-onboarding/4186434 (search summary)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/10 Game Design and Genres/First-Time User Experience and Onboarding.md`, `…/Onboarding by Genre - The First Five Minutes.md`, `…/Core Loops and Session Design.md`, `…/Ethical Design and Player Trust.md`, `LihFolk Vault V2/58 Player QoL and Game Tweaks/Loading Screen Skip and First-Session Goals.md`, `LihFolk Vault V2/47 Game Feel and Juice/Reward Moments and Celebrations.md`, `skills/lihfolk-tutorial/SKILL.md` (read). Ideas adapted and rewritten; nothing copied.

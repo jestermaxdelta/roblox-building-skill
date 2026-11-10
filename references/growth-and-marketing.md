@@ -169,6 +169,18 @@ Why it fits: Roblox states that Roblox and YouTube are the top two platforms for
 | Dev log | "I modelled every prop in Blender", before and after | The Blender pipeline itself; appeals to older players |
 | Comment reply | Answer one viewer question with gameplay | Nothing extra |
 
+Clip structure `[lihfolk]` (rule of thumb): hook in 0–2 s (the most interesting frame, never a logo or title card) → context in 2–6 s (one line of on-screen text saying what the game is) → payoff by 6–15 s (the reveal, the hit, the transformation) → a last frame that loops or says "Play <exact name> on Roblox". 15–30 s is the safe length; longer needs a second payoff. Platform UI covers the bottom and right edge of vertical video: keep text in the middle 70% of the height and off the right 15%.
+
+It works badly when the fun takes ten minutes to arrive (film the payoff, and make the game deliver it fast) or when the first session leaks: video traffic comes in bursts, and a burst into a leaky funnel wastes the one chance a viral clip gives `[lihfolk]`.
+
+Capture `[lihfolk]`, adapted to the house rules:
+
+- Keep a capture copy of the place with the same lighting as live, a hide-UI toggle (a `CaptureMode` attribute every ScreenGui respects is more reliable than disabling guis from outside), free camera (Shift+P in a solo test `[official]`), and debug grants that are labelled capture-only and never enabled in the live place. Outcomes shown must be reachable at the real odds.
+- Record landscape at full resolution with the subject in the centre third, then crop 9:16; resize the window tall only for shots that need native vertical.
+- Do not show other players' usernames or display names, and never record voice chat: film with team accounts in a private server. Many players are children.
+- Music: Roblox's audio library licence covers use inside Roblox; whether a track may be used in an off-platform video depends on its own licence. Use music you own or licensed for social video.
+- Answer each platform's "made for kids" question honestly even though it reduces reach; platform minimum ages are commonly 13, so an adult runs the accounts.
+
 Hooks and craft `[community][house]`:
 
 - The payoff frame is in the first 1–3 seconds; overlay text of six words or fewer; real gameplay only.
@@ -199,14 +211,17 @@ In-game features that generate clips (build these into the game, they are free m
 - Rates: only single-source, unverified estimates were found ($500–5,000 flat per video in one write-up; $2,000–15,000 for YouTube and $500–3,000 for TikTok in another, both from the same vendor). Treat any quote as negotiable and judge it by expected plays × value per player (§3).
 - Offer before money: early access to the update build, a private server, a creator code that grants a cosmetic to viewers, creator cam, a ready list of clip moments, a named in-game item.
 - Structure paid deals as deliverables plus a share link: one long-form or 3 shorts, exact game name spoken and shown, link in description or profile, a posting window around update day.
-- Disclose paid promotion. Roblox's advertising standards require ads to be clearly disclosed, and FTC-style disclosure applies off-platform `[official]` (advertising standards; the former affiliate programme required an FTC disclosure).
+- Disclose paid promotion. Roblox's advertising standards require ads to be clearly disclosed, and FTC-style disclosure applies off-platform `[official]` (advertising standards; the former affiliate programme required an FTC disclosure). Anything of value counts (Robux, items, early access). Give every sponsored creator a written brief `[lihfolk]`: say "paid" out loud early and show it on screen (a 2023 US children's-advertising review pressed for wording children understand; hashtags at the end of a description are not enough), use the platform's paid-promotion label, make no unverifiable claims, send no child to an external site or a giveaway that needs personal data, and keep a record of payment and disclosure.
 - Avoid middlemen who ask for Robux up front to "get a YouTuber to play"; `[community]` threads flag this as a common scam shape.
 - Live "admin" events with creators: the August 2025 cross-game admin event between two top simulators coincided with the platform's 47.4M concurrent record `[community]` (press). The repeatable parts are a dated window, limited drops handed out live, and creators on both sides. Keep it honest: real dates, real stock, no false scarcity; critics note that constant drop events make progression feel disposable.
 - Measure each creator with their own share link: users with qualified plays, 7-day playtime, D7, 30-day revenue per user `[official]`.
 
 ## 6. Community: Roblox group and Discord
 
-- Roblox group first. Roblox calls groups the best way to connect with and inform a community `[official]`; the group sits on the game details page, events can be featured on its About tab, and membership is the one social action the server can verify (`Player:IsInGroup`). Reward joining as a bonus only, after the first win, per the social-rewards rule in liveops-quests-retention.md.
+- Roblox group first. Roblox calls groups the best way to connect with and inform a community `[official]`; the group sits on the game details page, events can be featured on its About tab, and membership is the one social action the server can verify (`Player:IsInGroupAsync`). Reward joining as a bonus only, after the first win, per the social-rewards rule in liveops-quests-retention.md.
+- Membership APIs `[official][VS]`: `Player:IsInGroup` is superseded by `Player:IsInGroupAsync` (same per-session caching), `Player:GetRankInGroupAsync` by `GroupService:GetRolesInGroupAsync`, and `GroupService:PromptJoinAsync(groupId)` shows a native join prompt on the client and returns the membership status. Check on the server, fail closed, and offer a "check again" path after a join. (Other references in this skill still name `IsInGroup`; prefer the Async form in new code.)
+- Split the groups once there is staff and revenue `[lihfolk]`: an owning group that holds the games, funds and Team Create permissions, and a separate fan community for players, announcements and perks, so a compromised community moderator cannot touch games or payouts. Keep rank numbers stable and roles few. Detail in `references/community-moderation-safety.md` and `references/team-business-legal.md`.
+- Conflict: LihFolk advises against rewarding likes, favourites or social posts at all (a caution, not a cited Roblox rule) and prompts for a group join from 90 s in, up to four times a session. This skill keeps the owner's decision in SKILL.md: like and favourite thanks are small, honour-based, one-time bonuses, group join is verified, and every such card goes through the offer gate (after the first win and the 600 s grace, at most 3 cards a session). Re-check the Community Standards `[VS]` before shipping a like or favourite reward.
 - Discord second, for the 16+ core: code drops, update countdowns, bug reports, suggestion votes, playtest recruiting, creator outreach. Discord's own terms set a minimum age of 13.
 - Links `[official][VS]`: up to three social links on the game details page (Facebook, Twitter/X, YouTube, Twitch, Discord, Guilded, Roblox community), only if the owner is age-verified 16+, and visible only to age-verified 16+ users. Social links may not be shared inside the game. Allowed in-game copy: "Join our community server. Links on our game's page." Not allowed: any URL, invite code, handle or email in-game.
 - Conflict: older community practice gated in-game Discord links behind `PolicyService` (`AllowedExternalLinkReferences`). The current docs prohibit in-game social links outright; follow the docs.
@@ -226,6 +241,14 @@ In-game features that generate clips (build these into the game, they are free m
 | Thumbnails | New set with each major update, 2–5 active, left alone until the next update `[official]` |
 
 Timing (vault, snapshot 2026-11-07): launch or update on or just before Saturday; best windows 15 Dec–5 Jan, 10–30 Jun, Halloween for themed games; avoid late Aug–Sep. A new game needs lead time to clear the 250-play gate before a seasonal window (for example ship around 10 Dec for the holiday peak). Announce the fixed weekly update day and keep it.
+
+Reading an update `[lihfolk]`: the curve is tease (T-7 to T0) → spike (T0 to T+2, usually peaking on the first weekend) → decay (to about T+14) → new baseline. The baseline is the result. Spike and back to the old baseline: content consumed, no lasting goal. Small spike and a higher baseline: a system that keeps giving (a collection, a progression tier). Baseline below the old one: something broke or annoyed existing players. No spike: nobody knew, or the update was invisible. Annotate every update on the charts or a school holiday will be read as a success.
+
+Players consume content far faster than a team builds it, so mix cheap rhythms with expensive ones. A sustainable default for one to four people `[lihfolk]`: weekly rotation from data only (shop, quests); a boost or community-goal event most weekends (a Config change plus an Experience Event); a content update every 2–3 weeks carrying one new goal for existing players and one improvement for new players; a new system every 2–3 months. If every update needs overtime the cadence is too fast. This sits beside, not against, the vault's finding that weekly fixed-day updates mark the hits: the weekly beat can be a rotation or event rather than new assets.
+
+The first two weeks of a launch `[lihfolk]`, compressed: day 0 changes are bug fixes only, with someone on errors, someone on the funnel, someone on community reports; days 1–3 watch the leak, not the player count (one hotfix for crashes and stuck states, one by day 3–5 for the biggest funnel drop); days 5–7 pick a branch: healthy (ship the first content drop, consider ads), leaky start (keep fixing onboarding, buy nothing, add no content), weak promise (new thumbnail concepts, not variants), no pull (competitor teardown before spending more); days 7–14 first content aimed at existing players, paired with an event, one new thumbnail and one update announcement.
+
+Conflict: LihFolk says to publish on a weekday morning, not a Friday night, so the team is awake for the first 12 hours; the vault says to launch on or just before Saturday for the traffic peak. Both hold if "publish" and "go live" are separated: publish the build early in the week with content gated by server time or a Config, then open it (event start, announcement, thumbnails) into the weekend.
 
 Sequence for an update week `[house]`: T-3 teaser clip and Discord post → T-1 Experience Event live with Notify Me → T0 publish off-peak, restart outdated servers, update announcement, title tag, new thumbnails → T+1 creator videos and a second clip → T+3 read PTR, bounce and D1 for the update cohort.
 
@@ -264,7 +287,9 @@ local function redeemCode(profile: Profile, codes: { [string]: CodeDef }, raw: u
 end
 ```
 
-## 9. Cross-promotion and localisation
+## 9. Cross-promotion, search and localisation
+
+Search queries `[lihfolk]` (method; the search facts are in analytics-and-discovery.md): write 15–30 queries a player, friend or parent might type (the genre in plain words, the fantasy, the verb, the setting, "game to play with friends"). Make the first two lines of the description say the top three or four of them in natural sentences: line one is verb + subject + fantasy + social hook, line two is the freshness line that changes each update. Synonyms go in sentences, not lists; never use another game's name. Test by searching each query from a fresh account, record the position, change one thing, re-check after a few days, and judge by search-sourced plays in Acquisition rather than by one query's rank.
 
 Cross-promotion:
 
@@ -298,6 +323,16 @@ Localisation `[official][VS]`:
 | Use AI-generated or non-game art as an ad creative | House rule 1 and the accuracy rule |
 | Fake scarcity or restarting countdowns in event and offer marketing | House rule 3 |
 
+## 11. Rescuing a weak launch
+
+Diagnose by funnel stage, not by CCU (stages and order in `references/audit-existing-game.md` §4). Three things are specific to a game that already launched small `[lihfolk]`:
+
+- **Get enough traffic to measure.** A few hundred attributed first sessions before any conclusion; do not tune on ten sessions and do not buy large campaigns into an unmeasured funnel.
+- **Fix the empty-server problem.** Thirty players across six servers feels dead. Lower max players for the start place while CCU is low (about 8–12 for social and co-op games, raised later), choose the server-fill setting that fills servers rather than reserving slots (experience settings `[VS]`), make the loop playable with one to three players (bots, solo or two-player mode; "1/8 players" waiting screens are where launches die), merge lobby and mode places into one until CCU supports the split, and make other players visible across servers (a global feed, a shared event, a cross-server leaderboard).
+- **Decide: fix, reposition or move on.** Play-through poor but the first session is good on test traffic: reposition (icon, thumbnails, title around the moment players enjoy). Play-through fine, first session poor: rebuild the first session. First session good, nobody returns: add a return reason. Everything mediocre after two or three fix cycles: archive and reuse the systems.
+
+A relaunch is a change of promise plus a change of product, announced honestly: do it when test traffic shows a measurable first-session improvement, into a weekend or school holiday, with an update that fits one line. Never: bought visits or favourites, misleading tiles, changing everything at once, a silent rebrand, or an `[UPDATE]` tag with no update.
+
 ## Level-up: symptoms → likely cause → fix
 
 | Symptom | Likely cause | Fix |
@@ -311,6 +346,10 @@ Localisation `[official][VS]`:
 | Discord grows, DAU flat | Links are 16+ gated; announcements live off-platform only | Mirror every post to events, update announcements and the group |
 | Many players from one country, weak retention there | Untranslated text | Enable that language; fix images with text |
 | Update days no longer spike | Announcement too vague or too frequent; no event | One specific 60-character announcement; an Experience Event with Notify Me |
+| Update spikes, then the baseline is lower than before | The update broke something or removed value | Error report and economy dashboards by place version; revert or compensate |
+| Some players online but every server looks empty | Server size too large for current CCU; too many places | §11 server-fill fixes |
+| ROAS looks great in Ads Manager, poor in your own data | Plays counted, not unique players | Tag joins with LaunchData; compute per unique user |
+| Thumbnail test "winner" changes weekly | Novelty effect or too few impressions | Run 10–14 days; sample-size rule in analytics-and-discovery.md |
 
 ## Review gate
 
@@ -324,7 +363,11 @@ Localisation `[official][VS]`:
 - [ ] Update week has an event, a specific announcement, a clip, and a fixed weekly day.
 - [ ] Clip features (creator cam, reveal moments, readable numbers) exist before paying any creator.
 - [ ] Languages enabled match the Country and Language breakdown.
-- [ ] Paid creator content is disclosed.
+- [ ] Paid creator content is disclosed, with a written brief ("paid" spoken and on screen).
+- [ ] Soft launch run with recommendations excluded; the four bars read before opening.
+- [ ] Ad and share-link joins tagged through LaunchData; cohort revenue computed per unique user.
+- [ ] Publish and go-live are separate steps; server size fits current CCU.
+- [ ] Footage shows no other players' names and uses music licensed for off-platform video.
 - [ ] `[VS]` facts (formats, costs, link policy, limits) re-checked at create.roblox.com/docs.
 
 ## Sources
@@ -353,3 +396,5 @@ Accessed 2026-11-10. Roblox creator docs read from the `Roblox/creator-docs` Git
 - https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (search summary; opinion)
 - https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/upcoming-icon-thumbnail-translation-experiment/3105942 (search summaries)
 - Vault: `references/market-scan-2026-11.md`, `references/knowledge-base.md` §3.6, §3.10 (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/reference/engine/classes/Player.yaml, GroupService.yaml; content/en-us/creator-rewards.md (read)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `27 Marketing and Growth/` notes "Sponsored Ads and Campaign Math", "Short-Form Video Marketing", "Launch Strategy - The First Two Weeks", "Rescuing a Weak Launch - Empty Servers, Low CCU and Relaunch Tactics", "Update Cadence and Hype Cycles", "Marketing to Kids and Teens - Age Rules and Paid-Promo Disclosure", "Roblox Communities as Your On-Platform Hub", "Experience Description and Search Keywords", "Competitor Analysis Method"; `11 Monetization Publishing and Live Ops/Community Building.md`, `Publishing an Experience.md`; `LihFolk Vault V2/SYMPTOMS.md` (read). Adapted in our own words; platform facts re-checked against creator-docs where marked `[official]`.

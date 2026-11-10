@@ -25,7 +25,7 @@ Blockout rule: no primitive greybox ships. Prototype with a Blender blockout kit
 | Texture formats | png, jpg, tga, bmp. Open Cloud images must be under 8000×8000. Albedo and normal 24-bit RGB (normal: OpenGL tangent space); roughness, metalness, emissive mask 8-bit grey. |
 | Import formats | `.fbx`, `.gltf`/`.glb`, `.obj`. FBX and glTF carry hierarchies, PBR textures, cages, rigs, animation data and vertex colours. Asset Manager bulk import does not take rigs, skins or animation. |
 | glTF hierarchy | Each node becomes a Model holding one MeshPart per primitive of its mesh (FBX: MeshParts sit directly in the top Model). If a node and its mesh share a name, one of them gets `_Node`. |
-| Naming hooks | `_Att` → Attachment; `_OuterCage` → WrapTarget; `_InnerCage` + `_OuterCage` → WrapLayer. No collision-mesh naming hook exists. |
+| Naming hooks | `_Att` → Attachment; `_OuterCage` → WrapTarget; `_InnerCage` + `_OuterCage` → WrapLayer. No collision-mesh naming hook is documented. |
 | Skinned meshes | Bones scale 1, rotation 0; root at origin; ≤ 4 influences per vertex; none on the root; one animation track per FBX. |
 | `RenderFidelity` | Automatic: full detail under 250 studs, medium 250–500, lowest beyond 500. Performance and Precise are the manual options. No import path for hand-made LOD chains. |
 | `CollisionFidelity` | Box, Hull, Default, PreciseConvexDecomposition, Tunable (adds `CollisionPrecision`). Collision data is stored even with `CanCollide = false`. |
@@ -241,21 +241,22 @@ local function fixup(model: Model, fidelity: string?)
 		if d:IsA("MeshPart") and isCol(d) then hasCol = true break end
 	end
 	for _, d in model:GetDescendants() do
-		if not d:IsA("MeshPart") then continue end
-		d.Anchored = true
-		d.CanTouch = false
-		if isCol(d) then
-			d.Transparency = 1
-			d.CanCollide, d.CanQuery, d.CastShadow = true, true, false
-			d.CollisionFidelity = Enum.CollisionFidelity.Hull
-		elseif hasCol then
-			d.CanCollide = false
-			d.CollisionFidelity = Enum.CollisionFidelity.Box
-		else
-			d.CanCollide = true
-			d.CollisionFidelity = if fidelity == "Box" then Enum.CollisionFidelity.Box else Enum.CollisionFidelity.Hull
+		if d:IsA("MeshPart") then
+			d.Anchored = true
+			d.CanTouch = false
+			if isCol(d) then
+				d.Transparency = 1
+				d.CanCollide, d.CanQuery, d.CastShadow = true, true, false
+				d.CollisionFidelity = Enum.CollisionFidelity.Hull
+			elseif hasCol then
+				d.CanCollide = false
+				d.CollisionFidelity = Enum.CollisionFidelity.Box
+			else
+				d.CanCollide = true
+				d.CollisionFidelity = if fidelity == "Box" then Enum.CollisionFidelity.Box else Enum.CollisionFidelity.Hull
+			end
+			if d.Size.Magnitude < 3 then d.CastShadow = false end
 		end
-		if d.Size.Magnitude < 3 then d.CastShadow = false end
 	end
 end
 ```
@@ -357,7 +358,7 @@ Lighting performance: lights go on `_Att` attachments inside Blender fixture mod
 | Dark, inside-out or faceted shading | Flipped normals, unapplied Mirror or scale, modifiers not applied at export | Recalculate normals, apply transforms, export with `export_apply=True` |
 | Doors, stairs or furniture feel the wrong size | Modelled in metres or without the R15 dummy | Rescale against the dummy; lock the grid and proportions in the bible |
 | Characters snag, hover or stutter on stairs and trims | Default or Precise fidelity on detailed meshes, per-step collision | `_COL` ramp and simple hulls; Box on trims; reserve Precise for approved cases |
-| Grey or missing meshes for players, fine in Studio | Asset still in moderation, uploaded under the wrong creator, Restricted asset not granted to the game | Check the operation's moderation state; upload under the owning group; grant the game in the asset's permissions |
+| Meshes missing or failing to load for players | Asset still in moderation, uploaded under the wrong creator, Restricted asset not granted to the game | Check the operation's moderation state; upload under the owning group; grant the game in the asset's permissions |
 | Every art tweak breaks references | Raw re-uploads mint new ids | Package versioning (Blender add-on or Reimport) and the generated ids manifest |
 | Washed-out, glowing scenes | Neon used as decoration, Bloom threshold too low, several stacked post effects | Emissive only on interactables; raise Bloom `Threshold`; keep 2–3 effects |
 
