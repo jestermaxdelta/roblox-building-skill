@@ -2,6 +2,24 @@
 
 House rule: push microtransactions heavily, but never invasively. Non-invasive is the most important rule. Start from the default set and delete what does not fit the game; do not add power purchases in competitive modes. Rules, limits and code live in references/monetization-and-policy.md and references/data-and-purchases.md.
 
+## Mode and baseline
+
+Mode: <new game / level-up of a live game>. Genre row used from the "Price ladder and product mix by genre" table: <>.
+
+Live game only: fill from Creator Hub ⟩ Monetization ⟩ Overview (last 28 days) before changing anything. New game: write targets instead.
+
+| Metric | Now / target | After change (28 d) |
+|---|---|---|
+| Payer conversion (paying users ÷ DAU) | | |
+| ARPPU | | |
+| ARPDAU | | |
+| Revenue split: developer products / passes / subscriptions / ads (%) | | |
+| Share of payers with 2+ purchase days | | |
+| Top 5 products by revenue | | |
+| Rewarded video: opt-in %, views per viewer per day | | |
+| Like ratio and D1 (guardrails) | | |
+| Symptom row matched in "Level-up: monetisation symptoms" | | |
+
 ## Product set
 
 | # | Product | Type | Price (R$) | Trigger / surface | Grant logic (server) | Free alternative | Analytics SKU | Creator Hub id |
@@ -23,6 +41,37 @@ House rule: push microtransactions heavily, but never invasively. Non-invasive i
 | 15 | Private server | Server | 0–100 | Roblox UI | | | | |
 
 Prices are read at runtime from `GetProductInfoAsync`; this column is the intended list price for Creator Hub setup. Market prices are a 2026-11-07 snapshot; re-check.
+
+## Ladder check
+
+Every rung filled, at least one repeatable product on the first two rungs, nothing that sells stat power in a competitive mode.
+
+| Rung | Price (R$) | Products on this rung | Repeatable? |
+|---|---|---|---|
+| Entry | under 100 | | |
+| Core | 100–399 | | |
+| Premium | 400–999 | | |
+| Top | 1,000+ | | |
+
+Bundles: ×1 / ×3 / ×10 at <> / <> / <> (bulk saving stated on the card, at most about 15%). "Best value" tag on: <one product; its unit price is the lowest>.
+
+## Offer timing map
+
+One row per loop moment this game actually has. Popup rows spend the offer-gate budget; inline rows sit on a screen the player already opened. Delete rows that do not apply.
+
+| Loop moment | Server signal | Offer (row #) | Surface (popup / inline / HUD / world) | Free alternative | Cap |
+|---|---|---|---|---|---|
+| First win or first rebirth, 10+ min played | | 7 | Popup | Earn contents in play | Once per account; 1 prompt a day |
+| Second failed attempt to afford the same upgrade | | 1 or 13 | Inline on the upgrade card | Rewarded video | |
+| Storage full, second time | | 9 | Inline | Sell items | |
+| 20th manual collect | | 8 | Popup | Manual collect | Once per session |
+| Run or round ends (win / loss) | | 1 / 14 | Inline on results | Rewarded video | |
+| Return after 4+ h away | | offline doubler | Inline on welcome-back panel | Rewarded video | 1 a day |
+| Timed boost under 60 s left | | same boost | HUD pill pulse | Rewarded video 5 min | Once per boost |
+| Rebirth completed | | 2 or 4 | Popup | Free 5-min boost | |
+| Pass just bought | | complementary pass | Inline in shop | — | Once |
+| Event start / weekly update | | limited bundle, ends <date> | Featured tab + one toast | Event currency | Real end time, no restart |
+| <game-specific moment> | | | | | |
 
 ## Offer gate configuration (Configs keys)
 
@@ -47,7 +96,16 @@ Positive triggers only (list them): <delivery complete, level-up, round win, reb
 | 5 min 2× Cash | | | 3 | Shop, next to the paid boost |
 | Second chance | | | 2 | Run end |
 
-Eligibility: 2,000+ monthly visitors, 13+ audience, ID-verified, 2FA. Rewards never random, never a gate.
+Eligibility: 2,000+ monthly visitors, publisher 13+, ID-verified, 2FA, public game with no free-form user creation. Rewards never random, never Robux, never a gate, and never large enough to inflate the economy. Each placement is reachable within one or two taps of its trigger and shows the reward before the player commits. "Exclude your most likely purchasers": <on only if the same reward is sold / off>.
+
+## Platform setup
+
+- [ ] Managed Pricing on for every pass and product; dynamic price check run with a test account (no hard-coded price text found).
+- [ ] Roblox Shop: global Shop button enabled; developer products Listed with icons and categories; receipt handler works for purchases that start outside the game UI.
+- [ ] Price labels read `PriceInRobux`; a struck-through base price appears only from `UserBasePriceInRobux` (Plus) or a real dated sale.
+- [ ] One Roblox Plus line in the shop footer (`PromptRobloxSubscriptionPurchase`), no popup.
+- [ ] Subscription (if any) gated on `IsEligibleToPurchaseSubscription`; benefits identical on every platform; a one-time VIP pass remains as the alternative.
+- [ ] Private-server price decided once (changing it cancels active subscriptions).
 
 ## Policy checklist for this plan
 
@@ -59,9 +117,22 @@ Eligibility: 2,000+ monthly visitors, 13+ audience, ID-verified, 2FA. Rewards ne
 - [ ] Every paid shortcut lists a free alternative above.
 - [ ] Receipt handler is idempotent (dedupe by PurchaseId in saved data).
 - [ ] Shop and offer funnels logged.
+- [ ] Every limited-time offer has one real end time in Configs; reruns are at least 30 days later under a new name.
+- [ ] No purchase pads on the path, no buy button in the jump thumb zone, no prompt on join.
+- [ ] Each row of "Anti-patterns and the reason each is banned" checked against the shop, HUD and copy: <reviewer, date>.
 
 ## Rollout
 
 - Lower-risk launch set: rows 1–4, 7–10, 12–13 plus two rewarded-video placements.
 - Bold additions after D1/D7 meet benchmark: VIP subscription, premium season pass, Server Luck events.
-- Experiments queued: boost price 29 vs 49; grace 10 vs 20 min; starter-pack trigger.
+- Second-purchase value pack (199–399 R$) added only after the starter pack converts.
+
+| Experiment (one lever each) | Variants | Primary metric | Guardrail | Stop rule |
+|---|---|---|---|---|
+| Boost price | 29 vs 49 R$ | ARPDAU | Conversion | 14 days or significance |
+| Starter-pack trigger | First win vs first rebirth | Payer conversion | D1, like ratio | |
+| Starter-pack price | 49 vs 99 R$ | Revenue per new user | Conversion | |
+| Grace period | 10 vs 20 min | D1 | ARPDAU | |
+| Boost timer | Real time vs play time | Boost repeat purchases | Complaints | |
+
+Games above about 60,000 transactions a month: let Managed Pricing run the price tests and keep Experiments for timing and surfaces.
