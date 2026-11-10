@@ -120,8 +120,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** you spawn beside your own empty plot holding enough currency for the first seed; the shop is a few steps away; a sprout appears on the click; fast crops ripen in 1–2 min. The whole loop shows in 2–3 min with no tutorial screen.
 - **Money:** deterministic base loop with random server-wide weather multipliers on top. Spend is almost all consumable; reported prices 2025–26: season pass 749, level skip 49, cosmetic crate 199 / 575 / 1,699 for 1 / 3 / 10, paid crop steal 37 (guides and press; unverified against the store). The public pass list held one off-sale pass (LF-27).
 - **Keeps:** offline growth (the icon text is the promise), the restock as a server-wide moment, weather, live admin events, plots everyone can walk up to.
-- **Cadence:** weekly Saturday updates with named themes; two event teams from July 2025.
-- **Spread:** a verb from real life, nothing to learn, rare-mutation clips, the 23 Aug 2025 crossover "admin war" with Steal a Brainrot.
+- **Cadence:** weekly Saturday updates with named themes; two event teams from July 2025. **Spread:** a verb from real life, nothing to learn, rare-mutation clips, the 23 Aug 2025 crossover "admin war" with Steal a Brainrot.
 - **Risks:** players called weekly events repetitive by Aug 2025 and the studio acknowledged it; paid stealing drew press criticism; rare pets were resold for real money; under the waiting loop there was little else.
 - **Lessons:** (1) make leaving an investment: stamp server time on every growing thing and cap the payout; (2) a shared, visible restock turns a shop into an event; (3) put randomness on top of a dependable loop, never in place of it; (4) a loop built on waiting needs goals that survive a month without new content; (5) never sell an action that takes from another player.
 
@@ -131,8 +130,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** price tags float over every unit on the conveyor, so the economy teaches itself; other players demonstrate stealing by doing it to you.
 - **Money:** passes on LF-27: Admin Commands 7,999, VIP 375, 2x Money 299 (older guides list lower prices; the ladder was raised). Gear, lucky blocks and skips are developer products.
 - **Keeps:** loss creates attention, and a steal-back is always possible; rare units appear to the whole server at once; scheduled "admin abuse" events; a countdown on the icon itself; concerts and crossovers (12.8M CCU at a January 2026 concert).
-- **Cadence:** a named update roughly weekly (Update 44 by early 2026).
-- **Spread:** the verb is the title; clip-ready drama; a meme the audience already knew; the lead developer built the community through Discord, video and live events.
+- **Cadence:** a named update roughly weekly (Update 44 by early 2026). **Spread:** the verb is the title; clip-ready drama; a meme the audience already knew; the lead developer built the community through Discord, video and live events.
 - **Risks:** Polygon called the best items cash-only; power over other players is sold; automation scripts for collecting and stealing; a character was pulled from Sept to Nov 2025 in a licensing dispute; hundreds of clones and at least four lawsuits by the owners; each event peak decays faster than the last (RoWatcher).
 - **Lessons:** (1) put the verb in the title and show income as a rate; (2) express risk as a timer anyone can read; (3) let rebirth add safety and slots, not only multipliers; (4) validate every steal on the server: distance, lock state, carry state, cooldown; (5) the theft that makes the clips also makes the 85% rating: protect newcomers and sell no weapon aimed at players.
 
@@ -142,8 +140,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** the treadmill beside spawn makes a number climb at once; the first biome needs almost no speed, so the first grab and chase happen inside a minute, with nothing to read.
 - **Money:** public passes X2 Money 399 and X2 Growth Speed 467 (LF-29): self-only multipliers. Products are not visible from outside.
 - **Keeps:** two stats: speed is personal and only goes up, money sits in a shared world and can be taken, so a robbed player never feels reset to zero; biome gates as the visible next goal; size and mutation variants keep duplicates worth having.
-- **Cadence:** weekly numbered Saturday updates, crossovers and a concert (V-7).
-- **Spread:** a known loop plus one physical skill moment; eggs and pets need no meme literacy; launched a year after the brainrot peak, when players loyal to the loop wanted a fresh version.
+- **Cadence:** weekly numbered Saturday updates, crossovers and a concert (V-7). **Spread:** a known loop plus one physical skill moment; eggs and pets need no meme literacy; launched a year after the brainrot peak, when players loyal to the loop wanted a fresh version.
 - **Risks:** disappeared from the platform for a few hours on 24–25 Aug 2026 and returned without its scrolling video panel (allthings.how; no Roblox statement found); five more egg titles sat in the top 100 within three months; guide-level odds tables disagree.
 - **Lessons:** (1) remix by changing the order and feel of the verb, not the theme; (2) pair a stat that cannot be lost with one that can; (3) an environmental guardian teaches risk before any player does; (4) seven players keeps theft possible without a crowd; (5) do not bolt on a feature that can get the whole game pulled.
 
@@ -153,8 +150,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** starter pets swarm whatever you tap; quest arrows and two rank goals are always on screen.
 - **Money:** 13 passes, 175–3,250 (LF-27): Auto Farm 175, Lucky 275, Auto Tap 350, +15 Pets 375, VIP 400, +15 Eggs 625, Ultra Lucky 800, Magic Eggs 1,200, Double Stars 2,400, Huge Hunter 3,250. Five of thirteen sell luck and the top of the ladder is luck on the rarest pet; prices rose over time. Per-world coins plus one global currency (diamonds).
 - **Keeps:** rank goals as the daily driver; Huge pets as the chase; a Trading Plaza unlocked only after the first rebirth, so day-one accounts cannot be scammed; a "Potato Mode" for weak phones.
-- **Cadence:** Saturdays 5 PM GMT, weekly, numbered (Update 73 on 14 Mar 2026); limited-time events about every two weeks whose pets do not return (RoWatcher, search summary).
-- **Spread:** franchise audience, weekly video topics for creators, physical toys with codes.
+- **Cadence:** Saturdays 5 PM GMT, weekly, numbered (Update 73 on 14 Mar 2026); limited-time events about every two weeks whose pets do not return (RoWatcher, search summary). **Spread:** franchise audience, weekly video topics for creators, physical toys with codes.
 - **Risks:** paid luck is the most policy-exposed store shape for a young audience (RoWatcher calls it the platform's most aggressive); the predecessor's NFT sales were refunded in Feb 2023; off-platform sale of rare pets; the predecessor needed duped currency reverted and accounts banned (BIG Games post, search summary).
 - **Lessons:** (1) rebirth as an unlock, not a loss; (2) one currency per world resets pacing without taking anything away; (3) gate trading behind progress; (4) a fixed weekly slot is a product in itself; (5) do not copy a luck-led store: under house rules luck is at most a disclosed, timed boost, never the top of the ladder.
 
@@ -164,8 +160,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** choose Pirates or Marines, talk to the quest giver beside spawn, win fights within the first couple of minutes; stat points from level 1 mean a build decision before you understand the game.
 - **Money:** six passes (LF-27): Fast Boats 350, 2x Boss Drops 350, 2x Money 450, 2x Mastery 450, Dark Blade 1,200, Fruit Notifier 2,700. Main revenue is fruits sold as products, guide-reported from 50 up to 5,000 for a permanent Dragon. Paid fruits are chosen, not random.
 - **Keeps:** one global stock on a clock makes "it is in stock" news that travels through Discord and video within minutes; world spawns and boss respawns; mastery as a second ladder; crews, bounty PvP, trading since 2022.
-- **Cadence:** few, large, numbered updates with long teasers; a tracker showed about −40% over 30 days between updates, and a rival shipping weekly is cited as part of the slowdown (RoWatcher, search summary); teasers without firm dates draw criticism. A Fourth Sea is reported for December 2026 (V-7).
-- **Spread:** borrowed anime fantasy, tier-list and stock-alert creators, record-setting update days.
+- **Cadence:** few, large, numbered updates with long teasers; a tracker showed about −40% over 30 days between updates, and a rival shipping weekly is cited as part of the slowdown (RoWatcher, search summary); teasers without firm dates draw criticism. A Fourth Sea is reported for December 2026 (V-7). **Spread:** borrowed anime fantasy, tier-list and stock-alert creators, record-setting update days.
 - **Risks:** a rework converted paid Dragon fruits into tokens and angered owners; raw power sold in a game with PvP; IP borrowing forced the rename; trading around 5,000 R$ items attracts scams.
 - **Lessons:** (1) an identity choice in the first ten seconds costs almost nothing; (2) levels are the floor, a rare swappable power set is the dream; (3) one global timed stock builds a check-in habit with no login streak; (4) write down what "permanent" means before selling it, and let owners keep the old version through a rework; (5) fill the gap between big updates with small dated events.
 
@@ -175,8 +170,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** no gate at all. One menu holds houses, vehicles and avatar; a free house and car are yours within a minute or two. The first reward is ownership, not currency.
 - **Money:** 18 passes on sale, 35–749 (LF-27): Vehicle Upgrade 35, On Demand Fire 40, Horse Upgrade 85, Penthouse 180, Music Unlocked 199, Premium 320, Land Unlocked 375, Estates 599, House Pets 599, VIP 749. Five passes cost 199 or less; everything sold expands expression or control, nothing sells power. Private servers are sold with a long list of admin powers. A guide reports an event radar for 9 R$ or one rewarded ad.
 - **Keeps:** friends, weekly novelty, private servers as a tool for running a community, event hunts that hide collectibles across the existing map (60 pieces, 23 Oct–6 Nov 2026, guide-reported).
-- **Cadence:** weekly, typically Fridays, with seasonal events on top.
-- **Spread:** roleplay stories are a natural video format; players join friends in progress.
+- **Cadence:** weekly, typically Fridays, with seasonal events on top. **Spread:** roleplay stories are a natural video format; players join friends in progress.
 - **Risks:** the most crowded category on Roblox, so a smaller town loses on every measure; unbounded props and vehicles are a performance and abuse load; free-form hangouts carry rating and safety obligations (`genre-playbooks.md`, social hangout); placeholder passes left public look careless.
 - **Lessons:** (1) in a stage game any gate between player and props is friction with no payoff; (2) buildings are scene prompts: each one implies a role; (3) sell scale and control, with several entry points under 200 R$; (4) a mature social game can set records on cadence and polish alone; (5) reuse the map for events instead of building a new area.
 
@@ -186,8 +180,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** pick Parent or Baby; collect a Starter Egg that can only hatch a dog or a cat; the first need is always hunger and the sandwich is handed to you. A scripted first success and a safe first roll: randomness arrives only after the player owns something.
 - **Money:** only 6 of 24 passes on sale (LF-27): 1.25x Candy Multiplier 50 (event-long), Premium Plots 285, +1 Pet Pen Slot 295, VIP 480, Cozy Home Lure 765, Millionaire Pack 795. Robux-only pets and eggs are products. Shape: a cheap event pass for the first purchase, 285–480 for permanent convenience and status, 765–795 for bundles.
 - **Keeps:** fusion gives every duplicate a purpose; event-only and retired pets; one event currency with weekly drops inside each event; trade licences, trade history and unfair-trade warnings since Nov 2020; daily task board (guide-reported).
-- **Cadence:** a rolling event calendar; major updates have roughly tripled CCU (V-7).
-- **Spread:** adding one strong meta system (collect, fuse, trade) to an existing social sandbox was worth more than a new game.
+- **Cadence:** a rolling event calendar; major updates have roughly tripled CCU (V-7). **Spread:** adding one strong meta system (collect, fuse, trade) to an existing social sandbox was worth more than a new game.
 - **Risks:** rare pets sold for real money, trust-trade scams, a widely reported A$8,000 child bill (2020); the economy is the product, so a duplication exploit would be fatal; event surges strain servers and data.
 - **Lessons:** (1) script the first success and make the first roll impossible to regret; (2) fusion ladders (4 into 1) turn duplicates into goals and reuse art; (3) a 50 R$ event-long multiplier is an honest first purchase; (4) ship anti-scam UI with trading or do not ship trading; (5) do not use retired passes as a pressure lever: real end dates only.
 
@@ -197,8 +190,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** a walk-in elevator is the party system; cheap scares in the first rooms; a lethal entity within minutes that telegraphs with flickering lights and has one answer (hide). Death is the tutorial: a friendly guide explains what killed you.
 - **Money:** three passes (LF-27): event pass 99, cosmetic bundle 299, Admin Panel 499. Revives are Robux-only (30 R$, V-7; one free for new players and for joining the group); currency packs and boosts are products. No paid power, luck or gacha.
 - **Keeps:** you improve, the character does not, so newcomers and veterans can share a run; achievements, difficulty modifiers, floors; a feature that lets a streamer's audience interfere with the run.
-- **Cadence:** slow and big: Floor 2 arrived two years after launch (30 Aug 2024) and was coolly received by part of the audience (Roonby); mid-size updates and platform events between.
-- **Spread:** screams on video; a wordmark readable at 50 pixels; entity fan culture and merchandise.
+- **Cadence:** slow and big: Floor 2 arrived two years after launch (30 Aug 2024) and was coolly received by part of the audience (Roonby); mid-size updates and platform events between. **Spread:** screams on video; a wordmark readable at 50 pixels; entity fan culture and merchandise.
 - **Risks:** a two-year gap works only on a base replayable hundreds of times; long teasers raise expectations; pay-to-continue at the moment of death needs a free path and a cooldown; a shop tier that appears only after heavy spending is reported by a community wiki (do not build one).
 - **Lessons:** (1) teach by failing, then explain; (2) fixed anchors inside random runs give every run a story; (3) one tell and one answer per threat; (4) a tiny store survives parents and press; (5) sell before or after the run, never during a chase, and give revives away generously.
 
@@ -208,8 +200,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** you join a server mid-cycle; a theme and a countdown remove the blank page; many items are free.
 - **Money:** 14 passes (LF-27): Increased Item Limit 129, Run Faster 149, eight clothing sets at 279–449, Custom Makeup 349, x2 Money 399, VIP 799. No random items, no stats. Sets are a style edge in a judged game; Run Faster is the one pass that changes the competition.
 - **Keeps:** a rank ladder built from peer votes; limited-time code items; a story told through seasonal quests that players theorise about between updates; duo mode; collaborations.
-- **Cadence:** event-led (a 40-tier Halloween pass in 2026, guide-reported); collaborations in 2024 and 2025.
-- **Spread:** a pose became a TikTok meme; streamers; press around the collaboration.
+- **Cadence:** event-led (a 40-tier Halloween pass in 2026, guide-reported); collaborations in 2024 and 2025. **Spread:** a pose became a TikTok meme; streamers; press around the collaboration.
 - **Risks:** a three-hour code item crashed the game when everyone redeemed at once (Dec 2024); peer voting invites friend-boosting and revenge votes; a single round format fell to about a sixth of peak or less despite later collaborations; a 2025 celebrity live event was criticised as less personal than promised.
 - **Lessons:** (1) a constraint plus a timer is the best onboarding for a creative game; (2) pay everyone, celebrate three; (3) let players be each other's content and judges, with vote weighting and rate limits from day one; (4) sell sets, not stats; (5) spread any timed drop over a window and load-test the redeem path.
 
@@ -219,8 +210,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** the first bee hatches as you claim the hive; pollen numbers pop on the first swing; the bag fills fast enough to force the first trip home.
 - **Money:** four multiplier passes (x2 pollen, x2 convert speed, x2 ticket chance, one special bee) with no price returned on LF-29; premium currency and items as products.
 - **Keeps:** fields gated by bee count, so the collection is also the map key; years of quest lines give a returning player an obvious next step; a slow, visible, permanent hive; secrets the community documents; a yearly winter event (the 2025 one ran from December into March 2026).
-- **Cadence:** slow and careful; pace is the community's most consistent complaint, and the latest winter event's quests were criticised as grindy (RoWatcher, search summary).
-- **Spread:** a specific warm fantasy instead of "collect coins"; one consistent voice.
+- **Cadence:** slow and careful; pace is the community's most consistent complaint, and the latest winter event's quests were criticised as grindy (RoWatcher, search summary). **Spread:** a specific warm fantasy instead of "collect coins"; one consistent voice.
 - **Risks:** long droughts between rituals; a paid drop-chance pass is a probability modifier and needs numeric disclosure `[VS]`.
 - **Lessons:** (1) let the collection double as the key to new places; (2) quest lines are cheap retention for lapsed players; (3) one annual ritual can carry an evergreen; (4) depth at the top is what "lasting" means; (5) a solo developer's game still holds about 30K CCU eight years on, at the price of slow updates.
 
@@ -230,8 +220,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** AV gives a guided first summon and an easy first stage that teaches place, upgrade and sell. TDS's group-join reward is +$100 starting cash: it helps the first match rather than adding permanent power.
 - **Money:** TDS (LF-29): Sandbox Plus+ 7,999, Hacker 2,249, Engineer 1,690, Mercenary Base 1,350, limited-time towers 499–799, VIP 375, Custom Music 85, emotes 55, plus crates and a battle pass; many retired towers remain on the list off sale. AV: Shiny Hunter 1,299, Cosmetic Recolor 799, Display All Units 599, VIP 299, Extra Unit Storage 149; summons are paid random items when bought with Robux or Robux-bought currency.
 - **Keeps:** mode ladders (story, challenges, raids, infinite) reuse units and maps; episodic content gives the title a reason to change (TDS's title read "[🌙 NIGHT 3]"); long matches are filled with planning.
-- **Cadence:** TDS episodic; AV large numbered updates every few months with events and code drops between.
-- **Spread:** anime rosters, tier-list creators, co-op carries.
+- **Cadence:** TDS episodic; AV large numbered updates every few months with events and code drops between. **Spread:** anime rosters, tier-list creators, co-op carries.
 - **Risks:** paid towers that beat free ones make free players passengers; limited-time towers lean on urgency with a young audience; idle farming with parked towers; many enemies and effects in late waves (`genres/tower-defense.md`).
 - **Lessons:** (1) spend effort on information design: range shapes on placement, costs and enemy health always visible; (2) one unit you love and one win in the first minute; (3) new rule sets multiply content faster than new maps; (4) a premium sandbox mode is a high-price item that touches nobody else; (5) keep paid units side-grades and show odds on every paid roll.
 
@@ -241,8 +230,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** you often join mid-round and spectate, which teaches the whole game; the first round uses one button, and the difficulty curve is simply the ball's speed.
 - **Money:** passes VIP 240, Double Coins 240, Instant Spin 120, Trading Sign 112 (LF-29). In Oct 2023 a knock-out paid 7 coins and the first ability cost about 300, so 80+ games; about 90% of revenue was reported to come from purchases and premium case rolls (Naavik, unverified).
 - **Keeps:** short sessions that fit spare minutes; weekly updates in the launch period; a Discord above 500K members (Oct 2023).
-- **Cadence:** weekly at launch; seasonal events now hold a 30-day peak near 27K.
-- **Spread:** two finalists trading parries at rising speed is a natural clip; it grew from about 15K to over 100K CCU in three days in Sept 2023, largely through TikTok, with about $1,500 of early ads (Naavik, unverified).
+- **Cadence:** weekly at launch; seasonal events now hold a 30-day peak near 27K. **Spread:** two finalists trading parries at rising speed is a natural clip; it grew from about 15K to over 100K CCU in three days in Sept 2023, largely through TikTok, with about $1,500 of early ads (Naavik, unverified).
 - **Risks:** a slow free earn rate beside purchasable abilities is spending pressure inside PvP; case rolls fall under paid-random-item rules; variable server placement hurt a timing game early; about 98% below peak.
 - **Lessons:** (1) one input with rising tempo is the purest onboarding; (2) losses must feel like the player's own mistake: readable tells, timestamped inputs with a capped rewind; (3) effects everyone sees sell cosmetics; (4) in PvP, sell looks, and make abilities earnable at a fair rate with a free rotation; (5) a skill toy without a meta falls as fast as it rose.
 
@@ -252,8 +240,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** Fisch prints its controls in the store description, so players arrive knowing the verb; first catch in under a minute in both.
 - **Money:** Fisch (LF-27): Emote Pack 99, Bobber Pack 99, Supporter 169, Enchant Anywhere 239, Double XP 239, Spawn Boat Anywhere 299, Appraisers Luck 299, Sell Anywhere 399, Appraise Anywhere 499: mostly "anywhere" passes that remove a walk. Fish It (LF-29): Small Luck 50, Extra Luck 245, Advanced Luck 545, More Mutations 295, Sell Anywhere 315, VIP 445, Hyper Pack 999: a luck ladder, plus a gacha and battle pass.
 - **Keeps:** a per-zone checklist gives the first session an end; world state as a schedule ("it only bites at night in the rain"); crews and group events (Fish It, 2026).
-- **Cadence:** weekly, usually Saturday (guides).
-- **Spread:** Fisch proved the genre; Fish It removed friction, displayed odds as spectacle and out-peaked it (2.72M in Dec 2025), climbing during Fisch's weak period. Fishing is up 55% year on year (V-7).
+- **Cadence:** weekly, usually Saturday (guides). **Spread:** Fisch proved the genre; Fish It removed friction, displayed odds as spectacle and out-peaked it (2.72M in Dec 2025), climbing during Fisch's weak period. Fishing is up 55% year on year (V-7).
 - **Risks:** Fisch's Second Sea (29 Mar 2025) required a high level (200 per Destructoid, 250 per Sportskeeda and PCGamesN), introduced a new currency so everyone restarted, weakened old rods and raised the level cap; players left "by the thousands", an in-game poll drew almost 50,000 voters and a fan wiki says the area was removed on 31 Aug 2025; trading was switched off after that update with no official reason (Sportskeeda); ownership moved to an operator and back within a year (fan wiki). Fish It's luck passes are probability modifiers `[VS]`.
 - **Lessons:** (1) put a small skill on top of a luck roll; (2) "anywhere" passes save the buyer a minute and make nobody stronger; (3) never ship an expansion that resets earned progress: let old gear and currency count; (4) poll before you build, not on whether to delete; (5) being first is no moat: a follower that removes friction can take the genre.
 
@@ -263,8 +250,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** a one-paragraph premise: one goal, one vehicle, one enemy, one instruction (bring friends).
 - **Money:** four passes (LF-29): Tommy Gun 175, Mauser C96 148, Sawed-Off Shotgun 148, +5 Storage 95.
 - **Keeps:** roles emerge without a class menu (driver, scavenger, defender); distance travelled is the score.
-- **Cadence:** not verified; a tracker page showed −38% over 30 days (RoWatcher, undated).
-- **Spread:** a large YouTuber's video passed 2M views soon after launch and the recommendation system amplified it; a GameAnalytics essay reads this as distribution mattering more than quality once a threshold is crossed, plus novelty layered on familiar play (search summary). The premise fits one thumbnail and a five-second clip.
+- **Cadence:** not verified; a tracker page showed −38% over 30 days (RoWatcher, undated). **Spread:** a large YouTuber's video passed 2M views soon after launch and the recommendation system amplified it; a GameAnalytics essay reads this as distribution mattering more than quality once a threshold is crossed, plus novelty layered on familiar play (search summary). The premise fits one thumbnail and a five-second clip.
 - **Risks:** paid weapons shift difficulty for free players in mixed groups; players standing and fighting on a moving platform is a hard physics problem (`physics-and-vehicles.md`); long routes with empty stretches; without a persistent meta the audience drifted.
 - **Lessons:** (1) make the base itself the progress display; (2) force stops with a resource and a clock so the group has to decide; (3) a premise that fits one thumbnail is distribution; (4) runs need a meta layer (classes, unlocks) to outlast the wave; (5) give every paid weapon a free path.
 
@@ -274,8 +260,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** an axe, a small sack and an obvious task (wood for the fire); the first night falls within the first few minutes; the monster flinches from a flashlight beam. The environment is the tutorial.
 - **Money:** one pass on sale, Decorator 199 (LF-27); earlier class passes are off sale; diamonds are sold for Robux and also drop in play. In co-op, bought power helps your own team.
 - **Keeps:** every run is a story with an ending; classes make groups want a mix of roles; the fire is a visible, growing progress object.
-- **Cadence:** weekly updates, each preceded by a 45-minute "update party" where the developers play with the community and find bugs; three-part seasonal events with their own currency and class.
-- **Spread:** a mascot readable at icon size; a scary but funny tone for a broad audience; a film deal and a cross-platform collaboration followed.
+- **Cadence:** weekly updates, each preceded by a 45-minute "update party" where the developers play with the community and find bugs; three-part seasonal events with their own currency and class. **Spread:** a mascot readable at icon size; a scary but funny tone for a broad audience; a film deal and a cross-platform collaboration followed.
 - **Risks:** long runs on unstable phones need reconnect or checkpoints; tone against the rating; hundreds of clones carrying the name; content "into the thousands" needs strict mesh and instance budgets.
 - **Lessons:** (1) put the first scare inside five minutes and make the safe zone visibly grow; (2) one monster, one tell, one counter; (3) sell roles through a currency that can also be earned; (4) build systems first, then pour content on top weekly; (5) of the 2025 mega-hits, the one built on co-op depth kept the highest floor (above 1% of peak against about 0.1% for Grow a Garden).
 
@@ -285,8 +270,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** hands on a task in a small 3D space; menu-led managers stay under 1K CCU however deep they are (V-7).
 - **Money:** cheap repeatable products carry the format: My Small Business has 39; two rivals have no passes at all (V-7). RT3 sells convenience passes such as auto-collect and precision building, none required to progress (search summary).
 - **Keeps:** RT3's stated pillars are activity, creativity and depth; staff, merge tiers and an index stand in for pets; a friend boost.
-- **Cadence:** RT3 ships updates sometimes several times a week from player feedback, and its team posts at least two short-form videos a week (Creator Spotlight, search summary).
-- **Spread:** a sequel audience; price-flip thumbnails; a relatable job.
+- **Cadence:** RT3 ships updates sometimes several times a week from player feedback, and its team posts at least two short-form videos a week (Creator Spotlight, search summary). **Spread:** a sequel audience; price-flip thumbnails; a relatable job.
 - **Risks:** decorating raises favourites but shortens sessions (7.9 min in a decorating-led rival, V-7); driving is hard for young players; near-duplicate risk against the format leader (`genres/tycoon-and-cozy-management.md`).
 - **Lessons:** (1) the player does the work before a worker does; (2) creativity (layout, menu) gives a tycoon expression as well as numbers; (3) the hiring ladder is this genre's pet collection; (4) repeatable products fit an audience that returns daily; (5) two short videos a week is part of the job.
 
@@ -296,8 +280,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** the first section is clearable on the first try; then you fall and learn the rule by experience; a visible round timer promises that a bad tower is never permanent.
 - **Money:** on sale (LF-29): Haunted Bundle 480, Double Coins 195, Halloween Coils Bundle 90; seasonal bundles rotate. Private-server owners can skip rounds, set tower size and lock the shop.
 - **Keeps:** procedural variety from hand-made parts; short rounds reset frustration; mastery as status; faster climbers above you as the tutorial.
-- **Cadence:** small, safe drops: a new section or a seasonal bundle (updated 10 Oct 2026).
-- **Spread:** "no checkpoints" is a dare, and falling from the top is the most relatable obby clip.
+- **Cadence:** small, safe drops: a new section or a seasonal bundle (updated 10 Oct 2026). **Spread:** "no checkpoints" is a dare, and falling from the top is the most relatable obby clip.
 - **Risks:** difficulty divides the audience (see the rating); gear that helps climbing is a soft advantage in a skill game.
 - **Lessons:** (1) difficulty can be the brand if rounds are short; (2) hand-made pieces assembled at random give freshness without generated-level quality problems; (3) offer a shop-locked mode for purists; (4) a low rating does not stop visits, but it costs in a system that weighs retention: choose it deliberately; (5) pick an update unit you can ship in a day.
 
@@ -307,8 +290,7 @@ Fields: **Is** (what and how big) · **Loop** (with timings) · **First minute**
 - **First minute:** the counter ticks with a key-click sound from the first step; the course is in view from spawn; failing is itself progress.
 - **Money:** 64 passes (LF-29): treadmills 79 to 1,199, trails and auras 19 to 2,999, Wins Multiplier x2 95, More Equipped Items 299, Premium Trade Booth 159, Unlock Soundpacks 85. Almost all fixed-price cosmetics or self-only multipliers; no random items on the list.
 - **Keeps:** a personal stat that only rises; world themes that change the title suffix; a full server of trails as social proof; purely comparative competition with nothing harmful.
-- **Cadence:** a themed world per major update; a concert during the July 2026 surge (figures unverified).
-- **Spread:** the shortest promise on the platform ("always getting stronger"), one sensory theme, launched in the lull after the brainrot wave.
+- **Cadence:** a themed world per major update; a concert during the July 2026 surge (figures unverified). **Spread:** the shortest promise on the platform ("always getting stronger"), one sensory theme, launched in the lull after the brainrot wave.
 - **Risks:** CCU fell 61.5% from August to September 2026 and the genre is "crowded and fading" (V-7); dozens of near-identical variants; client-reported speed and thin collision at high speed are the standard exploits (`genres/plus-one-evolution.md`).
 - **Lessons:** (1) let the stat feed back into difficulty so the number never trivialises the game; (2) a 19-to-2,999 cosmetic ladder gives every budget a purchase without random items; (3) add a movement rule per world, not a bigger number; (4) short sessions suit a system that credits at most 60 minutes per player per day `[official]`; (5) a format game needs its next verb before the clones finish copying the last one.
 
@@ -330,7 +312,7 @@ Count = teardowns above (of 18) where the cited evidence shows the pattern. Abse
 | 10 | Sessions end in an arc (run, round or match) | 7 | DO DTI TD BB DR 99N ToH | Gives a reason to restart and a clip |
 | 11 | Loss or danger with a visible counter | 7 | SaB SAE DO BB DR 99N ToH | Timer, tell, safe line or short round for every loss |
 | 12 | Tradable rares brought real-money resale, scams, dupes or a trading shut-off | 4 | GaG PS99 AM FI | Gate trading by progress; ship it last |
-| 13 | Monetisation drew press or analyst criticism | 4 | GaG SaB PS99 BB | All four sold power over others, paid luck or paid PvP abilities |
+| 13 | Monetisation drew press or tracker-analyst criticism | 3 | GaG SaB PS99 | All three sold power over other players or paid luck |
 | 14 | Lobby place plus separate run or match places | 3 | DO TD 99N | Party in the lobby, sell before the run |
 | 15 | Offline progress as the stated promise | 2 | GaG CM | Strong for idle and management, not universal |
 | 16 | Forced change over IP | 2 | SaB BF | Original names and characters from day one |

@@ -140,7 +140,7 @@ end
 --!strict
 -- Unexecuted sketch (server). ReportStore and Evidence are your own modules (not shown).
 local Players = game:GetService("Players")
-local CATEGORIES = { Griefing = true, Exploiting = true, Teaming = true, TradeScam = true, OffensiveBuild = true, Other = true }
+local CATEGORIES: { [string]: boolean } = { Griefing = true, Exploiting = true, Teaming = true, TradeScam = true, OffensiveBuild = true, Other = true }
 local COOLDOWN, MAX_PER_TARGET = 60, 5
 local lastReport: { [number]: number } = {}
 local perTarget: { [number]: number } = {}
@@ -305,11 +305,11 @@ Order of work: **contain → communicate → diagnose → recover → post-morte
 | SEV3 | Degraded for some | Next update; workaround message |
 | SEV4 | Cosmetic | Backlog |
 
-Containment tools, fastest first `[lihfolk][official]`: config kill switch for the feature (seconds; a config change reaches servers in about a minute) → disable the affected purchase prompts → saves to read-only → republish the previous version → restart outdated servers → restart all. Kill switches must exist **before** the incident, default to off for new risky features, keep the last known value on a read failure, and have a tested "off" path (open trades cancel and return items).
+Containment tools, fastest first `[lihfolk][official]`: config kill switch for the feature (a published config reaches servers in roughly 15 s to 1 min `[official]`, but only if the code refreshes its `ConfigSnapshot` on `UpdateAvailable`; a snapshot read once at startup never changes) → disable the affected purchase prompts → saves to read-only → republish the previous version → restart outdated servers → restart all. Kill switches must exist **before** the incident, default to off for new risky features, keep the last known value on a read failure, and have a tested "off" path (open trades cancel and return items).
 
 | Crisis | First hour | Recovery | Say to players |
 |---|---|---|---|
-| **Data loss or corruption** | Read-only saves; note the start time; check the Roblox status page before blaming your code | DataStore versions: first write per key per UTC hour is kept; versions expire 30 days after being overwritten `[official via lihfolk][VS]`. Inspect before restoring; never write under a live session lock (`data-and-purchases.md`). Restore, compensate, or both | "Saves are paused while we fix a problem. Progress before 14:00 UTC is safe." |
+| **Data loss or corruption** | Read-only saves; note the start time; check the Roblox status page before blaming your code | DataStore versions: versioned backups expire 30 days after a newer write overwrites them and the latest never expires `[official][VS]`; the vault adds that a backup is cut on the first write per key per UTC hour `[lihfolk]`. Inspect before restoring; never write under a live session lock (`data-and-purchases.md`). Restore, compensate, or both | "Saves are paused while we fix a problem. Progress before 14:00 UTC is safe." |
 | **Purchases charged, not granted** | Flag off the prompts | A handler that errored (did not return `PurchaseGranted`) is retried by Roblox once fixed; one that returned granted needs manual grants from your purchase log | "Purchases are paused. Nothing you bought is lost; it will arrive automatically." |
 | **Dupe or economy exploit** | Flag off trading and the affected faucet; snapshot ledgers | Close the validation hole first; remove duplicated value from holding accounts; freeze suspicious trades; avoid global rollbacks; action accounts by the ladder (§7) | "Trading is off while we fix a bug. Your items are safe. Please do not trade until this message is gone." |
 | **Exploit wave** (fly, kill-all, server crash) | Raise server-side checks, enable stricter config thresholds, restart affected servers | Patch the remote or validation gap; ban by evidence, not by reports alone | "We are removing cheaters and have tightened checks. Report with the in-game button." |
