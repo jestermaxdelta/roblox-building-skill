@@ -64,8 +64,8 @@ A colour script is the plan for how colour and value change across the game. For
 
 - Put each zone's ground, mid (props), accent and sky colour side by side in one image and read across it. The strip exposes neighbours that are too close (forest green into jungle green), value cliffs three zones running, and an accent used by four zones `[lihfolk]`.
 - Rules that hold `[lihfolk]`: each zone owns one accent hue no other zone uses; alternate warm and cool along the chain; widen the value range with progression (deeper darks and brighter emissives read as "higher level"); the ground carries the zone's base colour flatly and calmly.
-- Saturation is a budget: spend it on the hero landmark, interactables and rewards, never on the ground. Pickups use one game-wide colour no zone uses as decoration.
-- Value structure from the style bible: ground mid-dark, walls mid, interactables brightest. Decide per zone whether enemies are lighter or darker than the floor and enforce it.
+- Treat saturation as a budget. The hero landmark, interactables and rewards get it; the ground gets none. Reserve a single colour for pickups across the whole game and keep it out of every zone's decoration.
+- Value structure from the style bible: ground mid-dark, walls mid, interactables brightest. For each zone, pick one answer (enemies read lighter than the floor, or darker) and hold every enemy to it.
 - Check contrast numerically where it matters. Relative luminance `L = 0.2126 R + 0.7152 G + 0.0722 B` on linearised channels; contrast ratio `(L_light + 0.05) / (L_dark + 0.05)`. Aim for 3 or more between a gameplay object and its usual background before lighting `[lihfolk]`; a critical signal also needs a non-colour cue (shape, motion, outline).
 - Sample colours under the game's lighting, not in a colour picker. Near-black surface colours (luminance under about 0.06) swallow texture detail entirely `[lihfolk, measured]`.
 - Three reads identify a zone: silhouette (screenshot as black on white), colour (blurred screenshot), light (props hidden). Two of three is the minimum. Light is the cheapest to change: minutes of tuning alter every pixel `[lihfolk]`.
@@ -125,7 +125,7 @@ return clockTime
 - Sky: six images that must be seamless at every shared edge `[official]`. The sky also feeds environment diffuse and specular light, so choose or paint one whose horizon colours match the palette. Author skies yourself (rendered from Blender or painted); keep faces at 1024² or less `[house]`. `SunAngularSize` defaults to 21° and clamps to 0–60; 0 hides the sun alone; `CelestialBodiesShown = false` hides sun, moon and stars `[official]`.
 - `SkyboxOrientation` rotates the six faces only (not the sun, moon, stars or clouds); wrap the angle with `% 360` `[official]`. A slow client-side spin (1–5° per second) makes a night or alien sky feel alive `[lihfolk]`.
 - Clouds render only when the `Clouds` object is parented under `Workspace.Terrain` `[official]`. That uses the Terrain container, not terrain voxels, so it does not touch the Terrain house rule. `Cover` 0–1, `Density` (thin and wispy to dark and stormy), `Color` (heavily influenced by Lighting and Atmosphere). Motion comes from `Workspace.GlobalWind`; changing the wind wakes physics assemblies, so do not animate it every frame.
-- Weather reads well when cloud `Cover` and `Density` move together with `Atmosphere.Density` and `Haze` over 5–20 s `[lihfolk]`. Rain and snow emitters follow the camera; they are not spread over the map.
+- For readable weather, tween cloud `Cover` and `Density` in step with `Atmosphere.Density` and `Haze`, taking 5–20 s `[lihfolk]`. Rain and snow emitters follow the camera; they are not spread over the map.
 
 ## 6. Post-processing: safe value ranges
 
@@ -157,7 +157,7 @@ Effects in `Lighting` show to every player; effects in the `Camera` show to that
 - The official cost list: many shadow-casting lights, many small parts receiving shadows, large `Range` and `Angle`, moving shadow casters. Mitigations in the docs' own order: `CastShadow` off on small parts, shadows off on moving objects, `Light.Shadows` off where not needed, smaller range and angle, fewer lights, lights disabled by distance or room `[official]`.
 - Fixture pattern: the light sits on a `Light_Att` attachment exported with the Blender fixture, just outside the shade, with `Shadows = false`. A light inside a shade with shadows on is shadowed by its own lamp: move the attachment or set `CastShadow = false` on the shade `[lihfolk]`.
 - A light that "does not reach" needs more `Range`, not more `Brightness` (which only burns out the centre). Turn on Show Light Guides in Studio settings while placing `[official]`.
-- Shadows only on the hero lights that shape a room (a ceiling lamp, a window spot). One production lobby read as cosy on seven unshadowed PointLights `[lihfolk, measured]`.
+- Give shadows only to hero lights, the ones shaping a room, such as a window spot or a ceiling lamp. One production lobby read as cosy on seven unshadowed PointLights `[lihfolk, measured]`.
 - Thin for performance by tagging and disabling, not deleting, so lights can return on higher tiers `[lihfolk]`.
 - Effect lights expire with their effect (parent under the effect root or pool them); cap them (two per ability cast, four alive in total, was one project's rule) `[lihfolk]`.
 - Reference values `[official tutorials]`: candle cluster PointLight Brightness 0.7, Color (255,202,156); desk lamp SpotLight Angle 140, Brightness 4, Range 12; radio screen SurfaceLight Brightness 2, Range 4; campfire PointLight Brightness 2, Color (255,179,73).
@@ -222,7 +222,7 @@ end)
 - Keep glow rare: emissive only on interactables, landmarks and light fixtures (style bible). Glow covering more than about a sixth of an object, or of the frame, dissolves shapes in bloom on high settings and looks flat on low ones `[lihfolk, measured]`.
 - Fake light that costs no lighting: a warmer palette swatch or vertex-colour tint baked around a fixture; a soft "light pool" disc mesh under a lamp (few of them: partial transparency is overdraw); `ColorShift_Bottom` in the lava colour so every underside glows without one local light `[lihfolk]`.
 - Bake what shadows would have given: vertex-colour AO and a darker contact band at the base of props (`bake_ao_to_vertex_colour` in `art-pipeline-blender.md`) keep objects seated when shadows are off.
-- Test the brightest and the darkest effect in the brightest and the darkest zone. One project's effect set, designed in daylight, vanished in dark zones and had to be re-authored brighter with a small coloured light per large piece `[lihfolk]`.
+- Test the brightest and the darkest effect in the brightest and the darkest zone. On one project, effects authored in daylight disappeared inside dark zones; the fix was a brighter re-author plus one small coloured light for each large piece `[lihfolk]`.
 
 ## 10. Per-zone lighting transitions (client-side)
 
@@ -343,7 +343,7 @@ Starting points `[house]`, adapted from the LihFolk recipes and earlier house pr
 | Night is black or unplayable | Ambient near zero | Blue-violet ambient at 15–25%; outlines and emissive accents on gameplay objects |
 | Washed out after raising environment diffuse | Ambient not lowered | Lower `Ambient` and `OutdoorAmbient` together with it |
 | Fog settings do nothing | An `Atmosphere` exists | Use `Density` and `Haze`, or remove the Atmosphere |
-| Glare or Decay does nothing | `Haze` is 0 (and `Glare` 0 for Decay) | Raise Haze first |
+| Changing Glare or Decay has no effect | `Haze` sits at 0 (for Decay, `Glare` is 0 as well) | Raise Haze first |
 | Skybox visible through distant hills | `Offset` too low for the `Density` | Raise `Offset` |
 | Indoors as bright as outdoors | `GlobalShadows` off, `Ambient` above `OutdoorAmbient`, or a leaking shell | Shadows on; Ambient ≤ OutdoorAmbient; thicker or sealed shell |
 | Metal looks like grey plastic | `EnvironmentSpecularScale` 0 | Raise toward 1 where PBR metal matters |

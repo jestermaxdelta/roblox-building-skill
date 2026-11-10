@@ -108,11 +108,11 @@ Most "this feels bad" reports are about input, not effects: a jump that did not 
 
 | What the player perceives | Target |
 |---|---|
-| Something reacts to the press (pose shift, button state, sound) | Within 1–2 frames of the input being read (under about 35 ms at 60 fps) |
+| The press gets a reaction (sound, button state, pose shift) | No later than 1–2 frames after the input is read; at 60 fps that is under about 35 ms |
 | The action is clearly under way | Within about 100 ms |
 | The outcome (hit, damage, reward) | When the design says; hundreds of ms is fine if the first two are met |
 
-First-frame rule: every press shows something on the frame it is read, even when the action must wait. A move on cooldown plays a small "denied" tick; a server-validated action starts its anticipation at once and the result follows the reply. The worst offender is `InvokeServer` in an input handler before any animation: at 150 ms round trip that is 150 ms of nothing. Local presentation first, server confirmation second (networking-and-security.md).
+First-frame rule: every press shows something on the frame it is read, even when the action must wait. A move on cooldown plays a small "denied" tick; a server-validated action starts its anticipation at once and the result follows the reply. The worst offender is an input handler that calls `InvokeServer` before any animation: a 150 ms round trip means the player sees nothing for 150 ms. Local presentation first, server confirmation second (networking-and-security.md).
 
 | Action | Buffer window | Note |
 |---|---|---|

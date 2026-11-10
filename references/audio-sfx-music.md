@@ -52,7 +52,7 @@ Facts that bite:
 
 Two canonical graphs `[official]`: 2D is `AudioPlayer → Wire → AudioDeviceOutput`; 3D is `AudioPlayer → Wire → AudioEmitter` (parented to a part or attachment) plus `AudioListener → Wire → AudioDeviceOutput`. A `Wire` has `SourceInstance` and `TargetInstance` (pins default to `Output` and `Input`); many wires into one input mix, one output can feed many wires; `Wire.Connected` is false when a pin name is wrong or the wire would form a cycle `[lihfolk]`.
 
-Listener: `SoundService.DefaultListenerLocation` is `Default` (a camera listener only in experiences with voice chat), `Camera`, `Character` or `None`. With `Camera` or `Character` the engine also creates the `AudioDeviceOutput` and wires it `[official]`. For real buses choose `None` and build the graph yourself: one listener per 3D category, separated by `AudioInteractionGroup` (an emitter is heard only by listeners in the same group), each wired to its category fader `[lihfolk]`.
+Listener: `SoundService.DefaultListenerLocation` is `Default` (a camera listener only in experiences with voice chat), `Camera`, `Character` or `None`. With `Camera` or `Character` the engine also creates the `AudioDeviceOutput` and wires it `[official]`. For real buses choose `None` and build the graph yourself: one listener per 3D category, separated by `AudioInteractionGroup` (listeners hear only the emitters that share their group), each wired to its category fader `[lihfolk]`.
 
 ```lua
 --!strict
@@ -184,7 +184,7 @@ Where the delay hides `[lihfolk]`: the file (many effects have 20–80 ms of lea
 - Measure onset and peak once per file and store them in the manifest.
 - Scheduled sounds (a hit on a known animation marker, footsteps): start at `beat − peak` so the transient lands on the frame.
 - Reactive sounds (server-confirmed kill, pickup): trim so onset is under 5–10 ms, or set `TimePosition` to the onset before `Play()`.
-- When in doubt err late, never early. Hit-stop: the impact plays at the start of the freeze and is never paused.
+- When in doubt err late, never early. Hit-stop: fire the impact sound as the freeze begins and never pause it.
 - Predict only the neutral contact on the attacker's client. Crit, block, kill, loot and "you were hit" wait for the server; a false hurt sound is worse than a late one `[lihfolk]`.
 - A sound scheduled at input for a move that is then cancelled still plays unless it carries a cancellation token `[lihfolk]`.
 
@@ -243,7 +243,7 @@ Bus tree, slider curve, loudness targets (−18 LUFS mobile, true peak at most �
 
 **Loudness consistency.**
 - Normalise every source file to one target before upload, so the per-cue `volume` value is the whole mix and swapping a take never changes the balance. One-shots: −18 LUFS momentary maximum (integrated loudness is unreliable on files under about half a second) with a −1 dBTP true-peak limit `[lihfolk]`.
-- Level one-shots by peak and beds by RMS: peaks matter for short sounds, average energy for long ones `[lihfolk]`.
+- Set one-shot levels by peak and bed levels by RMS: a short sound is judged by its peak, a long one by its average energy `[lihfolk]`.
 - Shape of a mix `[lihfolk]`: your own actions loudest, enemies below, other players' actions about 0.7×, UI far below combat, music and ambience a bed. After levelling, the loudest sound in the game is something the player caused and wanted.
 - Measure in-engine with `AudioPlayer:GetWaveformAsync` or an `AudioAnalyzer` (`RmsLevel`, `PeakLevel`) when files cannot be re-exported `[official]`.
 - Editing pipeline per file `[lihfolk]`: trim the head to just before the transient; 1–2 ms fade in and 10–50 ms fade out; high-pass below 30–40 Hz; mono for every 3D sound; normalise; export OGG at the native rate; measure peak time; upload under the game's owner; add the manifest row. Free tools (Audacity, a LUFS meter) are enough.
@@ -337,7 +337,7 @@ Rarity ladder for rewards: each tier adds a layer (brighter sound, a riser befor
 - House budget `[house]`: at join, at most 1 music track, 1 bed and about 30 short one-shots loaded; at most 3 looping 3D sources audible at once on the low tier.
 
 Mobile constraints:
-- Phone speakers reproduce little bass: a sound that only works on headphones does not work. Check that combat cues stay audible over the loudest music state on a phone speaker `[lihfolk]`.
+- Phone speakers reproduce little bass: a sound that only works on headphones does not work. On a phone speaker, confirm that combat cues still cut through the loudest music state `[lihfolk]`.
 - Many phone players play muted or with their own music: every information sound needs a visual twin, and haptics can carry impact (`game-craft.md`).
 - Wireless latency cannot be fixed; removing lead-in from files is what you control. An optional "audio lead" setting (0–250 ms) shifts scheduled sounds earlier for wireless users `[lihfolk]`.
 - Lower voice caps (16), no acoustic simulation dependence, and reverb only where it is heard.
@@ -365,7 +365,7 @@ Mobile constraints:
 | Metallic phasing in group fights | The same file stacked | Voice caps, per-cue cooldown, choke |
 | Distant fights audible everywhere; constant murmur in hubs | Default 10 to 10,000 stud rolloff; no crowd caps | Per-category distances; crowd caps; distance gate |
 | Sound cuts off abruptly at range | Inverse or Linear with a low maximum | `InverseTapered` or a custom curve |
-| Own footsteps sound far away | Listener at a third-person camera | Play own sounds 2D |
+| The player's own footsteps seem distant | The listener sits at a third-person camera | Play the player's own sounds in 2D |
 | UI clicks louder than hits; levels jump between sounds | No loudness target | Normalise files; level by category |
 | Music slider does nothing, or jingles ignore it | Sounds outside a bus; settings wired to an old system; stingers on the SFX bus | Every source on a bus; rewire; stingers on Music |
 | Music unbearable after 20 minutes | One short loop at a high level | Playlist, silences, lower level |

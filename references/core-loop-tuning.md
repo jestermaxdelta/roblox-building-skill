@@ -141,10 +141,10 @@ Guidance tools. One pointer at a time; two pointers and the player follows neith
 |---|---|---|
 | `Beam` from the character to the target | Target is off-screen or far | Target is already in view |
 | `Highlight` on the target | One interactable among look-alikes | Several targets at once (one per step; the engine caps live highlights `[VS]`) |
-| `ProximityPrompt` | The verb is "walk up and press" | The action is a HUD button |
+| `ProximityPrompt` | "Walk up and press" is the verb | A HUD button performs the action |
 | Pulse or hand on a HUD button | The target is a GUI element | World targets |
 | One camera nudge | The player must notice something behind them, once | Repeatedly, or with reduced motion on |
-| NPC or ghost demonstration | A physical verb (jump timing, combo) | Text would do; never block input while it plays |
+| NPC or ghost demonstration | Physical verbs such as a combo or jump timing | Text would be enough; never block input during playback |
 | Level shape: show, try, test | Obbies, horror, platforming | Economy steps the space cannot show |
 
 House rules apply: any arrow, sign or chevron that is a 3D object is a Blender mesh, placed above head height or beside the route so its collision never blocks the path; beams, highlights and particles are effects and are fine. Every cue uses colour plus shape or words, sits inside the safe area, and stops pulsing when `GuiService.ReducedMotionEnabled` is true `[VS]`.
@@ -172,9 +172,9 @@ Case study: five versions of one tutorial in two weeks (reference project) `[lih
 | D | 7 steps: roll, equip, roll again, salvage the weaker item, forge the first, open quests, claim a quest. A real daily quest is seeded first in the list so the forge step completes it | The tutorial finishes a real goal and teaches the quest system by paying out | Players still felt "thrown in" afterwards |
 | E | D plus one short combat step ("defeat 3 enemies") and a next-goal chain of 35 goals read from the save | Direction continues after "tutorial complete" | Kept |
 
-Lessons: teach on safe ground first; teach the verbs players will not discover alone, not the obvious one; finish on a real goal; the end of the tutorial needs a successor (design-foundations.md §7.3); check that every step can actually complete after each update. Open trade-off recorded by the same project: a guaranteed great first pull feels generous but shows the top of the early ladder too soon; a modest one leaves room to climb. They switched from Rare-first to Common-first without measuring the effect. Test it.
+Lessons: teach on safe ground first; teach the verbs players will not discover alone, not the obvious one; finish on a real goal; the end of the tutorial needs a successor (design-foundations.md §7.3); check that every step can actually complete after each update. Open trade-off recorded by the same project: guaranteeing a great first pull reads as generous yet reveals the top of the early ladder before its time, while a modest pull leaves room to climb. They switched from Rare-first to Common-first without measuring the effect. Test it.
 
-Starting targets `[lihfolk]` (rules of thumb; replace with your funnel): each early step keeps 90% or more of the players who reached it; 70% or more of starters finish; the whole scripted part is under 3 minutes. Their "first reward under 60 s" is looser than our 30 s; keep 30 s.
+Starting targets `[lihfolk]` (rules of thumb; replace with your funnel): of the players reaching each early step, 90% or more get past it; 70% or more of starters finish; the whole scripted part is under 3 minutes. Their "first reward under 60 s" is looser than our 30 s; keep 30 s.
 
 Test matrix before shipping any tutorial change: fresh account on a phone-sized viewport, with keyboard, with gamepad; switch input device mid-step; rejoin mid-step; skip; die mid-step; play it with a friend joining; play it with each dependency system's kill switch off.
 
@@ -377,7 +377,7 @@ One variable at a time. A change that cannot be expressed as one Config key is a
 10. **Decide.** Goal metric's confidence interval excludes 0, and no guardrail is significantly down. A custom metric that moves while the topline stays flat is information: the change worked mechanically but has not moved retention.
 11. **Roll out** through Make decision, record hypothesis, values, result and decision in the postmortem log (process-and-playtesting.md §7 weekly experiment SOP and §9), pick the next variable. A win that came from misleading UI or pressure is a kill regardless of uplift.
 
-Changes that are not experiments (a new feature, a risky system) go out by staged rollout instead: dark, team allowlist, 1–5%, 25–50%, 100%, with abort criteria written first. The plan table and its small-game limits are in liveops-quests-retention.md §Shipping an update. If you assign variants yourself instead of using Experiments, assign by user id so the group is stable across sessions, and log the variant in a custom field on every onboarding event `[lihfolk]`.
+Changes that are not experiments (a new feature, a risky system) go out by staged rollout instead: dark, team allowlist, 1–5%, 25–50%, 100%, with abort criteria written first. The plan table and its small-game limits are in liveops-quests-retention.md §Shipping an update. If you assign variants yourself instead of using Experiments, key the assignment to the user id, which keeps a player in one group from session to session, and attach the variant as a custom field to every onboarding event `[lihfolk]`.
 
 Order of variables, cheapest and earliest first `[house]`: spawn and first prompt → seconds to first reward → first upgrade cost and starting currency → hint delay → early XP or cost curve → meso goal length → return hook → quest board size → anything monetary (with D1 and D7 as guardrails).
 

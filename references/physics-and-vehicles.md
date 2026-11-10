@@ -27,8 +27,8 @@ What this is: how Roblox simulates and replicates physics, and how to build char
 - Root part order `[official]`: anchored first, then non-`Massless`, then higher `RootPriority`, then size (with multipliers for seats and character roots). Set `RootPriority` when code must find a stable root.
 - `Massless` only takes effect when the part is welded to a non-massless part, and never on the root. Use it on every visual mesh so body panels, accessories and held weapons do not move the centre of mass.
 - Choose mass; do not inherit it. Put the mass in one low, simple root collider with `CustomPhysicalProperties` density, and read `AssemblyMass` and `AssemblyCenterOfMass` (draw a marker there while tuning). Friction combines the two touching surfaces by `FrictionWeight`, so a tyre with friction 1.5–2 and a high weight still slides on an ice material.
-- Characters sitting in seats join the assembly: a heavy avatar on a light kart changes its handling. Make vehicles heavy enough that passengers are a small share, or recompute springs on `Occupant` change.
-- Any time an assembly changes shape (weld added or removed, anchor toggled, joints broken on death), re-check its root and re-assert its owner `[lihfolk]`.
+- A seated character becomes part of the assembly, so a light kart handles differently under a heavy avatar. Make vehicles heavy enough that passengers are a small share, or recompute springs on `Occupant` change.
+- Re-check the root and re-assert the owner whenever an assembly's shape changes: a weld is added or removed, an anchor is toggled, or death breaks the joints `[lihfolk]`.
 
 ## 3. Network ownership
 
@@ -73,7 +73,7 @@ Legacy `Body*` movers are deprecated `[official]`; they still run in old models,
 | `BodyForce`, `BodyThrust` | `VectorForce` | `RelativeTo`, `ApplyAtCenterOfMass` |
 | `RocketPropulsion` | `LineForce` + `AlignOrientation` | |
 
-- **Force limits are the most important setting.** An unlimited mover wins every fight: it pushes through thin walls, launches whatever it touches and jitters against other movers. Start at `MaxForce = AssemblyMass × desired acceleration`; about `mass × 2000` reaches a dash speed within a frame or two without punching through geometry `[lihfolk]`.
+- **Force limits are the most important setting.** An unlimited mover wins every fight: it pushes through thin walls, launches whatever it touches and jitters against other movers. Start at `MaxForce = AssemblyMass × desired acceleration`; at about `mass × 2000` a dash hits its speed in one or two frames and still does not punch through geometry `[lihfolk]`.
 - A mover whose `Attachment0` is missing or outside the world silently does nothing: check that first when "the dash does nothing".
 - Create movers on the machine that owns the assembly, give each a lifetime, and destroy it on every exit path including death.
 - **One mover per object.** Choose one: anchored and moved by `CFrame` (kinematic), or unanchored and moved by constraints. A script that sets `CFrame` on an unanchored part every frame fights the solver, worse when the server writes and a client owns.

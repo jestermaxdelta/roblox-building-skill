@@ -84,6 +84,7 @@ Resolutions that follow from the house rules:
 - No primitive greybox ships. Prototype with a Blender blockout kit (a few bevelled kit pieces exported once) or inside a throwaway place that is never published.
 - Do not ship content from Studio's generative or marketplace tools (Assistant mesh generation, procedural models, Toolbox or insert-asset). Blockouts from them may be used only in throwaway places.
 - Terrain needs the owner's explicit per-game approval; the default is Blender ground meshes.
+- The Blender bridge named in rule 1 (`tools/blender_exec.py`) lives in the owner's game repos. Without it, drive Blender through a Blender MCP server or run the shipped `scripts/blender/export_kit.py` headless (`scripts/README.md`), and upload through the Studio MCP's `open_cloud_invoke` or the 3D Importer.
 - Skinned meshes, SurfaceAppearance and other visual tools are fine when the asset is authored in Blender.
 - "Everything is solid" is about the world players and NPCs move through. Tools, weapons and viewmodels held by a character, and transient effect meshes (slashes, projectiles' visuals, impact rings), do not collide: the character's own collider and the server's hitbox cover them. Skinned meshes collide in their rest shape only, so give animated bodies a `_COL` proxy.
 - Particles, Beams, Trails and UI are not models: they are allowed. A mesh used as an effect is still authored in Blender.

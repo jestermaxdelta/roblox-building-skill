@@ -12,7 +12,7 @@ How to make a model that looks designed at phone size: the numbers behind readab
 
 Terms: a **stud** is Roblox's length unit (0.28 m); the **silhouette** is the filled outline of a model; a **bevel** replaces a sharp edge with a narrow strip (a one-strip bevel is a **chamfer**); **normals** are the per-vertex directions that decide shading; **weighted normals** bias those directions toward large faces so flat faces stay flat; **value** is how light or dark a colour is, independent of hue; a **texel** is one texture pixel.
 
-Contents: The numbers · Shape and silhouette · Proportion and exaggeration · Edges and shading · Spending triangles · Colour and value · Faceted and voxel styles · Recipes and budgets · Concept to model · Quality rubric · First kit walkthrough · Level-up · Review gate · Sources
+Contents: The numbers · Shape and silhouette · Proportion and exaggeration · Edges and shading · Spending triangles · Colour and value · Faceted and voxel styles · Recipes and budgets (with the rarity ladder) · Concept to model · Quality rubric · First kit walkthrough and first creature · Level-up · Review gate · Sources
 
 ## The numbers that drive every decision
 
@@ -90,33 +90,15 @@ Four-view silhouette test `[lihfolk]`, rendered as flat black at game pixel heig
 | High three-quarter (35° down) | The default follow camera | Top surfaces carry a distinct shape |
 | Top | Pets, pickups, ground props | Not a featureless blob: a crest, rim, ears or cap survives |
 
-Then the roster test: put every enemy, pet or pickup of a set in one row and confirm no two share a primary shape (colour is the second cue, never the first), and that a rarer version changes the outline, not just the trim. Flip the sheet horizontally to expose lopsided shapes. Test characters in their idle pose.
+Then the roster test: put every enemy, pet or pickup of a set in one row and confirm no two share a primary shape (colour is the second cue, never the first), and that every tier of a rarity ladder can be told from the one below it at this size (how each tier earns that is the rarity ladder under "Recipes and budgets"). Flip the sheet horizontally to expose lopsided shapes. Test characters in their idle pose.
 
-```python
-# Tested on Blender 5.2.3 (bpy, headless, Cycles on CPU). Writes <path>_side/_front34/_high34/_top.png, black on white.
-import bpy, math
-from mathutils import Vector
+Render the sheet with the shipped script (Cycles on CPU, so it runs anywhere; `--roster` adds one strip per view with every piece at a shared scale):
 
-def silhouette_sheet(objs, path, px_high=96):
-    sc = bpy.context.scene; sc.render.engine = "CYCLES"; sc.cycles.samples = 1; sc.view_settings.view_transform = "Standard"
-    world = sc.world or bpy.data.worlds.new("W"); sc.world = world; world.use_nodes = True
-    world.node_tree.nodes["Background"].inputs[0].default_value = (1, 1, 1, 1)
-    black = bpy.data.materials.new("SIL"); black.use_nodes = True; black.node_tree.nodes.clear()
-    out = black.node_tree.nodes.new("ShaderNodeOutputMaterial"); em = black.node_tree.nodes.new("ShaderNodeEmission")
-    em.inputs[0].default_value = (0, 0, 0, 1); black.node_tree.links.new(em.outputs[0], out.inputs[0])
-    bpy.context.view_layer.material_override = black
-    pts = [o.matrix_world @ Vector(c) for o in objs for c in o.bound_box]
-    centre = sum(pts, Vector()) / len(pts); radius = max((p - centre).length for p in pts)
-    cam = bpy.data.objects.new("SilCam", bpy.data.cameras.new("SilCam")); sc.collection.objects.link(cam); sc.camera = cam
-    cam.data.type = "ORTHO"; cam.data.ortho_scale = 2.2 * radius
-    sc.render.resolution_x = sc.render.resolution_y = px_high
-    for name, yaw, pitch in (("side", 90, 0), ("front34", 45, 0), ("high34", 45, 35), ("top", 0, 85)):
-        y, p = math.radians(yaw), math.radians(pitch)
-        cam.location = centre + 4 * radius * Vector((math.sin(y) * math.cos(p), -math.cos(y) * math.cos(p), math.sin(p)))
-        cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
-        sc.render.filepath = f"{path}_{name}.png"; bpy.ops.render.render(write_still=True)
-    bpy.context.view_layer.material_override = None
+```bash
+blender -b --factory-startup kit.blend -P scripts/blender/silhouette_sheet.py -- --out build/silhouettes --px 64 --roster
 ```
+
+By hand: Viewport Shading dropdown > Lighting Flat, Color Single set to black, Background Viewport set to white, then zoom out until the model is thumbnail-sized and check Numpad 3 (side), Numpad 7 (top) and an orbit from above.
 
 ## Proportion and exaggeration
 
@@ -183,24 +165,7 @@ Only the silhouette needs that count; interior loops can be half. Practical band
 
 Delete: bottom faces and the bottom bevel ring of grounded props (up to a fifth of a small prop), faces buried in other meshes, interior faces (Select All by Trait > Interior Faces), backs against map edges the camera cannot reach, and anything under 1 px at its closest normal distance. Add: the top silhouette and one focal feature.
 
-```python
-# Tested on Blender 5.2.3. A bevelled cube returns (44, {'up': 19, 'down': 19, 'side': 62}); a grounded prop should show ~0 down.
-import bpy, bmesh
-from mathutils import Vector, kdtree
-
-def spend_report(obj):
-    bm = bmesh.new(); bm.from_object(obj, bpy.context.evaluated_depsgraph_get()); bmesh.ops.triangulate(bm, faces=bm.faces[:])
-    area = {"up": 0.0, "down": 0.0, "side": 0.0}
-    for f in bm.faces: area["up" if f.normal.z > 0.5 else "down" if f.normal.z < -0.5 else "side"] += f.calc_area()
-    total, tris = sum(area.values()) or 1.0, len(bm.faces); bm.free()
-    return tris, {k: round(100 * v / total) for k, v in area.items()}
-
-def symmetry_error(obj):  # worst X-mirror mismatch as a fraction of the largest dimension; 0.0 on a mirrored build
-    vs = [v.co.copy() for v in obj.data.vertices]; kd = kdtree.KDTree(len(vs))
-    for i, co in enumerate(vs): kd.insert(co, i)
-    kd.balance()
-    return max(kd.find(Vector((-co.x, co.y, co.z)))[2] for co in vs) / max(obj.dimensions)
-```
+Measure it instead of guessing: `scripts/blender/check_asset.py` prints, per asset, the share of triangle area facing up, down and sideways (a grounded prop should show about 0% down; a size-2 cube with a one-segment bevel reports 44 triangles at 19/19/62), open edges, class-budget overruns and, with `--symmetric <name>`, the mirror-symmetry error (0.0 for a half-plus-mirror build). The same functions (`spend_report`, `symmetry_error`) are importable from `scripts/blender/modeling_helpers.py`.
 
 - **GPU vertices, not just triangles** `[lihfolk]`: every sharp edge and UV seam splits vertices. Fully flat shading costs about three vertices per triangle; put sharp edges where the UV seams already are so the split happens once. A dense faceted forest can cost more memory than a smooth one.
 - **Topology matters only where it bends**: static props need clean shading and no long thin triangles (keep aspect under about 8:1); skinned meshes need three or more loops at hinges, five at shoulders and hips, and poles kept on rigid areas (details in animation-and-rigs.md).
@@ -273,8 +238,19 @@ Budgets are target / ceiling per asset, counted after modifiers. Going over targ
 - **Weapon** `[lihfolk]`: origin at the grip centre, blade or shaft along +Z, cutting edge toward −Y, scale applied; split by role (Handle, Guard, Blade, Glow) and by motion. Stylised proportions: haft radius 0.18–0.23 studs, head about a third of total length, shorter haft tapering toward the head. Build the blade from a cross-section loop with a flat rounded edge (a one-point edge renders as a razor ribbon) and let the point come from the profile curve, not a taper. Guards and pommels are extruded, bevelled silhouettes, not tubes and balls. Give small round parts their own, higher lathe resolution than the grip. A glowing edge is a few pixels wide in third person: the read is colour and outline. Reserve flames and ornate guards for the top tier so rarity stays readable.
 - **Modular building** `[lihfolk]`: pick the grid first. Conflict: LihFolk uses a 4-stud grid for default avatars and 8 for scaled-up characters; the house grid for architecture is 5, 8 or 16 studs (art-pipeline-blender.md), because a 4-stud module cannot hold the 5-stud gameplay door. Use the house grid and keep 4 as a prop sub-grid; scale the kit sizes that follow to it. A minimal kit: straight walls 4 and 8 wide by 12 tall by 1 thick, inner and outer corners, door wall, window wall, end cap, floors, stairs, pillar, top and base trims, roof pieces. Pillars and trims hide seams. Cut real openings so interiors work later. Roofs sag slightly, posts lean 2–4°, plank widths vary 15–30%, but parts that touch stay within a degree of each other or gaps open. Run a floating-shell check on the whole building: one hovering plank spoils it.
 - **Creature** `[lihfolk]`: decide skinned (organic bending) or rigid segments (toy, robot, armour) before modelling, and model in an A-pose facing −Y. Scripted route that works: loft cross-sections traced from a side view, add limbs as tubes, fuse with a voxel remesh, decimate to budget with symmetry on, then triangulate, dissolve at 5° and triangulate again for facets. Grow appendages out of the main mass by extrusion; do not float primitives beside it. Wings as two or three layered plates, not individual feathers. One exaggerated feature. Fins and other thin parts need a half-thickness of at least 0.6 of the quad edge or they fold.
-- **Cute pet (chibi)** `[lihfolk]`: smooth, round, no neck, bottom-heavy; eyes below the middle of the head, large, with iris depth and two catchlights; nothing pointing up unless you want horns. Express rarity with accessories and effects, not a spikier style. Judge from behind and above, where pets are actually seen.
+- **Cute pet (chibi)** `[lihfolk]`: smooth, round, no neck, bottom-heavy; eyes below the middle of the head, large, with iris depth and two catchlights; nothing pointing up unless you want horns. Keep the cute language at every rarity: follow the ladder below instead of making rarer pets spikier. Judge from behind and above, where pets are actually seen.
 - **Character**: build on an R15 proxy with joint geometry centred on the R15 pivots; proportions, skinning, cages and the three routes (avatar body, R15-compatible, custom rig) are in `references/animation-and-rigs.md`.
+
+**Rarity ladder: the one rule for tiered collectables** `[house]`. A new silhouette is a new mesh: one more modelling job, upload, collision shape and block of mesh memory, and it cannot share a draw call with its siblings. A material or palette variant reuses the mesh, its collision plan, attachments and (later) its rig and animations, and costs one small `SurfaceAppearance` or a colour swap. So spend silhouettes only where players look hardest:
+
+| Tier | What changes | New meshes |
+|---|---|---|
+| Common tiers (for example Common, Uncommon) | Palette or material variant of the base mesh. Change value or pattern, not only hue, so the tiers differ in greyscale | 0 |
+| Mid tiers (Rare, Epic) | The base mesh plus one accessory from a shared set (crown, saddle, wing pair, halo) that breaks the outline from the high three-quarter view, and optionally a scale step of about 1.15–1.3× | 0 per pet; the shared accessories are modelled once |
+| Top tier (Legendary, event exclusives) | Its own mesh with an outline-changing feature (crest, extra wings, floating piece), plus effects | 1 per pet |
+| Merge or fuse tiers (golden, rainbow) | Material variant of whatever the pet already is | 0 |
+
+Worked count: 4 dragons across 5 rarities is 20 collectables. A mesh per collectable is 20 meshes. The ladder needs 4 base meshes, 4 legendary meshes and a shared set of about 3 accessories: 11 meshes, with the other 16 collectables defined as data (mesh id, palette, accessory, scale). Adding golden and rainbow merge tiers makes 60 collectables on the same 11 meshes. Run the roster sheet on one pet's full ladder: every step must read at 64 px, and the legendary must pass against its own base.
 
 Mechanical gates for scripted or generated-by-script assets `[lihfolk]`, run after modifiers are applied and before anyone reviews: symmetric-by-design shapes are built as half plus mirror and measure ≤ 1% symmetry error; emblems, gems and guards are centred by bounding-box or centroid maths within 2%, never by eye, and seated on their surface; accents are built from the parent's own vertices; no self-intersections; concave caps (stars, gears) are ear-clipped, not beauty-filled; no floating shells. A gate failure caps the rubric at 5. Directional light makes symmetric shapes look lopsided: trust the number.
 
@@ -315,21 +291,64 @@ Kits: score one representative piece per family plus every hero piece. Have some
 
 ## First kit walkthrough (beginner)
 
-Goal: a crate, barrel, lamp post and fence section that look like one family and import cleanly.
+For someone opening Blender for the first time. Goal: a crate, barrel, lamp post and fence section that look like one family, import cleanly and can be stood on. This is the skill's single beginner kit; `references/learning-paths.md` points here.
 
-1. **Scene**: Scene Properties > Units > Unit System None. Add the two avatar proxies (boxes 5 and 6.5 tall) in a `Scale_Ref` collection. Add the 70° camera described above.
-2. **Palette**: pick six colours (two woods, a metal, a dark, a light, one accent). Write the hex values down. Nothing else is allowed.
-3. **Crate** (2.5 studs): add a cube, size 2.5. Tab into Edit Mode, select the four side faces, `I` to inset 0.3, `E` to extrude inward 0.1. Tab out, `Ctrl+A` > Scale. Add a Bevel modifier (Width 0.08, Segments 1, Limit Method Angle 30°, Harden Normals on), a Weighted Normal modifier and a Triangulate modifier; right-click > Shade Smooth. Delete the bottom face.
-4. **Barrel** (3 tall, radius 1): add a cylinder with 12 vertices. `Ctrl+R` two loop cuts, scale the middle loops out 10% for a bulge. Select two edge rings and bevel them into raised hoops 0.15 wide, extruded out 0.05. Same three modifiers. Delete the bottom cap.
-5. **Lamp post** (9 tall): a 0.6-stud square post that tapers, a chunky lantern about 2.5 studs tall (half an avatar is correct), a cap wider than the lantern. Add an Empty named `Light_Att` at the bulb; it imports as an Attachment for the PointLight.
-6. **Fence section** (4 long): posts 0.6 thick, two rails 0.4 thick, gaps of at least 0.6. Origin at one bottom end so sections snap.
-7. **Colour**: assign palette colours by material while modelling, then collapse to one material with the palette method in art-pipeline-blender.md.
-8. **Origins and names**: bottom-centre for crate, barrel and lamp post (`SM_Prop_Crate_A` and so on). Add a custom property `Fidelity` = `Box` (crate, fence) or `Hull` (barrel, lamp post).
-9. **Check**: render the silhouette sheet. Can you tell the four apart at 64 px from the top view? If the barrel and crate blur together, exaggerate the hoops and the crate's frame.
-10. **Export and import** with `tools/export_kit.py` and the importer preset in art-pipeline-blender.md. Set `MeshPart.Color` to white if you used vertex colour. Walk into each piece, jump on it, then view all four from 15 and 40 studs in the phone emulator.
-11. **Score** each on the rubric. Fix the lowest line on every piece before making a fifth asset.
+**Five minutes of controls.** Orbit with the middle mouse button, pan with Shift + middle, zoom with the wheel. `Shift+A` adds an object. `G` moves, `S` scales, `R` rotates; press `X`, `Y` or `Z` afterwards to lock an axis and type a number for an exact amount (`G Z 1.25 Enter`). `Tab` switches between Object Mode (whole objects) and Edit Mode (their faces, edges and points); in Edit Mode `1`, `2`, `3` pick point, edge or face selection. `N` opens the side panel, where Item > Dimensions takes exact sizes. `F2` renames. `Ctrl+Z` undoes. Save often (`Ctrl+S`).
 
-Common first-kit mistakes: bevelling before applying scale, 32-segment default cylinders, real-world thin rails, a different bevel width on each piece, colours picked by eye, judging in the Blender viewport instead of in game.
+1. **Scene.** Scene Properties (the cone icon) > Units > Unit System None: now 1 Blender unit is 1 stud. Add a cube, set Dimensions to 2 × 1 × 5 and move it up 2.5: that is your avatar stand-in. Add a second at 6.5 tall. Move both into a collection named `Scale_Ref`. Build each piece at the centre of the world, then slide it aside when done.
+2. **Palette.** Pick six colours (two woods, a metal, a dark, a light, one accent) and write down the hex values. Make one material per colour (Material Properties > New, set Base Color, name it `M_WoodLight` and so on). No other colours.
+3. **Crate (2.5 studs).** Add a cube, Dimensions 2.5 each, `G Z 1.25` so it sits on the floor. `Tab`, press `3`, Shift-click the four side faces, `I` then `0.3` to inset, `E` then `-0.1` to push the panel in, `Tab`. `Ctrl+A` > Scale. In Modifier Properties (the wrench) add Bevel (Amount 0.08, Segments 1, Limit Method Angle 30°, Harden Normals on under Shading), then Weighted Normal, then Triangulate. Right-click > Shade Smooth. In Edit Mode select the bottom face and `X` > Faces. Assign `M_WoodLight`.
+4. **Barrel (3 tall, radius 1).** `Shift+A` > Mesh > Cylinder and, in the panel that appears bottom-left, set Vertices 12, Radius 1, Depth 3. `G Z 1.5`. In Edit Mode `Ctrl+R`, roll the wheel to two cuts, click; `S` then `1.1` to bulge the middle. Delete the bottom face. Same three modifiers. For the metal hoops add a second cylinder (Vertices 12, Radius 1.12, Depth 0.15) a third of the way up, duplicate it with `Shift+D` for the upper hoop, give both `M_Metal`, join them (`Ctrl+J`), name the result `Hoops` and parent it to the barrel (select hoops, then barrel, `Ctrl+P` > Object).
+5. **Lamp post (9 tall).** A 0.6-stud square post, top face scaled to 0.8 for a taper; a chunky lantern about 2.5 studs tall (half an avatar is right, see the lantern rule); a cap wider than the lantern. Glass is a child object with the accent material. `Shift+A` > Empty > Plain Axes at the bulb, named `Light_Att` and parented to the post: it imports as an Attachment for the PointLight.
+6. **Fence section (4 long).** Posts 0.6 thick, two rails 0.4 thick, gaps of at least 0.6, all one object.
+7. **Origins and names.** With a piece at the world centre: `Shift+C` (cursor to centre), Object > Set Origin > Origin to 3D Cursor gives a bottom-centre pivot. For the fence put the cursor at one bottom end first. Name the top object of each piece `SM_Prop_Crate_A`, `SM_Prop_Barrel_A`, `SM_Street_Lamp_A`, `KIT_Fence_Rail_4_A`. Letters, digits and underscores only.
+8. **Look before exporting.** Viewport Shading > Flat lighting, single black colour, white background; zoom out to thumbnail size and look from the top (Numpad 7). If the crate and barrel blur together, exaggerate the hoops and the crate's frame.
+9. **Route A, export by hand (do this first).** Select one piece with its children, at the world centre. File > Export > glTF 2.0. Format: glTF Binary (`.glb`). Include > Limit to Selected Objects on. Transform > +Y Up on. Data > Mesh > Apply Modifiers on (off is the default and silently drops your bevels). Animation off. File name = object name. In Studio: Import 3D, set the Name, Scale Unit Studs, Anchored on, Use Imported Pivot on, then Import. In Properties set `CollisionFidelity` to Box (crate, fence) or Hull (barrel, lamp post) and leave `CanCollide` on.
+10. **Route B, the script (faster from the second kit on).** In Object Properties > Custom Properties add `Fidelity` with the value `Box` or `Hull` to each top object, save the file, then in a terminal: `blender -b --factory-startup kit.blend -P scripts/blender/check_asset.py --` to see what fails, and `blender -b --factory-startup kit.blend -P scripts/blender/export_kit.py -- --out build/kit` to write every piece and a manifest in one go. Drag all the GLBs into Studio's import queue and apply one preset to all.
+11. **Test in Studio.** Play, walk into every piece, jump on it, then look at all four from 15 and 40 studs in the device emulator set to a phone. Duplicate placed copies with `Ctrl+D`; never import the same piece twice.
+12. **Score** each piece on the rubric and fix the lowest line on every piece before making a fifth.
+
+Two-colour pieces are two objects here (barrel and hoops), which become two MeshParts: fine for a first kit. When the kit grows, collapse each piece to one material with the palette atlas (`palette_uv` in `scripts/blender/modeling_helpers.py`; method in art-pipeline-blender.md).
+
+Common first-kit mistakes: bevelling before `Ctrl+A` > Scale, leaving the cylinder at 32 vertices, real-world thin rails, a different bevel width on each piece, colours picked by eye, exporting with Apply Modifiers off, judging in the Blender viewport instead of in game.
+
+### First creature (no rig)
+
+A pet or small dragon is the same skills in a new order `[house]`. Build it from boxes and wedges: a body box with one end scaled down to a taper; a head box about 1.5 times as wide as the neck end; a snout made by scaling the head's front face down; two wings from flattened boxes with the outer edge scaled to a point; a tail as a long tapered box; four short leg boxes. Overlap the parts, join them into one object (`Ctrl+J`), add the same three modifiers with a 0.06 bevel, and keep it to 300–800 triangles. Make it about 2–2.5 studs tall (half an avatar), bottom-heavy, eyes large and below the middle of the head, facing −Y, origin between the feet. Name it `SM_Pet_Dragon_A`, give it `Fidelity` = `Box`, export like the kit.
+
+It needs no rig to feel alive: each client moves one anchored model to a spot beside the character and bobs it. A follower is a deliberate cosmetic exception to "everything is solid" (a solid pet would shove its owner), so switch its collision off and tag it `NonSolid` for the house-rule scan.
+
+```lua
+--!strict
+-- unexecuted sketch: LocalScript. Shows your own pet only; the version that renders every
+-- player's pets in one loop with caps is references/gameplay-systems-cookbook.md section 4.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local template = ReplicatedStorage:WaitForChild("Pets"):WaitForChild("SM_Pet_Dragon_A") :: Model
+local pet = template:Clone()
+for _, part in pet:GetDescendants() do
+	if part:IsA("BasePart") then
+		part.Anchored, part.CanCollide, part.CanTouch, part.CanQuery = true, false, false, false
+		part:AddTag("NonSolid")
+	end
+end
+pet.Parent = workspace
+
+local OFFSET = CFrame.new(3, 1.5, 4) -- right of, above and behind the character
+RunService.PreRender:Connect(function(dt: number)
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	if root and root:IsA("BasePart") then
+		local bob = CFrame.new(0, math.sin(os.clock() * 4) * 0.25, 0)
+		pet:PivotTo(pet:GetPivot():Lerp(root.CFrame * OFFSET * bob, 1 - math.exp(-8 * dt)))
+	end
+end)
+```
+
+Which pet a player has equipped is server state (an attribute or a profile field); clients only draw it. When the dragon should flap, blink or walk, move on to `references/animation-and-rigs.md`.
 
 ## Level-up: craft symptoms → cause → fix
 
@@ -368,6 +387,6 @@ Accessed 2026-11-10.
 
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `55 Modelling Nuance and Readability/` (Modelling to the Roblox Camera and Player Scale; Proportion Exaggeration and Gameplay Distance; Shape Language and Silhouette Testing; Spending Triangles Where the Camera Looks; Bevels Chamfers and Edge Highlights Without Textures; Style Bibles for Consistent Models; Critiquing a Model - Paintovers and Iteration; Art-Direction Nitpicks - The Principles Behind Them), `54 Untextured Stylised Modelling/` (Flat Colour vs Gradient Atlas vs Vertex Colour; The Gradient Palette Texture Workflow; Colour Scripts and Value Structure for Untextured Art; Faceted Low-Poly - Flat Normals and Facet Size; Clean Stylised Shading - Weighted and Custom Normals), `53 Voxel Modelling Deep Dive/` (scale grids, palettes, shading, meshing, characters, props and tiles), `14 3D Modeling/` (Modeling Fundamentals for Games; Low-Poly and Stylized Modeling; Topology and Edge Flow; Hard-Surface Modeling; Modeling Weapons and Props; Organic and Creature Modeling; Mesh Optimization for Mobile; Modular Environment Kits; Procedural Model Kits - Lessons; Mesh Gates for Generated Models), `45 Procedural Blender Assets/` (worked-example notes only; no `.blend`, `.fbx`, `.glb` or renders used), `19 Concept Sheets/Concept Sheets.md`, `skills/roblox-blender-modeling/SKILL.md` and `references/quality-research.md` (read; tables and headings skimmed, wording rewritten)
 - https://github.com/Roblox/creator-docs (read, commit of 2026-11-07): `reference/engine/classes/Camera.yaml` (FieldOfView default 70, vertical), `Humanoid.yaml` (jump height 7.2, walk speed 16), `art/modeling/specifications.md` (20,000 triangles)
-- Blender 5.2.3 LTS `bpy` (ran: bevel triangle costs, `silhouette_sheet`, `spend_report`, `symmetry_error`, Remesh Blocks plus planar dissolve). The pixel, field-of-view and sagitta tables were recomputed from the formulas, and match LihFolk's to rounding.
+- Blender 5.2.3 LTS `bpy` (ran: bevel triangle costs, the shipped `scripts/blender/` tools, Remesh Blocks plus planar dissolve). The pixel, field-of-view and sagitta tables were recomputed from the formulas, and match LihFolk's to rounding.
 - Not verified in Studio: the Luau measuring snippet, LihFolk's follow-camera distance and pitch figures, and its 720 px phone render height (all rules of thumb there too).
 - Rejected from LihFolk: anything relying on its Asset Pack or bundled rigs, voxel authoring outside Blender, Part-based blockouts in the shipping place, and non-colliding decoration as a default (see the conflict notes in art-pipeline-blender.md).

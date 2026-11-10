@@ -230,7 +230,7 @@ Arrays with holes: `#t` is unreliable once a middle element is `nil`. A cleanup 
 
 Type-system behaviour that surprises experts `[lihfolk]`:
 
-- Inference flows from **arguments**, not from where the result goes. `local n: number = first(names)` does not make `T` a number. Annotate the argument, or instantiate explicitly.
+- `T` is inferred from the **arguments**, never from the place the result is assigned: `local n: number = first(names)` will not turn `T` into a number. Annotate the argument, or instantiate explicitly.
 - An empty literal gives the checker nothing: `local list = {}` becomes too wide or too narrow later. Write `local list: { Item } = {}`.
 - Mutable containers are invariant: a function taking `{ Item }` rejects `{ Sword }` because it could insert a plain `Item`. Make the parameter generic (`<T>(items: { T })`) or read-only.
 - Generic classes: declare `export type RingBuffer<T> = { push: (self: RingBuffer<T>, value: T) -> (), ... }` and cast once in the constructor; `typeof(setmetatable(...))` captures one concrete type.

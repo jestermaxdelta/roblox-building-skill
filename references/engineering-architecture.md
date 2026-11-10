@@ -106,7 +106,7 @@ my-game/
 ├─ rokit.toml  wally.toml  wally.lock  default.project.json  selene.toml  stylua.toml  .luaurc
 ├─ .github/workflows/ci.yml
 ├─ assets/blender/ (.blend sources)  assets/export/ (GLB)  assets/asset-ids.json (generated)
-├─ tools/blender_exec.py (Blender Lab MCP bridge)  tools/export_glb.py  tools/upload-assets.luau (Lune, Open Cloud)
+├─ tools/  (copy `scripts/blender/export_kit.py` and `check_asset.py` from this skill; optional: your own Blender MCP bridge and an Open Cloud upload script)
 ├─ src/first/        -> ReplicatedFirst (Loading.client.luau)
 ├─ src/shared/       -> ReplicatedStorage.Shared (Config/, Net/Remotes.luau, Types.luau, Util/)
 ├─ src/client/       -> ReplicatedStorage.Client (Main.client.luau, Controllers/, Components/)

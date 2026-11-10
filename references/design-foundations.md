@@ -169,9 +169,9 @@ Evidence: `[official]` docs say use a brief tutorial or contextual tips, avoid l
 
 What a new player may touch before it is taught `[lihfolk]`:
 
-| Gating model | How it works | Good for | Risk |
+| Gate type | Mechanism | Fits | Cost |
 |---|---|---|---|
-| Hard gate | Everything except the current step is disabled | Very small games with two or three verbs | Feels like a cage; experienced players leave |
+| Hard gate | Only the current step responds; the rest is switched off | Games tiny enough to have 2–3 verbs | Reads as a cage, and experienced players quit |
 | Soft gate | Everything works; pointers and rewards follow the script | Most games | Players wander off-script, so the goal line must always be right |
 | HUD reveal | Buttons stay hidden until their step, then animate in | Menu-heavy simulators on phones | Skips and mid-tutorial rejoins must reveal everything they passed |
 | Contextual unlock | A feature appears when first needed | Large games | Optional features are never found unless a goal points at them |
@@ -204,7 +204,7 @@ Next-goal HUD spec `[house]`:
 6. One pulsing element at a time; at most 3 goal lines on a phone; nothing in the goal line can require a purchase.
 7. When a player out-runs the content, say so: show the next update's real date and point at an evergreen goal (collection, leaderboard, mastery).
 
-Worked example of a goal chain `[lihfolk]` (reference project, added because players said they felt "thrown in" after the tutorial): 35 goals generated from the save, not hand-written. Walk into the first zone; defeat 5 enemies; then for each gate: reach the rebirth requirement and rebirth if the gate needs it, earn the gate price, open it; defeat the realm boss; enter the next realm; and so on to the final boss. Each goal pays once, sized to the player's stage (a gate goal paid 5% of that gate's cost plus a few gems; first kills a small flat amount), shows a progress bar and a trail to its target, and holds the completed bar for 2.5 s before the next goal slides in. For a first session, 3–5 tracked goals are enough ("catch your first fish", "sell for 100 coins", "buy a better rod", "reach the second island"), with any social goal optional. Where the game has quests, seed a real one so a tutorial step completes it: the tutorial then ends on a genuine payout and has taught the quest system.
+Worked example of a goal chain `[lihfolk]` (reference project, added because players said they felt "thrown in" after the tutorial): 35 goals generated from the save, not hand-written. The chain opens with entering zone one and killing 5 enemies. Every gate then adds its goals in order (hit the rebirth requirement and rebirth, where that gate demands one; save up its price; open it), every realm adds a boss kill and the step into the realm after it, and the last goal is the final boss. A goal's reward is paid a single time and sized to the player's stage (a gate goal paid 5% of that gate's cost plus a few gems; first kills a small flat amount), shows a progress bar and a trail to its target, and holds the completed bar for 2.5 s before the next goal slides in. For a first session, 3–5 tracked goals are enough ("catch your first fish", "sell for 100 coins", "buy a better rod", "reach the second island"), with any social goal optional. Where the game has quests, seed a real one so a tutorial step completes it: the tutorial then ends on a genuine payout and has taught the quest system.
 
 Tests: take 10 random screenshots across the first 30 minutes (every one shows a goal, its progress and its reward); ask a tester at minute 2 what they are doing and why; log `GoalShown` and `GoalDone` and check that no stretch of the session has no active goal.
 
@@ -216,17 +216,17 @@ The principles hold everywhere; the shape does not. Start from the row, then ope
 
 | Genre | First 30 s | By 5 min | Teach later | Genre-specific failure |
 |---|---|---|---|---|
-| Simulator, idle | First collect | Collect, sell, upgrade, first pet or egg; loop closed 3+ times | Rebirth, trading, later zones | A long walk to the first pad; a shop before the first sale |
+| Simulator, idle | The first pickup | The collect → sell → upgrade loop run 3+ times, with a first pet or egg in hand | Trading, rebirth, zones beyond the first | The first pad is a long walk away; a shop appears before anything has been sold |
 | Tycoon | Plot claimed, first dropper running | First upgrade bought from income; next purchase visible with its price | Rebirth, automation | An empty plot with nothing affordable |
-| Trend (steal, escape, grab) | The verb in the title | First risk event survived or lost with a clear lesson; first stash secured | Defence upgrades, rare variants | Being robbed by a far richer player in minute one: give newcomers a grace window or income-gap limits |
-| Obby, platformer | Moving and jumping | Several checkpoints; one new mechanic shown, tried, tested | Skips, speedrun routes | A hard jump before the first checkpoint (first checkpoint within about 20 s) |
-| Combat, RPG, battlegrounds | First hit lands | First kill of a weak enemy that belongs to this player; one ability; one upgrade | Combos, builds, PvP | Full-strength enemies; five abilities at once |
-| Horror, story | Atmosphere, no threat | First threat met with a long readable warning; first death explained in one sentence | Rare entities, lore | An unfair first death with no lesson |
-| Social, roleplay | Owning something (house, car, outfit) | A role picked; first interaction with another player | Jobs, premium items | Any gate before the props and the friends |
+| Trend (steal, escape, grab) | The verb in the title | One risk event lived through, win or lose, with its lesson obvious; a first stash made safe | Rare variants, upgrades to defence | Being robbed by a far richer player in minute one: give newcomers a grace window or income-gap limits |
+| Obby, platformer | Moving and jumping | Several checkpoints; a single new mechanic introduced, practised, then tested | Speedrun routes and skips | A difficult jump placed ahead of checkpoint one (put checkpoint one within about 20 s) |
+| Combat, RPG, battlegrounds | First hit lands | First kill, on a weak enemy reserved for this player; 1 ability and 1 upgrade | PvP, builds, combos | Enemies at full strength; five abilities handed over together |
+| Horror, story | Mood only, nothing dangerous yet | The first threat arrives behind a long, readable warning; one sentence explains the first death | Lore, rare entities | A first death that is unfair and teaches nothing |
+| Social, roleplay | Something to own: a house, car or outfit | Role chosen; one exchange with another player | Premium items, jobs | A gate of any kind placed ahead of the props and the friends |
 | Tower defense | First tower placed at a pointed-out good spot | First waves won; one upgrade before wave 3 | Synergies, modes | Wave 1 can be lost; every stat explained first |
-| Survival, co-op | First resource gathered | Shelter or fire; first night survived with friends | Crafting trees | A lonely, dark start with no direction |
+| Survival, co-op | First resource in hand | A fire or shelter built; night one survived alongside friends | Crafting trees | Starting alone in the dark with nothing pointing the way |
 
-By minute five in any genre the player has: closed the loop three or more times, seen a number rise, made one real choice, spent something that changed the verb, seen the long loop (a locked gate with a price, the rebirth button, the rarity ladder), had one designed moment of joy, and been handed the next goal.
+Whatever the genre, minute five finds the player with three or more loop closures behind them, a number that has gone up, one real choice made, one purchase that changed the verb, a glimpse of the long loop (the rarity ladder, the rebirth button, or a priced gate still locked), one designed moment of joy, and the next goal already in hand.
 
 Conflict: the LihFolk timeline puts the first verb at 15–30 s and the first big reward at 20–40 s (under 60 s in its checklist), and suggests a favourite prompt 25 s after the tutorial ends. Ours are stricter on purpose: verb by 15 s, first reward by 30 s, and no social or purchase card until the first win and the 600 s grace (house rule). Keep ours; treat theirs as the outer limit.
 

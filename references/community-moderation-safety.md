@@ -86,7 +86,7 @@ Parents can bypass most content limits for their child but not the 16+ limit on 
 
 **Platform-integrated chat.** Opt-in now through `TextChatService.PlatformIntegratedChat = Enabled` (Studio only); required for all games from May 2027. The vault and press report automatic opt-in with an opt-out from February 2027 `[lihfolk][community]`. When enabled:
 
-- Roblox renders all chat, in the default window or in a `TextChannelWindow` (set `Target` to a `TextChannel`). Custom UIs can no longer draw messages.
+- Roblox renders all chat, in the default window or in a `TextChannelWindow` whose `Target` is a `TextChannel`. Drawing messages in a custom UI is no longer possible.
 - `TextChatMessage.Text` and `.Translation` return `""` with a warning; `PrefixText` is unsupported; `TextChannel:SendAsync` presets move to Quick Words; `OnIncomingMessage` and `Player.Chatted` no longer yield text. Chat-triggered commands must be `TextChatCommand`s. No API returns message content.
 - Moderators with the group permission can view chat read-only (§11).
 
@@ -128,14 +128,14 @@ end
 
 ## 6. Reports and in-game moderation
 
-**Safety dashboard** (Creator Hub ⟩ Safety ⟩ Overview) `[official]`: abuse-report submitters per 1,000 playtime hours (shown at 1,000+ daily playtime hours), reports per category, filter by channel (Avatar, Chat, Voice, Experience, Audio), and an automatic insight above the 90th-percentile benchmark. Read changes, not levels: a spike the week a feature shipped points at the feature. "Romance or sexual" rising is the docs' own cue to review avatar editors and chat. Below the threshold, count your own reports.
+**Safety dashboard** (Creator Hub ⟩ Safety ⟩ Overview) `[official]`: abuse-report submitters per 1,000 playtime hours (shown at 1,000+ daily playtime hours), reports per category, filter by channel (Avatar, Chat, Voice, Experience, Audio), and an automatic insight above the 90th-percentile benchmark. Watch the trend rather than the absolute level: when reports jump in the same week a feature ships, suspect that feature. "Romance or sexual" rising is the docs' own cue to review avatar editors and chat. Below the threshold, count your own reports.
 
 **Rule-report flow** `[lihfolk]`:
 
 - Label it "Report rule-breaking in this game" and point to the Roblox report for safety issues. Pair it with Block, mute and "change server": a report does nothing for the next five minutes, blocking does.
 - **No free-text box**: it collects personal data and becomes a harassment tool. Fixed categories only.
 - The client sends target and category; the **server attaches the context** (positions, recent damage events, trade ids, build id, place version).
-- Rate-limit per reporter and cap per target per server. Reports are signals, not verdicts: weight by distinct reporters across distinct servers and look for server-side evidence.
+- Rate-limit per reporter and cap per target per server. Treat a report as a signal, never a verdict: weigh it by how many different reporters on how many different servers agree, then check what the server itself recorded.
 - Store user ids only, in your own store with access control; delete after a fixed window (30–90 days `[lihfolk]`). Never post reports with names to a Discord webhook.
 
 ```lua
@@ -222,7 +222,7 @@ Leaks (unreleased content getting out):
 
 | Situation | Recommendation `[lihfolk]` |
 |---|---|
-| Solo developer, a few hundred daily players | No server, or announcement-only; use the group and in-game notes |
+| Solo developer with daily players in the low hundreds | Skip the server or keep it announcement-only; rely on the group plus in-game notes |
 | Trading, competitive or large fan base | A server with real moderation by adults |
 | Audience mostly Kids and Select | Probably none: most players cannot or should not join |
 | Team with testers and contractors | A separate private staff server |
@@ -263,7 +263,7 @@ In-game guilds and clans: member lists and names are player text (filter, rate-l
 | Analytics | Funnel drops, error rate | Often the only sign of a logic bug that throws no error |
 | Creators and testers | Early warning before release | Private channel; a tester role in a test universe |
 
-Pipeline `[house]`: one inbox → triage twice a week → label (bug severity as in §15, suggestion, balance, question) → owner → status visible to players (Planned, Fixed, Won't do with a reason) → close the loop in the patch notes ("fixed pets vanishing after teleport; thanks to the reports"). A monthly "what we changed because you asked" post is the cheapest retention work in this file. Player reports found a real odds bug in the vault's reference game (an item meant to roll about 1 in 3 was rolling about 1 in 370, with no error thrown) `[lihfolk]`: treat "luck feels off" as a bug report, and for paid random items as a compliance issue.
+Pipeline `[house]`: one inbox → triage twice a week → label (bug severity as in §15, suggestion, balance, question) → owner → status visible to players (Planned, Fixed, Won't do with a reason) → close the loop in the patch notes ("fixed pets vanishing after teleport; thanks to the reports"). A monthly "what we changed because you asked" post is the cheapest retention work in this file. Player reports found a real odds bug in the vault's reference game (a drop designed for roughly 1-in-3 odds came out at roughly 1 in 370, and nothing errored) `[lihfolk]`: treat "luck feels off" as a bug report, and for paid random items as a compliance issue.
 
 ## 13. Drama and update backlash
 
@@ -293,7 +293,7 @@ Outreach, deals and measurement are in `growth-and-marketing.md` §5. Safety and
 - A creator who promises traffic through bots, alt accounts or manipulated teleports puts **your** Creator Rewards and account at risk `[official]`.
 - Never grant creators admin powers or rigged outcomes; offer a private server, early build access and a creator code.
 - Before a known video: freeze risky changes for 48 hours, confirm kill switches, add moderators for the premiere, load-test join and data paths. The vault's rule of thumb is a 10–50× concurrency spike within an hour.
-- If a creator misrepresents the game (fake rewards, wrong odds): ask privately for a correction, then state the facts on your channels. If a creator-themed item's namesake has a scandal: pause sales and communicate.
+- When a creator's content misrepresents the game (wrong odds, fake rewards), request a correction in private first, then state the facts on your channels. If a creator-themed item's namesake has a scandal: pause sales and communicate.
 - Judge a collaboration by the cohort's D7 against baseline, not the peak.
 
 ## 15. Crisis playbook
@@ -303,7 +303,7 @@ Order of work: **contain → communicate → diagnose → recover → post-morte
 | Severity | Definition | Response |
 |---|---|---|
 | SEV1 | Lasting harm to players or money, spreading: data loss, charged-not-granted purchases, duplication, offensive content visible to players | Contain within minutes, even by turning features or servers off. Anything touching saves or Robux starts here |
-| SEV2 | Core loop broken for many, no lasting harm | Contain within the hour; fix or roll back today |
+| SEV2 | Core loop broken for many, no lasting harm | Contained inside an hour; fixed or rolled back the same day |
 | SEV3 | Degraded for some | Next update; workaround message |
 | SEV4 | Cosmetic | Backlog |
 

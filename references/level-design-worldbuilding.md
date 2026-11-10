@@ -100,7 +100,7 @@ Screen maths (default `FieldOfView` 70° vertical `[official]`): horizontal view
 
 - Hub shapes `[lihfolk]`: radial plaza (centrepiece, stations on a ring, exits on the rim), street (one spine, shops either side), courtyard with a wall of gates, vertical tiers for prestige. Store a radial hub as polar coordinates (angle, radius) so the whole thing rescales without re-placing.
 - When not to build a hub `[lihfolk]`: single-loop games (spawn straight into play, shop in the UI), servers with very few players, or when a separate hub place would cost a teleport each way.
-- Add loops to any tree-shaped layout: a dead end with a reward feels good, a dead end with nothing reads as a designer mistake `[lihfolk]`.
+- Add loops to any tree-shaped layout: put a reward at the end of a dead end and it feels good; leave it empty and players read a designer mistake `[lihfolk]`.
 
 ## 4. Spawn and lobby: the first five seconds
 
@@ -185,7 +185,7 @@ Genre design is in `references/genres/<genre>.md` and `genre-playbooks.md`; this
 - Colour blockout by function, not by art: floor, wall, hazard, interactable, enemy area `[lihfolk]`.
 - Name blockout pieces `Blockout_<KitPiece>` with the same pivot as the final piece, so one script swaps each for its package by name. Mark where art should go with invisible marker parts carrying attributes (`Replaces`, `IntendedCount`); the art pass consumes markers and a check lists any left `[lihfolk]`.
 - Separate layout from visuals: approve a flat sketch, then a minimal 3D structure, before any art, so the two jobs can be done by different people `[community: Mad Studio guidebook]`.
-- Every pass is reversible: store old pivots and colours as attributes before a bulk change, and keep the old hub until the new one is approved in play (copy it back from an older place version if needed) `[lihfolk]`.
+- Every pass is reversible: store old pivots and colours as attributes before a bulk change, and the old hub stays until play-testing approves its replacement (an older place version can supply a copy if needed) `[lihfolk]`.
 - Save three review cameras per zone (gate view, landmark view, worst view) in a `_Dev` folder and judge every pass from the same three `[lihfolk]`.
 - Order of work after layout: primary forms, composition, medium props, detail, lighting preset, collision and bounds sweep (§13), performance capture on the low-end phone (`performance.md`).
 
@@ -318,7 +318,7 @@ return attach
 |---|---|---|
 | Death cluster at one jump | Gap near the reach limit, unreadable landing, raised platform | Shorten, widen the landing, add a blob shadow, checkpoint before it |
 | Deaths just outside spawn with a kill-from cell overlooking it | Spawn sightline | Block the line, add a second exit, move the alcove |
-| Hot kill-from cell nobody should reach | Unintended perch | Block access or remove its cover |
+| A kill-from cell runs hot where no player belongs | A perch nobody intended | Remove its cover or block access |
 | Cold zone | Players do not know it exists or it pays nothing | Landmark it, reward it or cut it |
 | Hot spot that is not an objective | Snag, or a bright decoration pulling players | Fix collision; dim the decoration |
 | Hot cells along an edge | The edge looks walkable or promising | Make the boundary diegetic and obvious |

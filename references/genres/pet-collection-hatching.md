@@ -156,7 +156,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §4 Pets, eggs an
 - [ ] Followers render on clients with a cap; inventory is stacked.
 - [ ] Egg ladder, slots and stacking are modelled for 30 days of play.
 - [ ] No fake scarcity; Starter Pack contents are fixed and disclosed.
-- [ ] Pets, eggs and stands are Blender models; tiers are material variants; everything solid.
+- [ ] Pets, eggs and stands are Blender models; rarity follows the ladder in `references/blender-modeling-craft.md` (common tiers are palette variants, mid tiers add an accessory or scale, only top tiers get a new mesh) and merge tiers stay material variants; world objects are solid, followers are client-rendered and do not collide.
 
 ## Sources
 

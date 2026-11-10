@@ -410,9 +410,9 @@ end)
 | Outline stopped showing | Slot limit or a leftover Highlight on the model | Destroy unused; one arbiter per object |
 | Fine alone, lags in a full server | No onlooker share or per-client cap | Others at half or less; global particle cap; distance and view culling for strangers |
 | Hitch a few seconds after big moments | Instance churn | Pools with a cap |
-| Phones lag only when the effect is near the camera | Overdraw from large transparent pieces | Shrink, raise transparency on the camera line, fewer stacked layers |
+| Phones lag only when the effect is near the camera | Large see-through pieces causing overdraw | Make them smaller, stack fewer layers, raise transparency along the camera line |
 | Low graphics does not help | Bursts are not thinned by the engine | Own detail value on `EmitCount`; `MinDetail` layers |
-| Flipbook shows one frame on old phones | Flipbooks disabled under memory pressure | Fewer sheets; first frame reads as a still |
+| Old phones show a single flipbook frame | Memory pressure switched flipbooks off | Fewer sheets; first frame reads as a still |
 | Caster sees effects late or twice | Caster waits for the echo, or the echo is not skipped | Play on input; server skips the caster |
 | Aura or shield missing for some players | State sent as an event | Character attribute; each client starts its own visual |
 | "Dodged but got hit" | Telegraph pop and damage on different frames or shapes | One shared shape table; damage at the pop |
@@ -433,7 +433,7 @@ end)
 - [ ] Hit-stop is client-only, budgeted, one per swing; shake starts after the stop; FOV has one owner and returns to exactly 0.
 - [ ] Pools capped; per-cast, per-caster and per-client budgets written; gameplay information never culled; detail scales from the player's setting and measured frame time; verified on a hot 3 GB Android phone with 8 casters at one spot.
 - [ ] Shake slider, screen-effects intensity, flash toggle, hit-stop toggle and reduced-motion path exist; at most 3 full-screen flashes per second.
-- [ ] Reviewed in slow motion, at game camera distance, on a phone, in the darkest and brightest zones.
+- [ ] Reviewed on a phone in slow motion, from the game camera's distance, in both the brightest and the darkest zone.
 
 ## Sources
 

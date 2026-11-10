@@ -116,7 +116,7 @@ Export settings (pin the Blender version; option names drift):
 
 Community practice `[community]`: forum threads describe the Studio editor and Moon Animator as the lower-friction routes, and report that the long-running Blender rig exporter/animation importer add-on does not support skinned meshes and has broken after Studio updates. The route above uses only Blender's own exporters and Studio's importer, so it has no third-party plugin to break.
 
-Ownership `[official][VS]`: animations are not covered by the Asset Privacy default switch; a clip loads only for its owner's experiences or where the owner granted the collaborator and the experience permission on the asset's Permissions page. Game grants cannot be revoked. A clip uploaded to a personal account will not play in a group game until shared or re-uploaded.
+Ownership `[official][VS]`: animations are not covered by the Asset Privacy default switch; a clip loads only for its owner's experiences or where the owner granted the collaborator and the experience permission on the asset's Permissions page. Game grants cannot be revoked. Upload a clip to a personal account and a group game cannot play it until it is shared or re-uploaded.
 
 | | `KeyframeSequence` | `CurveAnimation` |
 |---|---|---|
@@ -231,7 +231,7 @@ The Animation Graph Editor `[official][VS]` publishes blend trees and state mach
 - **Server hit timing comes from data.** A build step copies marker times into the generated animation table; the server schedules the hit at `markerTime / speed` on its own clock, minus a small lead (0.06 s in the source project) so damage lands as the blade visibly connects, and validates range and cooldown. The server never needs to load the clip `[lihfolk]`. Regenerate the table whenever a clip is retimed.
 - Client uses of markers: enable a `Trail` only between `TrailOn` and `TrailOff` (call `Trail:Clear()` first), play the impact sound with its peak on `Hit`, footsteps on `Step` keyed by `Humanoid.FloorMaterial`, camera kick on `Impact`. Skip cosmetic marker work for distant rigs.
 - Hitboxes: open the query window between two marker times, cast with `workspace:GetPartBoundsInBox` or blade-sweep raycasts from attachments, client-predicted for feel and server-confirmed for damage. Do not parent hitboxes to client-animated NPC limbs and expect the server to see them (section 7).
-- Speed changes move markers in real time; hit-stop delays every later marker by its duration. Duplicate firing appears when a full-body clip and its upper-body copy both play: listen on one `[lihfolk]`.
+- Speed changes move markers in real time; hit-stop delays every later marker by its duration. If a full-body clip plays alongside its upper-body copy, markers fire twice: listen on one only `[lihfolk]`.
 
 ## 7. Replication and ownership
 
@@ -398,7 +398,7 @@ Solid props that animate (house rule 2): the server owns collision truth. It mov
 | First use seconds late | Asset fetched on first play | `ContentProvider:PreloadAsync` on equip; load tracks early |
 | Clip frozen at frame 0 | `Play` called every frame, or speed computed from `Length == 0` | Play on state change only; wait for `Length > 0` |
 | Animations stop playing after long sessions | 256-track limit from `LoadAnimation` per use | Cache tracks; `Destroy` tracks you will not reuse |
-| Limb spins the long way or flips | Key-to-key turn over about 120°, exact 180°, or Euler wrap in generated data | Breakdown key; blend as CFrames |
+| A limb flips or rotates the long way round | Rotation between two keys exceeds about 120° or is exactly 180°, or generated data has an Euler wrap | Add a breakdown key; blend as CFrames |
 | One-key hitch to the rest pose; easing feels backwards | Joint hole (joint missing from a key); legacy `Cubic` or easing set on the arriving key | Key all owned bones on key poses; `CubicV2`, easing on the key that starts the segment |
 | Character does not travel or lift, or plays turned 180° after a GLB import | Motion or the importer's axis correction sits on the unapplied top-level root pose `[lihfolk]` | Key the root's first child; calibration clip once per export route |
 | Root motion snaps back at clip end | Roblox has no engine root motion: the clip moved the body, not the `HumanoidRootPart` `[community]` | Animate in place and move the root in code from a travel curve, between `MoveStart`/`MoveEnd` markers |

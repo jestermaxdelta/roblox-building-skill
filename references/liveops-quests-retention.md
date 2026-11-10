@@ -4,7 +4,7 @@ Distilled from knowledge-base sections 1.7, 1.8, 3.3 and 3.4, plus a 2026-11-10 
 
 ## Start here by level
 
-Terms: **LiveOps** = everything done to a game after launch (updates, events, offers, communication). A **return hook** is a designed reason to come back at a particular time. **Play days** = the number of distinct days a player returns in a window. A **season pass** (battle pass) is a time-limited reward track climbed with season XP. A **kill switch** is a Config boolean that turns a risky system off without a publish.
+Terms: **LiveOps** = everything done to a game after launch (updates, events, offers, communication). A **return hook** is a reason to come back at a specific time, built in on purpose. **Play days** = the number of distinct days a player returns in a window. A **season pass** (battle pass) is a time-limited reward track climbed with season XP. A **kill switch** is a Config boolean that turns a risky system off without a publish.
 
 | Level | Do this | Leave for later |
 |---|---|---|
@@ -92,7 +92,7 @@ Which hook serves which window `[lihfolk]`: D1 is a great first session plus one
 
 | Decision | Options | Choose |
 |---|---|---|
-| Shape | Strict streak (a miss resets: rejected); streak with grace or a weekly freeze (rejected: still a loss on the second miss); cumulative count; repeating 7-day cycle; 28-day ladder with a weekly highlight `[lihfolk]` | Cumulative, or a 28-day ladder with weekly highlights. Strict streaks are the shape most likely to feel like punishment to a child who missed a day for reasons outside their control |
+| Shape | Strict streak (a miss resets: rejected); streak with grace or a weekly freeze (rejected: still a loss on the second miss); cumulative count; repeating 7-day cycle; 28-day ladder with a weekly highlight `[lihfolk]` | Cumulative, or a 28-day ladder with weekly highlights. Of all the shapes, a strict streak is likeliest to read as punishment when a child misses a day through no fault of their own |
 | Day boundary | Fixed UTC midnight (simple, one "resets in" timer; evening reset in the Americas; a 23:50 and 00:10 double claim is possible). Rolling 24 h (claim time drifts later every day). Rolling window: claim any time after 20 h, streak survives to 48 h `[lihfolk]` | UTC day number for the cumulative calendar. Align every daily reset in the game to the same UTC hour |
 | Clock | Client or server | Server `os.time()` only |
 | Claim order | Pay then mark, or mark then pay | Mark the claim, save at once, then pay; a crash or double click cannot pay twice. Throttle the remote. Session locking must already be in place or two servers can both pay (data-and-purchases.md) |
@@ -104,7 +104,7 @@ Conflict: the LihFolk reference project shipped a strict 7-day streak that reset
 
 ### Playtime gifts, offline earnings and AFK: measured examples
 
-- **Playtime gifts** `[lihfolk]` (reference project): a small gift every 5 minutes of play (9 a day), a medium every 15 (4 a day), a large every 60 (1 a day). Counted in play time, not wall-clock time; the timer banks at most one interval when a gift is ready, so nothing is lost by not claiming; caps reset at UTC midnight; reward pools show their odds and roll the odds shown. The caps stop the screen becoming an overnight income engine, and the largest gift lands on the 60-minute mark where ranking playtime stops counting. If a timer skip or extra gift is ever sold for Robux, the gift becomes a paid random item and must disclose odds `[VS]`.
+- **Playtime gifts** `[lihfolk]` (reference project): a small gift every 5 minutes of play (9 a day), a medium every 15 (4 a day), a large every 60 (1 a day). Counted in play time, not wall-clock time; the timer banks at most one interval when a gift is ready, so nothing is lost by not claiming; caps reset at UTC midnight; reward pools show their odds and roll the odds shown. The caps stop the screen becoming an overnight income engine, and the largest gift lands on the 60-minute mark where ranking playtime stops counting. Selling a timer skip or an extra gift for Robux turns the gift into a paid random item, and its odds must then be disclosed `[VS]`.
 - **Offline earnings** `[lihfolk]` (reference project): 15% of the active rate, capped at 8 hours (12 with VIP), nothing for absences under 5 minutes, and filling only after the tutorial is finished so the first session is about active play. The house default is 25–50% efficiency with an 8–12 h cap (economy-and-progression.md owns the number); treat 15% as the low end. State the cap in the UI and model it in the balance sheet.
 - **AFK** `[lihfolk]`: there are real reasons to allow some idle progress (children leave devices running; auto-modes help players with motor difficulties). If you do: idle yields less than active play; idle activities sit in the social hub so idle avatars at least make it look alive; an auto-action keeps the verb visible (a small reel over the head, not a hidden counter); no idle income before onboarding ends; auto-modes never spend paid consumables. This refines, and does not overturn, the "prefer none" row above.
 
@@ -160,7 +160,7 @@ Build one only when the game can carry it `[lihfolk]`. A pass multiplies retenti
 | Sessions are long enough to finish a day's missions (about 15 min) | Otherwise each day ends with lost progress |
 | The economy can absorb a monthly burst of currency and items | Pass rewards are a faucet |
 
-Do not build one before launch or in the first month (the retention curve is unknown), under a few hundred daily players, for session games where nobody cares about cosmetics, or when the team already misses update dates: a season is a public promise with a fixed end.
+Do not build one before launch or in the first month (the retention curve is unknown), under a few hundred daily players, for session games where nobody cares about cosmetics, or when the team already misses update dates: a season is a promise made in public, and it ends on a fixed date.
 
 `[official]` starting values: about one month, at least a week of rest between seasons, about 10 tiers, automatic enrolment in the free track, daily missions across three or more categories that never need hard currency, premium as a superset, mid-season upgraders receive premium rewards for every tier already reached, claim by button with unclaimed rewards granted at season end, a retired final reward shown as a 3D model in the world (a Blender showcase piece), double XP in the final week.
 
@@ -322,7 +322,7 @@ return Calendar
 | Field | Example |
 |---|---|
 | Goal (one KPI) | Lift weekend D2–7 play days among players in zones 3–5 |
-| Player promise | "Defeat the Frost Titan with your server for a winter aura" |
+| Promise to the player | "Beat the Frost Titan alongside your server to earn a winter aura" |
 | Kind and dates (UTC) | Headline, Fri 18:00 to the Sunday after next 18:00 (9 days), mid-point beat on day 5 |
 | New assets | One boss reskin, one aura, three icons, a banner, a thumbnail variant (Blender time budgeted) |
 | Reused systems | Boss framework, server goal bar, rewards module |
@@ -333,18 +333,18 @@ return Calendar
 | Returns? | Marked "never returns" or "may return" before launch |
 | Owner | One named person |
 
-The guardrail is the line most often skipped: an event that lifts playtime while doubling errors is not a success.
+Teams skip the guardrail line more than any other. If playtime rises but errors double, the event did not succeed.
 
 **11. Timeline for one update or headline event** `[lihfolk]`:
 
 | When | Action |
 |---|---|
-| T-10 days | Feature freeze. Event created as private; featuring submission prepared |
-| T-7 | Event public with its own thumbnail; featuring submitted if eligible |
+| T-10 days | Freeze features. Create the event as private and prepare the featuring submission |
+| T-7 | Make the event public, with a thumbnail of its own; submit for featuring if eligible |
 | T-5 to T-2 | In-world hint: a closed gate, a covered statue, a Blender countdown board showing the real start time |
 | T-1 | Publish the build with the content gated behind the start time, so release bugs surface before players arrive |
-| T0 | Event starts from the calendar; update announcement; thumbnail variant on; code live |
-| T+1 to T+3 | Watch errors, economy and the first-session curve; no major publish for 48 h |
+| T0 | The calendar starts the event; post the update announcement, switch the thumbnail variant on, set the code live |
+| T+1 to T+3 | Monitor errors, the economy and the first-session curve; hold major publishes for 48 h |
 | T+7 | Review: spike, decay, new baseline (curve patterns in core-loop-tuning.md §5) |
 
 What an update contains, by audience `[lihfolk]`: a new goal above where engaged players are; a reason and a fast route back for lapsed players (a What's New panel, a returning-player catch-up); one first-session fix for new players; something to do together; a visible change on the game page.
@@ -353,7 +353,7 @@ When a date will slip: decide by T-3, not on the day; say so plainly with the ne
 
 **12. Review loop.** After each headline event and season: did it ship on the date; did it hit the goal and hold the guardrail; what did it cost in person-days against the estimate; what did players say; one change to the next plan. Feed the cost back into step 2. After two or three cycles the estimates stop being guesses.
 
-To step off the content treadmill, ship a system instead of a zone once in a while (a collection book, a ranked mode, crafting), raise depth instead of width (mastery tiers on existing items, harder versions of existing bosses), and let rotations run on data.
+To step off the content treadmill, let an occasional update be a system rather than a zone (crafting, a ranked mode, a collection book), raise depth instead of width (mastery tiers on existing items, harder versions of existing bosses), and let rotations run on data.
 
 ### The update-day ritual as top games run it (and a solo version)
 
@@ -387,7 +387,7 @@ Separating **deploying** code (publishing) from **releasing** a feature (players
 | Experiment | Choose a variant | Control | Length of the test |
 | Permission | Testers, admins | Off | Long-lived |
 
-A release flag that defaults on ships unfinished work the moment Configs fail to load; a kill switch that defaults off disables trading for everyone during a Config outage. Name flags positively (`tradingEnabled`). The platform publishes a Config to everyone in about 15 s to 1 min `[VS]` or gradually over 15 minutes and targets by attributes `[official]`; a "5% of players" dial is something you build: hash the user id with a per-flag salt into a bucket so membership is sticky and a different slice goes first each time. Evaluate once per session for anything visible; send the client only the booleans it needs.
+Defaults decide what happens when Configs fail to load: a release flag defaulting on ships unfinished work at once, and a kill switch defaulting off shuts trading for everyone for the length of the outage. Name flags positively (`tradingEnabled`). The platform publishes a Config to everyone in about 15 s to 1 min `[VS]` or gradually over 15 minutes and targets by attributes `[official]`; a "5% of players" dial is something you build: hash the user id with a per-flag salt into a bucket so membership is sticky and a different slice goes first each time. Evaluate once per session for anything visible; send the client only the booleans it needs.
 
 | Stage | Who | For | Abort if |
 |---|---|---|---|

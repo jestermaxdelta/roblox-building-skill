@@ -40,9 +40,9 @@ A fix without a reproduction is a guess; a `task.wait(n)` or a silent `pcall` th
 
 4. **Isolate: which side, then the first wrong value.** Server or client (`RunService:IsServer()` in the path, the Client/Server toggle, F9 Log switch). Then walk back from the visible wrong value to the first place it was wrong: UI shows 0 → is the replicated value 0 → is the server value 0 → was it loaded as 0 or set later. Funnel writes through one setter and put the assertion and `debug.traceback()` there; a changed-signal handler only tells you that it changed, not who wrote it `[lihfolk]`.
 5. **Bisect** anything ordered. Scripts: on a **copy** of the place, disable half the systems (`Script.Enabled = false`; group by system so dependents do not hang), about log2(N) runs: 400 scripts is 9 runs. Versions: `git bisect` with Rojo, or restore mid-range Version History builds into a test place. If every old version shows the bug, the cause is stored data, not code `[lihfolk]`. Data: copy the failing profile to a test key and delete half the fields per round. Time: log a value every 30 s and find the first interval where it moved.
-6. **Hypothesise in one sentence** ("on a fast rejoin the new server read the key before the old server's leave-save landed, then saved its stale copy"). If you cannot write the sentence, keep isolating.
+6. **Hypothesise in one sentence** ("the player rejoined fast, so the new server loaded the key while the old server's leave-save was still in flight, then wrote its stale copy back"). If you cannot write the sentence, keep isolating.
 7. **Fix the cause, then verify** with the original repro under the conditions that made it frequent, at least twice the run count it took to fail. Remove injected delays and debug seeds.
-8. **Leave a guard**: an assertion at the boundary, a validation on the remote, a unit test, or a counter you can watch live. Add one line to the bug log (symptom, cause, fix).
+8. **Leave a guard**: a unit test, a boundary assertion, validation on the remote, or a live counter you can watch. Add one line to the bug log (symptom, cause, fix).
 
 Signs a fix is a guess `[lihfolk]`: it adds a wait or a longer timeout; it wraps something in `pcall` and drops the error; it works "most of the time"; nobody can state the sequence of events.
 
@@ -170,7 +170,7 @@ Rules:
 - `PlayerRemoving` during a load in flight is the most expensive race on the platform: never save a profile that did not finish loading.
 - Module top level never yields; one bootstrap defines Init and Start order (`engineering-architecture.md`).
 
-Race tools: a sequence log (`{frame, counter, os.clock(), label}` on both sides of the suspected pair, compared between a good and a bad run), injected jitter, the Network Simulator, a low-end phone, and assertions on invariants ("a profile is never saved before it loaded", "a player never has two character bindings").
+Race tools: a sequence log (`{frame, counter, os.clock(), label}` on both sides of the suspected pair, compared between a good and a bad run), injected jitter, the Network Simulator, a low-end phone, and assertions on invariants ("no profile saves until its load has finished", "one player, at most one character binding").
 
 ## Live-only bugs: the capture kit
 
@@ -187,7 +187,7 @@ Build these before the incident; none can be added during one:
 | Sink | Good for | Cost |
 |---|---|---|
 | Error Report | Uncaught errors and warnings by version | 500 unique messages; dynamic text fragments it |
-| AnalyticsService custom events | Counts and funnels (rejects, failures, timings) | Aggregated, not raw |
+| AnalyticsService custom events | Funnels and counts: rejects, failures, timings | Aggregates only, nothing raw |
 | HttpService to your endpoint | Searchable raw events | One batched request per server per 30–60 s; you secure it; privacy duties; key in Secrets |
 | MemoryStore queue | Short cross-server buffer | Quota and expiry |
 | DataStore | Almost never | Shares the budget with player data |
@@ -212,7 +212,7 @@ Facts: Open Cloud Luau Execution starts a headless server from a place version; 
 | `Gui`, `Sounds`, `GraphicsParticles` | Cloned per event and left parented |
 
 4. **Multiply it.** A loop that repeats create-and-remove: respawn (`LoadCharacterAsync` from the server), equip and unequip, open and close every menu, enter and leave a zone, spawn and kill a wave, join and leave with `StudioTestService`. Wait a few idle seconds before the last sample: you cannot force a collection (`collectgarbage` only supports `"count"`) `[official: luau.org]`. Clean code shows under about 1 instance of growth per respawn `[lihfolk]`.
-5. **Bisect systems** by a boot flag if the category does not name the owner. `debug.setmemorycategory("Combat")` at the top of each system's threads splits the heap by system `[official]`.
+5. **Bisect systems** by a boot flag if the category does not name the owner. Call `debug.setmemorycategory("Combat")` first thing in every thread a system owns and the heap is reported per system `[official]`.
 6. **Diff heap snapshots.** Snapshot A after warm-up, run the loop 100×, idle 10 s, snapshot B. Look for counts that grew by about 100 or a multiple; growth of 3 or 7 is noise `[lihfolk]`. Object Tags: `function` +100 is a handler per repetition; `table` +100 is a stored per-use table; `thread` +100 is a loop that never ends. Unparented Instances and Unique References list destroyed-but-referenced instances **with the path that pins them**; read the Graph bottom-up from the object to the module or upvalue that holds it `[official]`. Instances held by a Parallel Luau VM do not appear in Unique References `[community]`.
 7. **Fix, prove, keep.** "Respawn soak, 200 cycles: +42 instances and +0.18 MB per respawn before; +0.2 and +0.002 after" is the proof. Keep the loop as a regression test.
 

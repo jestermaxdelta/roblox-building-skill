@@ -6,7 +6,7 @@ The house art pipeline: style bible, Blender authoring, headless GLB export, upl
 
 | Level | Do these first | Leave for later |
 |---|---|---|
-| Beginner | Work at 1 Blender unit = 1 stud beside an R15 dummy. Apply transforms, one material, origin where the asset attaches. Export with `export_kit.py`, import with the preset below, then walk on the asset. Build the first kit in `references/blender-modeling-craft.md` | PBR maps, trim sheets, Open Cloud keys, Geometry Nodes, SLIM |
+| Beginner | Work at 1 Blender unit = 1 stud beside an R15 dummy. Apply transforms, one material, origin where the asset attaches. Export by hand (File > Export > glTF 2.0, selected objects, Apply Modifiers) or with the shipped `scripts/blender/export_kit.py`, import with the preset below, then walk on the asset. Build the first kit in `references/blender-modeling-craft.md` | PBR maps, trim sheets, Open Cloud keys, Geometry Nodes, SLIM |
 | Intermediate | Fill in the style bible. Pick one texturing method. Give every asset a collision plan (`Fidelity` or `_COL`). Wrap pieces as packages, choose one upload route and keep the ids manifest. Run the acceptance checklist on every asset | Custom CI, layout export |
 | Expert | Hash-skipping uploads in CI, duplicate-MeshId and instancing audits, merge-or-modular decisions measured in Shift+F2, Reimport and package versioning, layout transforms from Geometry Nodes, phone measurements under final lighting | Nothing: read "Platform limits" and "Import traps" in full |
 
@@ -17,9 +17,9 @@ Contents: Pipeline overview · Platform limits · Units and transforms · Grid a
 ## Pipeline overview
 
 1. **Style bible and kit plan first**: fill in the one-page template below before the first mesh.
-2. **Author in Blender through the Blender Lab MCP bridge** (`tools/blender_exec.py` in the game repo sends Python to the running Blender). Use it for modelling, validation and layout, never for export.
-3. **Validate in Blender**: `check()` from the export script (transforms, UVs, one material, budgets, collision plan).
-4. **Export GLB in a separate headless process**: `blender -b --factory-startup assets/blender/<kit>.blend -P tools/export_kit.py -- build/<kit>`. Never export from the MCP-driven session.
+2. **Author in Blender**, by hand or by driving a running Blender through a Blender MCP server (the official Blender Lab MCP; see `references/ai-toolchain-skills.md`). The owner's game repos also carry an optional bridge script, `tools/blender_exec.py`, that posts Python to that server; it is not shipped with this skill and nothing here needs it. Without any live connection, write a build script and run it headless with `blender -b -P`. Use a live session for modelling, validation and layout, never for export.
+3. **Validate in Blender**: `blender -b --factory-startup <kit>.blend -P scripts/blender/check_asset.py --` (names, transforms, UVs, one material, budgets, collision plan, origin).
+4. **Export GLB in a separate headless process**: `blender -b --factory-startup assets/blender/<kit>.blend -P scripts/blender/export_kit.py -- --out build/<kit>` (script shipped with this skill). Never export from the MCP-driven session.
 5. **Upload**: Open Cloud key in CI, or the Studio MCP `open_cloud_invoke` route for interactive agent work (see "Upload routes"). Record ids in a manifest.
 6. **Insert into Studio** and run the post-import fix-up (anchoring, collision flags, `_COL` handling, CastShadow, shared SurfaceAppearances).
 7. **Wrap each kit piece or prop as a package** (PackageLink, AutoUpdate on). Place package copies, never fresh imports.
@@ -95,7 +95,7 @@ Pick one primary method per game and write it in the style bible; mixing a flat 
 
 Palette atlas method:
 1. Paint one atlas: a 16×16 grid of flat swatches from the style-bible palette, plus a few vertical gradient strips. Cells ≥ 16 px.
-2. Every mesh uses the single material `M_Palette`. Run `palette_uv()` (below) to snap each face to its swatch centre. For a gradient, keep U on the strip and map V to height.
+2. Every mesh uses the single material `M_Palette`. Run `palette_uv()` from `scripts/blender/modeling_helpers.py` to snap each face to its swatch centre. For a gradient, keep U on the strip and map V to height.
 3. In Studio every MeshPart shares one `Palette_SA` (ColorMap only) or one `TextureID`. `SurfaceAppearance.ResampleMode = Pixelated` stops neighbouring swatches blurring together `[official, VS]`. Keep UVs ≥ 2 px inside a cell and never rely on sub-cell detail: phones may show a lower mip `[community]`.
 4. Form comes from bevels, vertex-colour AO and lighting, not from the texture.
 5. A re-skin (season, event, night palette) is one texture swap. For per-instance tint, `SurfaceAppearance.Color` tints the ColorMap (author those swatches near-white), or leave swatch alpha at 0 under Overlay so `MeshPart.Color` shows through.
@@ -120,93 +120,28 @@ Under glTF the mesh datablock name reaches Studio as well as the object name (he
 ## Collision authoring
 
 - Decide per asset: fidelity on the visual mesh (custom property `Fidelity` = `Box` or `Hull` on the root) or a `_COL` child. The export script refuses an asset with neither.
-- `_COL` proxies are convex (or a few convex pieces), have no material, 12–200 triangles, sit flush on walkable surfaces. Doorways use three boxes (two jambs and a lintel); stairs use a single ramp. `make_col()` builds a hull for convex props; concave assets need hand-made pieces.
+- `_COL` proxies are convex (or a few convex pieces), have no material, 12–200 triangles, sit flush on walkable surfaces. Doorways use three boxes (two jambs and a lintel); stairs use a single ramp. `make_col()` in `scripts/blender/modeling_helpers.py` builds a hull for convex props; concave assets need hand-made pieces.
 - Tunable fidelity with `CollisionPrecision` is the newer middle ground for one-off concave shapes `[VS]`; view the result with Visualization Options > Collision fidelity.
 - Flags after import are in performance.md ("Making everything solid").
 
 ## Blender automation
 
-Tested on Blender 5.2.3 LTS (standalone `bpy`, headless, 2026-11-10): exported, re-read the GLB, checked names, triangle counts and `COLOR_0`. Not run through a Studio import. Pin the Blender version in the repo and re-check `bpy.ops.export_scene.gltf` options on upgrade. Add `--python-exit-code 1` so a script error fails CI.
+The skill ships its Blender tools in `scripts/blender/` (usage and test notes in `scripts/README.md`); copy the folder into the game repo. All run headless, need nothing beyond Blender, write only inside the output folder and never save the `.blend`.
 
-```python
-# tools/export_kit.py: validate, then export every root (or --only names) to its own GLB at the origin.
-# blender -b --factory-startup assets/blender/street_kit.blend -P tools/export_kit.py -- build/street_kit [--only SM_Street_Lamp_A]
-import bpy, hashlib, json, re, sys
-from pathlib import Path
+| Script | Use | Command |
+|---|---|---|
+| `export_kit.py` | Validate, then write one GLB per kit piece at the origin plus `manifest.json` (hash, triangles, size, pivot position, attachments, collision plan). `--only`, `--check-only`, `--apply-transforms` | `blender -b --factory-startup kit.blend -P scripts/blender/export_kit.py -- --out build/kit` |
+| `check_asset.py` | The same checks without exporting, plus class budgets (`Class` custom property), triangle area by direction, open edges, optional symmetry error | `blender -b --factory-startup kit.blend -P scripts/blender/check_asset.py --` |
+| `silhouette_sheet.py` | Four-view black silhouettes at game pixel size, optional roster strip | `blender -b --factory-startup kit.blend -P scripts/blender/silhouette_sheet.py -- --out build/silhouettes --roster` |
+| `modeling_helpers.py` | Import in a Blender console or MCP call: `make_col(obj)` builds a convex `<obj>_COL` proxy, `palette_uv(obj, swatches)` snaps faces to palette cells and collapses to one material, plus `tri_count`, `spend_report`, `symmetry_error` | `import modeling_helpers as mh` after adding the folder to `sys.path` |
 
-argv = sys.argv[sys.argv.index("--") + 1:]
-out_dir = Path(argv[0]); out_dir.mkdir(parents=True, exist_ok=True)
-only = set(argv[argv.index("--only") + 1:]) if "--only" in argv else None
-MAX_TRIS, PREFIXES = 20000, ("SM_", "KIT_", "SK_")
+What `export_kit.py` enforces and why:
+- Names limited to `A-Z a-z 0-9 _`; rotation 0 and scale 1 (or `--apply-transforms`); exactly one UV map and at most one material per visual mesh; ≤ 20,000 triangles after modifiers; `_COL` children without material and ≤ 200 triangles; a collision plan on every asset (`_COL` child or `Fidelity` = `Box`/`Hull`). Any failure skips that asset and exits 1.
+- Mesh datablocks are renamed `<Object>_Mesh` in memory so Reimport has stable names; a Triangulate modifier is appended if missing; the root moves to the world origin so the Blender origin becomes the pivot.
+- Export options: `export_apply=True` (the default drops bevels and weighted normals), `export_yup=True`, no animation, `export_vertex_color="ACTIVE"` (the default writes a placeholder `COLOR_0` when the material does not use the colour).
+- The same input gives byte-identical GLBs on one Blender version, so the manifest hash is a safe "unchanged" test. The exporter version is embedded in the file: pin Blender in the repo, and re-check `bpy.ops.export_scene.gltf` options on upgrade.
 
-def tri_count(obj):  # counted after modifiers (bevels), which is what ships
-    ev = obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
-    me = ev.to_mesh(); n = sum(len(p.vertices) - 2 for p in me.polygons); ev.to_mesh_clear()
-    return n
-
-def check(root):
-    family = [o for o in (root, *root.children_recursive) if o.type == "MESH"]
-    bad = []
-    for o in family:
-        col = o.name.endswith("_COL")
-        o.data.name = o.name + "_Mesh"   # glTF mesh name becomes the MeshPart name; keep it unique and stable for Reimport
-        if not re.fullmatch(r"[A-Za-z0-9_]+", o.name): bad.append(f"{o.name}: use only A-Z a-z 0-9 _ in names")
-        if any(abs(s - 1) > 1e-4 for s in o.scale) or any(abs(r) > 1e-4 for r in o.rotation_euler):
-            bad.append(f"{o.name}: unapplied rotation/scale")
-        if not col and len(o.data.uv_layers) != 1: bad.append(f"{o.name}: {len(o.data.uv_layers)} UV maps (need 1)")
-        if len([s for s in o.material_slots if s.material]) > (0 if col else 1): bad.append(f"{o.name}: material slots")
-        if tri_count(o) > (200 if col else MAX_TRIS): bad.append(f"{o.name}: {tri_count(o)} tris over budget")
-    if not any(o.name.endswith("_COL") for o in family) and "Fidelity" not in root:
-        bad.append(f"{root.name}: no _COL child and no 'Fidelity' custom property (Box/Hull)")
-    return family, bad
-
-manifest, failed = {}, []
-for root in [o for o in bpy.data.objects if o.parent is None and o.name.startswith(PREFIXES)]:
-    if only and root.name not in only: continue
-    family, bad = check(root)
-    if bad: failed += bad; continue
-    saved = root.matrix_world.copy(); root.location = (0, 0, 0)   # pivot = Blender origin at world zero
-    bpy.ops.object.select_all(action="DESELECT")
-    for o in (root, *root.children_recursive): o.hide_set(False); o.select_set(True)
-    path = out_dir / f"{root.name}.glb"
-    bpy.ops.export_scene.gltf(filepath=str(path), export_format="GLB", use_selection=True,
-        export_apply=True, export_yup=True, export_animations=False,
-        export_vertex_color="ACTIVE", export_all_vertex_colors=False)  # default MATERIAL writes a fake COLOR_0
-    root.matrix_world = saved
-    manifest[root.name] = {"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-        "tris": {o.name: tri_count(o) for o in family}, "fidelity": root.get("Fidelity")}
-(out_dir / "manifest.json").write_text(json.dumps(manifest, indent=1, sort_keys=True))
-print("\n".join(failed) or f"OK {len(manifest)} assets")
-sys.exit(1 if failed else 0)
-```
-
-Helpers to run through the MCP bridge (same test run):
-
-```python
-import bpy, bmesh
-
-def make_col(obj, angle=0.09):
-    """Convex-hull proxy named <obj>_COL, parented to obj, no materials. Studio side: CollisionFidelity = Hull."""
-    bm = bmesh.new(); bm.from_object(obj, bpy.context.evaluated_depsgraph_get())
-    bmesh.ops.delete(bm, geom=bm.faces[:], context="FACES_ONLY")
-    bmesh.ops.convex_hull(bm, input=bm.verts[:])
-    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
-    bmesh.ops.dissolve_limit(bm, angle_limit=angle, verts=bm.verts[:], edges=bm.edges[:])  # merge near-coplanar faces
-    bmesh.ops.triangulate(bm, faces=bm.faces[:])
-    me = bpy.data.meshes.new(obj.name + "_COL"); bm.to_mesh(me); bm.free()
-    col = bpy.data.objects.new(obj.name + "_COL", me); obj.users_collection[0].objects.link(col)
-    col.parent = obj; col.display_type = "WIRE"
-    return col
-
-def palette_uv(obj, swatch, grid=16, material="M_Palette"):
-    """swatch = {"M_Red": (col, row)}, cells counted from the atlas top-left. Collapses the mesh to one material."""
-    uv = obj.data.uv_layers.active.data
-    for poly in obj.data.polygons:
-        c, r = swatch[obj.material_slots[poly.material_index].material.name]
-        for li in poly.loop_indices: uv[li].uv = ((c + 0.5) / grid, 1 - (r + 0.5) / grid)
-        poly.material_index = 0
-    obj.data.materials.clear(); obj.data.materials.append(bpy.data.materials[material])
-```
+Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS module driving the scripts as `blender -b` does; the GLBs were re-read for names, triangle counts, sizes and `COLOR_0`. Not run with the desktop binary and not imported into Studio. Add `--python-exit-code 1` before `-P` so a script error fails CI.
 
 - **AO to vertex colour**: add a `BYTE_COLOR` corner attribute, make it the active colour, set the render engine to Cycles (CPU works headless) and call `bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")` with the object active (tested).
 - **Geometry Nodes for kits**: use node groups to generate variants (fence runs, pipe bends, window arrays), then apply and export each variant as its own asset. The glTF exporter skips Geometry Nodes instances by default (`export_gn_mesh` is off) and Realize Instances can drop UVs `[community]`, so test one export. For layouts do not realise at all: export transforms and place package copies in Studio, which keeps instancing. `[{"asset": i.object.data.name.removesuffix("_Mesh"), "matrix": [list(r) for r in i.matrix_world]} for i in bpy.context.evaluated_depsgraph_get().object_instances if i.is_instance]` returns one row per instance (tested); convert axes with the exporter's mapping (X, Z, −Y) and confirm with one asymmetric asset.
@@ -218,7 +153,7 @@ def palette_uv(obj, swatch, grid=16, material="M_Palette"):
 
 | Route | Use when | Notes |
 |---|---|---|
-| Open Cloud key (`POST https://apis.roblox.com/assets/v1/assets`) | CI and batch uploads | A Lune or Python script reads `manifest.json`, skips unchanged hashes, polls `GET /assets/v1/operations/{id}`, writes ids. |
+| Open Cloud key (`POST https://apis.roblox.com/assets/v1/assets`) | CI and batch uploads | A Lune or Python script you write for the game repo (none is shipped; the `curl` call below is the whole request) reads `manifest.json`, skips unchanged hashes, polls `GET /assets/v1/operations/{id}`, writes ids. |
 | Studio MCP `open_cloud_invoke` | Interactive agent sessions | No API key. Enable `asset:read` and `asset:write` for the game and approve the export folder; the client cannot copy files into an approved folder. Studio's built-in `rbx-import-asset` skill checks triangle limits, uploads, waits for moderation and fixes scale, rotation, textures and anchoring. |
 | Official Roblox Blender add-on | Artist-driven iteration | OAuth login; uploads selected objects as packages; a re-upload publishes a new version of the same package (tracked in a `Roblox Package ID` custom property). |
 | Studio Importer + Reimport | Manual imports, one-off fixes | Reimport (Alt+Shift+R) updates MeshParts and SurfaceAppearances in place by mesh path and name and keeps CollisionFidelity, RenderFidelity and other properties. Auto-Reimport is a Studio beta `[community]`. |
@@ -380,7 +315,7 @@ Lighting performance: lights go on `_Att` attachments inside Blender fixture mod
 - [ ] Colours only from the palette; vertex colour present if the kit uses it (`COLOR_0` in the GLB).
 - [ ] Collision plan explicit: `Fidelity` property or `_COL` child; walk and jump on it in Studio with collision visualisation on.
 - [ ] `_Att` points present for every light, prompt, seat and VFX socket the design calls for.
-- [ ] `export_kit.py` exits 0; manifest row written; upload operation `Approved`; uploaded under the owning group.
+- [ ] `scripts/blender/export_kit.py` (or `check_asset.py`) exits 0; manifest row written; upload operation `Approved`; uploaded under the owning group.
 - [ ] Wrapped as a package; placed copies share one MeshId; no duplicate upload of the same piece.
 - [ ] Held next to the golden sample under final lighting, at graphics level 1–3 and on a phone: reads by silhouette, nothing glows that should not, no z-fighting, no light leaks.
 - [ ] CastShadow off if small; RenderFidelity Automatic (Performance for clutter); streaming mode set (Atomic for interactive props).

@@ -20,7 +20,7 @@ Terms: an **MCP server** (Model Context Protocol) is a local program that gives 
 
 | Need | Lower-risk default | Bold option (after review) | Never |
 |---|---|---|---|
-| Drive Blender | Blender Lab MCP (official) plus `references/art-pipeline-blender.md` | `bpy-dev/blender-mcp` for headless saved-file tools; one Blender skill pack for technique | AI mesh generators, asset downloaders |
+| Drive Blender | Blender Lab MCP (official) plus `references/art-pipeline-blender.md`; or no live connection at all: the headless tools shipped in `scripts/blender/` (export, checks, silhouettes) | `bpy-dev/blender-mcp` for headless saved-file tools; one Blender skill pack for technique | AI mesh generators, asset downloaders |
 | Drive Studio | Studio's built-in MCP server through `Roblox/roblox-studio-agent-plugin` | `Chrrxs/robloxstudio-mcp` for profiler, memory and multi-client test tooling | Archived servers, executor MCPs, anything shipped as an `.exe` |
 | Upload assets | Studio MCP `open_cloud_invoke` (no key) or a scoped Open Cloud key in CI | Official Roblox Blender add-on; Asphalt for images and audio | Cookie-based uploaders |
 | UI design | Official Figma MCP server (`references/ui-design-figma.md`) | Framelink for read-only layout context | Write-capable bridges on a file you have not backed up |

@@ -151,8 +151,8 @@ Contracts do not stop every scam and cross-border enforcement is hard `[communit
 
 Mechanics `[official][VS]`:
 
-- **One-time payouts:** choose members and amounts, or upload a CSV with `userId` and `payoutInRobux`; 2-step verification challenge and eligibility checks. Some groups do not see Payouts at first (group age, insufficient funds).
-- **Recurring payouts:** percentages per game and for the whole group. A game's split pays its members first; the remainder flows into the group split; what is left stays in the group balance. Docs example: a game earns 1,000 R$ with a 40/30/10 game split, so 400/300/100 are paid; the remaining 200 enters a 20/20/10 group split paying 40/40/20; 100 stays in the group.
+- **One-time payouts:** choose members and amounts, or upload a CSV with `userId` and `payoutInRobux`; 2-step verification challenge and eligibility checks. Payouts can be hidden for a group at first, because of group age or insufficient funds.
+- **Recurring payouts:** percentages per game and for the whole group. Order of payment: the game's split to its members, then the group split out of the remainder, then whatever is left to the group balance. Docs example: a game earns 1,000 R$ with a 40/30/10 game split, so 400/300/100 are paid; the remaining 200 enters a 20/20/10 group split paying 40/40/20; 100 stays in the group.
 - Private-server subscriptions keep the percentages in force when the subscription was bought. Games sold through paid access in local currency cannot share payouts across members.
 - DevEx is requested by a person, so group revenue reaches a bank only through payouts to members (§11). Group payouts carry the split between standard-rate and 18+-rate Robux through to the recipient `[lihfolk][VS]`.
 
@@ -167,7 +167,7 @@ Rules to agree before the first payout `[lihfolk]`:
 
 | Rule | Example wording to adapt with a professional |
 |---|---|
-| Earn-in (vesting) | 0% during a one-month trial, rising to the full share over six months of active work |
+| Earn-in (vesting) | A one-month trial at 0%, then six months of active work to climb to the full share |
 | Contribution | "Active" means N hours or named deliverables per month |
 | Exit | On stopping, the share continues for 3–6 months (or steps down to a small tail), then ends |
 | Removal for cause | Abuse, leaks, sabotage or Roblox-rule breaches end the share at once |
@@ -186,7 +186,7 @@ Scope gates, milestone exit criteria and the 4-week solo plan are in `process-an
 - **Task board:** any tool; columns Backlog → This week → Doing (limit: one or two per person) → Review → Done; every card has an owner and a "done when". Bugs carry severity (crisis table in `community-moderation-safety.md`).
 - **Estimates in ranges:** optimistic, likely, pessimistic; expected = (O + 4M + P) ÷ 6. Better still, log estimate versus actual for every deliverable and apply your own multiplier.
 - **Capacity, not calendar:** people × days × about 0.65 focus factor. Leave 20–30% of a milestone unassigned as one visible buffer rather than padding each task.
-- **The vertical slice is the estimate:** if one zone at final Blender quality took three weeks and the plan has eight zones, the plan says 24 weeks.
+- **The vertical slice is the estimate:** a plan of eight zones is a 24-week plan when one zone at final Blender quality cost three weeks.
 - **Change budget:** reserve about 10% of capacity for requests arriving mid-milestone; when it is spent, a new request replaces something of equal size. Keep a scope ledger (date, request, asked by, size, decision, paid for by).
 - **Kill list** written at milestone start: what gets cut first, in order.
 - **Platform lead-time items** go on the roadmap with owners: maturity questionnaire, asset upload and moderation, products and prices tested in a test universe, odds disclosure and `PolicyService` gates, localisation, thumbnails and video, analytics events before soft launch, phone test pass, the 250 engaged-play evaluation for under-16 reach.

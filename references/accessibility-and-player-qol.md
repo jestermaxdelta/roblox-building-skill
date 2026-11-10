@@ -55,9 +55,9 @@ Measure the palette instead of eyeballing it `[lihfolk]`: convert each token to 
 
 | Situation | Minimum Oklab distance under every simulation `[lihfolk]` (rule of thumb) |
 |---|---|
-| Large adjacent patches | 0.08 |
-| Small or separated signals (pips, markers, outlines) | 0.15 |
-| Critical reads (ally vs enemy, safe vs harmful floor) | 0.20 and a non-colour channel |
+| Big patches side by side | 0.08 |
+| Signals that are small or apart: outlines, markers, pips | 0.15 |
+| Critical reads (safe vs harmful floor, ally vs enemy) | 0.20 plus a channel other than colour |
 | Lightness-only check (survives greyscale) | ΔL ≥ 0.15 |
 
 Tests, cheapest first:
@@ -80,7 +80,7 @@ Engine behaviour is in `ui-input-crossplatform.md` §Text. What to add:
 - **Fixed slots** (toolbar buttons, HUD counters): one or two words, icon carries the meaning, generous `MaxTextSize`. Never truncate prices, counts or names that differ at the end.
 - Paragraphs: `LineHeight` 1.15–1.3, 40–60 characters per line on phones, left-aligned, no all-caps sentences, no long italics `[lihfolk]`.
 - Stroke on small text: about 8–12% of rendered size and at most 2 px under 16 px text, or it fills the letter counters; use a plate for paragraphs and let the plate follow `PreferredTransparency` `[lihfolk]`.
-- World text: clamp billboard text to a minimum rendered height and fade by `MaxDistance`; put a door's requirement on screen when the player is near, not only on a `SurfaceGui`.
+- World text: clamp billboard text to a minimum rendered height and fade by `MaxDistance`; when the player gets close to a door, show its requirement in screen space rather than leaving it on a `SurfaceGui` alone.
 - Automated audit: walk visible `TextLabel`/`TextButton`s and flag `TextFits == false` and small `TextBounds`. Run at `Medium` and `Largest`, minimum and maximum slider, longest language (extend the scan in `ui-input-crossplatform.md`).
 
 ## 5. Motion, camera comfort and flashes
@@ -103,7 +103,7 @@ Why players feel sick `[lihfolk]`: the eyes report motion the inner ear does not
 Implementation:
 
 - One **comfort module** answers "how much motion?" for every system. Effective reduced motion = the game override (`follow`, `on`, `off`) resolved against `GuiService.ReducedMotionEnabled`; fire a signal on change so long-running loops stop mid-session. Reading the setting only at effect start is the most common bug `[lihfolk]`.
-- Scale shake at the single point where camera offsets are summed, not inside each effect, so a new effect cannot forget `[lihfolk]`.
+- Apply the shake scale once, at the point where all camera offsets get added up; scaling inside each effect lets a new effect forget it `[lihfolk]`.
 - FOV slider 60–100, default 70 (`Camera.FieldOfView` clamps 1–120 `[official]`). One owner writes the property; sprint, zoom and ultimates add named offsets to the player's base. Symptom of a missing owner: FOV resets after the first sprint.
 - Flashes are a **separate toggle** from reduced motion: some players want one and not the other (also requested on the DevForum `[community]`).
 - **Flash gate.** The WCAG 2.3.1 guideline is no more than three flashes in any one second. Roblox does not enforce it. Flashes come from many systems and many players at once, so route every large-area brightness change (impact frames, lightning, rarity strobes, other players' ultimates) through one limiter, and never use saturated red full-screen flashes `[lihfolk]`.
@@ -158,7 +158,7 @@ Roblox has no built-in captions for in-game audio `[lihfolk][VS]`; `[official]` 
 
 Baseline (from `ui-input-crossplatform.md`): every action has keyboard, gamepad and touch bindings. On top of that:
 
-- **Hold or toggle for every sustained action** (sprint, aim, crouch, block, charge). Implement it as a wrapper around the input, and force toggles off on death, stun, menu open and `UserInputService.WindowFocusReleased`, or the player respawns still sprinting `[lihfolk]`.
+- **Every sustained action (charge, block, crouch, aim, sprint) offers hold or toggle.** Implement it as a wrapper around the input, and force toggles off on death, stun, menu open and `UserInputService.WindowFocusReleased`, or the player respawns still sprinting `[lihfolk]`.
 - **Hold-to-repeat** for repeated presses (click, mine, roll) at a fixed rate such as 5 per second: in clickers and simulators it is the most important motor feature `[lihfolk]`. It still passes the same server rate limits. Hold-to-repeat is free; fully unattended auto-play can be a pass (§11 auto-collect).
 - **No mashing, no long holds without an alternative, no two-button chords without a single-key option, a dedicated key for any double-tap.** Combo buffers of 300–400 ms `[lihfolk]`.
 - **Remapping model** `[lihfolk]`: stable action ids; two keyboard slots and one gamepad slot per action; defaults in code and only differences saved (a new action then reaches everyone); a conservative reserved list (Escape, the key that opens your settings); on conflict **swap** rather than error; capture ignores reserved keys and Escape cancels; gameplay input is sunk while capturing; a reset per action and for all.
