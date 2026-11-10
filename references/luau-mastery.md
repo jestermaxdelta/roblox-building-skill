@@ -236,7 +236,7 @@ Re-check each row before relying on it; "RFC only" means do not write it yet.
 
 | Feature | Status on 2026-11-10 | Guidance |
 |---|---|---|
-| New type solver | General release announced on the DevForum; the beta toggle was removed in January 2026 `[community: search summary]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, set in Studio, not scriptable) selects it per place `[official]`. Fixes still land in release notes, and Roblox acknowledged slower analysis and higher Studio memory in some cases | Use it for new code. Keep type shapes simple; test surprising errors against the other solver before rewriting code |
+| New type solver | General release announced on the DevForum, with the beta toggle scheduled for removal on 7 January 2026 `[community: search summary]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, set in Studio, not scriptable) selects it per place `[official]`. Fixes still land in release notes, and Roblox acknowledged slower analysis and higher Studio memory in some cases | Use it for new code. Keep type shapes simple; test surprising errors against the other solver before rewriting code |
 | `const` bindings | Documented by Roblox and luau.org: `const X = 1`, `const function f()`; reassignment and `+=` are errors; the binding is immutable, the value is not (`table.freeze` for that); contextual keyword `[official]` | Fine in Studio. In a Rojo project first confirm your StyLua, Selene and luau-lsp versions parse it (not verified here) |
 | `type function` and the `types` library | Implemented (RFC); new solver only. Environment: `types`, `math`, `table`, `string`, `bit32`, `utf8`, `buffer` and a few globals; no runtime values, no Roblox APIs `[official: luau.org]` | Library-level types only (`Readonly<T>`, `Pick<T, K>`). Each use re-runs analysis; errors surface at every use site |
 | `keyof`, `rawkeyof`, `index`, `rawget`, `setmetatable`/`getmetatable` type functions | Implemented (RFCs) | `keyof<typeof(Config)>` for "one of the config keys" |
@@ -289,7 +289,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 - The collector is incremental (mark, a short atomic step, paged sweep), not generational. Allocation pays for "assists" inside your script, so churn shows up in your own timings `[official]`.
 - Heap size is a sawtooth: the troughs are live data, the teeth are garbage. Rising troughs mean a leak; tall fast teeth mean churn.
 - No finalizers and no forced collection: `collectgarbage` only supports `"count"`; `gcinfo()` reads the heap in KB. Cleanup is always an explicit call.
-- No ephemerons: in a weak-keyed table, a value that references its own key keeps the entry forever. `__mode = "ks"` lets a weak table shrink during collection; do not iterate it across yields `[lihfolk, citing luau.org]`.
+- No ephemerons: in a weak-keyed table, a value that references its own key keeps the entry forever. Adding `s` to `__mode` lets a weak table shrink during collection, at the risk of missed keys if it resizes mid-iteration `[official: luau.org]`.
 - Capacity is sticky: clearing a table that once held 100,000 entries keeps the memory. Reuse scratch tables with `table.clear`; drop one-off giants by assigning a new table.
 - Measure allocation as KB per iteration over thousands of iterations, comparing two versions in one run; a single before-and-after reading can even go negative.
 
@@ -316,7 +316,7 @@ Parallel Luau beyond the basics in `performance.md`:
 
 - Every Actor is its own VM: a module required by 64 Actors runs 64 times and holds 64 copies of its data; a "global" registry module is per Actor. This is the most common design error `[lihfolk]`.
 - Messages are copied; send ids and small parameters. `SharedTable` avoids the copy but each access is synchronised: a staff reply put it near 10× slower than a table `[community]`. Read what you need into locals at the start of a job and write results once at the end.
-- `SharedTable.increment` is atomic and cheap; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure `[lihfolk, citing docs]`.
+- `SharedTable.increment` is atomic and much faster than `update`; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure; a plain read-then-write is a race `[official]`.
 - Shape every system as read (parallel), compute (parallel), write (serial, one place). If the serial write phase grows, parallelism is a net loss: measure in the MicroProfiler.
 
 ### Performance idioms with measured rules
@@ -418,15 +418,15 @@ Displayed odds must come from the same flattened table the server rolls (`moneti
 | Old | Modern | Status |
 |---|---|---|
 | `wait`, `spawn`, `delay` | `task.wait`, `task.spawn` or `task.defer`, `task.delay` | Deprecated |
-| `Instance:Remove()`, `:children()`, `:clone()`, `:connect()` | `:Destroy()`, `:GetChildren()`, `:Clone()`, `:Connect()` | Deprecated |
+| `Instance:Remove()`, `:children()`, `:clone()` | `:Destroy()`, `:GetChildren()`, `:Clone()` | Deprecated |
 | `Humanoid:LoadAnimation` | `Animator:LoadAnimation`, tracks cached | Deprecated |
 | `FindPartOnRay*`, `FindPartsInRegion3*` | `workspace:Raycast`, `Blockcast`/`Spherecast`/`Shapecast`, `GetPartBoundsInBox`/`Radius`, `GetPartsInPart` | Deprecated |
-| `BodyVelocity`, `BodyPosition`, `BodyGyro`, `BodyForce` | `LinearVelocity`, `AlignPosition`, `AlignOrientation`, `VectorForce` | House rule: never use BodyMovers |
+| `BodyVelocity`, `BodyPosition`, `BodyGyro`, `BodyForce` | `LinearVelocity`, `AlignPosition`, `AlignOrientation`, `VectorForce` | Deprecated |
 | `PhysicsService:RegisterCollisionGroup`, `CollisionGroupSetCollidable`, `SetPartCollisionGroup` | `workspace:RegisterCollisionGroup`, `workspace:CollisionGroupSetCollidable`, `part.CollisionGroup = "Name"` | Deprecated |
 | `TeleportService:Teleport`, `TeleportPartyAsync`, `TeleportToPlaceInstance`, `TeleportToPrivateServer`, `ReserveServer(Async)` | Server-side `TeleportAsync(placeId, players, options)`; reserved servers via `TeleportOptions.ReservedServerId = HttpService:GenerateGUID(false)` | Deprecated |
-| `Player:LoadCharacter`, `BadgeService:AwardBadge`, `UserHasBadge`, `Player:IsInGroup`, `MarketplaceService:GetProductInfo` | The same name with `Async`, inside `pcall` | Deprecated or superseded (the yielding-method rename; LihFolk dates it January 2026) |
+| `Player:LoadCharacter`, `BadgeService:AwardBadge`, `UserHasBadge`, `Player:IsInGroup`, `MarketplaceService:GetProductInfo`, `PlayerOwnsAsset` | The same name with `Async`, inside `pcall` | Deprecated (the yielding-method rename; LihFolk dates it January 2026) |
 | `Player:GetRankInGroup(Async)` | `GroupService:GetRolesInGroupAsync` | Deprecated |
-| `Player.MembershipType` | `Player.HasRobloxSubscription` | Deprecated |
+| `Player.MembershipType`, `MarketplaceService:PromptPremiumPurchase` | `Player.HasRobloxSubscription` (prompt: see `monetization-and-policy.md`) | Deprecated |
 | `TextFilterResult:GetChatForUserAsync`, legacy `Chat` | `TextChatService`; `GetNonChatStringForBroadcastAsync` / `ForUserAsync` for names and signs | Deprecated |
 | `getfenv`, `setfenv` | Modules and explicit parameters | Deprecated; they also de-optimise |
 | `Lighting.Technology` | `LightingStyle` plus `PrioritizeLightingQuality` | Deprecated (`performance.md`) |

@@ -62,7 +62,7 @@ Worked example, "how do I save the player's coins?":
 - Intermediate: the DataService shape in data-and-purchases.md: template, schema version, migrations before `Reconcile`, what happens when the load fails, the shutdown test, and why their `SetAsync` in `PlayerRemoving` loses data on server close.
 - Expert: "ProfileStore; cost is one write per profile per auto-save interval. Risks at your scale: write budget under mass rejoin after a restart, 4 MB key ceiling on inventories, cross-place handoff. Measure `GetRequestBudgetForRequestType` during a restart drill. Bold option: split cold data into a second key."
 
-With AI assistance generally `[community]`: forum and Reddit advice is consistent that a developer must know enough Luau to catch the assistant's mistakes. So for beginners Claude always states how to verify (what to press, what Output should print) and asks for the result, and never reports a change as working when it was only written.
+With AI assistance generally `[community]`: the DevForum and Reddit threads found in this pass both say a developer must know enough Luau to catch the assistant's mistakes (two threads: a heuristic, not a survey). So for beginners Claude always states how to verify (what to press, what Output should print) and asks for the result, and never reports a change as working when it was only written.
 
 ## 3. Beginner path
 

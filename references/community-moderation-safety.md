@@ -194,7 +194,7 @@ API fields and the detection ladder are in `networking-and-security.md` §Detect
 - **Admin command suites** (third-party admin systems) arrive as modules that `require` by asset id and often include private-message, announce-as-player and "fun" commands. Under house rule 1 and the backdoor guidance in `networking-and-security.md`, read every line or write the six commands you need as `TextChatCommand`s. Disable any command that lets staff message players privately or players reply: it is chat outside `TextChatService` (§4).
 - **Prefer panels to typed commands** for anything with consequences: a typo kicks the wrong player, a list does not `[lihfolk]`.
 - **Live "admin" events** (`liveops-quests-retention.md`): scripted and bounded. Grant event items through the same idempotent, logged path as any reward; cap what an admin can spawn; record every grant; never let event powers touch the trading economy unlogged. An admin handing rare items to friends is a dupe with a name on it.
-- Private-server owner panels (QoL file) affect only that server and never grant economy value.
+- Private-server owner panels (`accessibility-and-player-qol.md` §11) affect only that server and never grant economy value.
 
 ## 9. Exploiters and leaks
 
