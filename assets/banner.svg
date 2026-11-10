@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 340" width="1280" height="340" role="img" aria-label="Roblox Game Design Skill for Claude Code: design, build, monetize, optimize, launch" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/><stop offset="0.55" stop-color="#151a3a"/><stop offset="1" stop-color="#2a1b54"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.79" cy="0.55" r="0.42">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.45"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.045"/>
+    </pattern>
+    <clipPath id="r"><rect width="1280" height="340" rx="20"/></clipPath>
+  </defs>
+  <g clip-path="url(#r)">
+  <rect width="1280" height="340" fill="url(#bg)"/>
+  <rect width="1280" height="340" fill="url(#grid)"/>
+  <rect width="1280" height="340" fill="url(#glow)"/>
+  <g opacity="1"><polygon points="1010.0,188.0 1063.7,219.0 1010.0,250.0 956.3,219.0" fill="#67e8f9"/><polygon points="956.3,219.0 1010.0,250.0 1010.0,312.0 956.3,281.0" fill="#0891b2"/><polygon points="1063.7,219.0 1010.0,250.0 1010.0,312.0 1063.7,281.0" fill="#06b6d4"/></g>
+  <g opacity="1"><polygon points="1117.0,126.0 1170.7,157.0 1117.0,188.0 1063.3,157.0" fill="#c4b5fd"/><polygon points="1063.3,157.0 1117.0,188.0 1117.0,250.0 1063.3,219.0" fill="#6d28d9"/><polygon points="1170.7,157.0 1117.0,188.0 1117.0,250.0 1170.7,219.0" fill="#8b5cf6"/></g>
+  <g opacity="1"><polygon points="1010.0,64.0 1063.7,95.0 1010.0,126.0 956.3,95.0" fill="#fde68a"/><polygon points="956.3,95.0 1010.0,126.0 1010.0,188.0 956.3,157.0" fill="#d97706"/><polygon points="1063.7,95.0 1010.0,126.0 1010.0,188.0 1063.7,157.0" fill="#f59e0b"/></g>
+  <g opacity="1"><polygon points="903.0,126.0 956.7,157.0 903.0,188.0 849.3,157.0" fill="#f9a8d4"/><polygon points="849.3,157.0 903.0,188.0 903.0,250.0 849.3,219.0" fill="#be185d"/><polygon points="956.7,157.0 903.0,188.0 903.0,250.0 956.7,219.0" fill="#ec4899"/></g>
+  <g opacity="0.85"><polygon points="1172.0,70.0 1191.1,81.0 1172.0,92.0 1152.9,81.0" fill="#a5f3fc"/><polygon points="1152.9,81.0 1172.0,92.0 1172.0,114.0 1152.9,103.0" fill="#0e7490"/><polygon points="1191.1,81.0 1172.0,92.0 1172.0,114.0 1191.1,103.0" fill="#22d3ee"/></g>
+  <g opacity="0.8"><polygon points="860.0,70.0 873.9,78.0 860.0,86.0 846.1,78.0" fill="#fde68a"/><polygon points="846.1,78.0 860.0,86.0 860.0,102.0 846.1,94.0" fill="#b45309"/><polygon points="873.9,78.0 860.0,86.0 860.0,102.0 873.9,94.0" fill="#fbbf24"/></g>
+  <g opacity="0.8"><polygon points="1196.0,266.0 1211.6,275.0 1196.0,284.0 1180.4,275.0" fill="#ddd6fe"/><polygon points="1180.4,275.0 1196.0,284.0 1196.0,302.0 1180.4,293.0" fill="#5b21b6"/><polygon points="1211.6,275.0 1196.0,284.0 1196.0,302.0 1211.6,293.0" fill="#a78bfa"/></g>
+  <text x="72" y="84" font-size="17" font-weight="700" letter-spacing="3" fill="#67e8f9">A SKILL FOR CLAUDE CODE</text>
+  <text x="70" y="150" font-size="60" font-weight="800" fill="#ffffff" letter-spacing="-1">Roblox Game Design</text>
+  <text x="72" y="196" font-size="23" fill="#cbd5e1">Take any Roblox game to the next level, new idea or live game.</text>
+  <rect x="72" y="232" width="87" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.22"/><text x="116" y="254.5" text-anchor="middle" font-size="16" font-weight="600" fill="#e2e8f0">Design</text>
+  <rect x="171.2" y="232" width="77" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.22"/><text x="210" y="254.5" text-anchor="middle" font-size="16" font-weight="600" fill="#e2e8f0">Build</text>
+  <rect x="260.2" y="232" width="108" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.22"/><text x="314" y="254.5" text-anchor="middle" font-size="16" font-weight="600" fill="#e2e8f0">Monetize</text>
+  <rect x="379.79999999999995" y="232" width="108" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.22"/><text x="434" y="254.5" text-anchor="middle" font-size="16" font-weight="600" fill="#e2e8f0">Optimize</text>
+  <rect x="499.4" y="232" width="87" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.22"/><text x="543" y="254.5" text-anchor="middle" font-size="16" font-weight="600" fill="#e2e8f0">Launch</text>
+  </g>
+</svg>

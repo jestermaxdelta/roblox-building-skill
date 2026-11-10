@@ -1,15 +1,36 @@
 ---
 name: roblox-game-design
-description: "End-to-end playbook for making efficient, well-thought-out Roblox games: concept and genre choice, one-pager and pillars, core loops and economy math, Luau architecture (Rojo, ProfileStore, remotes, security), the Blender-to-Roblox art pipeline, non-invasive monetization (boosts, passes, starter pack, gifts, Luck), analytics and discovery (RFY, thumbnails, age tiers), performance budgets for low-end mobile, launch and LiveOps. Use whenever the user is making, designing, planning, scripting, balancing, monetizing, optimizing or launching a Roblox game or experience; writing Luau gameplay systems; designing Roblox economies, game passes, developer products, data stores or purchases; working in Roblox Studio (including through the Studio MCP); or asking what Roblox game to build. Enforces the house rules: every model from Blender, everything solid, heavy but never invasive monetization."
+description: "One-shot playbook that takes any Roblox game to the next level, at any stage: a new idea, a prototype, or a fully built live game that needs an audit. Covers concept and genre choice (with per-genre playbooks), core-loop design and tuning, FTUE, economy math, retention and LiveOps, non-invasive monetization (boosts, passes, starter pack, gifts, Luck), UI/UX design with Figma, the Blender-to-Roblox art pipeline, Luau architecture (Rojo, ProfileStore, remotes), security and anti-exploit, performance for low-end mobile, analytics, discovery, growth and launch. Use this skill whenever the user is making, designing, planning, scripting, balancing, monetizing, optimizing, auditing, reviewing, fixing or launching a Roblox game or experience, even if they only say \"my game\" in a Roblox or Luau project; when they ask why a Roblox game is not retaining, earning, growing or running well; when writing Luau systems, DataStores, purchases or UI; when working in Roblox Studio (including through the Studio MCP); or when asking what Roblox game to build. Enforces the house rules: every model from Blender, everything solid, heavy but never invasive monetization."
 ---
 
 # Roblox game design and development
 
-This skill turns a Roblox game idea into a shipped, maintained experience. It bundles a phased workflow, decision rules, the owner's non-negotiable house rules, and routed reference files distilled from a 9,389-line knowledge base (compiled 2026-11-08 from 31 repositories). Code snippets in the references come from that knowledge base and are unexecuted: treat them as starting points to test, not as verified code.
+This skill takes a Roblox game to the next level from wherever it is now: an idea, a prototype, or a finished live game. It bundles three entry modes, a phased workflow, decision rules, the owner's non-negotiable house rules, and routed reference files. The references are distilled from a 9,389-line knowledge base (compiled 2026-11-08 from 31 repositories and the owner's research vault) plus a 2026-11-10 research pass over developer forums, Reddit, GitHub and the Creator Docs. Code snippets in the references are unexecuted: treat them as starting points to test, not as verified code.
 
 Two meanings of "efficient" apply at once. Efficient games: frame budgets, low-end mobile first, streaming, bandwidth, memory. Efficient development: design before build, vertical slice first, build order, scope cuts, reusable modules, Rojo/Wally/Selene/StyLua/luau-lsp and tests.
 
 "Well thought out" means design before build. Before writing gameplay code, the player fantasy, three pillars, core/session/long-term loops, FTUE script, economy model with numbers, retention and social hooks and a risk list exist and have been reviewed against the rubrics.
+
+## Pick the mode first
+
+Work out which situation the user is in before opening anything else. The modes share the same references but start in different places, and starting in the wrong one wastes the user's time (a GDD for a game that already ships, or a rebuild when three fixes would do).
+
+| Mode | Use when | Start at | Output |
+|---|---|---|---|
+| **A. New game** | There is an idea or nothing yet | Phase 1 of the workflow below | The phase outputs, one gate at a time |
+| **B. Level-up** | A game already exists (prototype, soft launch or live) and the goal is "make it better", "why is it not growing/retaining/earning", "review my game", "optimise it" | `references/audit-existing-game.md` | `templates/game-audit-report.md` filled: scores with evidence, a ranked action list, then the top actions executed |
+| **C. Single fix** | One system, one bug, one balance tweak, one question | The matching row of the routing table | The fix, checked against that row's gate |
+
+Level-up mode in short (the audit reference has the full method):
+
+1. **Intake.** Ask for what exists: genre, age and platform mix, analytics (retention, session time, funnel, payer conversion, crash rate), the place or Rojo repo, Studio MCP access, and the owner's goal. Missing numbers are fine; say what you assumed.
+2. **Inspect before judging, read-only.** Read the code and DataModel, play the first ten minutes through the Studio MCP if it is connected, and open the genre file for the game in `references/genres/`. Change nothing yet.
+3. **Score the ten dimensions** (first session, core loop, progression and economy, retention and LiveOps, monetisation, UI/UX, art and house rules, performance, security and data, discovery and growth) with evidence for each score.
+4. **Rank by impact × confidence ÷ effort.** Fix in funnel order unless something is on fire: data loss, exploits and crashes first, then first-session bounce, then the core loop, then retention, then monetisation, then growth. Sending more players into a leaky first session wastes them.
+5. **Execute the top actions with the safe-change protocol**: back up the place version, put changes behind Configs flags, never break saves, change one variable at a time, and say how the result will be measured.
+6. **Re-measure and repeat.** A level-up pass is done when the top actions are shipped or handed over with clear steps, not when the report is written.
+
+House rules in Level-up mode: an existing game often breaks them (primitive Parts, marketplace models, walk-through props, pushy popups). Treat each violation as a finding with a migration plan ranked by how visible it is, rather than blocking every other fix until the whole map is rebuilt.
 
 ## How to use the references
 
@@ -17,7 +38,8 @@ Two meanings of "efficient" apply at once. Efficient games: frame budgets, low-e
 - `references/knowledge-base.md` is the full 645,989-byte source. Never read it whole. Grep it by section heading, then read that range only:
   `grep -n "^## 4.7" references/knowledge-base.md` (section start), then `grep -n "^## 4.8"` for the end, then Read with offset/limit. Section map: 1.x design, 2.x game craft and architecture patterns, 3.x platform/economy/monetization/analytics/discovery, 4.x engineering/security/data/purchases, 5.x performance/art/UI/input/launch. `## 3.12` and `## 5.14` list known conflicts.
 - Facts marked `[VS]` are version-sensitive (API names, limits, prices, policy, dashboard features). Re-check them at https://create.roblox.com/docs before relying on them. Market numbers date from a 2026-11-07 snapshot.
-- For market data (trending genres, what to build, discovery, thumbnails), open `references/market-scan-2026-11.md` first: it distils the owner's Nov 2026 research bundle and the v2 report (a converted copy sits in `references/market-research-v2-raw.md` for grep). For the full note set read the Obsidian vault folder `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` — start with `_MOC.md`, then `_AGENTS.md`. Read `Agent Vault Guide.md` and `hot.md` in the vault root first. Those numbers are a 2026-11-07 snapshot.
+- For market data (trending genres, what to build, discovery, thumbnails), open `references/market-scan-2026-11.md` first: it distils the owner's Nov 2026 research bundle and the v2 report (a converted copy sits in `references/market-research-v2-raw.md` for grep). For the full note set read the Obsidian vault folder `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` — start with `_MOC.md`, then `_AGENTS.md`. Read `Agent Vault Guide.md` and `hot.md` in the vault root first. Those numbers are a 2026-11-07 snapshot. The vault lives on the owner's PC: when it is not reachable (cloud sessions, other machines), the distilled copies in `references/` are the authority and nothing is lost.
+- Claims tagged `[community]` come from developer forums, Reddit and videos: treat them as heuristics to test, not guarantees. `[official]` marks Roblox documentation, `[house]` marks house estimates.
 
 ## House rules (verbatim, override all generic advice)
 
