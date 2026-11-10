@@ -1,6 +1,16 @@
 # Simulator, incremental and clicker playbook
 
-Covers click-or-collect simulators, "X Incremental" upgrade-board games, standalone RNG rollers and collection sims such as fishing. Open it when the loop is "act → number goes up → upgrade → new zone → rebirth", or when auditing a live simulator that bleeds players at the first wall. For stat-per-second lane games use `plus-one-evolution.md`; for the egg and pet layer use `pet-collection-hatching.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers click-or-collect simulators, "X Incremental" upgrade-board games, standalone RNG rollers and collection sims such as fishing. Open it when the loop is "act → number goes up → upgrade → new zone → rebirth", or when auditing a live simulator that bleeds players at the first wall. For stat-per-second lane games use `plus-one-evolution.md`; for the egg and pet layer use `pet-collection-hatching.md`. For a roll-first game use `rng-rolling.md`; for fishing use `fishing.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | One verb with strong feedback; a backpack and a sell pad; a tool ladder of 8–10 tiers; three zones with price gates; server-computed values; save currency and unlocks | Pets and eggs, rebirth, luck, boosts, trading, offline income |
+| Intermediate | Rebirth with a now-versus-after panel; category-based multiplier stacking with caps; a multiplier breakdown panel; timers at 5/15/30 min; offline cap; batched click remotes | Second reset layer, RNG side system |
+| Expert | A second verb per zone; a worst-case multiplier model priced against zone gates; funnel telemetry per gate; mantissa/exponent numbers; clean leaderboards; weekly zone cadence | — |
+
+Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier; *gate* = a priced or required unlock for the next zone; *sink ratio* = currency spent ÷ currency earned.
 
 ## Snapshot
 
@@ -20,6 +30,7 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 
 - First zone unlock inside 3 min and first rebirth at 15–25 min so a discovery player sees the whole loop in one session `[house]`.
 - X Incremental format norms (vault): 2+ reset layers, often a boss gate before rebirth, and an RNG side system (titles, runes, fossils). Robux is light in this format.
+- Collect-and-sell levers `[lihfolk]`: the capacity limit is what makes the loop a loop rather than a counter. Keep walking under about a quarter of the cycle, or add sell pads per zone; keep seconds-to-fill-the-bag roughly steady as tools and capacity upgrade together. Dropping the sell trip removes friction but also the rhythm and the most natural pass (auto-sell, sell anywhere); decide deliberately.
 
 ## First 5 minutes
 
@@ -38,6 +49,9 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 - Prestige is a decision, not a reflex: show "rebirth now gives ×A, in 5 min gives ×B" so the timing choice is readable `[community]`.
 - RNG works best as a layer inside another loop (vault inference: Net a Fish's "1 in 10M", Noob Incremental's runes), not as the whole game.
 - Sinks: tool tiers, capacity, zone unlocks, crafting luck gear, cosmetic auras. Sink ratio near 1.0 across a week.
+- Multiplier stacking `[lihfolk]`: all-additive is easy to control but each new source feels weak; all-multiplicative explodes. The workable compromise is additive within a category and multiplicative between categories: `(1 + pets) × (1 + boosts) × rebirth × pass`. Cap each category (for example pets ×40, rebirths ×16, passes ×2, boosts ×3 gives a worst case of ×3,840) and price zone gates against that worst case.
+- Gate pricing example from one shipped project `[lihfolk]`: ten gates from $2.5K at ×3 per gate reach about $49M; its second region continued at ×2.2 per gate. Print the next zone's price and reward on the gate itself ("$114K: Frost Peaks, 2× coins, Frost Egg"); a gate that states its reward sells itself.
+- Rebirth panel shows now versus after: the multiplier gained, what resets (tagged clearly) and what stays (pets, index, cosmetics). Rebirth tokens or a rebirth shop make rebirths buy choices, not only a number `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -62,6 +76,22 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 - Upgrade board: nodes show cost, effect and the delta ("+25% → +40%"); affordable nodes pulse once, not continuously.
 - Roll reveal: skippable, with the odds text on the result card ("1 in 10,000") drawn from the server's table.
 - Buy-max uses the closed-form sum; never loop purchases through remotes.
+- Multiplier breakdown panel: show where ×1,240 comes from (tool, pets, rebirth, pass, boosts, friends). Players enjoy the breakdown and every new source feels concrete `[lihfolk]`. Compute the total on the server and publish it for the HUD.
+
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Core verb with client feedback and a batched, rate-limited server credit.
+2. Capacity (backpack) and sell point.
+3. Player data: currency, tools, unlocks.
+4. Tool and capacity shop with a geometric price table.
+5. Zones, gates and fast travel.
+6. Multiplier service (categories, caps, breakdown panel).
+7. Rebirth.
+8. Pets and eggs (see `pet-collection-hatching.md`) or an upgrade board.
+9. Boosts and timers; offline income.
+10. Leaderboards, quests, codes.
 
 ## Technical hot spots
 
@@ -88,6 +118,8 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 - Upgrade trees with shortcuts that skip orders of magnitude and make the intended path pointless `[community]`.
 - Trusting the client for click counts or sell values; inflation from exploiters wrecks leaderboards.
 - Marketing before retention is fixed (one developer reports buying ads at 6% D1 as wasted spend) `[community]`.
+- Capacity upgrades that lag tools (the bag fills in seconds, play becomes walking) or lead them (the bag never fills and the cycle vanishes) `[lihfolk]`.
+- Aggressive patterns common in the genre (fake timers, pop-ups on every join, "only 1 left") break house rule 3 and are not used here.
 
 ## Level-up checklist for a live game
 
@@ -106,6 +138,8 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 | 11 | Leaderboards are not purely purchasable | Rank by rebirths or add a clean board |
 | 12 | Numbers stay readable past 1e15 | Mantissa/exponent store; suffix formatter |
 | 13 | Frame time holds on a 3 GB phone during a multi-pop burst | Pool and cap pops and VFX |
+| 14 | Multipliers combine by category with a stated cap per category | Refactor stacking; publish the worst case |
+| 15 | Walking is under a quarter of the collect-sell cycle | Add sell pads, fast travel or an earnable teleport |
 
 ## Review gate
 
@@ -130,3 +164,5 @@ Accessed 2026-11-10.
 - r/incremental_games threads on prestige timing and upgrade-tree shortcuts, seen through search mirrors (search summary)
 - https://github.com/LILRINO71/power-punch-simulator (read README; 1 star, MIT; small Rojo clicker with server-side rate limiting; reference only)
 - https://github.com/MadStudioRoblox/ProfileStore (search listing; 352 stars, Apache-2.0)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Simulators.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

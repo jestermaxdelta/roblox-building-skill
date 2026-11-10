@@ -6,6 +6,16 @@ How to read it: every repository below was seen through the GitHub API on 2026-1
 
 Trust tiers: **A** first-party (Roblox, Blender Foundation, Figma, Anthropic). **B** established community project with a licence, readable source and recent activity. **C** small or young project: read every file before use. **D** do not install.
 
+## Start here by level
+
+| Level | Do these first | Ignore for now |
+|---|---|---|
+| Beginner | Install only the first-party pieces: Roblox's Studio plugin (built-in MCP) and, for art, the official Blender MCP. Save or publish the place before every agent session. Never paste a key anywhere | Community MCP servers, skill packs, CI keys |
+| Intermediate | Add one reviewed skill pack per gap (Blender technique, Luau standards). Pin commits. Set the Studio MCP Open Cloud level per game and approve one upload folder. Keep a list of what is installed | Running several agents at once |
+| Expert | Profiler and memory tooling for audits on a copy of the place, headless Blender MCP tools, scoped Open Cloud keys in CI, multi-agent ownership rules, trials of new tools on real backlog tasks | Nothing: read "Safe use" in full |
+
+Terms: an **MCP server** (Model Context Protocol) is a local program that gives an AI client tools inside an application such as Studio, Blender or Figma; an **agent skill** is a folder of instructions (and sometimes scripts) the agent loads for a kind of task; a **plugin** bundles skills, commands, hooks and MCP configuration; a **hook** is a command the client runs automatically on events such as file writes.
+
 ## Recommended combinations
 
 | Need | Lower-risk default | Bold option (after review) | Never |
@@ -91,6 +101,26 @@ Do not install (tier D), as observed on 2026-11-10:
 | `izzyfrm/roblox-ai` | Media library: 12,165 images, 5 clips, 2,210 CC0 sound effects sorted as UI, icon and thumbnail references | 191 | 2026-11-05 | none | Visual reference for UI and thumbnail study | **C**. README read. No licence and mixed provenance: reference only, never ship a file from it |
 | `fagemx/gstack-game`, `rondorkerin/gamestack` | Engine-agnostic game design and production skill sets | 83; 34 | 2026-05-31; 2026-06-30 | MIT; MIT | Possible cross-check for `process-and-playtesting.md` | **C**. Metadata only |
 
+## LihFolk Vault V2 and its community router
+
+| Project | What it does | ★ | Last push | Licence | Combine with this skill | Trust and risk |
+|---|---|---|---|---|---|---|
+| `lihfolk-cy/v2-vault` (LihFolk V2) | Claude Code plugin: 22 Roblox skills (systems, UI, VFX, SFX, worldbuilding, Blender modelling, asset import, DataStore safety, secure remotes, anti-exploit review, monetisation compliance, performance audit, debugging, tutorial, Figma, trend game, quality score, council review), 3 sub-agents, 6 commands, a `PostToolUse` hook that scans every written `.lua`/`.luau` file against a rule table, and an Obsidian vault of about 1,300 notes in 59 sections. A separate asset pack (models, materials, skies, animations, VFX) ships as release zips | 70 | 2026-10-29 | CC BY 4.0 for notes, skills and scripts (credit "LihFolk Vault V2" and link the licence); the asset pack is under its own no-redistribution terms | Best used as a second research vault: read notes at a pinned commit and adapt them with credit, as this skill's references do (`[lihfolk]` tags). Strong on measured Blender 5.2 behaviour, readability maths and failure tables | **B/C**. Read: README, LICENSE, two skills in full, hook config, and the tables and summaries of about 45 notes. Installing the plugin makes 22 skills trigger beside this one, which breaks "one skill per responsibility". The hook runs a shell or PowerShell script (`-ExecutionPolicy Bypass`) after every file write: read `hooks/scripts` first. Its benchmark figures are self-reported. Facts are dated October 2026 |
+| `Boking234/Lihfolk-directory` | One Markdown skill that reads a prompt and routes it to the matching LihFolk skill or chain of skills; unofficial add-on that contains no vault content | 1 | 2026-11-09 | MIT | Only useful with the LihFolk plugin installed. The idea (a routing table placed before specialist skills) is what this skill's own routing table already does | **C**. Read: README and the 81-line `SKILL.md`; no scripts. One star, days old: no social proof, low blast radius |
+
+Where LihFolk and this skill differ (house rules win in every row):
+
+| Topic | LihFolk position | House position |
+|---|---|---|
+| Asset source | Check the LihFolk Asset Pack before modelling; bundled rigs and kits | Rule 1: every visible asset is authored in Blender for this game. Do not import the pack |
+| Map building | `lihfolk-worldbuilding` blocks out and builds with grey Parts and uses Terrain for hills, caves and shorelines | No visible primitive Parts; Terrain only with the owner's per-game approval; Blender blockout kit |
+| Collision | Decoration non-colliding by default | Rule 2: solid by default, `NonSolid` only for tagged exceptions |
+| Voxel art | MagicaVoxel, Goxel or Blockbench | Blender-native voxel route (blender-modeling-craft.md) |
+| Third-party assets | Also forbids Toolbox and scraped packs; never invents asset ids | Same |
+| AI generation | Notes survey external and Studio mesh, texture and audio generators | Generated meshes never ship; treat those notes as background only |
+
+Practical rule: do not install the LihFolk plugin and this skill in the same project unless the project's `CLAUDE.md` states that this skill's house rules override it; reading the vault as reference material needs no install.
+
 Ecosystem plumbing: `anthropics/skills` (191,402 ★, pushed 2026-11-06; Anthropic's public skills repository), `agentskills/agentskills` (27,117 ★, Apache-2.0; the Agent Skills specification), `vercel-labs/skills` (38,786 ★, MIT; the `npx skills` installer several repos above use), and the index lists `VoltAgent/awesome-agent-skills` (37,018 ★), `ComposioHQ/awesome-claude-skills` (79,163 ★) and `hesreallyhim/awesome-claude-code` (57,654 ★). An index entry is a pointer, not a review.
 
 ## Luau open-source libraries by category
@@ -128,6 +158,16 @@ Before installing anything:
 5. **Keys.** Never paste an API key, OAuth token or `.ROBLOSECURITY` cookie into a chat, a skill file, a prompt or a committed config. Keys live in the OS keychain, environment variables or CI secrets, scoped to one group or universe and one API. Prefer `open_cloud_invoke`, which never exposes a credential to the client. Rotate any key that touched a transcript.
 6. **House-rule filter.** Disable or ignore: AI mesh and texture generators (Studio `generate_*`, Meshy, Tripo, Rodin, Hunyuan3D, Hi3DGen), asset downloaders (Poly Haven, Sketchfab, Poly Pizza), Creator Store search and insert, and any skill that builds maps from primitive Parts. Agent-scripted modelling inside Blender is Blender authoring and is allowed.
 7. **Back up first.** Publish or save a version of the place and commit the repo before an agent session; duplicate Figma files before write-capable tools.
+
+Working practices for agents inside live tools, adapted from LihFolk's MCP notes `[lihfolk]` (Studio-side rules are in `references/engineering-architecture.md` and `references/studio-workflow.md`):
+- **Snapshot before a pass**: a model or folder is saved as `.rbxm` or copied once into a WIP folder; a script's source is copied to disk; bulk property passes store old values in `Pre<Name>` attributes with a revert function; the whole place gets a saved version. Never use undo to repair an agent mistake: it can revert someone else's work.
+- **Enforce with permissions, not prose**: put Play control, asset insertion and generation tools on the client's deny list and read-only tools on the allow list. A rule the host can enforce should not rely on the agent remembering it.
+- **Several agents in one Studio** share one main thread, one play state, one undo stack, one camera and one output log. Keep each call under about 1.5 s, let no agent start or stop Play, give each agent an owned area, a WIP folder and a log prefix, and write the ownership table down before spawning anyone.
+- **Migrating to the built-in Studio server**: remove the old server from every client config, uninstall the old Studio plugin, then fix permission rules and hook matchers that still name the old tools, or approvals and checks silently stop applying.
+- **Local HTTP bridges** (third-party Studio plugins that poll localhost): bind to 127.0.0.1, require a token on anything that changes state, and switch Allow HTTP Requests off again in the live place.
+- **Blender MCP symptoms**: every tool failing means the add-on server is not started or the port is wrong; time-outs mean Blender is rendering or in a modal dialog, so move heavy work to `blender -b`; code reported as failed may still have changed the scene, so inspect before retrying.
+- **Trial a new tool on 8–12 real backlog tasks** with acceptance criteria written first, and compare time to an accepted result against doing the same tasks your usual way. Toy demos and generation speed prove nothing.
+- **Privacy**: decide the account's model-training setting on purpose, deny secret files in the agent's permissions, and read a transcript before sharing it.
 
 Read-only triage of a cloned repository (a clean result is not an audit):
 
@@ -167,6 +207,8 @@ grep -rnEI '"hooks"|PreToolUse|PostToolUse|SessionStart|mcpServers' "$REPO" --ex
 Accessed 2026-11-10. GitHub metadata came from `GET /search/repositories` (queries by keyword and topic: blender mcp, blender-mcp, blender skill, figma mcp, figma skill, roblox mcp, roblox-mcp, roblox studio mcp, rojo mcp, roblox skill, luau skill, game design skill, claude-skills, agent-skills, roblox blender, figma roblox, plus `repo:` look-ups for each library).
 
 - Read (shallow clone, files opened, nothing executed): https://github.com/Roblox/roblox-studio-agent-plugin, https://github.com/Roblox/roblox-blender-plugin, https://github.com/Roblox/studio-rust-mcp-server, https://github.com/Roblox/creator-docs (`content/en-us/studio/mcp.md`, `studio/mcp-open-cloud.md`), https://github.com/bpy-dev/blender-mcp (README, SECURITY.md, NOTICE.md), https://github.com/ahujasid/mcp-for-blender, https://github.com/WildCake/roblox-blender-modelling, https://github.com/EL4CTEO/blender-skills, https://github.com/arjun988/blender-skills, https://github.com/RobLe3/cc-blender-skill, https://github.com/majidmanzarpour/blender-game-skills, https://github.com/elithril/blender-kiln, https://github.com/dillydog580/animate-roblox-characters, https://github.com/Cautioned/Blender-Animations-Plugin, https://github.com/Gl2imm/RBX_Toolbox, https://github.com/TylerAtStarboard/Roblox-BlenderBridge, https://github.com/jackTabsCode/asphalt, https://github.com/figma/mcp-server-guide, https://github.com/GLips/Figma-Context-MCP, https://github.com/southleft/figma-console-mcp, https://github.com/grab/cursor-talk-to-figma-mcp, https://github.com/figma/community-resources, https://github.com/Chrrxs/robloxstudio-mcp, https://github.com/boshyxd/robloxstudio-mcp, https://github.com/hope1026/weppy-roblox-mcp, https://github.com/n4tivex/mcp-roblox-docs, https://github.com/Nanoutrolley/roblox-studio-mcp, https://github.com/chandtheblues99-ai/studio-bridge-mcp, https://github.com/MSayib/roblox-dev-skill, https://github.com/andrian-syh/roblox-best-practices-skill, https://github.com/EL4CTEO/roblox-skills, https://github.com/nonlooped/roblox-suite, https://github.com/TabooHarmony/roblox-brain, https://github.com/brockmartin/roblox-game-skill, https://github.com/SyphoDev-yt/roblox-ai-skills, https://github.com/adnvli/vfxskill, https://github.com/izzyfrm/roblox-ai, https://github.com/gamedev-skills/awesome-gamedev-agent-skills
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault, commit 43ba05d of 2026-10-29): `README.md`, `LICENSE.md`, `hooks/hooks.json`, `hooks/README.md`, `skills/roblox-blender-modeling/SKILL.md`, `skills/roblox-asset-import/SKILL.md`, `skills/lihfolk-worldbuilding/SKILL.md` (grep), `16 MCP and Agents/` (Safety Rules for AI Agents in Studio; Multiple Agents in One Studio; Built-In Studio MCP vs Community MCP Servers - Migration Guide; Blender MCP; Studio Plugins and Local HTTP Bridges), `15 AI Tools/` (Evaluating AI Tools - A Practical Rubric; Agent Orchestration; Local vs Cloud AI) (read: summaries and tables)
+- https://github.com/Boking234/Lihfolk-directory (read: README, SKILL.md, commit 817a842 of 2026-11-08)
 - Metadata only (GitHub API record): every other repository named above, at `https://github.com/<owner>/<repo>`.
 - https://www.blender.org/lab/mcp-server/ and https://projects.blender.org/lab/blender_mcp (not reachable from this session; version, requirement and safety wording are search summary, corroborated by the fork's README and NOTICE)
 - Reports of malicious skills and lookalike MCP servers in 2026: https://obot.ai/blog/mcp-security-agent-skills-supply-chain/, https://oecd.ai/en/incidents/2026-04-29-8e04, https://dev.to/bawbel/skill-files-are-the-new-supply-chain-attack-surface-your-ci-pipeline-does-not-know-that-yet-7i9 (search summary; figures not verified, so none are quoted)

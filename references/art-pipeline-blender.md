@@ -79,7 +79,7 @@ One material per mesh (each extra slot becomes another MeshPart, draw call and c
 | NPC character | 4,000–10,000 |
 | Collision proxy `_COL` | 12–200 |
 
-Spend triangles on silhouette and edge bevels. A 0.05–0.15 stud chamfer with weighted normals is the single biggest cure for the "cheap AI asset" look. Count triangles after modifiers; the bevel is part of the budget.
+Spend triangles on silhouette and edge bevels. A chamfer with weighted normals is the single biggest cure for the "cheap AI asset" look; size its width by viewing distance (about 0.05 studs for hand-held props up to 0.15–0.3 for buildings seen from 40 studs, table in `references/blender-modeling-craft.md`). Count triangles after modifiers; the bevel is part of the budget (a one-segment bevel turns a 12-triangle box into 44, two segments into 108). Fuller class budgets with targets and ceilings are in the craft file.
 
 ## Texturing strategy
 

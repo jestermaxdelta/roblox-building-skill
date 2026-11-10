@@ -1,6 +1,16 @@
 # Obby and tower playbook
 
-Covers obstacle courses, round-based towers, difficulty-chart obbies and movement-skill platformers. Open it when jumping is the core action, when tuning jump feel and stage difficulty, or when auditing a live obby with low return rates and thin monetisation. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers obstacle courses, round-based towers, difficulty-chart obbies and movement-skill platformers. Open it when jumping is the core action, when tuning jump feel and stage difficulty, or when auditing a live obby with low return rates and thin monetisation. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | Default character movement; a calibration course; 30 stages built from 8–10 reusable Blender pieces; a checkpoint per stage; server-validated pad touches; save the furthest stage | Custom jump physics, moving platforms, towers, time trials, shop |
+| Intermediate | Sawtooth difficulty with breather stages; deaths-per-stage telemetry; jump buffer and coyote time; client-side moving platforms from server time; streaming; skip and second-chance offers | Server-timed runs, round towers |
+| Expert | A movement verb with its own controller; server-timed, plausibility-checked leaderboards or server authority mode; seeded round towers; co-op and race modes; per-stage funnel tuning | — |
+
+Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short window to jump after leaving a ledge; *jump buffer* = a jump pressed slightly early still fires on landing; *sawtooth* = ramps of rising difficulty separated by easier breather stages.
 
 ## Snapshot
 
@@ -21,6 +31,7 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 
 - Retry is the loop: death to control must feel instant. No death animation, menu or ad between attempts.
 - Teach by level design: each new obstacle appears alone and safe, then combined, then under pressure.
+- Typical attempt length `[lihfolk]`: early stages 5–15 s, mid 15–40 s, late or hard 30–90 s. Add an internal checkpoint before a failure would make the player replay more than about a minute. Tower sections take 20–60 s each, tagged by difficulty and stacked easy-first.
 
 ## First 5 minutes
 
@@ -38,6 +49,10 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 - Progress currency is the stage number. Add coins only if there is a shop worth saving for (trails, effects, pets as cosmetics).
 - Long-term engine: worlds, a rebirth that restarts with a cosmetic rank, time trials with leaderboards, daily or rotating towers.
 - Save the highest stage and world on the server.
+- Default character numbers to design against `[lihfolk]` `[VS]`: walk speed 16 studs/s, `JumpHeight` 7.2 studs (or `JumpPower` 50 when `UseJumpPower` is on), gravity 196.2 studs/s². By arithmetic that is about 0.27 s to the apex and roughly 8–9 studs of flat travel in the air. Build a calibration course once per project (gaps of 6, 8, 10, 12 studs; ledges of 3, 5, 7) and record what a normal player clears reliably, what needs a run-up and what is impossible; settings, scale and animations all shift the result.
+- Three jump bands `[lihfolk]`: comfortably inside the maximum (early stages and anything mobile-friendly), close to the maximum with a clean run-up (mid-game tests), at the edge with precise timing (hard stages only, never in the first 20).
+- The feel knobs above describe a custom controller. For a classic obby keep the default character, which players already know, and spend effort on stage design; use custom jump physics when movement itself is the product `[house]`.
+- Any change to speed, jump or gravity (boosts, coils, upgrades) changes the meaning of every gap `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -48,6 +63,7 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 - A stage skip is a fixed, disclosed outcome, not a random item `[official]`.
 - Rewarded video is strongest here `[official]`: first-spawn buffs, mid-session trials, post-failure second chance. Benchmark opt-in 15–25% at frequency 3; best in class 30%+ at 4+. Examples: Glide Tower 47% opt-in at 2.3 ("respawn at previous checkpoint"); Escape the Carnival of Terror Obby 27% at 3.9 (an item worth one life after failing).
 - Developers report low pass sales in plain obbies `[community]`; expect dev products and rewarded video to carry revenue.
+- The ethical line `[lihfolk]`: never tune a stage to be unfair so that skips sell. A stage far harder than its neighbours with a skip button beside it is noticed. This is also house rule 3.
 
 ## Retention and social hooks
 
@@ -63,6 +79,21 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 - Stage select board in the lobby (teleport to any cleared stage).
 - Death feedback under 0.3 s: flash, sound, instant respawn.
 
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Checkpoints and stage saves (server-validated pad touches, respawn at stage).
+2. Kill zones with client feedback and server confirmation.
+3. Player data: furthest stage, current stage, best times.
+4. Stage teleport and stage-select board (with stream requests).
+5. Input feel: jump buffer, coyote time.
+6. Moving and timed platforms on server time.
+7. Per-stage telemetry (attempts, deaths, time).
+8. Skip product and rewarded second chance.
+9. Timed runs and leaderboards.
+10. Round tower generator or a movement-verb controller.
+
 ## Technical hot spots
 
 - **The Humanoid jump is a fixed arc.** Add buffer and coyote time on the client (see ui-input-crossplatform.md); extra fall force via `VectorForce` or `LinearVelocity` on the client, which owns the character. Design gaps from the metrics table in game-craft.md.
@@ -73,6 +104,11 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 - **Streaming**: long obbies exceed memory on 3 GB phones without `StreamingEnabled`; teleports to a stage must wait for that stage to stream in (`Player:RequestStreamAroundAsync`).
 - **Collision**: simple convex or box collision on platforms; every visible mesh is solid, so decoration near the path needs deliberate collision, not accidental snag points.
 - **Round towers**: build each tower from a pool of Blender section models chosen by a server seed; the same seed for all players in the round.
+- **Most exploited pattern in the genre** `[lihfolk]`: a client remote that says "I reached stage N". Progress comes only from server-validated pad touches, with a distance margin (about 6 studs, roughly 375 ms of walking) and a `Health > 0` filter so a ragdolled body sliding onto the next pad does not advance a dead player.
+- Keep two values: `Furthest` (saved, never lowered) and `Current` (changes when the player travels back to replay). Throttle progress saves (about two a minute plus autosave) `[lihfolk]`.
+- Timed runs are measured on the server between its own events (`os.clock()`); a client timer can be paused or edited `[lihfolk]`.
+- With streaming on, kill zones connected once at start-up miss parts that stream in later; bind them as instances arrive (tags plus `CollectionService` signals) `[lihfolk]`.
+- Mobile fairness `[lihfolk]`: avoid early jumps that need camera control and movement at once (turning in mid-air around a pillar); on touch that takes two thumbs plus the jump button.
 
 ## The one-new-verb angle
 
@@ -90,6 +126,7 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 - Paid coils that break leaderboards.
 - Hundreds of unique meshes with no instancing; draw calls sink phones.
 - Following the +1 obby wave after it cooled.
+- Edge-of-range jumps in the first 20 stages; long stages with no internal checkpoint; stages tuned to sell skips `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -109,6 +146,8 @@ Covers obstacle courses, round-based towers, difficulty-chart obbies and movemen
 | 12 | A movement verb or pressure distinguishes the game | Prototype one verb on three stages |
 | 13 | Timed modes exclude paid movement | Separate ranked rules |
 | 14 | Friends can race or co-op | Add side-by-side lanes or tether stages |
+| 15 | A calibration course exists and stage gaps sit in the intended band | Build it; re-measure after any movement change |
+| 16 | Deaths per stage logged; no stage at 10× its neighbours | Widen, add a checkpoint or move the stage later |
 
 ## Review gate
 
@@ -134,3 +173,5 @@ Accessed 2026-11-10.
 - https://rowatcher.com/news/simulators-and-obbies-need-different-retention-clocks (search summary; host not reachable for a full read)
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - GitHub search for open obby kits (2026-11-10): no maintained, licensed kit of note found; results were mostly automation or exploit scripts (not used).
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Obbies and Platformers.md`, `43 Genre Systems End to End/Obby Checkpoints and Stage Saves End to End.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

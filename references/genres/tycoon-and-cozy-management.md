@@ -1,6 +1,16 @@
 # Tycoon and cozy management playbook
 
-Covers plot-based income games: the classic button/dropper tycoon and its 2026 successor, hands-on cozy management (shop, farm, business, warehouse). Open it when the concept is "own a plot, earn per second, expand", or when auditing a live tycoon whose sessions are short or whose players go AFK. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers plot-based income games: the classic button/dropper tycoon and its 2026 successor, hands-on cozy management (shop, farm, business, warehouse). Open it when the concept is "own a plot, earn per second, expand", or when auditing a live tycoon whose sessions are short or whose players go AFK. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | Auto-assigned plot; a button chain of 20–30 purchases stored as data; server income tick with no physical drops; save purchase ids; one visible next button | Workers, merge tiers, rebirth, offline income, decoration, raids |
+| Intermediate | A hands-on job before automation; Hire pads; payback sheet with `wait(k)` plotted; silent rebuild on join; capped offline income; client-only visual drops with pooling | Routes or map toy, co-op plots |
+| Expert | Merge tiers and an index; rebirth that keeps the best staff; friend-help bonus; schema migrations for a changing chain; telemetry on the wait curve and per-pad drop-off | — |
+
+Terms: *button chain* = the ordered list of purchasable pads; *payback time* = cost ÷ income added; *dropper* = a machine that produces the items that become cash.
 
 ## Snapshot
 
@@ -23,6 +33,7 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 
 - Loop layers: carry and place (seconds) → order or batch complete (30–90 s) → new station or staff tier (minutes) → rebirth (session).
 - Timed spikes keep active play worthwhile: a rush window every 15 min at a stated multiplier (the vault's warehouse concept uses 5× pay), restocks, a weekly new city or cargo type.
+- Button-chain rules `[lihfolk]`: start with a free or near-free button so the first input is a purchase; alternate income and spectacle; keep 1–3 buttons available at once (one is a corridor, ten is a menu nobody reads on a phone); place the next button beside the thing just built; end each stage with a big reveal (a floor, a roof, a vehicle).
 
 ## First 5 minutes
 
@@ -41,6 +52,10 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 - Rebirth: multiplicative `q` with wait ratio ×1.2–1.5; keeps cosmetics, index and passes.
 - Offline income: `min(away, cap) × rate × 0.25–0.5`, cap 8–12 h, cap stated in the UI.
 - Sinks: staff tiers, building tiers, decoration (cosmetic only), route or truck slots. Friend bonus +10–20% while a friend is in the server or helping on your plot.
+- Payback maths `[lihfolk]`: payback = cost ÷ added income. Early income buttons pay back in 10–60 s; payback grows slowly along the chain (about ×1.1–1.3 per income button). Decorations have zero payback, so space them so the wait never exceeds the stage target (about 2 min early, 5–10 min late), and put a spectacle button right after any long wait. In a sheet, compute `wait(k) = max(0, cost(k) − cash) ÷ incomePerSecond` for every row and plot it: spikes are where players leave.
+- If players can choose the order they will buy the best payback first: enforce the intended order with prerequisites, or make payback equal across simultaneous choices so the choice is about looks `[lihfolk]`.
+- Long loops after the plot is finished `[lihfolk]`: rebirth (keep cosmetics; players dislike losing a decorated base), more stages, upgrade tiers, decoration, a management layer (the vault's winning answer), leaderboards. Raids only as opt-in with shields and losses limited to temporary resources.
+- Conflict (offline cap): LihFolk suggests about 2 hours at 50% because long caps devalue playing; this skill's default is 8–12 hours at 25–50% so an overnight return pays. Keep the longer cap for the day-1 return, use the lower efficiency, and state the cap either way.
 
 ## Monetisation set that fits
 
@@ -66,6 +81,21 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 - One panel deep at most; any map or route layer is a toy (drag coloured lines), never a table.
 - Mobile: carry/place on a single large context button; pads trigger by walking onto them, no precision taps.
 
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Plot assignment, ownership and release.
+2. Button chain as data; purchase pads with server validation.
+3. Server income tick and cash HUD.
+4. Player data: purchase ids, cash; silent rebuild on join.
+5. Client visual drops or hands-on job stations (carry, place, serve).
+6. Hire pads and client-rendered workers.
+7. Offline income and return card.
+8. Shop: boosts, passes, gifting.
+9. Merge tiers and index.
+10. Rebirth; then friend-help, events (rush windows), decoration.
+
 ## Technical hot spots
 
 - **Droppers are the classic performance trap.** Community reports of tycoons becoming unplayable on low-end devices trace to unanchored drop parts `[community]`. Compute income as numbers on a 1 Hz server tick; render conveyor items on each client from pooled Blender meshes moved by CFrame; cap visible items per plot; late-game droppers credit the bank directly.
@@ -74,6 +104,10 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 - **Plot lifecycle**: assign on join, release and clean on `PlayerRemoving`; plot models streamed as units (`Atomic`; `PersistentPerPlayer` for the owner's own plot, see performance.md) `[VS]` so neighbours do not pop in piecewise.
 - **Exploit surface**: every pad purchase checks plot ownership, prerequisite, price and distance on the server; "collect" remotes carry no amount; merge consumes three and grants one in a single server step; decoration placement is clamped to the plot grid; offline income uses server `os.time()`, never a client clock.
 - **Numbers**: move to mantissa/exponent before balances approach 1e15.
+- Scale of the dropper trap `[lihfolk]`: 8 plots × 15 droppers × one drop a second, each living 8 s, is about 960 live physics parts; the data version is one loop over the plots and two attribute updates per player per second. Cap visual drops at about 40 per nearby plot (15 on low-end phones), pooled, and none for far plots.
+- If the game's identity really is physical (ore sorting, contraptions), cap active parts per plot and keep money independent of physics outcomes so a lag spike never costs the player cash `[lihfolk]`.
+- Rebuild silently: a returning player with 150 purchases sees them all at once; animate only new purchases. When the chain changes after launch, migrate old ids in a versioned load step `[lihfolk]`.
+- Players do not keep the same physical plot across servers: rebuild owned ids into any free plot. Auto-assignment avoids every plot being held by idle players `[lihfolk]`.
 
 ## The one-new-verb angle
 
@@ -89,6 +123,7 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 - Required driving: hard for young players; keep it optional.
 - Near-duplicate of My Small Business or Sell a Million Sushi (theme, art, place file): exposure penalty. Format clones get about two weeks of attention (vault).
 - Robux pads in the main path; plots that fail to save; income outrunning prices after the first rebirth.
+- Ten buttons visible at once; payback rising sharply mid-chain; a rebuild animation for every owned button on join `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -108,6 +143,8 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 | 12 | A collection exists (merge tiers, index) | Add staff tiers on reused meshes and an index panel |
 | 13 | Friend bonus and plot visits work | Add +10–20% co-play bonus and a help action |
 | 14 | Title and art differ from the nearest hit | Rename away from "Sell a Million"/"Run a"; restyle |
+| 15 | `wait(k)` plotted for the whole chain with no spike above the stage target | Insert bridge or spectacle buttons; smooth payback growth |
+| 16 | 1–3 buttons available at any moment | Add prerequisites; hide the rest |
 
 ## Review gate
 
@@ -134,3 +171,5 @@ Accessed 2026-11-10.
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - https://github.com/evilbocchi/eternal-empire (read README; 17 stars, CC BY-NC 4.0, roblox-ts tycoon; reference only, non-commercial licence)
 - https://github.com/B-Ricey763/Roblox-Studio-Tycoon (search listing; 34 stars, no licence, 2022 tutorial code; reference only)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Tycoons.md`, `43 Genre Systems End to End/Tycoon Plots and Droppers End to End.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.
