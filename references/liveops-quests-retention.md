@@ -124,6 +124,66 @@ Badges: 5 free per day, then 100 R$ each; 512×512 icon; award with `BadgeServic
 
 Recommendation. Lower-risk: a fixed weekly update day plus one monthly themed event with real dates. Bold: an admin-run live event every 2–4 weeks promoted through Experience Events (1,000 RSVPs puts an event on the Trending chart) `[VS]`; it drives spikes but needs reliable staffing and moderation.
 
+### The update-day ritual as top games run it (and a solo version)
+
+What current hits do `[community]` (press and fan coverage, 2025–26; times and frequency vary by source): Grow a Garden ships on Saturdays, and its lead developer runs an "admin abuse" session in public servers for roughly the hour before the update goes live (special weather, shop stock, NPC spawns); it is sometimes skipped when an update is mostly backend work. The August 2025 admin events of Grow a Garden and Steal a Brainrot coincided with the platform's concurrency record. Cautions from the same coverage: peaks are not sustained; one analysis reports games jumping from about 20K to over 100K players during events and losing those players when the server resets, and argues that weekly spectacle teaches players to wait for giveaways; Rogueblox's developers said a weekly schedule kept them from building large features and burned the team out.
+
+Platform tools `[official]` `[VS]`: Experience Events (at most 10 ongoing or upcoming; players tap Notify Me and get a stream notification at start, with optional push; the event can spawn joiners into a chosen place; `player:GetJoinData().GameJoinContext.EventId` identifies who came for it). Update announcements (60 characters, once every 3 days, sent to opted-in players; describe what is new, not "bug fixes"). Performance alerts with a webhook for the hour after publishing (crash rate, session time, concurrent users; 100+ DAU). Configs can start timed content at a set moment without a publish.
+
+| Ritual step | Top-game version | Solo-dev sustainable version `[house]` |
+|---|---|---|
+| Cadence | Weekly, fixed day and hour | Fixed day every 2 weeks, alternating a content update with a quality-of-life plus event update; a rest week after each season. Announce a skip rather than miss silently |
+| Scope | New systems and maps from a team | At most 3 working days per update: variants of existing Blender meshes, a new tier at the end of progression, one quest set. New systems are expansions on their own schedule |
+| Pre-update event | Staff-run admin event | A scripted 10-minute server event started by a Config timestamp in every server at once; earnable drops in event currency; no staff needed (sketch below) |
+| Countdown | Title tag, socials, in-world timer | A Blender update board reading the same Config timestamp; an Experience Event created several days ahead so Notify Me exists |
+| Update log | In-game panel, Discord, video | The same board lists the 3 headline changes; one update announcement |
+| Codes | Several per update across channels | One dated code on the board; one milestone ladder for likes or visits |
+| After shipping | Analysts on dashboards | Check Performance by place version and the first-session curve the next morning; alerts on crash rate and session time |
+| Community | Moderated Discord, creators | The Roblox group plus one Discord channel; one poll per cycle on what to build next |
+
+Rules: every "limited" claim has a real end date; event rewards never use the main soft currency; content for existing players goes at the end of progression so it is not consumed in a day `[official]`; if an update overruns its budget twice running, lengthen the cadence instead of cutting quality.
+
+```lua
+--!strict
+-- Unexecuted sketch. Server. A staff-free timed event: every server reads one start time from Configs.
+local ConfigService = game:GetService("ConfigService")
+
+local ok, snapshot = pcall(function()
+	return ConfigService:GetConfigAsync()
+end)
+if ok then
+	snapshot.UpdateAvailable:Connect(function()
+		snapshot:Refresh()
+	end)
+end
+
+local function eventWindow(): (number, number)
+	if not ok then
+		return 0, 0
+	end
+	local startsAt = snapshot:GetValue("event_start_unix")
+	local length = snapshot:GetValue("event_length_s")
+	if typeof(startsAt) == "number" and typeof(length) == "number" then
+		return startsAt, startsAt + length
+	end
+	return 0, 0
+end
+
+task.spawn(function()
+	local running = false
+	while true do
+		local startsAt, endsAt = eventWindow()
+		local now = DateTime.now().UnixTimestamp
+		local shouldRun = now >= startsAt and now < endsAt
+		if shouldRun ~= running then
+			running = shouldRun
+			-- Start or stop the event here, and replicate startsAt for the in-world countdown board.
+		end
+		task.wait(5)
+	end
+end)
+```
+
 ## Social design
 
 - Intentional co-play (friends joining together, parties, shared plots) counts toward the co-play discovery signal; random matchmaking does not.
@@ -136,16 +196,60 @@ Recommendation. Lower-risk: a fixed weekly update day plus one monthly themed ev
 - Server Luck or server-wide gifts show a thank-you banner naming the buyer (a social reward that costs nothing).
 - Social service APIs: `SocialService:CanSendGameInviteAsync` → `PromptGameInvite(player, ExperienceInviteOptions)` with `LaunchData` up to 200 characters read through `GetJoinData()`; referrals through `ReferredByPlayerId`; `ExperienceNotificationService:CanPromptOptInAsync()` / `PromptOptIn()` with a 30-day re-prompt lockout; notifications need 100+ visits, one per user per day, 13+ opted-in users `[VS]`.
 
-## Checklist
+## Level-up: retention symptoms → likely cause → fix
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Session time at benchmark, D1 low | Nothing changes while the player is away | Capped offline progress, a timer that completes overnight, a welcome-back panel; opt-in prompt when the timer starts |
+| D1 fine, D7 low; players pile up at one level | Progression wall, or content used up by day 3–5 | Tune the curve at the wall through Configs; add a second verb or a quest board with three categories |
+| Daily reward claimed, D7 flat | The reward is unrelated to what the player is working on | Make rewards feed the current goal; move effort back to the loop |
+| DAU spikes on update day and each trough is lower | Events have replaced progression | Fewer, real events; event currency; make ordinary play pay; put new content at the end of progression |
+| Update shipped, D7 and D30 unchanged | New content sat at the start of the game or was consumed in a day | Gate it behind existing progression; add a multi-week goal to it |
+| Notification opt-in rate low | Asked on join or with no reason | Ask when the player starts something that finishes later |
+| Notifications sent, few joins | Generic content; one-per-day slot spent on low-value messages | Personalised and actionable messages; compare analytics categories; apply the priority order |
+| Playtime per user high, play days low | Rewards pay for duration, not for days | Per-day playtime ladder capped at 60 min; daily quests; cumulative calendar |
+| Many idle players, session time inflated | The game pays for idling | Offline rate equal to AFK rate, capped; rewards on active play |
+| Co-play days near zero | No reason to bring a friend | Two-sided friend boost, shared goal, cheap private servers, invite prompt after a win |
+| Quest board finished in minutes by one play style | One mission category | At least three categories; one process goal per day |
+| Few players finish the season pass | XP plan assumes daily play | Re-plan for 4 active days a week; final-week double XP |
+| Update days slipping, quality falling | Cadence beyond the team | Move to the 2-week solo ritual; cut scope, not polish |
+
+## Review gate
 
 - [ ] First reward under 30 seconds, first upgrade under 2 minutes, onboarding funnel logged.
 - [ ] Goal ladder visible from minute one.
+- [ ] Every toolkit system in use has its "done right" form; no streak wipes, no absence loss, no pay-to-idle.
 - [ ] Daily, weekly and seasonal content with real end dates.
 - [ ] Event currency per event; one KPI per event.
-- [ ] Weekly update day chosen and announced.
-- [ ] Notification opt-in prompt only at warranted moments.
+- [ ] Update day and cadence chosen for the real team size and announced; countdown, update log and code plan exist.
+- [ ] Notification opt-in prompt only at warranted moments, 13+ only; messages personalised and actionable; nothing gated on opting in.
 - [ ] Co-play incentives (friend bonus, party join) in place.
 - [ ] All user text filtered.
-- [ ] Social rewards are bonuses only, shown after the first win, group join verified server-side, nothing about them in the title, thumbnail or description.
+- [ ] Social rewards are bonuses only, shown after the first win, group join verified server-side, nothing about them, codes or giveaways in the title, thumbnail or description.
+- [ ] Live game: retention read by source and by cohort before any system is added; loop-level problems sent to core-loop-tuning.md first.
 
-Grep `references/knowledge-base.md` for `## 1.7`, `## 1.8`, `## 3.3` and `## 3.4` for the source text.
+## Sources
+
+Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at commit ccc2b01; "(search summary)" = seen only through web search result text. Older sections come from `references/knowledge-base.md` sections 1.7, 1.8, 3.3 and 3.4 (grep `## 1.7`, `## 1.8`, `## 3.3`, `## 3.4`), which list their own sources.
+
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/retention.md and engagement.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/discovery.md and discovery-faq.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/experience-notifications.md with includes/experience-notifications/{eligibility,guidelines,delivery-system}.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/experience-events.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/alerts.md and production/configs.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/reference/engine/classes/Player.yaml (read; `Idled`, 20-minute disconnect)
+- https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157 (search summary)
+- https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030 (search summary)
+- https://www.gameanalytics.com/reports/2026-roblox-report and https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
+- https://devforum.roblox.com/t/do-daily-rewards-actually-keep-players-retention/3556728 (search summary)
+- https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (search summary)
+- https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (search summary)
+- https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566 (search summary)
+- https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summary of an r/robloxgamedev post via a third-party mirror; the 3× D7 claim)
+- https://www.sportskeeda.com/roblox-news/when-admin-abuse-start-grow-garden and https://www.gamepressure.com/newsroom/new-admin-abuse-date-in-grow-a-garden-you-get-to-decide-when-this/z78663 (search summary; admin-event timing)
+- https://consolepcgaming.com/roblox-smashes-ccu-record-during-admin-war-between-grow-a-garden-and-steal-a-brainrot (search summary)
+- https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (search summary)
+- https://roonby.com/2025/09/24/why-rogueblox-was-closed-full-explanation-whats-next/ (search summary)
+- https://www.psu.com/news/the-cheap-trick-roblox-devs-use-to-keep-dead-games-alive/ (search summary; milestone codes)
+- https://jens.substack.com/p/gamification-of-user-engagement and https://gag.gg/guides/seed-restock-and-values (search summary; offline growth, restock timer)

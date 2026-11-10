@@ -23,7 +23,7 @@ Define tokens once as Figma variables and text styles, mirror them in a Luau the
 
 | Token group | Contents | Rule |
 |---|---|---|
-| Colour roles | `Primary` (confirm/buy), `Premium` (Robux), `Danger` (close/destructive), `Info`, `Surface`, `SurfaceAlt`, `Ink`, `InkMuted`, `Outline`, rarity ladder | One accent per screen for the primary action; colour means function, not decoration `[official]` |
+| Colour roles | `Primary` (confirm/buy), `Premium` (Robux), `Danger` (close/destructive), `Info`, `Surface`, `SurfaceAlt`, `Ink`, `InkMuted`, `Outline`, rarity ladder | Limit the colour theme to key information `[official]`; one accent per screen for the primary action; colour means function, not decoration `[community]` |
 | Rarity ladder | Common grey → Uncommon green → Rare blue → Epic purple → Legendary gold → Mythic pink/red `[community]` | Players read the ladder before text; always pair with a label or icon (never colour alone) `[official]` |
 | Type scale (phone frame px) | Display 28–32, Title 22–24, HUD number 18–20, Body 16, Caption 14 (floor) `[house]` | One display family + one body family. Roblox-native: `FredokaOne`, `LuckiestGuy`, `Bangers` (display); `BuilderSans*`, `Gotham*`, `Nunito` (body) `[official]` |
 | Spacing | 4 / 8 / 12 / 16 / 24 | 8 px grid; gaps ≥ 8 px between touch targets |
@@ -45,7 +45,7 @@ Define tokens once as Figma variables and text styles, mirror them in a Luau the
 | `Tablet` | 1024×768 | 4:3; thumb reach differs: a button 40% from the top is reachable on a phone, not on a tablet `[official]` |
 | `Desktop/TV` | 1920×1080 | Same components; panels get `UISizeConstraint` max so 75% width does not become huge on a TV `[official]` |
 
-- `[house][VS]` Roblox viewport sizes on phones are not physical pixels. Print `workspace.CurrentCamera.ViewportSize` on the real target phone and add that frame.
+- `[house][VS]` Do not assume a phone's viewport equals its physical pixel resolution. Print `workspace.CurrentCamera.ViewportSize` on the real target phone and add that frame.
 - Every frame carries three locked overlay layers: thumbstick zone (bottom-left), jump zone (bottom-right), top bar strip. The top bar is reported as 58 px tall on large screens, 48 on phones, absent on console `[community][VS]`: never hard-code it; use `ScreenInsets`/`GuiService.TopbarInset`.
 - Size from the short side: on landscape, set element height by scale and lock shape with `UIAspectRatioConstraint` (or `SizeConstraint = RelativeYY`). Offsets are for margins, padding and strokes.
 
@@ -55,7 +55,7 @@ Design every row before building any: HUD, shop, inventory/collection, item deta
 
 ## Patterns with sizes
 
-px are at `Phone-S` (800×360); the scale column is the fraction of screen height (H) or width (W). All `[house]` unless tagged; observed conventions come from one community teardown of 17 hit games (screenshot-based, approximate) `[community]`.
+px are at `Phone-S` (800×360); the scale column is the fraction of screen height (H) or width (W). All `[house]` unless tagged; observed conventions come from one community teardown of about 20 hit games (screenshot-based, approximate, one author) `[community]`.
 
 | Element | px at Phone-S | Scale | Placement and rule |
 |---|---|---|---|
@@ -71,7 +71,7 @@ px are at `Phone-S` (800×360); the scale column is the fraction of screen heigh
 | Inventory cell | 64–72, columns computed from width | 0.18–0.20 H | Rarity = colour + name bar or icon; count bottom-right in outlined text; equipped and favourite as icons. Undiscovered = silhouette + `??` with `162/284` progress `[community]` |
 | Item detail | n/a | n/a | Side pane on wide screens; a pushed page under about 700 px width (breakpoint, not shrink) |
 | Reward popup | item 96–128, window ≤ 0.6 H | n/a | Centre, sunburst behind the item, one Claim button, tap-anywhere dismiss; never traps movement for more than about 1.5 s; batch many rewards into one summary |
-| Offer card | ≤ 25% of screen | n/a | Rules in `ui-input-crossplatform.md` §offer surfaces and `monetization-and-policy.md` |
+| Offer card | ≤ 25% of screen | n/a | Rules in `ui-input-crossplatform.md` (offer surfaces paragraph) and `monetization-and-policy.md` |
 
 - Put information in the world when it belongs to an object (price, rate, timer on a `BillboardGui` above it) so the HUD stays small. `[community]`
 - Give each destination one colour and keep it everywhere (Shop red, Rewards green, Quests orange). `[community]`
@@ -93,7 +93,7 @@ Tool names are from the official Figma MCP connected to this skill's operator `[
 8. **Theme.** Write tokens to `Theme.luau` (sketch below); optionally mirror them as `StyleSheet` token attributes for Studio-authored screens.
 9. **Upload images** (settings below) and record `layer name → rbxassetid` in a manifest committed to the repo.
 10. **Build in Studio** (Edit datamodel) with one builder script per screen through the Studio MCP `execute_luau`, or as Rojo-owned code. Order: ScreenGui (`ResetOnSpawn = false`, `ZIndexBehavior = Sibling`, `ScreenInsets = CoreUISafeInsets`) → containers and layouts → native visuals → images → text.
-11. **Verify.** Studio MCP `screen_capture` at phone, tablet and desktop in the Device Emulator (`[VS]` the Device Simulator beta adds Flagship / Mid-range / Entry-level phone presets); compare with the Figma screenshot; run the validator; then test on the real phone.
+11. **Verify.** Studio MCP `screen_capture` at phone, tablet and desktop in the Device Emulator (`[VS]` the Device Simulator beta adds Flagship / Mid-range / Entry-level phone presets); compare with the Figma screenshot; run the UI audit scan from `ui-input-crossplatform.md`; then test on the real phone.
 
 - Level-up mode (live game): dump the existing ScreenGui tree with `execute_luau`, `screen_capture` each screen, rebuild it as a baseline frame with `use_figma`, redesign beside it, and ship the diff one screen at a time behind a flag.
 - Do not use `generate_figma_design` for Roblox: it captures web app pages (per the tool's own description). Design from scratch with `use_figma`.

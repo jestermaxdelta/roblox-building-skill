@@ -1,6 +1,6 @@
 # Analytics, discovery and the Roblox platform
 
-Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, thumbnails and matchmaking. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
+Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs on 2026-11-10. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: `references/audit-existing-game.md` holds the triage order and benchmark table, `references/growth-and-marketing.md` holds ads, creators and community. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
 
 ## Platform facts that shape design `[VS]`
 
@@ -14,7 +14,9 @@ Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11. Use it to plan t
 
 ## Analytics: what to measure
 
-Creator Analytics dashboards need more than 10 DAU and 10 play hours over 7 days; benchmarks need 100+ DAU and show the 50th–90th percentile for your genre.
+Creator Analytics dashboards need more than 10 DAU and 10 play hours over 7 days. Benchmarks, Performance charts, alerts and insights need 100+ DAU; AI analytics reports 1,000+ DAU; feedback reports 20+ comments `[official][VS]`.
+
+Benchmarks `[official]`: the comparison set is games with similar players, else the same genre, else all experiences, drawn only from games with 100+ DAU, refreshed daily, and it changes as the game grows (the chart is annotated when it switches). Shown as the P50–P90 range (P10–P50 where lower is better) for all retention KPIs, average session time, conversion rate, ARPPU, ARPDAU and play-through rate. Overall KPIs (DAU, revenue, playtime) compare against Top 200 / 500 / 1000 tiers of the top 1,000 games by 30-day playtime. Benchmarks never affect ranking. The doc's D1 example range (12.11–18.73%) is an illustration, not a platform figure.
 
 | KPI | Meaning | Why it matters |
 |---|---|---|
@@ -27,7 +29,26 @@ Creator Analytics dashboards need more than 10 DAU and 10 play hours over 7 days
 | ARPDAU = conversion × ARPPU | Revenue per daily user | Diagnosis |
 | LTV ≈ ARPDAU × Σ retention | Lifetime value | Sets the max you can pay per install |
 
-Diagnosis: high ARPPU but low ARPDAU means few payers, so add a starter pack after the first win. Low D1 is onboarding or performance. Low D7 is a progression wall. Low D30 is endgame or social. Fix retention before monetization.
+Diagnosis: high ARPPU but low ARPDAU means few payers, so add a starter pack after the first win. Low D1 is core loop, onboarding or performance. Low D7 is a progression wall. Low D30 is endgame or social. Fix retention before monetization. The full ordered triage is in audit-existing-game.md §4.
+
+Reading traps `[official]`:
+
+- Retention charts are keyed to the first-play date. "D7" means the player returned on the 8th day; the newest D7 and D30 cohorts are empty until the days pass. Use the daily (10 days) and weekly (10 weeks) cohort tables to judge an update or campaign.
+- A retention dip after a traffic influx is normal; so is a PTR dip while impressions rise.
+- The New User First Session Retention chart (share still playing after X minutes, this period vs last) is the fastest onboarding alarm: a drop at minute 5 after an update points at a new step, an error or a performance regression.
+- Engagement, retention and PTR differ by acquisition source. Compare like with like in Acquisition → new users funnel (users with plays, conversion rate, D7, 7-day playtime, 30-day payer conversion, 30-day revenue per user), by source or by share link.
+
+Other dashboards worth a weekly look `[official][VS]`:
+
+| Dashboard | What it answers |
+|---|---|
+| Acquisition → Home Recommendations | Impressions, plays and every ranking signal by window (D1, D2–7, D8–28) with benchmarks; start here when impressions move |
+| Monitoring → Performance | Client FPS, crash rate, out-of-memory exits, memory %, CPU time; server frame rate, CPU, memory by age; break down by platform and by **Place Version** to catch a regression from the last publish |
+| Configurations → Alerts | Up to 20 alerts per experience on any performance or data-store metric, fixed threshold or period-over-period, delivered to a webhook |
+| Audience → Feedback | Up/down vote trend and player comments (from 2025); a downvote spike dates a bad update |
+| Thumbnails → Home Page tab | Impressions, qualified plays, average playtime and qualified PTR per active thumbnail |
+
+Open Cloud `[official][VS]`: the Analytics Query API (`/analytics-query-api/v1/universes/{id}/metrics`) returns the same metrics with breakdowns and filters, and the experimental Benchmarks API (`/analytics-benchmark/v1/universes/{id}/benchmarks`) returns the P10/P50/P90 benchmark series; both use the `universe.analytics:read` scope, which the Studio MCP exposes through `open_cloud_invoke`. Standard metrics go back 4 years, performance metrics 28 days. Metric names are listed in audit-existing-game.md §1.
 
 ## Event API and limits `[VS]`
 
@@ -52,9 +73,9 @@ Standard schema (see templates/analytics-event-plan.md):
 
 ## Experiments and Configs `[VS]`
 
-- Experiments run 14–60 days with 2 variants plus control and a metric set; early harm detection updates every 5 minutes in the first 24 hours. Under 1,000 DAU the statistical power is weak. A result is significant when the confidence interval excludes 0.
+- Experiments run 14–60 days with 2 variants plus control, a percent rollout and a metric set (D1, D7, playtime, ARPU, ARPPU, payer conversion, session time). Early-harm detection refreshes playtime, payer conversion and ARPU every 5 minutes in the first 24 hours. Roblox recommends a simple 50/50 on a large rollout; watch the minimum detectable effect. Under 1,000 DAU the statistical power is weak. A result is significant when the confidence interval excludes 0.
 - High-value experiments: offer grace 10 vs 20 minutes; offers per session 2 vs 3; starter-pack trigger; 29 vs 49 R$ for the 10-minute boost; rewarded-video placement; hint delay 5 vs 10 s; starting currency.
-- Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. Changes deploy in about 5 minutes.
+- Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. A new value is staged first (visible only in Studio sessions), then "Publish now" reaches players in about 15 s–1 min, or "Publish over 15 min" rolls it out gradually; History → Restore re-stages the previous value `[official]`. (Correction: an earlier version of this file said "about 5 minutes"; clients may still take a few minutes to reflect a publish.) Configs and experiments can target by country, tenure and spender tier.
 - Matchmaking experiments: one at a time, 3 variants, 100% rollout.
 
 ## Recommended For You `[VS]`
