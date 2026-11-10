@@ -129,7 +129,7 @@ Tooling
 - [ ] Draw calls < 1,000, triangles < 1 M in the worst view; duplicate-MeshId audit clean.
 - [ ] Streaming on with recommended settings; works at `StreamingTargetRadius = 64`; interactive models Atomic; `RequestStreamAroundAsync` before teleports; no LocalScript indexes Workspace without a timeout or tags.
 - [ ] All static geometry anchored; mechanisms anchor only the root; no `PreciseConvexDecomposition` except approved doorways; non-colliding meshes Box; collision groups registered once.
-- [ ] **Every visible object is a Blender model and blocks players and NPCs**; the scan below passes; walk-through test passes; Terrain only with explicit owner approval.
+- [ ] **Every visible object is a Blender model, and all world geometry blocks players and NPCs** (only held tools, viewmodels, transient effect meshes, foliage canopies and cables may be non-solid; skinned meshes collide through a `_COL` proxy); the scan below passes; walk-through test passes; Terrain only with explicit owner approval.
 - [ ] Triangle and texture budgets met; `_SA` library shared; RenderFidelity Automatic; SLIM on large static models where available.
 - [ ] LightingStyle chosen; no interior leaks; CastShadow off on small, moving and invisible parts; scene reads at graphics levels 1–3.
 - [ ] Particle rates within mobile caps; VFX client-side and pooled; no server tweens or server VFX; animations loaded once; concurrent sounds capped; volume sliders exist.
@@ -160,7 +160,7 @@ end
 print(#issues == 0 and "House-rule scan OK" or table.concat(issues, "\n"))
 ```
 
-Tag foliage leaves, VFX ribbons and other deliberately non-solid visuals `NonSolid`.
+Tag the allowed non-solid visuals `NonSolid`: foliage canopies, cables, held tools, viewmodels and transient effect meshes. Nothing else in the world may carry the tag.
 
 ## Gate 5: launch (discovery, analytics, LiveOps)
 

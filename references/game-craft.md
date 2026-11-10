@@ -12,7 +12,7 @@ Terms: **juice** = the small responses (flash, sound, shake, number) that make a
 |---|---|---|
 | Beginner | Every verb answers on the frame of the press with a visual, a sound and a number (§1). Use the default camera (§3). Spawn facing the first objective and keep jumps at or under the safe gap (§2). Give every UI action a sound (§4) | Custom cameras, hit-stop, behaviour trees, generators |
 | Intermediate | Tier feedback by event size; add jump buffer and coyote time (§1.2); trauma-based shake with a slider; the reward sequence; pooled effects and a low-effects tier; a beat table per level; audio buses and ducking | Per-move stop budgets, FOV-scaled shake, sound onset trimming |
-| Expert | One strength value driving stop, trauma and kick; flurry budgets; frame-counted flashes; cancel windows; onset and peak per combat sound; a frame-time governor with hysteresis; multi-target scaling; server tolerance for client forgiveness | — |
+| Expert | One strength value driving stop, trauma and kick; flurry budgets; clock-timed flashes; cancel windows; onset and peak per combat sound; a frame-time governor with hysteresis; multi-target scaling; server tolerance for client forgiveness | — |
 
 ## 1. Game feel and juice
 
@@ -20,17 +20,17 @@ What the evidence says. `[official]` "Anytime a player takes an action in a game
 
 A polished "hit" is a cluster of 5–8 small responses inside about 100 ms: target flash, hit-stop, camera shake, particle burst, sound, squash/scale pop, damage number, sometimes rumble. Everything returns to rest.
 
-| Tier | Example | Trauma added | Hit-stop | Particles | Extras |
-|---|---|---|---|---|---|
-| Small | coin pickup, footstep, light hit | 0.10–0.20 | none | 0–4 | sound, small pop |
-| Medium | normal hit, door, level-up tick | 0.30–0.50 | 0.04–0.06 s | 6–12 | 1–3 frame flash |
-| Large | kill, boss hit, explosion, rare drop | 0.70–1.00 | 0.10–0.15 s | 20–40 | flash, brief zoom, big number |
+| Tier | Example | Particles | Extras | Hit-stop and shake |
+|---|---|---|---|---|
+| Small | coin pickup, footstep, light hit | 0–4 | sound, small pop | none |
+| Medium | normal hit, door, level-up tick | 6–12 | 1–3 frame flash | from the hit's strength value: vfx-and-juice.md §7 |
+| Large | kill, boss hit, explosion, rare drop | 20–40 | flash, brief zoom, big number | from the hit's strength value: vfx-and-juice.md §7 |
 
-Values: trauma 0–1 decaying 1.0–1.5/s, shake = trauma², driven by smooth noise (never per-frame random), max roll 0.05–0.12 rad and about 0.3–0.8 studs offset at third-person distance. Hit-stop timed on a real-time clock; only the newest hit-stop restores speed. Pop: scale 1.3 on one axis and 0.7 on the other, tween back over about 0.18 s with Back Out. Flash 1–3 frames. Damage numbers rise, fade, drift sideways.
+Hit-stop durations and trauma per hit are owned by vfx-and-juice.md §7 (one strength value per hit; light hits get no stop and no shake). Shake module behaviour: trauma 0–1 decaying 1.0–1.5/s, shake = trauma², driven by smooth noise (never per-frame random), max roll 0.05–0.12 rad and about 0.3–0.8 studs offset at third-person distance. Hit-stop timed on a real-time clock; only the newest hit-stop restores speed. Pop: scale 1.3 on one axis and 0.7 on the other, tween back over about 0.18 s with Back Out. Flash 1–3 frames. Damage numbers rise, fade, drift sideways.
 
 Advanced tuning `[lihfolk]` (full treatment in vfx-and-juice.md):
 
-- **Think in frames.** One frame is 33–40 ms on a hot phone, 17 ms at 60 fps, 4–8 ms on a fast PC. A stop shorter than two phone frames (about 66 ms) is seen only some of the time on weak devices: give stops that matter at least 66 ms and treat shorter ones as seasoning. Effects that must last exactly N frames (a white flash) count rendered frames (`RunService.PreRender`), not seconds; a 1/30 s flash is eight strobing frames at 240 fps.
+- **Think in frames.** One frame is 33–40 ms on a hot phone, 17 ms at 60 fps, 4–8 ms on a fast PC. A stop shorter than two phone frames (about 66 ms) is seen only some of the time on weak devices: give stops that matter at least 66 ms and treat shorter ones as seasoning. Time a white flash on the real clock (about 33–50 ms, and at least one rendered frame): a count of rendered frames that reads at 30 fps is invisible at 240 fps (ruling in vfx-and-juice.md §7).
 - **One strength value per hit** (for example 0.3 light to 1.3 ultimate) from which stop, trauma and directional kick are all derived, so weapons are tuned in data and never drift apart.
 - **Budgets for fast weapons:** at most about 140 ms of hit-stop in any rolling 0.6 s, stop time under 15% of a move's length, visible shake under 10% of combat time. Rapid-fire weapons get per-shot recoil and save stops for kills.
 - **Multi-target hits:** one stop per swing; strength is the maximum across targets, not the sum; trauma grows with the logarithm of the count (`× (1 + 0.35 × log2(n))`).
@@ -40,7 +40,7 @@ Advanced tuning `[lihfolk]` (full treatment in vfx-and-juice.md):
 - **Reward reveals are a time budget.** Common results take 0.3–0.5 s, rare 1–1.5 s, the top one or two tiers 5–6 s; each tier adds a layer instead of only getting louder, and whole channels (world dimming, hidden HUD, server-wide banner) are reserved for the top. Keep total reveal time under about 10% of an hour of play; give auto modes a compact reveal and a skip after first view. The server decides the result before any animation; reels show only reachable items; tells derive from the real result (house rule).
 - **Scale with the device, with hysteresis:** drop an effects tier when average frame time exceeds 1.15× the target for 2 s, raise one after 10 s under 0.8×, ignore single spikes, never rise above the player's setting (performance.md).
 
-Conflict: the tier table above gives larger values (medium hit-stop 0.04–0.06 s with trauma 0.30–0.50; large 0.10–0.15 s with 0.70–1.00) than the LihFolk reference project (light: none; medium 50 ms and 0.12; heavy 66 ms and 0.25; finisher 75 ms and 0.35; ultimate 89 ms and 0.60). Theirs are measured in a combat game where hits land several times a second; ours suit single, spaced events (a launch, a rare drop, a boss slam). Use theirs for high-frequency combat and ours as the ceiling for isolated moments. In both, light hits get no stop and no shake.
+The numbers (medium 50 ms and trauma 0.12 up to ultimate 89 ms and 0.60, and the ceiling allowed for isolated big moments) live in vfx-and-juice.md §7, with the `Conflict:` note on the older, larger knowledge-base values.
 
 Easing: Back Out for pops, Quad/Cubic Out for settling, Cubic In for wind-ups, Sine InOut for camera and menus, Linear only for real-time progress bars.
 
@@ -63,18 +63,17 @@ Platform rules for effects:
 ```lua
 --!strict
 -- Unexecuted sketch. Client module. Tier 0 reward feedback: counter pops and counts up, sound pitch varies.
-local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local POP = TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 local COUNT = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local rng = Random.new()
 
-local function rewardPop(label: TextLabel, scale: UIScale, sound: Sound, from: number, to: number)
+local function rewardPop(label: TextLabel, scale: UIScale, sound: AudioPlayer, from: number, to: number) -- AudioPlayer wired to the SFX fader
 	scale.Scale = 1.3
 	TweenService:Create(scale, POP, { Scale = 1 }):Play()
 	sound.PlaybackSpeed = rng:NextNumber(0.94, 1.06) -- about one semitone either way
-	SoundService:PlayLocalSound(sound)
+	sound:Play()
 
 	local counter = Instance.new("NumberValue")
 	counter.Value = from
@@ -206,7 +205,7 @@ return Shake
 
 Derive movement metrics first: `MAX_JUMP_HEIGHT = v²/(2g)`, `AIR_TIME = 2v/g`, `MAX_JUMP_DISTANCE = run_speed × AIR_TIME`, `SAFE_GAP = 0.7 × MAX_JUMP_DISTANCE` (critical path), `HARD_GAP = 0.95 ×` (optional/expert). Confirm with a measured gap ladder on every device type.
 
-Roblox defaults `[VS]`: `WalkSpeed` 16 studs/s, `JumpPower` 50, `JumpHeight` 7.2 studs, `MaxSlopeAngle` 89°, `workspace.Gravity` 196.2. Which jump property applies depends on `UseJumpPower`; check StarterPlayer in your place. Derived: JumpPower 50 gives about 6.37 studs height, 0.51 s air time, 8.2 studs running jump, safe gap 5.7, hard gap 7.8; JumpHeight 7.2 gives 8.7 / 6.1 / 8.2. R15 is about 5 studs tall (pathfinding `AgentHeight` 5, `AgentRadius` 2). Doors at least 7 tall and 4–5 wide; multiplayer corridors 8+ wide; a comfortable ledge is about 80% of jump height (about 5 studs). Thumbsticks can move slower than `WalkSpeed`; design for keyboard, test on a stick. Disable jumping with `Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)`, not power 0. Keep metrics in one `LevelMetrics` module so designers and generators share them.
+Roblox defaults `[VS]`: `WalkSpeed` 16 studs/s, `JumpPower` 50, `JumpHeight` 7.2 studs, `MaxSlopeAngle` 89°, `workspace.Gravity` 196.2. Which jump property applies depends on `UseJumpPower`; check StarterPlayer in your place. Derived: JumpPower 50 gives about 6.37 studs height, 0.51 s air time, 8.2 studs running jump, safe gap 5.7, hard gap 7.8; JumpHeight 7.2 gives 8.7 / 6.1 / 8.2. R15 is about 5 studs tall (pathfinding `AgentHeight` 5, `AgentRadius` 2). Gameplay doors at least 5 wide and 7.5–8 tall, 6+ wide where two players pass (level-design-worldbuilding.md); multiplayer corridors 8+ wide; a comfortable ledge is about 80% of jump height (about 5 studs). Thumbsticks can move slower than `WalkSpeed`; design for keyboard, test on a stick. Disable jumping with `Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)`, not power 0. Keep metrics in one `LevelMetrics` module so designers and generators share them.
 
 Workflow: blockout, test, iterate, then dress. Under the house rules the blockout is a disposable planning artefact (Blender blockout kit, or primitives in an unpublished place or a `_Blockout` folder deleted before release); the dressed level is entirely Blender models.
 
@@ -230,7 +229,7 @@ Roblox: the default `PlayerModule` camera already gives orbit, zoom, popper coll
 
 Bus tree: Master → Music, SFX, Ambience, UI, Voice. Sliders control buses; square a linear 0–1 slider before applying (loudness is logarithmic). Loudness targets: true peak at most −1 dBTP; about −24 LUFS ±2 for console/PC; about −18 LUFS for mobile. Ducking: sidechain compressor on Music keyed from Voice (threshold about −30 dB, ratio 4–8:1, attack ≤10 ms, release 300–500 ms) or a simple −12 dB tween over 0.25 s. Variation: pitch ±1 semitone, volume ±2 dB, 3–5 variants never repeated back to back, polyphony capped (for example 4 simultaneous coin pickups, steal the oldest). Adaptive music: vertical layers fading over 0.5–1.5 s, horizontal switches at bar boundaries, intensity with hysteresis (up at 0.6, down at 0.4), beat read from the audio clock. Every UI action and gameplay verb gets a sound; rewards sound better as they get rarer.
 
-Roblox: legacy `Sound` → `SoundGroup` (with `CompressorSoundEffect.SideChain`); 3D when parented to a part, 2D in `SoundService`; `SoundService:PlayLocalSound`. Newer audio graph `[VS]`: `AudioPlayer` → `Wire` → `AudioFader`/`AudioEqualizer`/`AudioCompressor` (Input and Sidechain pins)/`AudioReverb`/`AudioLimiter` → `AudioDeviceOutput` or `AudioEmitter`/`AudioListener`. Do not mix the two systems without checking current routing docs. Use `RollOffMinDistance`/`RollOffMaxDistance` with `InverseTapered`. Audio asset permissions can make a sound play silently `[VS]`. Clone per play only for low-rate sounds; pool high-rate ones.
+Roblox `[VS]`: the audio graph is the default for new games: `AudioPlayer` → `Wire` → `AudioFader`/`AudioEqualizer`/`AudioCompressor` (Input and Sidechain pins)/`AudioReverb`/`AudioLimiter` → `AudioDeviceOutput`, or `AudioEmitter`/`AudioListener` for 3D. `Sound` and `SoundGroup` (with `CompressorSoundEffect.SideChain`, `SoundService:PlayLocalSound`) are legacy: keep them in a live game that works, and migrate one bus at a time. The two systems are separate mixes. API detail, bus wiring and the migration table are in audio-sfx-music.md. Use `RollOffMinDistance`/`RollOffMaxDistance` with `InverseTapered`. Audio asset permissions can make a sound play silently `[VS]`. Clone per play only for low-rate sounds; pool high-rate ones.
 
 ## 5. Game AI
 

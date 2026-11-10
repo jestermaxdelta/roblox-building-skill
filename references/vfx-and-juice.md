@@ -112,7 +112,7 @@ Particles alone look thin; the silhouette of a strong effect is usually a mesh w
 
 - Triangle budget `[house]`: 20–300 per piece, a full effect under about 1,500. Import each layer as its own mesh (merge off) so layers fade and scale separately; reuse one MeshId per piece (instancing rules in `performance.md`).
 - Instance settings: `Anchored = true`, `CanCollide/CanTouch/CanQuery = false`, `CastShadow = false`, `CollisionFidelity = Box`, `DoubleSided = true` for cards and ribbons.
-- House rule 2 interpretation: transient VFX meshes are the one visible class that must not collide (a slash that blocks players or trips hit queries is a bug). Treat them as `NonSolid` (same class as foliage in `performance.md`) and keep them short-lived; anything that persists and looks solid (ice wall, summoned rock, lingering crystal) gets real collision.
+- House rule 2 interpretation: transient VFX meshes must not collide (a slash that blocks players or trips hit queries is a bug); with held tools and viewmodels they are the classes SKILL.md exempts from "everything is solid". Treat them as `NonSolid` (same class as foliage in `performance.md`) and keep them short-lived; anything that persists and looks solid (ice wall, summoned rock, lingering crystal) gets real collision.
 - Roblox positions a mesh by its bounding-box centre, which for a crescent is not the centre of its circle: set `PivotOffset` once per mesh and check one swing `[community]` `[VS]`.
 - A MeshPart's texture cannot be UV-scrolled `[community]`. Animate `Size`, `CFrame` and `Transparency`; for dissolve, cross-fade two or three baked erosion stages; where the texture must flow, use a Beam.
 - Stacked semi-transparent meshes sort per object and can flicker: offset layers slightly and keep overlaps few. Drive all layers of an effect from one shared loop, not thirty tweens `[lihfolk]`. Every effect ships a low version with 2–3 layers.
@@ -162,7 +162,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 
 ## 7. Hit-stop, camera shake and FOV kicks
 
-Base values and the shake module are in `game-craft.md` §1. Net-new: give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
+This section owns the hit-stop and shake numbers for the whole skill; `game-craft.md` §1 holds the shake module sketch and defers here for values. Give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
 
 | Tier | Strength | Hit-stop | Trauma added | Directional kick (% of screen height) |
 |---|---|---|---|---|
@@ -172,9 +172,9 @@ Base values and the shake module are in `game-craft.md` §1. Net-new: give every
 | Finisher | 1.00 | 75 ms | 0.35 | 0.8 |
 | Ultimate | 1.30 | 89 ms | 0.60 | 1.2 |
 
-Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. These trauma values are lower than the `game-craft.md` table; start there for solo games and here for crowded combat, where hits stack.
+Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. Conflict: the knowledge-base tier table gives larger values (medium 0.04–0.06 s with trauma 0.30–0.50; large 0.10–0.15 s with 0.70–1.00) `[house]`; the table above is measured in a combat game where hits land several times a second `[lihfolk]`. Ruling: the table above is the default; the larger values are only a ceiling for isolated, spaced moments (a launch, a rare drop, a boss slam).
 
-- **Frame maths.** A 50 ms stop is 3 frames at 60 FPS but 1 or 2 at 30 FPS, so it reads as inconsistency on phones. A stop that must be felt needs at least 66 ms; cap any stop at 200 ms `[lihfolk]`. This qualifies the 40–60 ms medium stop in `game-craft.md`: treat it as seasoning.
+- **Frame maths.** A 50 ms stop is 3 frames at 60 FPS but 1 or 2 at 30 FPS, so it reads as inconsistency on phones. A stop that must be felt needs at least 66 ms; cap any stop at 200 ms `[lihfolk]`. Treat anything shorter as seasoning.
 - **Budgets** `[lihfolk]`: at most 140 ms of hit-stop per rolling 0.6 s; under 15% of a move's duration; reserve room for the finisher; one stop per swing however many targets it hits; trauma grows with `1 + 0.35 × log2(targets)`; visible shake under about 10% of combat time.
 - **Catch-up hit-stop**: slow the track to 0.12× for `d`, then play at 1.88× for `d`; after `2d` the animation is back on the wall clock, so effects scheduled at cast time still line up `[lihfolk]`.
 - **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation for impacts and translation only for "the ground moved". Aliasing on phones: cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.

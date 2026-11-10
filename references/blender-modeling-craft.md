@@ -37,7 +37,7 @@ Player scale `[lihfolk]`, in avatar heights (classic avatar about 5 studs; talle
 
 | Element | Avatar heights | Studs (5-stud avatar) |
 |---|---|---|
-| Door height / width | 1.4–1.6 / 0.8–1.2 | 7–8 / 4–6 |
+| Door height / width | 1.5–1.6 / 1.0–1.2 | 7.5–8 / 5–6 (gameplay doors at least 5 wide; 3.6–4 only for decorative or single-occupant doors, per level-design-worldbuilding.md) |
 | Corridor width | 1.6–2.4 | 8–12 (room for the camera) |
 | Indoor ceiling | 2–3 | 10–15 (real-world ceilings push the camera into the roof) |
 | Table or counter top | 0.5–0.6 | 2.5–3 |

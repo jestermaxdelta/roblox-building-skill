@@ -164,7 +164,7 @@ Frame counts (30 fps; double for 60 fps authoring; clips store seconds, so playb
 | Heavy attack | Wind-up 6–16 (with a held coil), strike 2–4, contact 3–4, recovery 10–25 | Hit at 0.5–0.7, total 1.3–1.8 | Longer startup is acceptable because the player chose it `[lihfolk]` |
 | Enemy attack | Telegraph ≥ 14 f, boss ≥ 15 f | ≥ 0.45 / 0.5 | `(Hit − Tele) / speed` checked for every attack in every phase `[lihfolk]` |
 | Hit reaction | Snap to the flinch pose in 1–2 f, total 6–10 f | 0.2–0.33 | Directional variants (front, left, right, heavy); skip the flinch while a stun or knock-up owns the body `[lihfolk]` |
-| Hit-stop (runtime, never baked) | Light 1–2 f, heavy 3–5 f | 0.04–0.15 | On confirmed hits only, attacker and victim, client-side (`game-craft.md`) |
+| Hit-stop (runtime, never baked) | None on light hits; medium to ultimate about 2–3 f | 0.05–0.09 | On confirmed hits only, on the attacker's client, never on the victim; values owned by `vfx-and-juice.md` §7 |
 
 Locomotion without foot slide: store each gait's authored ground speed, play at `rate = horizontalSpeed / groundSpeed`, clamp to roughly 0.5–1.7, and switch gait when the clamp is hit; swap gaits at the same phase so legs do not scissor; fade gait-to-gait 0.15 s, into Jump and Land 0.08 s, into idle variants 0.4 s `[lihfolk]`. One-shot clips should end within a small angle of the pose that takes over: a finished one-shot holds its last pose and fades over about 0.3 s `[lihfolk]`.
 
@@ -419,7 +419,7 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 
 ## 13. Conflicts and open questions
 
-- House rule 2 and held items: a colliding held weapon or first-person viewmodel destabilises its own wielder, so this file treats items welded or jointed to a character as covered by the character's collider plus a hitbox proxy, and requires the normal `_COL` proxy the moment the item is dropped or placed in the world. This reads the rule by intent, not by its literal wording: confirm with the owner.
+- House rule 2 and held items: a colliding held weapon or first-person viewmodel destabilises its own wielder, so this file treats items welded or jointed to a character as covered by the character's collider plus a hitbox proxy, and requires the normal `_COL` proxy the moment the item is dropped or placed in the world. SKILL.md states this resolution explicitly (held tools, weapons and viewmodels do not collide; skinned meshes need a `_COL` proxy).
 - Conflict: `performance.md` and knowledge-base 5.9 say Blender animation goes through FBX, one track per file, matching the modeling specification `[official]`. LihFolk measured GLB exports with every Action importing as separate clips, and a 2026 Clip Editor importer beta reportedly added glTF and track selection `[community]`. Trust the docs as the default route; treat multi-clip GLB as valid only after a test import on the pinned Studio version.
 - Conflict: "create the Animator on the server" (Animator reference) versus "create the Animator on the client" (performance docs). Both hold: a server-created Animator is required for replication; a client-created one is the documented way to keep NPC animation local.
 - Conflict: "cache tracks" (Animator reference, community 256 limit) versus "do not cache tracks" (server authority techniques). Cache everywhere except inside server-authority simulation code.

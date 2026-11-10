@@ -153,7 +153,7 @@ Checked against the docs mirror on 2026-11-10. Re-check before relying on any ro
 | Ragdolls and debris | Box or Hull | NoCollisionConstraint between limbs |
 | Vehicles | Simplified hull mesh | Collision group "Vehicles"; visual mesh CanCollide off |
 
-Making everything solid (house rule 2): (1) Box or Hull on the visual mesh with CanCollide on; (2) a Blender `_COL` proxy (`Transparency = 1`, `CanCollide = true`, `CanQuery = true`, `CanTouch = false`, `CastShadow = false`, `CollisionFidelity = Hull`) with the visual mesh set to `CanCollide = false`, `CanTouch = false`, `CollisionFidelity = Box`; (3) invisible primitive hull Parts for large simple volumes, same flags, never visible. Walk every asset type before shipping.
+Making everything solid (house rule 2): (1) Box or Hull on the visual mesh with CanCollide on; (2) a Blender `_COL` proxy (`Transparency = 1`, `CanCollide = true`, `CanQuery = true`, `CanTouch = false`, `CastShadow = false`, `CollisionFidelity = Hull`) with the visual mesh set to `CanCollide = false`, `CanTouch = false`, `CollisionFidelity = Box`; (3) invisible primitive hull Parts for large simple volumes, same flags, never visible. Exceptions: held tools, viewmodels and transient effect meshes do not collide; foliage canopies and cables may be `NonSolid`; skinned meshes collide in their rest shape only, so animated bodies get a `_COL` proxy. Walk every asset type before shipping.
 
 `CanTouch` off on almost everything except deliberate triggers. Trigger volume: `Transparency = 1`, `CanCollide = false`, `CanTouch = true` or `CanQuery = true`, `CastShadow = false`, `Anchored = true`; set `OverlapParams.RespectCanCollide` deliberately.
 

@@ -301,7 +301,7 @@ Each row was hit in practice by this file's tests or by the LihFolk vault's Blen
 | Artist's open scene wiped | `read_factory_settings` sent over the live MCP connection `[lihfolk]` | Never reset or delete through the bridge; build headless and append |
 
 Conflicts with LihFolk guidance, house position in each case:
-- Conflict (collision default): LihFolk switches `CanCollide`, `CanTouch` and `CanQuery` off on anything it calls decoration and prefers non-colliding visuals with invisible Part colliders. House rule 2 is the reverse default: every visible mesh is solid unless it carries the `NonSolid` tag for the narrow cases in performance.md (canopies, cables). Invisible collider helpers are fine in both. Trust the house rule; it exists so nothing is walk-through.
+- Conflict (collision default): LihFolk switches `CanCollide`, `CanTouch` and `CanQuery` off on anything it calls decoration and prefers non-colliding visuals with invisible Part colliders. House rule 2 is the reverse default: every visible world mesh is solid unless it carries the `NonSolid` tag for the narrow cases in performance.md (foliage canopies, cables; held tools, viewmodels and transient effect meshes never collide). Invisible collider helpers are fine in both. Trust the house rule; it exists so nothing is walk-through.
 - Conflict (blockout): LihFolk blocks out with grey Parts in the working place. Here Part blockouts live only in a throwaway place; the shipping place gets the Blender blockout kit.
 - Conflict (LOD): LihFolk reports that a Mesh Streaming and improved cloud LOD system announced in April 2026 ignores `RenderFidelity` and will remove it. The creator-docs commit of 2026-11-07 still documents `RenderFidelity` with no deprecation, and DevForum threads describe the beta stuck at the lowest LOD for some players `[community]`. Both sides agree on the practice: never hand-author LOD chains, build one mesh whose silhouette survives simplification, and check hero pieces at 250 and 500 studs. Do not build systems on `RenderFidelity`.
 - Agreement worth noting: LihFolk also flags the 4096² versus 1024² texture wording and the Unit System None versus Metric setup as unresolved in the docs; both conventions end at 1 unit = 1 stud.
@@ -359,17 +359,14 @@ Starting points: `Ambient` dark and slightly tinted, e.g. (26,34,36); `OutdoorAm
 
 Curriculum preset (exact doc values): Ambient and OutdoorAmbient (26,34,36), LightingStyle Realistic, ShadowSoftness 0.15, GeographicLatitude −18; Atmosphere Density 0.285, Offset 0.65, Decay (254,254,254), Glare 0.3, Haze 2.
 
-House starting presets (tune in-engine):
+`lighting-and-atmosphere.md` owns lighting, atmosphere and post-processing values (property ranges in its §6, genre presets in its §12: bright cartoon day, golden hour, night, neon, horror, dungeon); where this section and that file differ, that file wins. Two house presets it does not carry (tune in-engine):
 
 | Preset | Style | ClockTime | Brightness | Ambient / OutdoorAmbient | Atmosphere D/O/H/G | Post |
 |---|---|---|---|---|---|---|
-| Bright stylized day | Soft or Realistic | 14 | 2.5 | (70,70,80) / (120,120,130) | 0.25 / 0.25 / 0.5 / 0 | Bloom low, Saturation +0.1 |
-| Golden hour town | Realistic | 17.6 | 2 | (40,35,45) / (110,90,80) | 0.3 / 0.3 / 1.5 / 0.4 | SunRays low, Bloom low |
-| Night city (neon) | Realistic | 0 | 0.5 | (15,15,25) / (40,45,70) | 0.35 / 0.2 / 1 / 0 | Bloom for signs |
 | Overcast | Realistic | 12 | 1.2 | (50,55,60) / (90,95,100) | 0.4 / 0.1 / 2.5 / 0 | Contrast +0.1 |
 | Interior shop | Realistic | any | 1.5 | (30,30,35) / (60,60,70) | 0.2 / 0.5 / 0 / 0 | SurfaceLights in Blender fixtures |
 
-Stylised finish `[community]`: one `ColorCorrectionEffect` with Contrast and Saturation around +0.1 to +0.2 does most of the work for flat-colour art; keep `BloomEffect.Intensity` low (0.1–0.5) and raise `Threshold` so only emissive and neon bloom. There is no agreed preset; tune against the golden sample.
+Stylised finish `[community]`: one `ColorCorrectionEffect` with Contrast and Saturation around +0.1 to +0.2 does most of the work for flat-colour art; take `BloomEffect` Intensity, Size and Threshold from `lighting-and-atmosphere.md` §6 (by day, a threshold high enough that only emissive and neon bloom). There is no agreed preset; tune against the golden sample.
 
 Atmosphere `Density` hides streaming pop-in and lets you lower `StreamingTargetRadius`. Glare needs Haze > 0; Decay needs Haze and Glare > 0. Changing `Workspace.GlobalWind` wakes physics assemblies. Post-processing effects each cost full-screen GPU time: keep at most 2–3 always on; toggle Blur and DepthOfField contextually.
 
@@ -412,7 +409,7 @@ Lighting performance: lights go on `_Att` attachments inside Blender fixture mod
 - [ ] Each kit piece uploaded once and placed as a package; duplicate-MeshId audit clean.
 - [ ] Triangle budgets met; ≤ 20k per mesh; one material and one UV set per mesh.
 - [ ] Textures ≤ 1024², mostly ≤ 512², from the shared palette or trim library; `_SA` SurfaceAppearances shared.
-- [ ] Every visible object collides (fidelity or `_COL`); house-rule scan in checklists.md passes; walk-through test passes.
+- [ ] Every visible world object collides (fidelity or `_COL`; skinned meshes through a `_COL` proxy; `NonSolid` only on canopies, cables, held tools, viewmodels and transient effect meshes); house-rule scan in checklists.md passes; walk-through test passes.
 - [ ] RenderFidelity Automatic (Performance for clutter); SLIM on large static models where available.
 - [ ] All uploaded assets `Approved` and owned by the game's group before the build is published.
 - [ ] LightingStyle and PrioritizeLightingQuality chosen; no interior light leaks; CastShadow off on small, moving and invisible parts.

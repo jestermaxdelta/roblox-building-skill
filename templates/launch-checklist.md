@@ -22,7 +22,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 
 - [ ] Vertical slice to full loop verified; all v1 content in; cut list final. Owner: __ Date: __
 - [ ] Five-stranger playtest: fun within 5 minutes; median session ≥ <n> min; no P0/P1 UX issues open.
-- [ ] (HR) House-rule scan passes in every place: no visible primitive Parts, every visible mesh collides, invisible helpers have CastShadow off. Walk-through test on every asset class.
+- [ ] (HR) House-rule scan passes in every place: no visible primitive Parts, every visible world mesh collides (only `NonSolid`-tagged canopies, cables, held tools, viewmodels and effect meshes excepted), invisible helpers have CastShadow off. Walk-through test on every asset class.
 - [ ] (HR) Asset manifest complete; duplicate-MeshId audit clean; packages AutoUpdate on; no marketplace or free models.
 - [ ] Engineering review gate passed (architecture, security, data, purchases).
 - [ ] Performance gate passed on a 2–4 GB Android phone, mid-range phone, tablet, desktop and TV with gamepad; 10–15 minute thermal test; 1-hour server soak.

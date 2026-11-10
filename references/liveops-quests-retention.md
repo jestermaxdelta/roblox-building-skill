@@ -389,7 +389,7 @@ Separating **deploying** code (publishing) from **releasing** a feature (players
 | Experiment | Choose a variant | Control | Length of the test |
 | Permission | Testers, admins | Off | Long-lived |
 
-A release flag that defaults on ships unfinished work the moment Configs fail to load; a kill switch that defaults off disables trading for everyone during a Config outage. Name flags positively (`tradingEnabled`). The platform publishes a Config to everyone in about a minute or gradually over 15 minutes and targets by attributes `[official]`; a "5% of players" dial is something you build: hash the user id with a per-flag salt into a bucket so membership is sticky and a different slice goes first each time. Evaluate once per session for anything visible; send the client only the booleans it needs.
+A release flag that defaults on ships unfinished work the moment Configs fail to load; a kill switch that defaults off disables trading for everyone during a Config outage. Name flags positively (`tradingEnabled`). The platform publishes a Config to everyone in about 15 s to 1 min `[VS]` or gradually over 15 minutes and targets by attributes `[official]`; a "5% of players" dial is something you build: hash the user id with a per-flag salt into a bucket so membership is sticky and a different slice goes first each time. Evaluate once per session for anything visible; send the client only the booleans it needs.
 
 | Stage | Who | For | Abort if |
 |---|---|---|---|
