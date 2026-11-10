@@ -115,7 +115,6 @@ Motion and presenter (unexecuted sketch; token values and rules in `ui-design-fi
 -- Shared/UI/Motion.luau: the only place a UI TweenInfo is created.
 local GuiService = game:GetService("GuiService")
 local TweenService = game:GetService("TweenService")
-
 export type Token = "press" | "release" | "hover" | "enter" | "exit" | "move"
 local Out, In = Enum.EasingDirection.Out, Enum.EasingDirection.In
 local TOKENS: { [Token]: TweenInfo } = {
@@ -129,11 +128,9 @@ local TOKENS: { [Token]: TweenInfo } = {
 -- Spatial properties jump to the goal under reduced motion; colour and transparency still fade.
 local SPATIAL: { [string]: boolean } = { Position = true, Size = true, Rotation = true, Scale = true, Offset = true }
 local Motion = { userReduced = false } -- in-game toggle on top of the platform setting
-
 function Motion.reduced(): boolean
 	return Motion.userReduced or GuiService.ReducedMotionEnabled
 end
-
 -- fraction (0–1) shortens a retargeted tween. Returns nil when nothing is left to animate.
 function Motion.play(target: Instance, token: Token, goal: { [string]: any }, fraction: number?): Tween?
 	local base = TOKENS[token]
@@ -160,12 +157,10 @@ local ContextActionService = game:GetService("ContextActionService")
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
 local Motion = require(script.Parent.Motion)
-
 type Window = { gui: ScreenGui, face: CanvasGroup, scale: UIScale, firstFocus: GuiObject?, wantOpen: boolean }
 local windows: { [string]: Window } = {}
 local current: Window? = nil
 local Presenter = {}
-
 local function animate(w: Window)
 	if w.wantOpen then
 		w.gui.Enabled = true -- input and gamepad focus work from the first visible frame
@@ -190,7 +185,6 @@ local function animate(w: Window)
 		end
 	end
 end
-
 local function updateBack()
 	-- Bound only while a window is open, so gamepad B stays free for gameplay (a dash, a dodge) otherwise.
 	if current then
@@ -203,12 +197,10 @@ local function updateBack()
 		GuiService.SelectedObject = nil -- hand the stick back to the character
 	end
 end
-
 function Presenter.register(name: string, w: Window)
 	windows[name] = w
 	w.gui.Enabled, w.scale.Scale, w.face.GroupTransparency = false, 0.9, 1
 end
-
 -- Presenter.set("Shop") opens it and closes whatever was open; Presenter.set(nil) closes.
 function Presenter.set(name: string?)
 	local nextWindow = if name then windows[name] else nil
@@ -323,25 +315,7 @@ Parent prompts to a Blender-authored `Prompt_Att` attachment (or an invisible an
 - Rule: every action has a keyboard, a gamepad and a touch binding. Exclude reserved keys (Escape, the Roblox menu key, chat) from rebinding.
 - Feel: distinguish edge (pressed this frame) from held; radial deadzone about 0.2 with a response curve exponent 1.5–2; input buffer 100–150 ms; coyote time 80–120 ms; prompts switch to the last used device with positional gamepad names.
 
-Jump buffer plus coyote time, unexecuted sketch (client; the Humanoid jump arc itself is fixed):
-
-```lua
-local BUFFER, COYOTE = 0.12, 0.10
-local lastJumpPress, lastGrounded = -math.huge, -math.huge
-ContextActionService:BindActionAtPriority("JumpBuffer", function(_, state)
-	if state == Enum.UserInputState.Begin then lastJumpPress = os.clock() end
-	return Enum.ContextActionResult.Pass
-end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.Space, Enum.KeyCode.ButtonA)
-humanoid.StateChanged:Connect(function(_, new) if new == Enum.HumanoidStateType.Jumping then lastJumpPress = -math.huge end end)
-RunService.Heartbeat:Connect(function()
-	local now = os.clock()
-	if humanoid.FloorMaterial ~= Enum.Material.Air then lastGrounded = now end
-	if now - lastJumpPress <= BUFFER and now - lastGrounded <= COYOTE then
-		lastJumpPress = -math.huge
-		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-	end
-end)
-```
+Jump buffer and coyote time: the working sketch for the default Humanoid, with the reasoning, is in `game-craft.md` §1.2 (buffer about 0.12 s, coyote about 0.10 s).
 
 ## Mobile layout
 
@@ -379,6 +353,7 @@ Target 72 FPS on Quest 2; keep Roblox's comfort settings (vignette, stepped rota
 - `GuiService.PreferredTextSize` (`Medium` default, `Large`, `Larger`, `Largest`): applied by the engine except to `TextScaled` text, so prefer fixed `TextSize` with `AutomaticSize` and `TextWrapped` for body text. Test every screen at `Largest`.
 - `GuiService.ReducedMotionEnabled`: reduce UI motion, camera shake and flashes. Either tween time 0, or swap slides for a fade (`CanvasGroup.GroupTransparency`) `[official]`. Route every UI tween through one helper (`Theme.tween` in `ui-design-figma.md`).
 - Offer the same switches in the game's own settings (reduced motion, text size or UI scale, screen-effects intensity): many players never find the platform settings `[lihfolk]`. Keep flashes to at most three per second.
+- Full treatment (contrast checks, cognitive load, motor options, an accessibility settings group, QoL): `accessibility-and-player-qol.md`.
 - Colour non-reliance (icon or label with every colour state), sound non-reliance (visual cues for audio events), separate Music, SFX and Ambience sliders.
 - Adaptive design: input fluidity (every action on every input, hints match the active input), responsive layout (collapse secondary buttons on small screens), dynamic sizing, legibility on the smallest phone and a distant TV.
 
