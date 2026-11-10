@@ -1,6 +1,8 @@
 # Game audit report: <Title>
 
-Fill top to bottom while running `references/audit-existing-game.md`. Every score needs an evidence line (number, screenshot name, script path and line, or timed observation). Delete nothing; write "no data" where there is none. `[VS]` facts used: re-check at create.roblox.com/docs before acting.
+Fill top to bottom while running `references/audit-existing-game.md`. Every score needs an evidence line (number, screenshot name, script path and line, or timed observation). `[VS]` facts used: re-check at create.roblox.com/docs before acting.
+
+**Compact variant (use it when there is no place, repo or Studio access yet, or the owner has under about 10 hours a week).** Do not send this template full of "no data". Send the numbers-only first pass from the audit reference §1 instead, under about 400 words: what the numbers say against a named benchmark, the triage step, section 0 (top 3 actions, effort in hours and in weeks at the owner's budget), and at most five asks. Add sections 2–10 only after inspection. In the full report write "no data" where there is none and delete nothing.
 
 | Field | Value |
 |---|---|
@@ -13,9 +15,10 @@ Fill top to bottom while running `references/audit-existing-game.md`. Every scor
 | Data layer and schema version | |
 | Access used (dashboard screenshots, Open Cloud analytics, Studio MCP, repo) | |
 | 6-week goal and target metric | |
-| Developer level (beginner / intermediate / expert) and how it was set | |
+| Owner's weekly hours (sets every effort figure and the plan cadence) | |
+| Level per domain, from evidence: metrics · code and tooling · art · design · time | |
 
-Report shape by level: **beginner** fill sections 0, 2 (scores only), 3 and the safe-change checklist, and write section 0 in plain language; **intermediate** fill everything except the expert rows; **expert** fill everything, including evidence grades, dismissed findings, experiment plans and the second-opinion block.
+Report shape follows the level per domain, and domains can differ: an owner who reads D1 and conversion but works Studio-only gets the benchmark table and ranked list (intermediate on metrics) with step-by-step change instructions (beginner on tooling). **Beginner** sections: 0, 2 (scores only), 3 and the safe-change checklist, in plain language. **Intermediate**: everything except the expert rows. **Expert**: everything, including evidence grades, dismissed findings, experiment plans and the second-opinion block.
 
 ## 0. Top 3 actions, explained (always fill; this is the whole plan for a beginner)
 
@@ -29,7 +32,7 @@ Blockers first. For each action: what to change, why it matters to a player, exa
 
 ## 1. Numbers (baseline window: <YYYY-MM-DD> to <YYYY-MM-DD>)
 
-Benchmark = the game's own Creator Analytics benchmark (state the type: similar players / genre / all). If under 100 DAU, write the fallback source from the audit reference §2.
+Benchmark = the game's own Creator Analytics benchmark (state the type: similar players / genre / all). If the dashboard benchmark is unavailable, use the "Drives triage" rows of the one benchmark table in `references/analytics-and-discovery.md` and name the row; never a row marked Weak.
 
 | Metric | Game | Benchmark P50 | Benchmark P90 (or P10) | Trend vs 30 days ago | Source |
 |---|---|---|---|---|---|
@@ -113,7 +116,7 @@ Census highlights (instances, scripts by container, remotes, unique MeshIds, fla
 
 ## 4. Findings and ranked actions
 
-Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (dev-days, min 0.5). Blockers and house-rule violations are listed first regardless of score. In the Evidence column start with the grade: Measured, Observed, Static (not measured) or Inferred. Code findings add P0–P3.
+Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (hours of the owner's real time, min 2; write "h / weeks at the weekly budget", for example "30 h / 3 wk"). Only blockers are listed first regardless of score: data loss, ungranted purchases, exploits, policy violations, walk-through geometry on the main path, invasive or non-compliant offers. Other house-rule violations go in the debt track below. In the Evidence column start with the grade: Measured, Observed, Static (not measured) or Inferred. Code findings add P0–P3.
 
 | Rank | Action | Dimension | Evidence | Metric it should move | I | C | E | Priority | Flag or experiment | Reference to open |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -127,6 +130,16 @@ Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (dev-d
 | 8 | | | | | | | | | | |
 | 9 | | | | | | | | | | |
 | 10 | | | | | | | | | | |
+
+House-rule debt track (fixed 20–30% of weekly hours; most-seen surfaces first; paste scan counts per area):
+
+| Order | Surface | Violations (count and kind) | Replacement kit | Hours | Target week | Remaining after |
+|---|---|---|---|---|---|---|
+| 1 | Spawn view | | | | | |
+| 2 | Shop and offer surfaces | | | | | |
+| 3 | Main path and core-loop station | | | | | |
+| 4 | Thumbnail and video capture spots | | | | | |
+| 5 | Everything else, by traffic | | | | | |
 
 Parked (real but below the line), one line each:
 
@@ -148,8 +161,9 @@ Stopwatch comparison (optional; use when there is no dashboard benchmark). Fresh
 
 ## 5. Decision
 
-- [ ] Quick-wins sprint · [ ] Rebuild the loop in the same universe · [ ] Park or kill
+- [ ] Quick-wins sprint (default) · [ ] Rebuild the loop in the same universe (option, with cost) · [ ] Park or kill
 - Rule that triggered it: __
+- If a rebuild is on the table: estimated hours __ = __ weeks at the owner's budget; loop problem measured by __; second opinion agrees: yes / no. If any is missing, quick wins for two sprints, then decide again.
 - Lower-risk option: __ · Bolder option: __ · Recommended: __
 
 Second opinion (required for rebuild, park, save-schema migration, live pricing or a ship decision; optional otherwise):
@@ -164,17 +178,16 @@ Second opinion (required for rebuild, park, save-schema migration, live pricing 
 | Strongest objection, and whether it changed the recommendation | |
 | Evidence that would flip the decision | |
 
-## 6. Two-week plan (quick wins)
+## 6. First sprint plan (quick wins)
 
-One target metric. One variable per dimension per week.
+One target metric. One variable per dimension per week. A sprint is two weeks of the owner's hours: 20 hours at 10 h a week, 80 at full time. Plan in hour blocks, not calendar days; with under 15 h a week expect one release per sprint, not two.
 
-| Day | Change | Config key or experiment | Owner | Measured by | Rollback trigger |
+| Block (hours) | Change | Config key or experiment | Owner | Measured by | Rollback trigger |
 |---|---|---|---|---|---|
-| 1–2 | Instrument what is missing (funnels, economy events); baseline locked | | | | |
-| 3–5 | | | | | |
-| 6–7 | Release 1; watch 2 h; announce | | | | |
-| 8–12 | | | | | |
-| 13–14 | Release 2; re-read numbers; decide next step | | | | |
+| First 10–15% | Instrument what is missing (funnels, economy events); baseline locked | | | | |
+| Next 40–50% | Top action | | | | |
+| 20–30% | House-rule debt track: next surface | | | | |
+| Last 10–15% | Release; watch 2 h; announce; re-read numbers after the lag; decide next step | | | | |
 
 Expected result (state the number and the date it can first be read): __
 

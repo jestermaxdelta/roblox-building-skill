@@ -32,7 +32,7 @@ Terms: *tension director* = server logic that decides when threats appear based 
 
 - Tension graph: long quiet build-ups, short peaks, a safe room after each peak. Jump scares are rare and earned.
 - The AI telegraphs and misses; a director controls pacing so two threats never stack on a struggling party.
-- Pacing numbers `[lihfolk]`: a spike (scare, reveal, chase) lasts 5–60 s; a release (safe room, light, music change, a reward, a laugh) lasts 30 s–2 min. Players acclimatise within minutes: a jump scare every 20 seconds becomes comedy. Silence is a tool; cut ambience before a scare.
+- Pacing numbers `[lihfolk]`: a spike (scare, reveal, chase) lasts 5–60 s; a release (safe room, light, music change, a reward, a laugh) lasts 30 s–2 min. Fear wears off fast: scares that arrive a few times a minute turn into a joke within minutes. Silence is a tool; cut ambience before a scare.
 - A chapter of 15–30 min fits a session `[lihfolk]`; this skill's 10–20 min run target sits at the short end so a first-time player finishes one.
 - Death should cost a group at most a minute or two of progress in chapter games; in round games keep rounds short enough that waiting is tolerable `[lihfolk]`.
 
@@ -107,7 +107,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enem
 - **Monster tuning** `[lihfolk]`: chase speed slightly below or equal to player sprint (for example monster 15, sprint 18, walk 12 studs/s) with stamina on the player side, so escapes depend on decisions (doors, hiding), not raw speed. A monster faster than sprint sounds scary and feels worst.
 - **Senses** `[lihfolk]`: sense at about 5 Hz (8 players × 5 Hz is 40 raycasts a second); mix hearing with sight so stealth is rewarded, rather than always targeting the nearest player, which punishes the bravest. Noise is derived on the server from movement state; a client "I made noise" remote lets exploiters stay silent or lure the monster.
 - **Pathfinding** `[lihfolk]` `[VS]`: cap repaths at about two a second; never path every frame. Agent defaults are radius 2, height 5, waypoint spacing 4. Call `SetNetworkOwner(nil)` on the monster so no client simulates it (prevents stutter near players and exploitation). A catch cooldown of about 6 s stops chain kills.
-- Test at the lowest graphics quality: a scene that is moody on PC can be pitch black or flat grey on a phone `[lihfolk]`.
+- Test at the lowest graphics quality: atmosphere that reads on a PC often collapses to solid black or even grey on phones `[lihfolk]`.
 
 ## The one-new-verb angle
 

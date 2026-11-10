@@ -29,7 +29,9 @@ Before touching anything
 Findings
 
 - [ ] All ten dimensions scored 0–5 with one evidence line each: first session, core loop, progression and economy, retention and LiveOps, monetisation, UI/UX, art and house rules, performance, security and data, discovery and growth.
-- [ ] Caps applied: no live numbers → at most 3; (HR) any visible primitive, marketplace or generated asset, walk-through mesh, invasive or non-compliant offer, client-trusted value or data-loss path → at most 1 and listed as a blocker.
+- [ ] Caps applied to scores: no live numbers → at most 3; (HR) any visible primitive, marketplace or generated asset, walk-through mesh, invasive or non-compliant offer, client-trusted value or data-loss path → at most 1 for that dimension. A cap describes the game; it does not set the order of work.
+- [ ] Blockers listed separately and fixed first: data loss, ungranted purchases, dupes and client-trusted values, policy violations, (HR) walk-through geometry on the main path, (HR) invasive or non-compliant offers. Nothing else is a blocker.
+- [ ] (HR) Every other house-rule violation is a finding on the debt track: listed by surface, ordered by visibility (spawn view, shop, main path, capture spots, the rest), with a fixed 20–30% of weekly hours. It does not hold up other fixes and never triggers a rebuild by itself.
 - [ ] (HR) House-rule scan run in every place; output pasted into the report.
 - [ ] Sub-checks run on a phone and their caps applied: 2a game feel and audio, 6a accessibility and quality of life, 4a community and safety (unfiltered player text or an in-game link is a blocker).
 - [ ] Every finding carries an evidence grade (measured, observed, static, inferred); findings from reading alone are labelled "static, not measured"; dismissed findings are listed.
@@ -38,10 +40,11 @@ Findings
 
 Plan
 
-- [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to; top 10 ranked; blockers first.
-- [ ] Decision stated with its rule: quick-wins sprint, rebuild the loop in the same universe, or park. A rebuild keeps the universe, DataStore keys, purchases and community.
+- [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to; top 10 ranked; blockers first. Effort is in hours and restated in weeks at the owner's weekly budget.
+- [ ] With no place access, the numbers-only first pass was sent (triage step, top 3 actions with reasons, at most five asks, under about 400 words) instead of an empty report.
+- [ ] Decision stated with its rule: quick-wins sprint (the default), rebuild the loop in the same universe (an option presented with its hours and weeks, chosen only if the loop problem is measured, the estimate fits about eight weeks of the owner's budget and a second opinion agrees), or park. A rebuild keeps the universe, DataStore keys, purchases and community.
 - [ ] A rebuild, park, save-schema migration, live price change or ship decision has a blind second opinion: neutral question, rubric fixed first, same evidence pack, dissent and confidence recorded.
-- [ ] 2-week plan has one target metric and one variable per dimension per week; 6-week plan ends with a re-audit.
+- [ ] First sprint plan (two weeks of the owner's hours) has one target metric, one variable per dimension per week and the 20–30% debt-track block; 6-week plan ends with a re-audit.
 - [ ] The gates to re-run are listed (for example Gate 3 after any offer change, Gate 4 after any art or performance change, Gate 2 before every release).
 
 Shipping changes to a live game
@@ -136,29 +139,132 @@ Tooling
 - [ ] UI tested on phone (portrait and landscape), tablet, desktop and TV with gamepad; `CoreUISafeInsets`; nothing in reserved zones; every action bound on keyboard, gamepad and touch; `PreferredInput`, `PreferredTextSize`, `PreferredTransparency` and `ReducedMotionEnabled` honoured; console chat disabled.
 - [ ] Join-to-playable ≤ 10–15 s on low-end Android; loading screen has Skip, no forced minimum, never waits on spatial instances; no offers on loading.
 
-House-rule scan (edit mode, via Studio MCP `execute_luau` or the command bar; never in live servers):
+House-rule scan (edit mode, via Studio MCP `execute_luau` with `datamodel_type = "Edit"`, or the command bar; never in live servers). It groups findings by area with counts, caps its output, and checks who uploaded the most-used meshes:
 
 ```lua
-local issues = {}
-for _, d in workspace:GetDescendants() do
-	if d:IsA("BasePart") and d ~= workspace.Terrain then
-		local visible = d.Transparency < 1
-		if visible and not d:IsA("MeshPart") then
-			table.insert(issues, "VISIBLE PRIMITIVE: " .. d:GetFullName())
+--!strict
+-- House-rule scan. Unexecuted sketch. Edit mode only and read-only: it changes and saves nothing.
+local MarketplaceService = game:GetService("MarketplaceService")
+
+local MAX_ROWS = 25 -- areas printed
+local CREATOR_CHECKS = 30 -- most-used MeshIds to look up; 0 skips the lookup
+local CHECK_PAUSE = 0.5 -- seconds between lookups; GetProductInfoAsync is rate-limited
+local PRIM, NOCOL, SHADOW = 1, 2, 3
+
+local roots: { Instance } = { workspace, game:GetService("ReplicatedStorage"), game:GetService("ServerStorage") }
+local areas: { [string]: { number } } = {}
+local totals: { number } = { 0, 0, 0 }
+local meshUses: { [string]: number } = {}
+
+-- Area = service plus the next two levels, for example "Workspace/Map/Shop".
+local function areaOf(inst: Instance): string
+	local names: { string } = {}
+	local current: Instance? = inst.Parent
+	while current ~= nil and current ~= game do
+		table.insert(names, 1, current.Name)
+		current = current.Parent
+	end
+	return table.concat(names, "/", 1, math.min(#names, 3))
+end
+
+local function bump(inst: Instance, kind: number)
+	local key = areaOf(inst)
+	local tally = areas[key]
+	if tally == nil then
+		tally = { 0, 0, 0 }
+		areas[key] = tally
+	end
+	tally[kind] += 1
+	totals[kind] += 1
+end
+
+local seen = 0
+for _, root in roots do
+	for _, d in root:GetDescendants() do
+		seen += 1
+		if seen % 2000 == 0 then
+			task.wait() -- keep Studio responsive
 		end
-		if not visible and d.CastShadow then
-			table.insert(issues, "INVISIBLE HELPER CASTS SHADOW: " .. d:GetFullName())
-		end
-		if visible and d:IsA("MeshPart") and not d.CanCollide and not d:HasTag("NonSolid") then
-			local model = d:FindFirstAncestorOfClass("Model")
-			if not (model and model:FindFirstChild(d.Name .. "_COL", true)) then
-				table.insert(issues, "VISIBLE MESH WITHOUT COLLISION: " .. d:GetFullName())
+		if d:IsA("BasePart") and not d:IsA("Terrain") then
+			if d.Transparency >= 1 then
+				if d.CastShadow then
+					bump(d, SHADOW)
+				end
+			elseif d:IsA("MeshPart") then
+				meshUses[d.MeshId] = (meshUses[d.MeshId] or 0) + 1
+				if not d.CanCollide and not d:HasTag("NonSolid") then
+					local model = d:FindFirstAncestorOfClass("Model")
+					if not (model and model:FindFirstChild(d.Name .. "_COL", true)) then
+						bump(d, NOCOL)
+					end
+				end
+			else
+				bump(d, PRIM) -- Part, WedgePart, TrussPart, UnionOperation and other non-mesh parts
 			end
 		end
 	end
 end
-print(#issues == 0 and "House-rule scan OK" or table.concat(issues, "\n"))
+
+local out: { string } = {
+	`Visible primitives {totals[PRIM]} | visible meshes without collision {totals[NOCOL]} | invisible helpers casting shadow {totals[SHADOW]}`,
+}
+local keys: { string } = {}
+for key in areas do
+	table.insert(keys, key)
+end
+table.sort(keys, function(a: string, b: string): boolean
+	return areas[a][PRIM] + areas[a][NOCOL] > areas[b][PRIM] + areas[b][NOCOL]
+end)
+for i = 1, math.min(#keys, MAX_ROWS) do
+	local t = areas[keys[i]]
+	table.insert(out, `  {keys[i]}: primitives {t[PRIM]}, no collision {t[NOCOL]}, shadow helpers {t[SHADOW]}`)
+end
+if #keys > MAX_ROWS then
+	table.insert(out, `  ... and {#keys - MAX_ROWS} more areas`)
+end
+
+local ids: { string } = {}
+for id in meshUses do
+	table.insert(ids, id)
+end
+table.sort(ids, function(a: string, b: string): boolean
+	return meshUses[a] > meshUses[b]
+end)
+local foreign, unreadable = 0, 0
+local checked = math.min(#ids, CREATOR_CHECKS)
+if checked > 0 and game.CreatorId ~= 0 then
+	for i = 1, checked do
+		local assetId = tonumber(string.match(ids[i], "%d+"))
+		local ok: boolean, info: any = false, nil
+		if assetId ~= nil then
+			ok, info = pcall(MarketplaceService.GetProductInfoAsync, MarketplaceService, assetId, Enum.InfoType.Asset)
+		end
+		local creator: any = if ok and typeof(info) == "table" then info.Creator else nil
+		if typeof(creator) ~= "table" then
+			unreadable += 1
+		elseif creator.CreatorTargetId ~= game.CreatorId or creator.CreatorType ~= game.CreatorType.Name then
+			foreign += 1
+			table.insert(out, `  NOT THE OWNER'S UPLOAD: {ids[i]} used {meshUses[ids[i]]} times, uploaded by {creator.Name}`)
+		end
+		task.wait(CHECK_PAUSE)
+	end
+	table.insert(out, `Unique MeshIds {#ids}; creator checked on the {checked} most used: {foreign} not uploaded by the game owner, {unreadable} unreadable`)
+else
+	table.insert(out, `Unique MeshIds {#ids}; creator check skipped (unpublished place, no meshes, or CREATOR_CHECKS = 0)`)
+end
+
+local clean = totals[PRIM] == 0 and totals[NOCOL] == 0 and totals[SHADOW] == 0 and foreign == 0 and unreadable == 0
+table.insert(out, if clean then "House-rule scan OK" else "House-rule scan: findings above")
+print(table.concat(out, "\n"))
 ```
+
+What the scan can and cannot prove:
+
+- A MeshPart is not proof of a Blender model. The creator lookup catches the common case, a Toolbox mesh still pointing at someone else's upload, by comparing the mesh asset's creator with the game's owner (`game.CreatorId`, `game.CreatorType`) `[VS]`.
+- The lookup cannot work, and the scan says so in its output, when the place is unpublished (`CreatorId` is 0), when asset details are not readable for that mesh (private, archived or moderated assets count as "unreadable", which blocks the OK line), or beyond the first `CREATOR_CHECKS` ids (raise it gradually; the call is rate-limited).
+- It gives a false alarm for meshes a teammate uploaded from a personal account to a group-owned game (confirm, then re-upload to the group), and a false pass for a Toolbox or generated mesh that the owner downloaded and re-uploaded. No API can tell how a mesh was authored. The asset manifest from the Blender pipeline (`references/art-pipeline-blender.md`) is the only proof of rule 1; "House-rule scan OK" means no primitive, collision or foreign-upload finding, not certified authorship.
+- Not covered: SpecialMesh inside a Part (counted as a primitive), textures and decals, assets inserted at runtime by id, and scripts inside Toolbox models (read those in the security pass).
+- On a game built from Parts expect large primitive counts per area. In Level-up mode that output is the input to the house-rule debt track (`references/audit-existing-game.md` §6): replace by area, most-seen first.
 
 Tag the allowed non-solid visuals `NonSolid`: foliage canopies, cables, held tools, viewmodels and transient effect meshes. Nothing else in the world may carry the tag.
 

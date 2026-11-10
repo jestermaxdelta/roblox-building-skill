@@ -80,7 +80,7 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 - Settings: FOV, per-scope sensitivity, aim assist options, crosshair editor, controller dead zones, colour-blind enemy outline.
 - Mobile: fire on the right thumb with optional auto-fire on target, large jump and crouch, gyro aim if offered; controller: aim assist with slowdown, not snap.
 - Loadout and shop never open during a live round.
-- Third person `[lihfolk]`: raycast from the camera to find the aim point, then fire from the muzzle to that point, so players hit what the crosshair shows; offer a shoulder swap.
+- Third person `[lihfolk]`: find the aim point with a ray from the camera, then send the shot from the muzzle toward it, so the bullet lands under the crosshair; offer a shoulder swap.
 - Readable art over realism: clean silhouettes, team-coloured outlines, low visual noise behind enemies. Sightline length matches the weapon roster (no 400-stud lanes without long-range weapons) `[lihfolk]`.
 
 ## Systems to build, in order

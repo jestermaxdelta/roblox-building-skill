@@ -1,6 +1,6 @@
 ---
 name: roblox-game-design
-description: "One-shot playbook that takes any Roblox game to the next level, at any stage: a new idea, a prototype, or a fully built live game that needs an audit. Covers concept and genre choice (with per-genre playbooks), core-loop design and tuning, FTUE, economy math, retention and LiveOps, non-invasive monetization (boosts, passes, starter pack, gifts, Luck), UI/UX design with Figma, the Blender-to-Roblox art pipeline, Luau architecture (Rojo, ProfileStore, remotes), security and anti-exploit, performance for low-end mobile, analytics, discovery, growth and launch. Use this skill whenever the user is making, designing, planning, scripting, balancing, monetizing, optimizing, auditing, reviewing, fixing or launching a Roblox game or experience, even if they only say \"my game\" in a Roblox or Luau project; when they ask why a Roblox game is not retaining, earning, growing or running well; when writing Luau systems, DataStores, purchases or UI; when working in Roblox Studio (including through the Studio MCP); or when asking what Roblox game to build. Enforces the house rules: every model from Blender, everything solid, heavy but never invasive monetization."
+description: "The full playbook for making a Roblox game better at any stage: a new idea, a prototype or a live game. Use for planning or building a whole Roblox game, choosing a genre or what to build, design documents, economy and progression plans, launch, team and business questions, a beginner's first game, and any Roblox, Luau or Roblox Studio task that no more specific Roblox skill covers. Also the fallback for vague requests such as \"help with my Roblox game\". Covers design, genres, core loop, monetization, UI and Figma, Blender art, VFX and audio, Luau systems, security, performance, analytics and growth, and enforces the house rules: every model from Blender, everything solid, heavy but never invasive monetization."
 ---
 
 # Roblox game design and development
@@ -17,9 +17,9 @@ Work out which situation the user is in before opening anything else. The modes 
 
 | Mode | Use when | Start at | Output |
 |---|---|---|---|
-| **A. New game** | There is an idea or nothing yet | Phase 1 of the workflow below | The phase outputs, one gate at a time |
+| **A. New game** | There is an idea or nothing yet | Phase 1 of the workflow below. A beginner's first game starts at `references/learning-paths.md` instead: the goal is to finish something small, so the Phase 1 market gate does not apply and their idea is never "too saturated" | The phase outputs, one gate at a time |
 | **B. Level-up** | A game already exists (prototype, soft launch or live) and the goal is "make it better", "why is it not growing/retaining/earning", "review my game", "optimise it" | `references/audit-existing-game.md` | `templates/game-audit-report.md` filled: scores with evidence, a ranked action list, then the top actions executed |
-| **C. Single fix** | One system, one bug, one balance tweak, one question | The matching row of the routing table | The fix, checked against that row's gate |
+| **C. Single fix** | One system, one bug, one balance tweak, one question | The trigger table below, or the matching row or rows of the routing table (a real problem often spans two or three files) | The fix, checked against the review gate of the file used |
 
 Level-up mode in short (the audit reference has the full method):
 
@@ -32,13 +32,34 @@ Level-up mode in short (the audit reference has the full method):
 
 House rules in Level-up mode: an existing game often breaks them (primitive Parts, marketplace models, walk-through props, pushy popups). Treat each violation as a finding with a migration plan ranked by how visible it is, rather than blocking every other fix until the whole map is rebuilt.
 
+## Trigger phrases
+
+People describe symptoms, not topics. When a message sounds like the left column, go straight to that focus: open the listed files, diagnose against their "Level-up: symptom → cause → fix" tables, recommend a ranked fix, then implement the top fixes in the same turn (pause only before something hard to undo: publishing, changing save data, creating or repricing products, spending money, deleting the user's work).
+
+When this skill is installed as the `roblox-dev` plugin, each row is also its own small focused skill that loads only its own instructions; use that skill when it is available and this table when it is not.
+
+| The user says something like | Focus (plugin skill) | Open first |
+|---|---|---|
+| "make my game better", "review my game", "why is it not growing", "what should I fix first" | Level-up audit (`level-up`) | `references/audit-existing-game.md` |
+| "players leave after a minute", "nobody comes back", "it's boring", "the tutorial is bad", "low D1" | Core loop and retention (`retention`) | `references/core-loop-tuning.md`, `references/liveops-quests-retention.md` |
+| "my monetization is bad", "it isn't making money", "what should I sell", "set prices", "the economy is inflated" | Monetization and economy (`monetization`) | `references/monetization-and-policy.md`, `references/economy-and-progression.md` |
+| "my UI looks bad", "the menu is broken on phone", "make a shop / HUD / inventory screen", "turn this Figma into Roblox UI" | UI and UX (`ui`) | `references/ui-design-figma.md`, `references/ui-input-crossplatform.md` |
+| "the VFX is bad", "combat feels flat", "no impact", "add juice", "the sounds are annoying" | VFX, feel and audio (`vfx-and-audio`) | `references/vfx-and-juice.md`, `references/audio-sfx-music.md` |
+| "my map feels empty", "players get lost", "the lighting looks flat" | Maps and lighting (`world-and-lighting`) | `references/level-design-worldbuilding.md`, `references/lighting-and-atmosphere.md` |
+| "my models look bad", "the style doesn't match", "export this to Roblox", "the animation is broken" | Blender models and animation (`models-and-animation`) | `references/blender-modeling-craft.md`, `references/art-pipeline-blender.md`, `references/animation-and-rigs.md` |
+| "make an inventory / pet system / round system / combat / trading", "how should I structure this" | Gameplay systems and Luau (`systems`) | `references/gameplay-systems-cookbook.md`, `references/luau-mastery.md` |
+| "it's broken", "I get this error", "works in Studio but not live", "infinite yield" | Debugging (`debug`) | `references/debugging-and-testing.md` |
+| "my game is laggy", "it crashes on phones", "low FPS", "long loading" | Performance (`performance`) | `references/performance.md` |
+| "exploiters", "can this be exploited", "players duped items", "players lost their data", "paid and got nothing" | Security and data (`security-data`) | `references/networking-and-security.md`, `references/data-and-purchases.md` |
+| "nobody plays my game", "make a thumbnail", "should I run ads", "I'm about to launch" | Discovery and growth (`growth`) | `references/analytics-and-discovery.md`, `references/growth-and-marketing.md` |
+
 ## How to use the references
 
 - Open only the reference files the routing table points at for the current task. Each opens with a "Start here by level" table and ends with a review gate. Files over 300 lines carry a contents line: read the section you need, not the whole file.
 - `references/knowledge-base.md` is the full 645,989-byte source. Never read it whole. Grep it by section heading, then read that range only:
   `grep -n "^## 4.7" references/knowledge-base.md` (section start), then `grep -n "^## 4.8"` for the end, then Read with offset/limit. Section map: 1.x design, 2.x game craft and architecture patterns, 3.x platform/economy/monetization/analytics/discovery, 4.x engineering/security/data/purchases, 5.x performance/art/UI/input/launch. `## 3.12` and `## 5.14` list known conflicts.
 - Facts marked `[VS]` are version-sensitive (API names, limits, prices, policy, dashboard features). Re-check them at https://create.roblox.com/docs before relying on them. Market numbers date from a 2026-11-07 snapshot.
-- For market data (trending genres, what to build, discovery, thumbnails), open `references/market-scan-2026-11.md` first: it distils the owner's Nov 2026 research bundle and the v2 report (a converted copy sits in `references/market-research-v2-raw.md` for grep). For the full note set read the Obsidian vault folder `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` — start with `_MOC.md`, then `_AGENTS.md`. Read `Agent Vault Guide.md` and `hot.md` in the vault root first. Those numbers are a 2026-11-07 snapshot. The vault lives on the owner's PC: when it is not reachable (cloud sessions, other machines), the distilled copies in `references/` are the authority and nothing is lost.
+- For market data (trending genres, what to build, discovery, thumbnails), open `references/market-scan-2026-11.md` first: it distils the maintainer's November 2026 research vault and the v2 report (a converted copy sits in `references/market-research-v2-raw.md` for grep). Those numbers are a 2026-11-07 snapshot and go stale. If the user's CLAUDE.md or memory names a local Roblox research vault, read its index note first and prefer its newer numbers; otherwise the distilled copies are the authority.
 - Claims tagged `[community]` come from developer forums, Reddit and videos: treat them as heuristics to test, not guarantees. `[official]` marks Roblox documentation, `[house]` marks house estimates.
 
 ## Adapt to the developer's level
@@ -66,6 +87,8 @@ Resolutions that follow from the house rules:
 - Skinned meshes, SurfaceAppearance and other visual tools are fine when the asset is authored in Blender.
 - "Everything is solid" is about the world players and NPCs move through. Tools, weapons and viewmodels held by a character, and transient effect meshes (slashes, projectiles' visuals, impact rings), do not collide: the character's own collider and the server's hitbox cover them. Skinned meshes collide in their rest shape only, so give animated bodies a `_COL` proxy.
 - Particles, Beams, Trails and UI are not models: they are allowed. A mesh used as an effect is still authored in Blender.
+- Pets and followers that trail a player are client-rendered and do not collide; a pet standing in the world as an object (in a pen, on a pedestal) is solid like anything else.
+- "Push microtransactions heavily" applies to games built to earn. A first learning game does not need monetisation, and a minor is never told to spend real money to test a purchase.
 
 ## Phased workflow: idea to live
 
@@ -168,7 +191,7 @@ Policy and monetization
 
 - Never fake discounts, restart countdowns or claim false scarcity; never show offers during onboarding, loading or combat; never stack popups or block play with them.
 - Never sell paid random items without full odds disclosure and `PolicyService` gating; never ship unfiltered user text.
-- Social rewards (group join, like, favourite, friend join) are wanted in every game, as a bonus only: never gate progress or core content on them, never put "free Robux", giveaways or "like for rewards" in the title, thumbnail or description (that is the exposure penalty), and ask after the first win, not in the first minutes. Rules in `references/liveops-quests-retention.md` §social rewards.
+- Social rewards (group join, like, favourite, friend join) are wanted in every game, as a bonus only: never gate progress or core content on them, never put "free Robux", giveaways or "like for rewards" in the title, thumbnail or description (that is the exposure penalty), and ask after the first win, not in the first minutes. Group-join and friend-join bonuses are the safe default; before rewarding likes or favourites, re-check the current Roblox Community Standards `[VS]` and leave them out if in doubt. Rules in `references/liveops-quests-retention.md` §social rewards.
 - Never run rewarded video with random rewards or as a progress gate.
 - Never let players converse outside `TextChatService`; never put links, invite codes, handles or requests for personal data in the game. Social links live on the game's page.
 - Never ship a timer, discount or stock count that is not literally true.
@@ -285,7 +308,7 @@ The references record disagreements as `Conflict:` notes instead of hiding them.
 A task under this skill is done when:
 
 1. The relevant gate has been checked item by item and the result reported: the phase gate in `references/checklists.md` for a build task, Gate A for a level-up pass, or the review gate at the end of the reference used.
-2. Any `[VS]` fact relied on has been re-checked against the official docs, or the user has been told it was not.
+2. Any `[VS]` fact relied on has been re-checked against the official docs (https://create.roblox.com/docs, or the `Roblox/creator-docs` mirror on GitHub when that site is unreachable), or the user has been told exactly which facts were not re-checked.
 3. New Luau is `--!strict`, passes Selene and StyLua, and has at least one test or a described manual test.
 4. No house rule is violated by the work delivered: no visible primitive Parts, world meshes collide, no invasive offers, no generated or marketplace content shipped. In Level-up mode, existing violations are listed as findings with a plan.
 5. The user received a clear recommendation plus a bolder alternative wherever a real choice existed, pitched at their level.

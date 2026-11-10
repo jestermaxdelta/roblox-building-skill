@@ -16,6 +16,8 @@ Start here by level · The method · Tools · Reading errors (decoder) · Sympto
 | Intermediate | Write the repro with a failure rate ("4 of 10"). Use conditional breakpoints and logpoints instead of print-and-delete. Test with 2+ clients and the Network Simulator. Own every connection with a Trove. Put economy maths, drop tables and migrations under unit tests | Parallel debugging, custom telemetry pipelines |
 | Expert | Build the capture kit before the incident: server tag in every log line, state dumps, kill switches, a canary. Diff Luau heap snapshots around a 100× loop. Run soak tests and `StudioTestService` multi-client suites in CI. Treat every fix as unproven until it survives 2× the original failure count under latency | Nothing: but measure before optimising |
 
+Related: `studio-workflow.md` (test modes, the testing ladder, Team Test, working through the Studio MCP); `engineering-architecture.md` (CI and the test stack); `performance.md` (profiling).
+
 ## The method: reproduce, isolate, hypothesise, verify
 
 A fix without a reproduction is a guess; a `task.wait(n)` or a silent `pcall` that makes a bug rarer is not an explanation `[lihfolk]`.

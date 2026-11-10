@@ -33,7 +33,7 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 - Structured activities are the safe design for under-16 reach: rounds, jobs, shows and minigames give the game a primary activity that is not chat.
 - Roles should create interaction by design: staff and customers, police and civilians, judges and contestants.
 - Space design: dense but uncrowded, many sit and pose spots, light minigames, many interactable Blender props (doors, vehicles, job tools).
-- The design question is not "what is the loop" but "what stories can players tell here, and what do they need to tell them": emotes and poses, held props (food, phones, tools of a job), houses to choose, decorate, lock and invite into, and vehicles that spawn beside the player `[lihfolk]`.
+- Design from the stories players will act out rather than from a loop, and list the props each story needs: emotes and poses, held props (food, phones, tools of a job), houses to choose, decorate, lock and invite into, and vehicles that spawn beside the player `[lihfolk]`.
 - Short walks, vehicles for the rest: a town about 3 minutes across on foot needs cars or teleports `[lihfolk]`.
 
 ## First 5 minutes
@@ -53,7 +53,7 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 - Fashion rounds: voting needs anti-collusion (hide voter identity, drop outliers, cap self-vote); rewards are stars toward ranks.
 - Trading (pets, items) is a years-long retention engine and a scam surface; see `pet-collection-hatching.md`.
 - Jobs pay for a reason to play a role (deliver, cook, cut hair); simple tasks, no punishment `[lihfolk]`.
-- Roleplay players are sensitive to status gaps: if every nice house is paid, free players feel second class in their own stories. Free options must stay attractive, including a free car and a free starter house `[lihfolk]`.
+- Status differences sting in roleplay: when all the desirable homes cost Robux, non-payers become extras in someone else's scene. Keep the free options attractive, including a free car and a free starter house `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -105,7 +105,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §15 Interaction,
 - **Avatar editing**: `HumanoidDescription` applied on the server; validate asset ids against an allow-list for in-game items; saved outfits as id lists.
 - **Griefing surface**: fling and physics abuse (collision groups, no player-pushable heavy props), seat traps, tool spam, vote collusion, house invasion. Every social feature gets a "how could a stranger ruin this" answer.
 - **Exploit surface**: currency grants from job remotes (server tracks task completion), vehicle and item spawn remotes (ownership checks, rate limits), teleport into locked houses (server-side door state).
-- **Houses are the main griefing vector** `[lihfolk]`: ownership and permissions live on the server; "kick from my house" is a core feature; decoration saves as item ids and positions relative to the house origin so it rebuilds in any plot on any server; cap placed items per house.
+- **Houses are the main griefing vector** `[lihfolk]`: ownership and permissions live on the server; "kick from my house" is a core feature; save decoration as item ids with house-local offsets, so the same interior can be rebuilt on whichever plot and server the player gets; cap placed items per house.
 - **Safety surface** `[lihfolk]`: personal-space options, house locks, block and report reachable at all times; limits on what can be spawned or shown to others; distinct markers for real moderators that players cannot fake; moderation tools for private-server owners.
 - Vehicle caps: one active per player plus a server cap; despawn when abandoned `[lihfolk]`.
 

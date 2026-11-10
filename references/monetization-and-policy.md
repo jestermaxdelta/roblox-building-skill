@@ -14,6 +14,8 @@ Terms: **conversion** = paying users ÷ daily active users (DAU); **ARPPU** = re
 
 Contents: Catalogue · Benchmarks, segments and unit economics · Default product set · Price ladder by genre and ladder tests · Offer and shop playbook (timing map, honest timers) · Price elasticity and experiments · Rewarded video · Gifts · Refunds and purchase support · Policy · Anti-patterns · Level-up table · Review gate · Sources.
 
+Related: economy-and-progression.md (currency design, sinks, the paid-multiplier cap); gameplay-systems-cookbook.md §3 Shop and §24 Server-wide events and boosts (implementation); data-and-purchases.md (ReceiptService, passes, gifts); ui-design-figma.md (shop screen recipe); liveops-quests-retention.md (season pass missions, social rewards).
+
 ## Catalogue of monetization surfaces
 
 | Surface | Rules and limits `[VS]` | Use for |

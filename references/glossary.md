@@ -35,7 +35,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 
 | Term | Meaning | More |
 |---|---|---|
-| **250-play gate** | A new game must collect 250 engaged plays from age-checked 16+ players before under-16 audiences can see it `[VS]` | analytics-and-discovery.md |
+| **250-play gate** | The evaluation a game passes before players under 16 can see it: 250 unique plays by highly engaged, age-checked 16+ players within 60 days, on top of creator verification and a fee or subscription `[VS]` | analytics-and-discovery.md |
 | **A/B test** | Showing different versions to random groups and comparing a metric. On Roblox: Experiments | analytics-and-discovery.md |
 | **Actor** | Container whose scripts may run in parallel with others | performance.md |
 | **AFK** | Away from keyboard. Idle players are disconnected after about 20 minutes `[VS]`; AFK rewards must not gate progress | liveops-quests-retention.md |
@@ -264,7 +264,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **StarterGui** | Container whose UI is copied to each player on spawn | ui-input-crossplatform.md |
 | **StarterPlayerScripts** | Container for client scripts that run once per player | engineering-architecture.md |
 | **Stickiness** | DAU divided by MAU | analytics-and-discovery.md |
-| **Streak** | Consecutive days played. Reward it; never punish a miss `[house]` | liveops-quests-retention.md |
+| **Streak** | Consecutive days played. The house daily reward is a cumulative calendar (days played, never resets); a login streak that resets on a miss is rejected `[house]` | liveops-quests-retention.md |
 | **Stud** | Roblox's unit of length; 1 stud = 0.28 m. The house pipeline models at 1 Blender unit = 1 stud | art-pipeline-blender.md |
 | **Subscription** | A monthly recurring purchase inside one experience | monetization-and-policy.md |
 | **SurfaceAppearance** | The PBR texture set applied to a MeshPart | art-pipeline-blender.md |

@@ -2,6 +2,16 @@
 
 Distilled from the owner's research: the Nov 2026 bundle (`roblox-market-research-2026-11.zip`, byte-identical to the vault's `_raw/` folder) and the v2 report "Roblox Market Research v2 — Nov 2026 (Detailed)" (Claude Doc, https://claude.ai/artifact/WkBA2wVEVauiMCHgy1CSKA, dated 2026-11-07). A converted copy of the v2 report is in `references/market-research-v2-raw.md` for grep. Every number is a snapshot from 2026-11-07 taken at 09:40–11:00 UTC (pre-US hours) `[VS]`; CCU swings 2–3× by hour. `fact` = sourced, `inference` = the report's reading. For the full note set open the vault at `C:/Users/Nebula PC/Documents/Delta Vault/Roblox Research/2026-11 Market Scan/` (`_MOC.md`, then `_AGENTS.md`).
 
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | Read "The shape of the market" and the 14 shared patterns; pick a format that is rising or open, not saturated; name your one new action. Follow thumbnail rules 1–5 | Gap ranking, feed statistics, the 250-play gate detail |
+| Intermediate | Check your design against all 14 patterns and the format norms for your genre (then open the matching file in `genres/`); fill all thumbnail slots (rules 6–13); plan the 16+ first launch and a Saturday or seasonal date | — |
+| Expert | Read the discovery facts as ranking signals to instrument (analytics-and-discovery.md); time a format entry against the parent's wave (2–8 weeks into its rise); re-snapshot CCU at the same UTC hour before trusting any number here | — |
+
+Related: genre-playbooks.md and `genres/` turn these norms into build plans; case-studies-teardowns.md explains why the hits work; analytics-and-discovery.md and growth-and-marketing.md own discovery mechanics and launch marketing; monetization-and-policy.md owns prices.
+
 ## The shape of the market
 
 - Steal An Egg leads at 1.14M CCU; about 18 games sit at 60–440K (four evergreens from 2014–2020 beside the 2025–26 hits); below 50K every format has one or two leaders and a long tail under 2K.
@@ -97,7 +107,7 @@ Feed stats (coded from 72 + 177 tiles): [TAG] titles 53–64%, emoji 39–52%, g
 
 - [ ] 3–5 distinct thumbnails with personalization on, kept 7+ days, plus a real gameplay video.
 - [ ] Unique title, art and place file; no Robux or giveaway lead.
-- [ ] Core fun inside 60 s; first number-go-up moment before 180 s.
+- [ ] Core fun inside 60 s; first number-go-up moment before 180 s. (The report's line. The house target is stricter: first reward under 30 s, first upgrade under 2 min; core-loop-tuning.md.)
 - [ ] Average session 19+ min; D1 above 11%, 20–30% as a stretch.
 - [ ] Daily return reasons: timers, offline earnings, restocks (no streak-loss anxiety).
 - [ ] Core players near the 60 min/day playtime cap.
@@ -125,3 +135,8 @@ Feed stats (coded from 72 + 177 tiles): [TAG] titles 53–64%, emoji 39–52%, g
 - [ ] Title and art are distinct from the nearest hit; names avoid "Sell a Million" and "Run a".
 - [ ] Thumbnail plan follows rules 1–13; no ads until the rating is 85%+.
 - [ ] The 16+ first plan for the 250-play gate exists; launch date sits on a Saturday or in a seasonal window.
+
+## Sources
+
+- The owner's research vault, 2026-11-07 snapshot: `Delta Vault/Roblox Research/2026-11 Market Scan/` (bundle `roblox-market-research-2026-11.zip`, identical to the vault's `_raw/` folder), and the v2 report "Roblox Market Research v2 — Nov 2026 (Detailed)" (https://claude.ai/artifact/WkBA2wVEVauiMCHgy1CSKA). The converted report is `references/market-research-v2-raw.md`; the vault-sourced sections of `references/knowledge-base.md` are marked "(Delta Vault: …)".
+- Third-party figures quoted through the report (GameAnalytics 2025 benchmarks, creator reports on the 12 Oct 2026 measurement change) were not re-opened for this file; treat them as `[VS]`.

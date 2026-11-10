@@ -203,7 +203,7 @@ Extends "Modular kits, instancing and when to merge" in `art-pipeline-blender.md
 
 ## 10. Set dressing and environmental storytelling
 
-- Ask of every area: what happened here, who lives here, where is this (`knowledge-base.md` 1.9.2). Place 2–3 answers per zone on the path or at nodes: a cold fire, one bedroll and an unfinished note beat a sign explaining a camp `[lihfolk]`.
+- Ask of every area: what happened here, who lives here, where is this (`knowledge-base.md` 1.9.2). Place 2–3 answers per zone on the path or at nodes: ashes gone cold, a single bedroll and a half-written note tell "someone camped here" better than a signpost does `[lihfolk]`.
 - Three reader layers `[lihfolk]`: everyone gets mood, names, landmarks and enemy design (zero to one sentence per zone); the curious get one-line item descriptions and a few notes; the obsessed get collectible sets and deliberate gaps. Spend effort in that order.
 - Channels before text: zone names, silhouettes, ruins, music, light and colour. Signs are 3–8 words on a SurfaceGui (localisable, never baked into a texture) and name the action, not the key.
 - The world reacts: after a big event, change banners, damage and NPC chatter. Secrets stay on the server until earned; never ship a hidden room's contents to every client.

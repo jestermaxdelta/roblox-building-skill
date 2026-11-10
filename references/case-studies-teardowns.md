@@ -387,7 +387,7 @@ Decision rules:
 2. **Run the same protocol on all of them and on your own game** (§1.3), on the same phone, with fresh accounts, in one sitting per game.
 3. **Build the gap table.** Rows: seconds to control; seconds to first action; seconds to first reward; pop-ups in the first 3 min; minute of first purchase prompt; loop length; minute of first wall; cheapest item; number of items under 200 R$; update weekday; days since last update. Columns: each competitor, then yours. The first-minute gap is usually larger and cheaper to close than any content gap `[lihfolk]`.
 4. **Sort every gap into one of five bins:** table stakes you lack; first-minute fixes; store and price shape; cadence and timing; a gap nobody fills (your positioning). Discard anything that fails §1.5.
-5. **Write at most five changes**, each as: change → metric it should move → size of the move you expect → how you will measure it. Route them: loop changes to `core-loop-tuning.md` §5–6, store changes to `monetization-and-policy.md`, cadence to `liveops-quests-retention.md`, everything through the safe-change protocol in `audit-existing-game.md` §7.
+5. **Write at most five changes**, each as: change → metric it should move → size of the move you expect → how you will measure it. Route them: loop changes to `core-loop-tuning.md` §5–6, store changes to `monetization-and-policy.md`, cadence to `liveops-quests-retention.md`, everything through the safe-change protocol in `audit-existing-game.md` §9.
 6. **Ship behind a config or experiment**, one change per metric, never on the leader's update day.
 7. **Re-run the stopwatch on your own game two weeks later** and update the table. Repeat quarterly; the leaders will have moved.
 

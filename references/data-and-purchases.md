@@ -14,6 +14,8 @@ Contents: Start here by level · Choosing a storage service · DataStore limits 
 
 Terms: a *profile* is one player's saved table. A *session lock* (or lease) marks which server currently owns a profile so two servers cannot write it. A *schema* is the shape of the saved table; a *migration* upgrades an old shape. *Idempotent* means running it twice has the same effect as once.
 
+Related: gameplay-systems-cookbook.md (§1 Wallet, §2 Inventory, §3 Shop and §17 Trading are built on the DataService and ReceiptService here); monetization-and-policy.md (product set, boost rules, refunds and clawback policy); economy-and-progression.md (what the saved numbers mean); networking-and-security.md (RemoteGuard); debugging-and-testing.md (migration and receipt tests).
+
 ## Choosing a storage service
 
 | Need | Use |
@@ -51,7 +53,7 @@ All cloud services are server-only. Studio needs "Enable Studio Access to API Se
 - Serialisable data only: pure arrays or all-string-key tables, no `nil` holes, no Instances or `Vector3`/`CFrame`/`Color3`, no NaN or inf, valid UTF-8, no cycles. Cap player-supplied strings and key counts before they enter saved data.
 - Versioning: one version per key per UTC hour, overwritten versions kept 30 days; `ListVersionsAsync` and `GetVersionAsync` are your backup and restore.
 - Ordered stores have no versioning or metadata; write leaderboard values at most every few minutes and on leave; `leaderstats` is display, never storage.
-- Trades: never move items between two players with two independent saves. Both profiles session-locked on the same server, both `IsActive()`, mutate both with no yield, then save both. Cross-server trades use an escrow record with a unique id and idempotent completion.
+- Trades: never move items between two players with two independent saves. Both profiles session-locked on the same server, both `IsActive()`, then the two-profile commit protocol below; "save both at once" still leaves a crash window. Cross-server trades use an escrow record with a unique id and idempotent completion.
 - `game:BindToClose` gives about 30 seconds; ProfileStore and Lapis already handle shutdown, so do not add your own save loop on top.
 - Three load outcomes, kept distinct `[lihfolk]`: loaded; new (the read succeeded and returned nothing); failed (error or lock timeout). Only the first two ever get a save path. A thrown error is never "new player".
 - Tell the player when data is unhealthy: set an attribute, show a banner that stays up, and show no purchase prompts while the profile cannot save `[lihfolk]`.
@@ -66,15 +68,99 @@ Adapted from `[lihfolk]`. Knowing the class tells you where to look; class 1 is 
 | Class | Mechanism | Typical trigger | Fix |
 |---|---|---|---|
 | 1. In-server race | Two requests pass a check before either writes, because the handler yields in between | Double click, two remotes in one frame | Synchronous core: read, validate, write with no yield; busy lock shared across trade, sell, equip |
-| 2. Save-boundary split | Two profiles change in memory, only one saves before a crash or leave | Server dies right after a trade | Commit pattern below; at minimum save both at once, receiver first, so a crash destroys rather than duplicates |
+| 2. Save-boundary split | Two profiles change in memory, only one saves before a crash or leave | Server dies right after a trade | One-way transfer (gift, mail): debit the giver and confirm that save **before** crediting the receiver, so a crash destroys rather than duplicates, and the giver's ledger or outbox entry lets a retry or support restore it. Two-way swap: no save order is safe (whichever side saves first, a crash leaves one item in two profiles), so use the commit protocol below |
 | 3. Cross-server overlap | One profile live on two servers | Fast rejoin, teleport, a writer that ignores the lock (admin tool, Studio session, "load anyway" fallback) | Session lock respected by every writer; audit them with sketch E |
 | 4. Rollback abuse | The player moves value out, then gets their own save reverted | "Restore my data" support requests; a forced failed save | Restores never bring back items the ledger shows left after the restore point; check item GUIDs |
 
 - **Plan, validate, apply, record.** Express every economic action as a list of changes; validate it against current state; apply it synchronously; append a ledger entry (action, changes, resulting balance, time, `game.JobId`, `game.PlaceVersion`). Keep the last 50–200 entries in the profile for support and repair.
-- **Item identity.** Every non-stackable item gets a GUID at creation (`HttpService:GenerateGUID(false)`), used as the inventory key and never regenerated on transfer, with `source` and `acquiredAt`. The same GUID in two inventories is proof of a dupe and lets you remove exactly the copies. For rare items add an ownership index (a key per GUID, updated with `UpdateAsync` on transfer); it costs one write per transfer.
-- **Two-profile commit** for trades: (1) add the trade id to a pending list in both profiles and save both; (2) write one decision record with `UpdateAsync` on `Trade_<id>` holding both item lists (the record, not either profile, is the truth); (3) apply in memory with no yield and save both; (4) clear the pending ids. On load, a profile with a pending id reads the record: present means apply if not applied, absent means the trade never happened.
-- **Validate on load.** Saved data crosses a trust boundary to every future server: currencies finite, non-negative integers under a cap well below 2^53 (doubles stop being exact there; some "dupes" are rounding); every item id known; rare-item counts plausible for account age. Repair obvious corruption from the ledger, quarantine suspicious items (owned but untradeable until reviewed) and log. Never wipe.
+- **Item identity.** Every non-stackable item gets a GUID at creation (`HttpService:GenerateGUID(false)`), used as the inventory key and never regenerated on transfer, with `source` and `acquiredAt`. The same GUID usable in two inventories is proof of a dupe and identifies exactly the copies (the one exception: a copy still locked under a committed trade id is waiting to settle, see the protocol below). For rare items add an ownership index (a key per GUID, updated with `UpdateAsync` on transfer); it costs one write per transfer.
+- **Two-profile commit** for trades, swaps and steals: one canonical protocol, in the subsection below. Every other file links to it; do not build from a shorter summary.
+- **Validate on load.** Saved data crosses a trust boundary to every future server: currencies finite, non-negative integers under a cap well below 2^53 (doubles stop being exact there; some "dupes" are rounding); every item id known; rare-item counts plausible for account age. Repair obvious corruption from the ledger, quarantine suspicious items and log. Never wipe. *Quarantine* has one meaning in this skill: the item is kept and stays usable, but is untradeable and flagged with the incident or review id until a person decides; removal is reserved for accounts with direct evidence (dupe runbook below).
 - **Refuse broken saves.** Before writing, reject a profile that fails the same invariants, keep the last good version as latest, and alert `[lihfolk]`.
+
+### Two-profile commit protocol (canonical: trades, swaps, steals)
+
+Use it wherever two profiles must change together. Preconditions: both profiles session-locked on this server and `IsActive()`; every item has an immutable GUID; every code path that consumes an item refuses one whose `Lock` is set; nothing else moves value into another profile except this protocol or a one-way transfer whose debit save was confirmed first. Trade ids are `<UTC yyyymmdd>-<GUID>`, so one day's records can be listed by prefix. The journal idea is adapted from `[lihfolk]` and matches DevForum practice `[community]`; the abort tombstone, the single settle mutation and the recovery rules are this skill's corrections `[house]`.
+
+| Step | Action | Invariant it protects | Crash or failure after this step |
+|---|---|---|---|
+| 1 Intent | In each profile, one mutation: `PendingTrades[id] = { peer, give = { guid } }` and `Lock = id` on every given item. Save both profiles and confirm both saves (the `LastSavedData` check used by `confirmSavedAsync` in the receipt code below) | Before anything is decided, each profile's **saved** state says "these items are reserved for this trade", so no profile can forget it was in one | Nothing has moved. A profile that loads with the pending id finds no record: recovery writes `aborted`, then unlocks |
+| 2 Decide | One `UpdateAsync` on `Trade_<id>`: if the key is empty, write `{ state = "committed", a, b, fromA, fromB, t }` with full item records (without `Lock`); if it already holds anything, return `nil` and use what is there | The record is the only truth and is write-once: exactly one of `committed` or `aborted` ever exists. A slow or hung server cannot commit after a peer aborted, and a peer cannot abort after a commit | The trade is real. Both profiles are unsettled and locked; each rolls forward when it loads |
+| 3 Settle | In each profile, one synchronous mutation, idempotent by trade id: if `PendingTrades[id]` is absent, do nothing; otherwise remove the given GUIDs, add the received items whose GUID is not already present, clear locks, delete `PendingTrades[id]`, append a ledger entry. Save both | "Applied" and "no longer pending" are one saved write, so a saved profile is either pending and unapplied or settled, never applied and still pending. Roll-forward therefore cannot re-add an item that has since moved on | One side settled, the other pending: the unsettled side still holds its old items **locked**, and settles on load. This is the only state in which a GUID sits in two profiles, and the locked copy cannot be used or traded |
+| 4 Acknowledge | Best effort: add `ackA` or `ackB` to the record without changing `state` or the item lists | Tells a cleanup job that both sides settled | None for correctness |
+
+Recovery runs on every profile load, before trading unlocks, for each pending id that is not owned by a live commit on this server:
+
+1. Run the step-2 update proposing `{ state = "aborted" }`. An empty key is **filled with the tombstone first**, so a commit that arrives later fails its compare-and-set.
+2. The record says `committed`: settle (roll forward; never roll back, because the peer may already have used the items). It says `aborted`: clear the locks and the pending id in one mutation.
+3. The call errored, was throttled or timed out: the outcome is unknown. Leave the items locked and the pending id in place, tell the player the trade is being verified, and retry with backoff and on the next load. Never unlock on a guess.
+
+Live-path rules: a failed or unconfirmed intent save goes through recovery step 1 (write `aborted`, then unlock), never straight to unlock; an unknown result from step 2 is retried with the same proposal (the update is idempotent) and otherwise left locked; a record that turns out `aborted` is settled as aborted; a profile that is no longer `IsActive()` is left to its own recovery; `PlayerRemoving` waits for an in-flight commit before `EndSession`, with a timeout that leaves the pending id in place; shutdown starts no new commits. Log every step with trade id, both user ids, GUIDs, `game.JobId`, `game.PlaceVersion` and the decision state.
+
+```lua
+--!strict
+-- Unexecuted sketch, never run. Do not ship without the fault-injection test described below.
+-- PlayerData is extended with Items: { [guid]: Item }, PendingTrades: { [id]: { peer: number, give: { string } } }, Ledger.
+local tradeLog = DataStoreService:GetDataStore("TradeLog_v1")
+type Decision = { state: "committed" | "aborted", a: number?, b: number?, fromA: { [string]: any }?, fromB: { [string]: any }?, t: number }
+
+-- Write-once compare-and-set. Returns what the record now holds, or nil when the outcome is unknown (stay locked, retry).
+local function decideAsync(tradeId: string, proposal: Decision): Decision?
+	local stored: Decision? = nil
+	local ok = pcall(function()
+		tradeLog:UpdateAsync("Trade_" .. tradeId, function(current: Decision?)
+			if current ~= nil then stored = current; return nil end -- already decided: never overwrite
+			stored = proposal
+			return proposal
+		end)
+	end)
+	return if ok then stored else nil
+end
+
+-- Step 3. One synchronous mutation per profile; applying and clearing the pending id cannot be saved apart.
+local function settle(data: any, tradeId: string, decision: Decision, userId: number)
+	local pending = data.PendingTrades[tradeId]
+	if pending == nil then return end -- already settled here: a second call changes nothing
+	if decision.state == "committed" then
+		local isA = userId == decision.a
+		for guid in (if isA then decision.fromA else decision.fromB) :: { [string]: any } do data.Items[guid] = nil end
+		for guid, item in (if isA then decision.fromB else decision.fromA) :: { [string]: any } do
+			if data.Items[guid] == nil then data.Items[guid] = table.clone(item) end
+		end
+	end
+	for _, guid in pending.give do -- aborted: unlock what is still here; committed: nothing left to unlock
+		local item = data.Items[guid]
+		if item ~= nil and item.Lock == tradeId then item.Lock = nil end
+	end
+	data.PendingTrades[tradeId] = nil
+	table.insert(data.Ledger, { t = os.time(), trade = tradeId, state = decision.state, job = game.JobId })
+end
+
+local function recoverAsync(player: Player, profile: any, liveTrades: { [string]: true })
+	local ids = {}
+	for tradeId in profile.Data.PendingTrades do table.insert(ids, tradeId) end -- snapshot: the loop yields
+	for _, tradeId in ids do
+		if liveTrades[tradeId] then continue end
+		local decision = decideAsync(tradeId, { state = "aborted", t = os.time() }) -- empty key: tombstone written FIRST
+		if not profile:IsActive() then return end
+		if decision == nil then scheduleRetry(player, tradeId); continue end -- unknown: stay locked
+		settle(profile.Data, tradeId, decision, player.UserId)
+	end
+	profile:Save()
+end
+```
+
+Cost, stated plainly: 5 `UpdateAsync` calls per trade (two intent saves, one decision, two settle saves), 7 with acknowledgements, each counting one read and one write against the budgets above, plus one read-or-abort per pending id on load. A 20-player server has 860 writes a minute, so 10 trades a minute use 50–70. It is three sequential round trips, so a commit takes seconds: show "completing trade", and let a timeout leave items locked, never unlocked. Records are roughly 0.5–2 KB of cross-player data `[house]`: include them in RTBF handling, delete a committed record only when both acknowledgements are present, and delete tombstones only after 30 days.
+
+What it does not guarantee:
+
+- **Atomicity.** There is a window in which one side has settled and the other is locked. A player who never returns leaves a locked copy at rest, so dupe scans must ignore copies locked under a committed id.
+- **Liveness.** While the trade-log store is unreadable, the items stay locked.
+- **Classes 3 and 4.** A writer that ignores the session lock still dupes. Restoring a profile to a version from before a trade resurrects the items it gave away: restore tools must replay that user's committed records after the restore point.
+- **Split profiles.** It relies on a profile being one key saved whole; a sharded or multi-key profile breaks step 3.
+- **Correctness of this text.** It is a design reviewed on paper, not production-proven code. A transaction library (Lyra's `txAsync`, see library status) is the alternative to evaluate.
+
+Fault-injection test, required before shipping: with `ProfileStore.Mock` and a mock trade-log store, abandon the commit after each of these points: one intent save, both intent saves, the decision write, one settle save, both settle saves. Also make the decision write throw after it succeeded; delay step 2 while the peer's profile loads on a second mock server and recovers; rejoin the same server mid-commit. After each case load both profiles through recovery and assert: every GUID is unlocked in exactly one profile; no profile has the trade applied and still pending; item counts are conserved; a second recovery pass changes nothing.
 
 ## ProfileStore essentials
 

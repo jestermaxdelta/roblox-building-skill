@@ -7,10 +7,10 @@ Covers round-based collections of short minigames, elimination game shows and ha
 | Level | Do first | Leave for later |
 |---|---|---|
 | Beginner | A round manager with five phases; 4–5 minigames that share one contract; hard time limits; pay everyone each round; something to do while waiting | Map voting, levels, cosmetics shop, team games, 15+ minigames |
-| Intermediate | Per-round cleanup (janitor) and `pcall`-wrapped rounds; weighted pick that avoids recent repeats and respects player count; spectator activities; 10–15 minigames; streaming-safe map loads | Automated bot tests, ghosts |
+| Intermediate | Per-round cleanup (a Trove) and `pcall`-wrapped rounds; weighted pick that avoids recent repeats and respects player count; spectator activities; 10–15 minigames; streaming-safe map loads | Automated bot tests, ghosts |
 | Expert | Automated round tests for every minigame; win rate tracked by spend tier; per-minigame exploit checks; a host character and escalation finale; live rotation of minigames by telemetry | — |
 
-Terms: *minigame contract* = the interface every minigame module implements so the round manager can run any of them; *janitor* = an object that records everything a round creates and destroys it all at the end.
+Terms: *minigame contract* = the interface every minigame module implements so the round manager can run any of them; *Trove* = a cleanup object (RbxUtil `Trove`; Janitor and Maid are older equivalents) that records everything a round creates and destroys it all at the end.
 
 ## Snapshot
 
@@ -43,8 +43,8 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 
 ## Progression and economy shape
 
-- Pay everyone every round: participation, more for placement, a bonus for winning. A player who never wins must still progress `[lihfolk]`.
-- Levels from XP per round give the session a long goal; cosmetics are the main reward and purchase: trails, win effects, victory poses, emotes, titles. Win effects on the results screen are seen by the whole server.
+- Every round pays every player: a base amount for taking part, extra by placement, and a winner's bonus, so someone who never comes first still moves forward `[lihfolk]`.
+- Round XP feeding a level track is the long goal of a session; what players earn and buy is mostly cosmetic: trails, win effects, victory poses, emotes, titles. Win effects on the results screen are seen by the whole server.
 - Daily and weekly challenges ("win three team games") steer players toward minigames they skip.
 - A good minigame `[lihfolk]`: one rule; visible state (who is winning); comebacks possible; ends on time or early with a clear winner; declares its player range; fair on phones (no precise jumps or small buttons unless that is the point).
 - Portfolio: survival or elimination, race, collection, team, reaction, hidden-role, creative-and-vote, asymmetric. Launch with at least 10–15 so a 20-minute session rarely repeats `[lihfolk]`.
@@ -78,7 +78,7 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §20 Checkpoints and obby stages, §13 NPC and enemy spawning and AI, §3 Shop. Its "Build order by genre" table gives a second opinion.
 
 1. Round manager (phases, timers, end conditions that count remaining players).
-2. Minigame contract and loader; per-round janitor.
+2. Minigame contract and loader; per-round Trove.
 3. Map loading from `ServerStorage` with streaming requests; spawn points; kill planes.
 4. Player round state: in round, eliminated, spectating, AFK.
 5. Spectating and spectator activities.
@@ -101,12 +101,12 @@ export type Minigame = {
 	minPlayers: number,
 	maxPlayers: number,
 	duration: number, -- hard limit in seconds
-	start: (players: { Player }, map: Model, janitor: any) -> (),
+	start: (players: { Player }, map: Model, trove: any) -> (),
 	finish: () -> RoundResult,
 }
 ```
 
-- **Cleanup discipline**: connections, parts, tools and timers from round 3 must not exist in round 31. Register everything with a per-round janitor and destroy the map. Wrap `start` in `pcall` or `xpcall` so one broken minigame ends its round instead of freezing the loop `[lihfolk]`.
+- **Cleanup discipline**: connections, parts, tools and timers from round 3 must not exist in round 31. Register everything with a per-round Trove and destroy the map. Wrap `start` in `pcall` or `xpcall` so one broken minigame ends its round instead of freezing the loop `[lihfolk]`.
 - **Map loads**: clone small maps from `ServerStorage`, destroy after. With streaming on, call `Player:RequestStreamAroundAsync` before teleporting or players spawn into nothing. Large maps loaded every two minutes cause hitches and replication bursts.
 - **Phase sync**: the server owns the phase; replicate phase name and end time; clients count down from `Workspace:GetServerTimeNow()`.
 - **Leavers**: end conditions recount remaining players every tick so a round never hangs on someone who left.
@@ -140,7 +140,7 @@ export type Minigame = {
 | 3 | 10–15+ minigames; selection avoids recent repeats and fits player count | Add games; weighted pick |
 | 4 | Each rule fits one sentence and one icon | Rewrite or cut the minigame |
 | 5 | Everyone is paid every round | Add participation rewards |
-| 6 | Memory and connection counts are flat after 50 rounds | Add a janitor; hunt leaks |
+| 6 | Memory and connection counts are flat after 50 rounds | Add a Trove; hunt leaks |
 | 7 | A minigame error ends only its round | Wrap in `pcall`; log and skip |
 | 8 | Rounds end correctly when players leave | Recount each tick |
 | 9 | Map load causes no hitch; players never spawn into unstreamed space | Smaller maps; stream requests |

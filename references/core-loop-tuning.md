@@ -50,9 +50,9 @@ Timing targets per nested loop (`[house]` targets built on the official windows 
 
 | Loop | One cycle | First-session target | Later-session target | Measured by |
 |---|---|---|---|---|
-| Micro | 5–30 s | First rep within 30 s of gaining control; 2+ reps before 60 s; local feedback under 80 ms | Rep length falls or stakes rise with upgrades | Seconds to `FirstAction`, `FirstReward` |
-| Meso | 3–10 min | First upgrade by 2 min; first goal done at 5–10 min | One goal completes every 5–10 min for the first 30 min, then every 10–20 | `GoalDone` custom event, value = minutes since the previous one |
-| Macro | 10–25 min | First closure at 15–25 min; median first session at least 10 min | Core players end sessions at a stop point, not a wall | First-session curve; session time |
+| Micro | 10–30 s | First rep within 30 s of gaining control; 2+ reps before 60 s; local feedback under 80 ms | Rep length falls or stakes rise with upgrades | Seconds to `FirstAction`, `FirstReward` |
+| Meso | 5–15 min | First upgrade by 2 min; first goal done at 5–10 min | One goal completes every 5–10 min for the first 30 min, then every 10–20 | `GoalDone` custom event, value = minutes since the previous one |
+| Macro (session) | 15–25 min | First closure at 15–25 min; median first session at least 10 min | Core players end sessions at a stop point, not a wall | First-session curve; session time |
 | Meta | Days to weeks | End of session 1 names what is new tomorrow | Something new on each return day of D1–D7; a content beat every 1–2 weeks | Play days D1, D2–7 (out of 6), D8–28 |
 
 Rules: the verb is one word and is performed in 3D by the character, not in a menu (market-scan pattern 3). Every loop level names what the player sees change. A loop with no entry in "100th-rep difference" has a shelf life of minutes. Every number in the spec is a Config key with a code default (§7).
@@ -436,7 +436,7 @@ return Tunables
 
 ## 8. Juice checklist, ordered by cost
 
-Work down the list for the core verb first, then the reward, then the goal. Stop when the next tier costs more than the next row of §6. All of it runs on the client: a server-side tween replicates the property to every client every frame and looks jittery `[official]`; send one remote per gameplay fact and build the effect locally (game-craft.md §1 has values and the shake module).
+Work down the list for the core verb first, then the reward, then the goal. Stop when the next tier costs more than the next row of §6. All of it runs on the client: a server-side tween replicates the property to every client every frame and looks jittery `[official]`; send one remote per gameplay fact and build the effect locally (vfx-and-juice.md §7 has the hit-stop and shake values, game-craft.md §1 the shake module).
 
 | Tier | Cost | Items |
 |---|---|---|

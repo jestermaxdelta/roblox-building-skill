@@ -1,0 +1,12 @@
+{
+  "name": "roblox-game-design",
+  "owner": { "name": "jestermaxdelta" },
+  "metadata": { "description": "Roblox game design and development skills for Claude Code." },
+  "plugins": [
+    {
+      "name": "roblox-dev",
+      "source": "./",
+      "description": "Takes any Roblox game to the next level: design, build, monetize, optimize, launch. One main skill plus 12 focused skills that trigger on plain phrases."
+    }
+  ]
+}

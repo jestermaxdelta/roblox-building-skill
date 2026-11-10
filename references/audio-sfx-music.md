@@ -145,7 +145,7 @@ Audio is the asset type most likely to be removed after launch, and a removed so
 
 ## 5. SFX design: layers, variation, timing
 
-**Layering.** One file rarely carries an action. Stack layers with different jobs and different frequency content so they do not mask each other `[lihfolk]`:
+**Layering.** A single recording is seldom enough for an action. Build it from layers that each do one job and sit in different frequency ranges, so none hides another `[lihfolk]`:
 
 | Layer | Job | Sword example | Length |
 |---|---|---|---|

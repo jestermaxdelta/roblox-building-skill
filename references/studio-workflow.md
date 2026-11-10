@@ -6,7 +6,7 @@ How to run Roblox Studio as a production tool: the settings worth changing, ever
 
 | Level | Do first | Ignore for now |
 |---|---|---|
-| Beginner | Section 1 "ten-minute setup"; learn Test (`F5`), Stop (`Shift F5`) and the Client/Server toggle; save with notes before every risky change (`Ctrl Alt S`); never edit during a playtest; publish privately and test on your own phone | Rojo, CI, packages, plugins, Drafts mode, multi-agent work |
+| Beginner | Section 1 "First hour" (four steps, not the full table); learn Test (`F5`), Stop (`Shift F5`) and the Client/Server toggle; save with notes before every risky change (`Ctrl Alt S`); never edit during a playtest; publish privately and test on your own phone | Rojo, CI, packages, plugins, Drafts mode, multi-agent work |
 | Intermediate | The testing ladder (section 2); a dev universe separate from live (section 3); Script Sync plus git, or Rojo (section 8); the rollback runbook (section 4); the Studio MCP in read-only, then edit mode (section 9) | Custom plugins, headless Studio CLI |
 | Expert | Environment module and CI-only production publishes; packages as the kit delivery unit; the shared-place rules and the multi-agent protocol (sections 5 and 10); the layered backup table (section 11); scripted tests with `StudioTestService` | Nothing: the level-up table at the end is the audit list |
 
@@ -18,7 +18,16 @@ How to run Roblox Studio as a production tool: the settings worth changing, ever
 
 Studio is free on Windows and macOS: minimum 3 GB RAM, recommended 8 GB and 1600×900 `[official]`. Every game runs on the latest engine, so update Studio when the Update button appears. Settings (`Alt S`, search box at the top), custom toolbar tabs, saved Command Bar commands and plugin settings are stored per machine: nothing follows you to a second PC or a teammate `[official]` `[lihfolk]`.
 
-Ten-minute setup:
+### First hour (beginner): four things, then start building
+
+1. **Save to the cloud.** File > Save to Roblox as soon as the place exists. A local file that was never saved is the one a crash destroys.
+2. **Auto-recovery on.** Studio Settings (`Alt S`), type "recovery": `Auto-Recovery Enabled` on, interval 5 minutes.
+3. **Make the Output window tell you more.** Open Output (Window menu); in its options turn on Show Context and Show Source, so every message says whether it came from the client or the server and from which script.
+4. **Turn on 2-step verification** for the Roblox account. It protects everything you make.
+
+That is all a first week needs. Skip the table below until the first game is playable; nothing in it blocks learning.
+
+### Full setup (intermediate and above, about ten minutes)
 
 | Setting or step | Value | Why |
 |---|---|---|
@@ -35,7 +44,7 @@ Ten-minute setup:
 | File > Beta Features | Enable only what the task needs (New Device Simulator for the device, controller and network tools) `[VS]` | Betas change behaviour; note which are on in the project README |
 | File > Experience Settings > Enable Studio Access to API Services | On in the dev universe only | With it on, Studio playtests read and write the real DataStores of that universe; the docs say not to enable it for live games `[official]` |
 
-Teams: keep `tools/studio-setup/SETTINGS.md` (the ten values above), the approved plugin list and any custom tab JSON in the repo, and apply them on every new machine `[lihfolk]`.
+Teams: keep `tools/studio-setup/SETTINGS.md` (the values in the full table), the approved plugin list and any custom tab JSON in the repo, and apply them on every new machine `[lihfolk]`.
 
 ## 2. Test modes
 
@@ -104,7 +113,7 @@ Conflict with the "only CI publishes production" rule: the Open Cloud place publ
 
 - Publishing does not move players. Old servers keep the old version until they empty. Creator Hub > Configurations > Server management > Restart Servers, with "Restart only servers with outdated versions" ticked and, for a live game, "Delay server restart" (1–60 minutes of bleed-off). Servers receive `game.ServerRestartScheduled(restartTime, source, attributes)`: show a countdown and start saving `[official]`.
 - Restart every outdated server when the save format changed: two versions writing the same profiles is how data corrupts `[official]` `[lihfolk]`.
-- First release `[official]` `[VS]`: games are private by default. File > Invite early testers allows up to 10 friends in a compatible age range. Releasing to the public needs an account in good standing at least 2 days old, an age check, and the first maturity question answered; that reaches age-checked 16+ only. All ages (Roblox Kids and Select) additionally needs verification, 2-step verification, Plus or Premium for 2 months or a refundable fee, the full questionnaire and the evaluation process (analytics-and-discovery.md). At most 5 never-released games can be released per day.
+- First release `[official]` `[VS]`: games are private by default. File > Invite early testers allows up to 10 friends in a compatible age range. Releasing to the public needs an account in good standing at least 2 days old, an age check, and the first maturity question answered. The "16+" in the docs describes the audience, not the creator: a game released this way is shown to players who are age-checked 16 or older and to the creator's trusted friends, whatever the creator's own age. Reaching all ages (Roblox Kids, 5–8, and Roblox Select, 9–15) additionally needs: creator verification (facial age estimation if under 18, government ID if 18 or older), 2-step verification, either Roblox Plus or Premium held for 2 consecutive months or a one-time refundable publishing fee of 1,000 Robux per game, the full questionnaire with a Minimal, Mild or Moderate rating, and the evaluation: 250 unique plays by highly engaged, age-checked 16+ players within a 60-day window, tracked on the Audience Reach dashboard. "Highly engaged" depends on account tenure, playtime in the game and a purchase made anywhere on Roblox in the last 60 days; the game itself does not need to sell anything. A 50,000-Robux refundable expedited review exists for timed launches. At most 5 never-released games can be released per day. A creator under 16 should read `references/learning-paths.md` section 3, "If you are under 16".
 - Time-sensitive content: ship the code early behind a Config flag and flip the flag at launch `[official]`.
 
 Rollback runbook (write it down before the first launch):
@@ -319,7 +328,7 @@ The same key changes meaning with focus: `Ctrl D` duplicates in the viewport and
 
 Accessed 2026-11-10.
 
-- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{setup,testing-modes,device-simulator,controller-emulator,network-simulator,mcp,mcp-open-cloud,plugins,output,explorer,overview}.md`, `includes/studio/{playtest-modes,system-reqs}.md`, `includes/place-size-limit.md`, `projects/{collaboration,version-history,activity-history,place-files,update-games,external-tools}.md`, `projects/assets/packages.md`, `production/publishing/publish-games-and-places.md`, `cloud/guides/usage-place-publishing.md`, `cloud-services/data-stores/index.md`, `scripting/sync.md`, `ai/coding-harness.md`, `assistant/{guide,skills,mcp}.md`, `reference/engine/classes/{Studio,ChangeHistoryService}.yaml`, `performance-optimization/` (shortcut mentions) (read) — https://github.com/Roblox/creator-docs
+- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{setup,testing-modes,device-simulator,controller-emulator,network-simulator,mcp,mcp-open-cloud,plugins,output,explorer,overview}.md`, `includes/studio/{playtest-modes,system-reqs}.md`, `includes/place-size-limit.md`, `projects/{collaboration,version-history,activity-history,place-files,update-games,external-tools}.md`, `projects/assets/packages.md`, `production/publishing/{publish-games-and-places,kids-and-select}.md`, `cloud/guides/usage-place-publishing.md`, `cloud-services/data-stores/index.md`, `scripting/sync.md`, `ai/coding-harness.md`, `assistant/{guide,skills,mcp}.md`, `reference/engine/classes/{Studio,ChangeHistoryService}.yaml`, `performance-optimization/` (shortcut mentions) (read) — https://github.com/Roblox/creator-docs
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `01 Studio and Workflow/{Studio Settings and Shortcuts, Testing Modes - Play Run and Multi-Client, Team Create and Collaboration, Version History and Backups, Places Universes and Experience Settings, Packages and Asset Reuse, Plugins - Using and Writing, External Tooling - Rojo Wally Selene StyLua, Git and Source Control for Roblox, Studio Assistant and AI Tools, Command Bar and Studio Scripting}.md`, `16 MCP and Agents/{Safety Rules for AI Agents in Studio, Multiple Agents in One Studio, Roblox Studio MCP Server, Built-In Studio MCP vs Community MCP Servers - Migration Guide}.md`, `39 Studio Plugins and Tooling/{Undo and ChangeHistoryService Done Right, Plugin Security and Permissions}.md`, `13 Production and Case Studies/{Safe Changes in a Shared Place, Disaster Recovery for a Roblox Game - Places, Code, Assets, Data and Accounts, Release Process and Rollbacks}.md` (read)
 - Last-commit dates from shallow clones: https://github.com/rojo-rbx/rojo, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/PepeElToro41/ui-labs, https://github.com/flipbook-labs/flipbook, https://github.com/Kampfkarren/hoarcekat, https://github.com/rojo-rbx/rbxlx-to-rojo (read: commit metadata only)
 - https://devforum.roblox.com/t/early-preview-studio-script-sync/3257548 and https://devforum.roblox.com/t/do-i-need-rojo/3776851 (search summary)

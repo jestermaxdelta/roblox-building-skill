@@ -2,7 +2,7 @@
 
 What this is: the remote design rules, the threat model, the server-side guard, and the anti-cheat, ban, backdoor and credential practices for a Roblox game. Open it when designing a network surface, or jump to "Level-up audit" for a live game that is being exploited or has never been reviewed. Distilled from knowledge-base sections 4.4 and 4.5; platform facts re-checked against `Roblox/creator-docs` on 2026-11-10. Every client-to-server remote in a shipped game goes through the guard in this file. Snippets are unexecuted sketches. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
-Contents: Start here by level · The three remote types · Designing the network surface · Threat model: what an exploiting client can always do · Exploit landscape · Server authority mode · Threat modelling: procedure and walkthroughs by system · Validation layers · Remote guard and rate limiter · Remote review procedure · Movement and combat checks · Detection, honeypots and consequences · Ownership, access control and third-party code · HttpService and secrets · Backdoors, plugins and team hygiene · Level-up audit · Security review gate · Sources
+Contents: Start here by level · The three remote types · Designing the network surface · Threat model: what an exploiting client can always do · Exploit landscape · Server authority mode · Threat modelling: procedure and walkthroughs by system · Validation layers · Remote guard and rate limiter · Remote review procedure · Movement and combat checks · Detection, honeypots and consequences · Ownership, access control and third-party code · HttpService and secrets · Backdoors, plugins and team hygiene · Level-up audit · Review gate · Sources
 
 ## Start here by level
 
@@ -13,6 +13,8 @@ Contents: Start here by level · The three remote types · Designing the network
 | Expert | Lag-compensated reach with a clamped rewind; detectors rolled out shadow → sample review → canary → enforce, with measured precision; fuzz and race harness in CI; server authority for competitive cores; evidence records and an appeals queue | Nothing: read it all |
 
 Terms: a *remote* is a RemoteEvent, UnreliableRemoteEvent or RemoteFunction. A *handler* is the server function connected to it. *Intent* is what the player asks for; *outcome* is what the server decides. A *yield* is any point where a function pauses (`task.wait`, any `...Async` call, `WaitForChild`).
+
+Related: gameplay-systems-cookbook.md lists the exploit surface of each gameplay system (wallet, shop, trading, combat, codes); physics-and-vehicles.md covers movement and vehicle validation; data-and-purchases.md covers dupes and receipts.
 
 ## The three remote types
 
@@ -200,6 +202,7 @@ return RemoteGuard
 Usage for a soft-currency purchase (price and ownership come from server data only):
 
 ```lua
+-- fragment (unexecuted sketch)
 local busy: { [Player]: true } = {}
 RemoteGuard.connect(ReplicatedStorage.Remotes.PurchaseItem, {
 	name = "PurchaseItem",
@@ -253,6 +256,7 @@ return Manifest
 ```
 
 ```lua
+-- fragment (unexecuted sketch)
 -- Studio-only race test: 20 purchases in one frame must never grant more than the balance pays for.
 for _ = 1, 20 do task.spawn(handlers.RequestPurchase, testPlayer, "Sword") end
 task.wait()
@@ -276,9 +280,9 @@ Movement (without server authority mode): a staggered loop per player compares X
 | Fly | Airborne and not descending for too long | A default jump (gravity 196.2, `JumpHeight` 7.2) rises for about 0.27 s; flag at 1.5 s | Falling (descending is fine); ragdoll; swimming and climbing. Test "grounded" with a server raycast, not `Humanoid.FloorMaterial`, which comes from the client's simulation |
 | Noclip | Ray from the previous to the current sample hits static collidable geometry | Count only penetration over 1 stud where the reverse ray also hits; cast at torso height; `RespectCanCollide = true` and the character's collision group | Doors and destructibles (tag and exclude); corners; spawns |
 
-Update "last valid position" only when grounded and plausible, so a rubber-band never returns a player to mid-air. Repeated rubber-bands are themselves a strong signal. Conflict: this file used to say a 1–2 Hz loop; LihFolk samples at 2–5 Hz. Both work with a leaky bucket; use 2–4 Hz where position is the prize, 1–2 Hz elsewhere, and in every case check distance at the moment of each interaction, because a teleport-and-back between samples is invisible.
+Update "last valid position" only when grounded and plausible, so a rubber-band never returns a player to mid-air. Repeated rubber-bands are themselves a strong signal. Conflict: the knowledge base says a 1–2 Hz loop `[house]`; LihFolk samples at 2–5 Hz `[lihfolk]`. Both work with a leaky bucket; use 2–4 Hz where position is the prize, 1–2 Hz elsewhere, and in every case check distance at the moment of each interaction, because a teleport-and-back between samples is invisible.
 
-Combat: the client sends aim direction or target plus a timestamp; the server verifies the cooldown, recomputes the ray from the **server's** character position, and allows a small lag tolerance (community heuristic: about 10–15 extra studs and a 300–500 ms rewind cap). Reject muzzle origins far from the server root. Never apply damage from `Touched` on a client-owned weapon without a server-side distance check and per-target debounce. Parallel Luau fits bulk raycast validation (see performance.md).
+Combat: the client sends aim direction or target plus a timestamp; the server verifies the cooldown, recomputes the ray from the **server's** character position, and allows a small lag tolerance (community heuristic: about 10–15 extra studs and a 300–500 ms rewind cap). Conflict (rewind cap): community threads suggest 300–500 ms `[community]`, LihFolk's melee project clamps at 0.4 s `[lihfolk]`, and the cookbook sketch uses 0.25 s `[house]`. Start at 0.25 s and raise it only when logs show honest claims failing. Reject muzzle origins far from the server root. Never apply damage from `Touched` on a client-owned weapon without a server-side distance check and per-target debounce. Parallel Luau fits bulk raycast validation (see performance.md).
 
 Combat tuning `[lihfolk, rules of thumb unless marked]`:
 
@@ -436,7 +440,7 @@ print(remotes, "remotes;", review, "server scripts to read first")
 | Mechanics cloned or exploits found fast | Server logic inside replicated ModuleScripts | Split modules; server-only code in ServerScriptService |
 | Unknown publishes or settings changes | Over-broad group role, leaked key or cookie | Activity History and audit log; rotate; least privilege; automation account |
 
-## Security review gate
+## Review gate
 
 - [ ] Every remote goes through rate limiting plus type, finiteness, range, length, UTF-8, instance and game-rule checks; rejections are silent.
 - [ ] No `InvokeClient`; `OnServerInvoke` assigned once.

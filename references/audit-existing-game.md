@@ -16,7 +16,17 @@ Contents: 1 Intake · 2 Benchmarks · 3 Scorecard and sub-checks · 4 Triage tre
 
 ## How the audit adapts to the developer
 
-Set the level at intake (ask, or infer: no Rojo, no ProfileStore and no analytics events means beginner; funnels and Configs in use means intermediate; CI, experiments and cohort exports mean expert). The audit work is identical; the report changes.
+Rate the owner per domain from evidence in the conversation and the project, never by asking "what level are you" (same rule as SKILL.md; signals in `references/learning-paths.md`). People are often strong in one domain and new in another, so the report mixes columns: an owner who quotes D1 and conversion but works Studio-only with no Rojo gets the intermediate treatment for numbers and the beginner treatment for the change method.
+
+| Domain | Beginner signals | Intermediate signals | Expert signals |
+|---|---|---|---|
+| Metrics and platform | Talks in visits and likes; has not opened Creator Analytics | Quotes D1, session time, conversion; reads the dashboard | Cohort and source splits, experiments, API pulls |
+| Code and tooling | Studio-only, scripts inside models, raw DataStore calls | Modules, ProfileStore or similar, Configs, some funnels | Rojo, CI publish, tests, typed Luau |
+| Art | Toolbox models and Parts | Some own meshes, mixed styles | Blender pipeline with kits and a style bible |
+| Design and economy | Features listed, no loop timings or price curve | Loop and curve described, balance by feel | Balance sheet, sink ratio, modelled curves |
+| Time | Under about 10 h a week, solo | 10–30 h a week or a small team | Full-time team |
+
+The audit work is identical; the report changes. Pick each row of the table below from the matching domain.
 
 | | Beginner | Intermediate | Expert |
 |---|---|---|---|
@@ -26,14 +36,14 @@ Set the level at intake (ask, or infer: no Rojo, no ProfileStore and no analytic
 | Change method | One change per week, Config flags explained step by step | Safe-change protocol | Experiments, staged rollouts, kill switches, automated alerts |
 | Decision support | Auditor recommends; one alternative | Lower-risk and bold options | Second-opinion review (§8) on ship, rebuild, pricing and migration calls |
 
-Never hide a T0 blocker or a house-rule violation to keep a beginner report short.
+Never hide a T0 blocker to keep a report short, and always list house-rule debt with its migration track (§6), whatever the level.
 
 ## Operating rules
 
 - Evidence before opinion. Every finding cites a number, a screenshot, a script path and line, or a timed observation. "Needs polish" is not a finding.
 - Read-only first. No edit, publish, config change or DataStore call until the report is accepted.
 - Fix in funnel order (reach → stability → first session → D1 → D7 → D30 → monetisation → paid growth). A fix lower in the funnel is wasted while a higher step leaks. Roblox's own guidance: if retention is low, fix core gameplay first; improve monetisation once retention is strong `[official]`.
-- House rules are findings, not preferences: visible primitives, marketplace or generated assets, walk-through meshes and invasive offers are P0 regardless of metrics.
+- House-rule violations in an existing game are findings with a migration plan ranked by visibility, on their own track with a fixed share of weekly hours (§6). They do not block other fixes. Only two are blockers: walk-through geometry on the main path, and invasive or non-compliant offers. Work delivered during the level-up never adds a new violation.
 - One variable per dimension per week, measured against a recorded baseline.
 
 ## 1. Intake
@@ -61,32 +71,33 @@ Data unlock thresholds `[official][VS]`: dashboards need > 10 DAU and 10 play ho
 
 Pulling numbers without screenshots `[official][VS]`: Open Cloud **Analytics Query API** (`POST https://apis.roblox.com/analytics-query-api/v1/universes/{universeId}/metrics`, body `metric`, `granularity`, `startTime`, `endTime`, optional `breakdown`, `filter`) and the experimental **Benchmarks API** (`POST https://apis.roblox.com/analytics-benchmark/v1/universes/{universeId}/benchmarks`, percentiles 10/50/90, types genre / similarity / top experiences). Scope `universe.analytics:read`; through the Studio MCP it sits in the "Look at your game" permission group and is called with `open_cloud_invoke`. Standard metrics keep up to 4 years, performance metrics 28 days. Useful metric names: `ForwardD1Retention`, `ForwardD7Retention`, `ForwardD30Retention`, `AverageSessionLengthMinutes`, `AveragePlayTimeMinutesPerDAU`, `DailyActiveUsers`, `PayingUsersCVR`, `AverageRevenuePerPayingUser`, `AverageRevenuePerUser`, `RFYPlayThroughRate`, `RFYDuration0To60`, `RFYDuration61To180`, `RFYD2To7PlayDays`, `RFYD8To28PlayDays`, `ClientCrashRate15m`, `OomUnexpectedExits`, `ClientFpsAvg`, `ClientMemoryUsagePercentageAvg`, `ServerFrameRateAvg`, `ThumbnailQualifiedPTR`, `FunnelStepChurnRate`.
 
-## 2. Benchmarks to score against (snapshot 2026-11-10) `[VS]`
+### Numbers-only first pass (no place access yet)
 
-Rule: the game's own Creator Analytics benchmark (similar players → genre → all; shown as P50–P90, or P10–P50 where lower is better) beats every published number. Public figures are a fallback for games under 100 DAU.
+When the owner gives a few numbers and a description but no place file, repo or Studio access, do not open the full template and do not answer with a wall of "no data". Reply once, in under about 400 words, in this shape:
 
-| Metric | Reference value | Source and grade |
-|---|---|---|
-| D1 / D7 / D30 median | 10.3% / 1.6% / 0.5%; top 1%: 22.2% / 9.1% / 4.7% | GameAnalytics 2025 Roblox report via third-party summary `[community]` (search summary) |
-| D1 by average session | 4.3% (0–3 min), 7.9% (7–12), 10.2% (13–18), 11.5% (19–24); top 2% 32.3%; D7 top 2% 8.5% | Same report, via the vault (market-scan-2026-11.md) |
-| D1 dashboard example | P50–P90 = 12.11–18.73% | Creator docs example, not a platform benchmark `[official]` |
-| Genre D1 | Obby 25–35, tycoon 20–28, shooter 22–30, roleplay 15–22 | RoWatcher, unsourced `[community]`; treat as optimistic |
-| Session length | Median 6.6 min; hits in the vault sample 14–27 min; house target 19+ min | Vault; `[house]` target |
-| Daily playtime | Median 16.8 min, top 10% 64.9 min; RFY counts at most 60 min per user per day | Vault; `[official]` cap |
-| PTR, first-play bounce | No public number. Use the dashboard benchmark; never compare across 12 Oct 2026 | `[official]`; no evidence found for a public value |
-| Payer conversion, ARPPU, ARPDAU | No reliable public Roblox benchmark found. Dashboard benchmarks exist for all three | `[official]` (benchmark exists); no evidence found otherwise |
-| Like ratio | Ad-running games median 79%, others 92%; house floor 85% before any paid traffic | Vault sample `[community]` |
-| Client crash rate | Investigate above 2–3%; Roblox's own alert example fires at 5% for 5 minutes | Vault "Doc" value; `[official]` alerts page |
-| Client memory | Memory-usage-percentage line near 100% on a platform means out-of-memory exits | `[official]` |
-| Server | Frame rate 60; CPU time < 16 ms; memory < 50% of the server total, or under 3 GB as a rule of thumb | `[official]` |
-| Thumbnail personalisation | +8.5% qualified PTR on average, up to +50% | `[official]` |
+1. **What the numbers say** (2–3 sentences): each number placed against the benchmark rule in §2, with the benchmark named.
+2. **Triage step** (T0–T8) and the one sentence of evidence that selects it; say what was assumed for anything missing.
+3. **Top 3 actions**, each with the reason, the first concrete step, the effort in hours and in weeks at the owner's weekly budget, and the number that will show it worked. If the description reveals house-rule debt, say it goes on the 20–30% track and name the first surface (spawn view).
+4. **At most five asks**, the ones that would change the plan: usually (a) first-play bounce under 60 s and 61–180 s, (b) average session time and the first-session curve at 5 minutes, (c) crash rate on the worst platform, (d) read access to the place or repo, (e) the one thing the owner most wants to move.
+5. **What comes next:** the full scored report after access, with its date.
 
-Conflict: the vault's GameAnalytics D1 figures are cut by session length (11.5% at 19–24 min) while the third-party summary quotes one overall median (10.3%). They are different cuts of the same report, not a contradiction; use the session-length cut when the game's session time is known.
+No scorecard, no 50-point total and no day-by-day plan in this reply: scores need inspection, and a 10-hours-a-week owner plans in weeks. Example of the action format: "Add the seven onboarding funnel events (about 3 hours, this week): without them the 9% D1 cannot be traced to a step; done when the funnel chart shows all steps for 200+ new players."
+
+## 2. Benchmarks to score against `[VS]`
+
+The single benchmark table, with the sample and source behind every row and the weak rows marked, is `references/analytics-and-discovery.md` §"Benchmarks: one table". Use it like this:
+
+1. **The dashboard percentile always wins.** If the owner can read Creator Analytics (100+ DAU), score against the game's own P50–P90 (or P10–P50 where lower is better) and name the benchmark type (similar players, genre, all).
+2. **No dashboard benchmark:** the row that drives triage for retention is the large-title distribution (D1 P25 8.4%, median 10.3%, P75 12.9%, P90 15.9%; D7 median 1.6%; D30 median 0.5%). D1 under 8.4% is "below" and fires T4. D1 from 8.4% to 12.9% is "near median": T4 does not fire on D1 alone; continue down the tree and keep D1 as a secondary target. D1 above 12.9% is "above".
+3. **Cross-check with the session-length row,** never instead of step 2: a D1 below the median for the game's own session bucket means players enjoy a session but have no reason to return (look at T5 causes before the first minutes).
+4. **Never triage from** the unsourced genre ranges, the docs' illustrative dashboard example, or mobile-industry rules of thumb. They are listed in the table only so a quoted figure can be recognised and discounted.
+
+Worked reading: a tycoon with D1 9% and no dashboard benchmark is in the "near median" band (lower half), not "far below", whatever a genre tracker says about tycoons at 20–28%. Bounce, session time and crash rate decide the triage step; D1 becomes the secondary target.
 
 ## 3. Scorecard: 10 dimensions, 0–5
 
 Scale: 0 absent or broken · 1 present but fails its gate · 2 works with major gaps, or metric below benchmark median · 3 gate passed, metric near median · 4 above median, minor gaps · 5 top decile (P90, or P10 where lower is better) and the gate passes in full.
-Caps: no live numbers → the dimension scores at most 3. Any house-rule, policy, data-loss or client-trust hit → at most 1 for that dimension.
+Caps: no live numbers → the dimension scores at most 3. Any house-rule, policy, data-loss or client-trust hit → at most 1 for that dimension. A cap describes the state of the game; it does not set the order of work (§4 and §6 do).
 
 | # | Dimension | Observe | 1 looks like | 3 looks like | 5 looks like |
 |---|---|---|---|---|---|
@@ -119,10 +130,10 @@ Walk top to bottom; stop at the first row that is true and make it the sprint go
 
 | Step | If the numbers say | Likely cause | First fix | Open |
 |---|---|---|---|---|
-| T0 | Data loss, ungranted purchases, dupes, a policy violation, or a moderation or reduced-exposure banner | Blocker | Fix before any other work; file the "Discovery Content Quality" support ticket if the banner is wrong | data-and-purchases.md, networking-and-security.md, monetization-and-policy.md |
+| T0 | Data loss, ungranted purchases, dupes, a policy violation, a moderation or reduced-exposure banner, walk-through geometry on the main path, or an invasive or non-compliant offer | Blocker | Fix before any other work; file the "Discovery Content Quality" support ticket if the banner is wrong | data-and-purchases.md, networking-and-security.md, monetization-and-policy.md |
 | T1 | Home Recommendations impressions near zero | Not eligible: default thumbnail, "Exclude from recommendations" on, not public, questionnaire missing, or still in the 16+ trial (250 engaged age-checked plays not reached) | Clear the eligibility item; bring 16+ players first | analytics-and-discovery.md, growth-and-marketing.md |
 | T2 | Crash rate above 2–3%, out-of-memory exits rising, low-end FPS < 30, or a regression on the newest place version | Performance; it depresses every metric below | Performance sprint; compare by platform and place version | performance.md |
-| T3 | Bounce < 60 s high | Slow join, crash, or the tile promises something the first minute does not show | Join-time and thumbnail-honesty fix | performance.md §loading, analytics-and-discovery.md §thumbnails |
+| T3 | Bounce < 60 s high | Slow join, crash, or the tile promises something the first minute does not show | Join-time and thumbnail-honesty fix | performance.md §loading, analytics-and-discovery.md §Recommended For You (thumbnails and metadata) |
 | T3b | Bounce 61–180 s high, or the first-session curve has a cliff at one minute mark | FTUE: no reward, confusion, wall of UI | Fix the funnel step with the largest drop | liveops-quests-retention.md §onboarding, core-loop-tuning.md |
 | T4 | D1 below benchmark median | Core loop, FTUE or performance `[official]` | Loop and first-10-minutes pass; not new content | core-loop-tuning.md, design-foundations.md, genres/<genre>.md |
 | T4b | D1 fine, session time or D1 playtime low | No mid-session goal or depth | Goal ladder, meso loop, co-play | economy-and-progression.md, game-craft.md |
@@ -152,7 +163,7 @@ No numbers yet (under 10 DAU, or no dashboard access):
 1. Score from the MCP runbook and a five-stranger playtest (`templates/playtest-plan.md`); every metric-backed dimension caps at 3.
 2. Ship instrumentation first: onboarding funnel, shop and offer funnels, economy events (`templates/analytics-event-plan.md`).
 3. Get about 300 first sessions (below that, a few points of D1 difference is noise `[lihfolk]`; look only for big leaks): 16+ community, share links per channel, friends. A small capped Plays campaign is an acceptable measurement purchase (ad-acquired users never enter Recommended For You ranking `[official]`), but not while the visible like ratio is under 85%. For a rehearsal, keep the game public with "Exclude from recommendations" on `[official]` so no organic first impressions are spent on an unmeasured first session.
-4. Until dashboard benchmarks unlock at 100 DAU, compare against the §2 fallback rows and say so in the report.
+4. Until dashboard benchmarks unlock at 100 DAU, use the fallback rule in §2 and say so in the report.
 
 ## 5. Studio MCP audit runbook (read-only first) `[VS]`
 
@@ -242,17 +253,38 @@ Read the output for: scripts under Workspace (behaviour inside models), remote c
 |---|---|
 | Impact | 5 moves a "most important" Recommended For You signal (PTR, bounce, play days, playtime) or removes a blocker; 4 moves D1 or D7; 3 moves conversion, ARPPU or co-play; 2 moves a secondary metric; 1 cosmetic |
 | Confidence | 1.0 measured in this game (funnel drop, profiler capture, repro); 0.7 seen in a stranger playtest or matches an official diagnosis rule; 0.4 genre norm or community heuristic; 0.2 hunch |
-| Effort | Dev-days including art, test and rollout; minimum 0.5 |
+| Effort | Hours of the owner's (or team's) real time, including art, test and rollout; minimum 2. Always restate it against the weekly budget from intake: at 10 h a week a 30-hour action is three weeks, not "4 days" |
 
-Tie-breaks: higher in the funnel wins; reversible (a Config flag) beats irreversible; anything that touches the save schema counts double effort. T0 blockers and house-rule violations skip the queue.
+Tie-breaks: higher in the funnel wins; reversible (a Config flag) beats irreversible; anything that touches the save schema counts double effort. Only T0 blockers skip the queue.
+
+Weekly hours split `[house]`: T0 blockers first until cleared; then about 70–80% on the ranked action list and a fixed 20–30% on the house-rule debt track below. At 10 h a week that is 2–3 hours of asset replacement every week, which is slow but never zero.
+
+### House-rule debt track
+
+Existing violations (primitive Parts, Toolbox or generated models, meshes without collision, pushy offers) are migrated in order of how many players see them, not all at once:
+
+| Order | Surface | Why first |
+|---|---|---|
+| 0 (blocker, T0) | Walk-through geometry on the main path; invasive or non-compliant offers | Breaks play, trust or policy today |
+| 1 | The spawn view: everything on screen in the first 10 seconds | Every new player and every thumbnail capture sees it |
+| 2 | The shop, offer surfaces and anything a paid item looks like | Purchases are judged by how the goods look |
+| 3 | The main path of the first session and the core-loop station | Where playtime is spent |
+| 4 | Thumbnail and video capture locations | Tiles must show the real game, so the real game must look right there |
+| 5 | Everything else, by traffic | Periphery last |
+
+Rules for the track: replace one kit at a time (the lamp kit, the shop kit) with Blender-authored pieces on the same footprint and with collision, so gameplay and saves are untouched; ship each batch behind the normal safe-change steps; re-run the scan and log the remaining count per area in the report, so the debt visibly falls. Toolbox models that carry scripts are a security finding first (read every script; a `require` of a numeric asset id is T0), an art finding second. Unique, self-made art also removes the near-duplicate discovery risk, so this track is not only cosmetic.
 
 Quick-wins sprint or rebuild `[house]`:
 
 | Choose | When |
 |---|---|
-| Quick-wins sprint (2 weeks, then re-measure) | Core loop ≥ 3, strangers replay unprompted or D1 ≥ half the benchmark median, and most top-10 actions cost ≤ 2 days |
-| Rebuild the loop inside the same universe | Core loop ≤ 2, or two sprints on FTUE and loop did not move D1; or security/data ≤ 1 so every fix costs 3× ; or more than half the visible world fails house rule 1 |
-| Park or kill | After one FTUE sprint and one loop sprint, five strangers still do not replay and "would you start this today?" is no |
+| Quick-wins sprint (default; two weeks of the owner's hours, then re-measure) | Core loop ≥ 3, or strangers replay unprompted, or D1 is at or above the "near median" band; and most top-10 actions fit inside one week of the owner's hours each |
+| Rebuild the loop inside the same universe (an option to present with its cost, never the automatic answer) | Core loop ≤ 2 with evidence from a stranger playtest, or two measured sprints on the first session and loop did not move the target metric; or security/data ≤ 1 so every fix costs about 3× |
+| Park or kill | After one first-session sprint and one loop sprint, five strangers still do not replay and "would you start this today?" is no |
+
+House-rule debt never triggers a rebuild by itself, however much of the map it covers: it goes on the debt track.
+
+Tie-break when both the quick-wins row and the rebuild row are true (a common case: weak loop, but D1 near median): choose quick wins unless all three hold: (1) the loop problem is measured (playtest or funnel), not assumed; (2) the rebuild estimate, in the owner's own hours, fits inside about eight weeks of their budget (80 hours at 10 h a week); (3) a blind second opinion (§8) agrees. If any one fails, run quick wins for two sprints and decide again with the new numbers. When a rebuild is presented, state its hours, its weeks at the owner's pace, what stays live meanwhile, and the lower-cost alternative beside it.
 
 A rebuild keeps the universe, the DataStore key pattern, purchases, badges, favourites and the group. Recommended For You uses a moving window and re-tests daily, so a weak past is not a permanent penalty `[official]`. Players keep everything they paid for.
 
@@ -271,7 +303,7 @@ Code findings also carry a severity class `[lihfolk]`, which orders the T0 list:
 
 Deliverable score, 0–10, for each fix or asset shipped from the plan (adapted from LihFolk's quality-score method; the weights and gates below are ours) `[lihfolk][house]`:
 
-- Hard gates, pass or fail. Any fail caps the score at 5.0: runs with a clean console · no house-rule violation (Blender-authored, solid, non-invasive offers) · no policy or data-safety regression · behind a Config flag with a rollback path if it touches a live game · tested on a phone.
+- Hard gates, pass or fail. Any fail caps the score at 5.0: runs with a clean console · no house-rule violation in the work delivered (new or replaced assets are Blender-authored and solid; offers non-invasive) · no policy or data-safety regression · behind a Config flag with a rollback path if it touches a live game · tested on a phone.
 - Criteria, each scored 0, 1 or 2 against evidence:
 
 | Criterion | Weight | 0 | 1 | 2 |
@@ -302,7 +334,7 @@ Procedure:
 2. Fix a 3–5 point rubric before any answer exists (player experience, data and security risk, cost, reversibility, expected metric effect).
 3. Build one short evidence pack and give every reviewer the same one: the numbers table, the scorecard, the timed first-session log, screenshots, the relevant code paths. Reviewers inspect the real artefact, not a description of it.
 4. Reviewers answer in under about 250 words: verdict, the 2–4 deciding reasons with evidence, confidence.
-5. Reconcile: where answers disagree, the side with evidence wins. Report the verdict, the strongest objection, whether it changed the recommendation, confidence, and what new evidence would flip it.
+5. Reconcile: on any disagreement, go with the answer that has evidence behind it. State the verdict, the best argument against it, whether it changed the recommendation, confidence, and what new evidence would flip it.
 
 In Claude Code, reviewers are fresh subagents (or a new session) that receive only the framed question, rubric and evidence pack. Where no second agent is available, hand the same pack to a human reviewer. Limit: reviewers from the same model family share blind spots; playtest data and the official docs outrank any panel.
 
@@ -332,7 +364,7 @@ In Claude Code, reviewers are fresh subagents (or a new session) that receive on
 | No reason to return, no cadence | `references/liveops-quests-retention.md` |
 | Low conversion, invasive or non-compliant offers | `references/monetization-and-policy.md`, `templates/monetization-product-plan.md` |
 | Cluttered HUD, weak mobile layout, stock UI | `references/ui-design-figma.md`, `references/ui-input-crossplatform.md` |
-| Primitives, marketplace assets, mixed style, no collision | `references/art-pipeline-blender.md`, checklists.md house-rule scan |
+| Primitives, marketplace assets, mixed style, no collision | `references/art-pipeline-blender.md`, `references/blender-modeling-craft.md` (modelling quality and budgets), checklists.md house-rule scan |
 | FPS, memory, crashes, join time | `references/performance.md` |
 | Client trust, unguarded remotes, backdoors | `references/networking-and-security.md` |
 | Data loss, unsafe receipts, migration | `references/data-and-purchases.md` |
@@ -355,11 +387,14 @@ In Claude Code, reviewers are fresh subagents (or a new session) that receive on
 | No settings menu, unreadable text, motion or colour problems, missing QoL | `references/accessibility-and-player-qol.md` |
 | Griefing, unfiltered text, no report or ban path, empty servers, unmoderated community | `references/community-moderation-safety.md` |
 | Revenue splits, contractors, IP, DevEx, tax, group ownership and permissions | `references/team-business-legal.md` |
+| Scope creep, no pillars, no playtests, no postmortems; a rebuild or relaunch that needs a plan | `references/process-and-playtesting.md`, `templates/game-one-pager.md`, `templates/lean-gdd.md`, `templates/playtest-plan.md`, `templates/launch-checklist.md` |
 
 ## Review gate
 
 - [ ] Intake answered; baseline window and place version recorded.
 - [ ] All ten dimensions scored with an evidence line each; caps applied (no numbers → 3; house-rule or trust hit → 1).
+- [ ] House-rule debt listed by surface with a visibility-ranked migration track and its weekly share of hours; only main-path walk-through geometry and invasive or non-compliant offers treated as blockers.
+- [ ] Effort stated in hours and in weeks at the owner's weekly budget; with no access, the numbers-only first pass was sent instead of an empty template.
 - [ ] Benchmarks named with source and date; own dashboard benchmark used where it exists.
 - [ ] Triage step stated (T0–T8) with the numbers that selected it.
 - [ ] Every action has Impact, Confidence, Effort, a metric and an owner; top 10 ranked.
@@ -388,6 +423,7 @@ Accessed 2026-11-10. Roblox creator docs read from the `Roblox/creator-docs` Git
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/publish-games-and-places.md, kids-and-select.md, thumbnails.md (read)
 - https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary; GameAnalytics medians)
 - https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
+- GameAnalytics 2026 Roblox report percentiles (500+ titles above 1M MAU), as recorded in `references/liveops-quests-retention.md` from search summaries of https://www.gameanalytics.com/reports/2026-roblox-report
 - https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
 - https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 (search summary)
 - https://devforum.roblox.com/t/struggling-to-increase-ccu-for-new-game/3353917, /t/poor-stats-for-my-new-game-across-the-board/3413365, /t/help-with-improving-player-session-time/3554677, /t/looking-for-advice-on-improving-retention-for-a-wave-based-zombie-shooter/3307981 (search summaries)

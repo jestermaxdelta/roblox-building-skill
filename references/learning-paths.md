@@ -6,7 +6,7 @@ How Claude works out whether it is helping a beginner, an intermediate or an exp
 
 | Reader | Read | Skip |
 |---|---|---|
-| Beginner (never shipped a game) | Section 3: first hour, first day, first week, the tiny project, the Blender starter kit, the ten mistakes | Sections 4 and 5 until the first game is public |
+| Beginner (never shipped a game) | Section 3: first hour, first day, first week, the tiny project, the first kit, "Make it your game", the ten mistakes; the under-16 box if it applies | Sections 4 and 5 until the first game is public |
 | Intermediate (a game works, it is not yet good) | Section 4 ladder, top to bottom; section 8 to size the next milestone | The beginner path, except the ten mistakes as a self-check |
 | Expert (live game, team or revenue) | Section 5 tracks; section 7 for team shape; section 6 as an index | Everything else |
 | Claude | Sections 1 and 2 before the first answer, then the reader's section | — |
@@ -70,7 +70,31 @@ Promise: a small, public, saved, phone-tested game in about four weeks of evenin
 
 ### Before the first hour
 
-Install Studio (free; Windows or macOS; 3 GB RAM minimum, 8 GB recommended `[official]`) and Blender (free). Turn on 2-step verification. Complete the age check when ready to release or to collaborate: public release and Team Create with other people both require it `[official]` `[VS]`. Apply the ten-minute setup in studio-workflow.md section 1.
+Install Studio (free; Windows or macOS; 3 GB RAM minimum, 8 GB recommended `[official]`) and do the four "First hour" steps in studio-workflow.md section 1 (not the full settings table). The age check can wait until you want to release or to work with someone else: public release and Team Create with other people both require it `[official]` `[VS]`.
+
+No Blender yet? Install it now (free, blender.org) and leave it closed for the first hour: the first hour is Studio only. In the first Blender session, on day one, learn three things and nothing else:
+
+1. Moving around: middle mouse to orbit, `Shift` + middle mouse to pan, wheel to zoom, numpad `1` / `3` / `7` for front, side and top views.
+2. Editing a cube: `Tab` into Edit Mode; `G`, `S`, `R` to move, scale and rotate; `E` to extrude a face; `Ctrl R` to add a loop cut.
+3. Finishing a shape: add a Bevel modifier, then Object > Apply > All Transforms (`Ctrl A`).
+
+Those three are enough to make the crate in `references/blender-modeling-craft.md`, "First kit walkthrough (beginner)".
+
+### If you are under 16 (or under 13)
+
+Plenty of Roblox developers started at your age, and nothing below stops you from building, testing and sharing a game. It only changes who can see it at first, and it means a parent or guardian should be part of anything involving money or other people. All of this is `[official]` from the creator docs as mirrored on 2026-11-07 and `[VS]`: rules in this area changed several times in 2026, so check the current page with a parent before relying on it.
+
+| Question | What the docs say |
+|---|---|
+| Can I use Studio and make a game? | Yes. Studio itself has no age check; building, testing and saving are open to everyone |
+| Can I publish? | Saving and publishing to your own account keeps the game private to you. Releasing it to other people requires you, the creator, to complete an age check (facial age estimation or ID; government-ID verification is 13+ only). The docs read here state no minimum age for releasing a game, and do not say whether a creator under 13 needs a parent's consent for the age check: ask a parent and check the help centre |
+| Who can play it before a public release? | Up to 10 early testers (File > Invite early testers). By your age: 9–12 may invite ages 9–15; 13–15 may invite ages 9–17; trusted friends of any age can also be invited (under-9 testers need a parent's approval). Studio asks you to complete the age check when you send the first invite. The docs list no early-tester option for creators under 9. This is the easiest way to get classmates into a first game |
+| Who can play after a basic public release? | Players who are age-checked 16 or older, and your trusted friends. So your own friends under 16 will not find the game publicly yet unless they are trusted friends or early testers. That is normal for every new game, not a penalty for your age |
+| How does a game reach players under 16? | Verification of your account (facial age estimation is the route for creators under 18), 2-step verification, the full maturity questionnaire, and either a Roblox Plus or Premium subscription held for 2 months or a one-time refundable fee of 1,000 Robux; then the game must collect 250 unique plays from "highly engaged", age-checked 16+ players within 60 days. A first learning game does not need this. Do not pay the fee or buy a subscription for it without a parent deciding with you |
+| Can I work with a friend in Team Create? | Both of you need an age check. By default you can share a session only with compatible ages: under 9 with under 13; 9–12 with under 16; 13–15 with ages 9–17. Someone outside your band must be a trusted friend, or a linked parent must allow it in parental controls. Trusted-friend requests from under-13 accounts need a parent's approval |
+| Can I earn money? | Cashing out through DevEx requires being at least 13 and having 30,000 earned Robux, plus tax forms and your legal name. Treat money as a later, parent-involved step (`references/team-business-legal.md`) |
+
+How Claude handles this `[house]`: never ask a young developer to spend Robux or real money, never suggest working with strangers found online, keep contact with collaborators in channels a parent can see (`references/community-moderation-safety.md`), and say plainly when the docs do not answer a question instead of guessing.
 
 ### First hour: something moves because of your code
 
@@ -87,7 +111,7 @@ This place is practice: primitive Parts are fine here because it is never publis
 |---|---|---|
 | Luau basics | Variables, functions, tables, `if`, `for`, events with `:Connect`. The official coding fundamentals pages are enough | You can read a 30-line script aloud and say what each line does |
 | Client and server | A LocalScript in StarterPlayerScripts fires one RemoteEvent; a Script in ServerScriptService answers. The client asks, the server decides | You can say which machine runs each script and why a coin count must live on the server |
-| The art pipeline in miniature | Model one bevelled floor tile in Blender, export `.glb`, import with the 3D Importer, set its collision | A mesh you made is in the place and you can stand on it |
+| The art pipeline in miniature | Make the crate from the first kit walkthrough in blender-modeling-craft.md, export it, import it with the 3D Importer, set its collision | A mesh you made is in the place and you can stand on it |
 | Saving your work | Save to Roblox with Notes (`Ctrl Alt S`) before anything risky; never edit during a playtest | You have restored one old version on purpose, once |
 
 ### First week: the tiny project, "Coin Dash" (about 10 hours)
@@ -96,7 +120,7 @@ One verb (run and jump to collect), one progression axis (coins buy jump height 
 
 | Piece | Smallest correct version | Reference |
 |---|---|---|
-| World | One arena, about 100 × 100 studs, built only from the starter kit below; SpawnLocation hidden under a kit pad | art-pipeline-blender.md |
+| World | One arena, about 100 × 100 studs, built only from the first kit below; SpawnLocation hidden under a kit piece | blender-modeling-craft.md |
 | Coins | Models tagged `Coin`, one server script (sketch below), respawn after 5 s | performance.md (spatial queries, later) |
 | Upgrades | Two pads. The client sends "buy jump"; the server checks the price, subtracts, raises `Humanoid.JumpHeight` | networking-and-security.md |
 | Saving | ProfileStore with coins and upgrade levels. Copy the module from its official repository into a ModuleScript and read it; do not insert it from the Toolbox | data-and-purchases.md |
@@ -107,6 +131,8 @@ One verb (run and jump to collect), one progression axis (coins buy jump height 
 --!strict
 -- unexecuted sketch. Script in ServerScriptService. Each coin is a Model tagged "Coin" holding
 -- the Blender mesh ("Mesh") and an invisible anchored Part "Trigger" (CanCollide off, CanTouch on).
+-- Touched is acceptable only for a first coin worth 1 with the server distance check below; anything
+-- valuable (damage, real rewards) uses a server spatial query, never Touched (SKILL.md rule).
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 
@@ -156,30 +182,60 @@ What the sketch teaches: one script for all coins (tags, not a script per coin),
 
 End-of-week gate: five people who are not you play for ten minutes (three is the floor `[lihfolk]`); use File > Invite early testers, up to 10 friends `[official]`. If nobody wants a second go, change the loop now: it is the cheapest change the project will ever get.
 
-### The Blender starter kit (how a beginner meets house rules 1 and 2)
+### The first kit (how a beginner meets house rules 1 and 2)
 
-Eight pieces carry the whole first game: floor tile 8×8, wall 8×8, ramp, platform 4×4, coin, upgrade pad, arrow sign, spawn pad.
+The full step-by-step lives in `references/blender-modeling-craft.md`, "First kit walkthrough (beginner)": follow it there, not from memory. In one paragraph: set the Blender scene to Unit System None so 1 unit is 1 stud, and keep two box "avatars" (5 and 6.5 studs tall) in the file for scale. Pick six colours and use nothing else. Build four props that look like one family: a crate, a barrel, a lamp post and a fence section. Each one is a simple shape with one narrow bevel (0.08 studs, the same on every piece), smooth shading, bottom faces deleted, origin at the bottom centre (or the snapping end for the fence), and a `Fidelity` property of `Box` or `Hull` that becomes its collision. Check each as a small black silhouette before adding detail, export with the kit script, import with the preset in art-pipeline-blender.md, then walk into every piece and jump on it in a playtest. Nothing visible may be walk-through, and static pieces are anchored.
 
-1. Blender scene units: Unit System None, so 1 Blender unit = 1 stud. A Roblox character is roughly 5 studs tall: size doors and steps against an R15 dummy exported from Studio.
-2. Start each piece from a cube sized in studs. Add a Bevel modifier (about 0.1 stud, 2 segments) so edges catch light: this one step separates "authored" from "default cube". Keep each piece under about 500 triangles.
-3. One material per piece, flat colours from one small palette you reuse for every piece.
-4. Apply all transforms (`Ctrl A` > All Transforms). Put the origin where the piece snaps: a bottom corner for tiles and walls, bottom centre for props.
-5. Export: File > Export > glTF 2.0 (`.glb`), selected objects only, modifiers applied.
-6. Studio: import with the 3D Importer using the preset in art-pipeline-blender.md (scale unit Studs, Anchored on). Unanchored static meshes fall through the world on Play.
-7. Collision: `CollisionFidelity` Box for box-shaped pieces, Hull for the ramp. Walk into every piece in a playtest. Nothing visible may be walk-through.
-8. Duplicate placed copies with `Ctrl D`; do not re-import the same piece. When the kit grows past this game, move to packages and the scripted export.
+Coin Dash needs three more pieces made the same way, with the same bevel and palette: a floor tile (8 × 8 studs), a platform (4 × 4) and the coin. Duplicate placed copies with `Ctrl D` instead of importing a piece twice. If the export script is not set up yet, Blender's File > Export > glTF 2.0 (selected objects, modifiers applied) is an acceptable stand-in for a first import `[house]`; move to the script before the kit grows.
 
 Budget for it `[house]`: assume 30 to 60 minutes per simple piece until you have timed your first three, then re-plan. The art volume, not the code, is what sinks a first project under the Blender rule.
+
+A creature (a pet, a dragon, an enemy) is the same skill with stricter limits for a first game:
+
+- **Shape language first.** Friendly reads as round: a big head, a small bottom-heavy body, no neck, large eyes set low. A dragon is that plus three signature shapes: two horns, two small wings, a tail with a spike. Design it to read from behind and above, because that is where the camera sees a pet (blender-modeling-craft.md, "Cute pet").
+- **A few boxes and wedges, in Blender.** Body, head, snout, two wings, tail, four stubby legs: about ten bevelled shapes joined into one mesh with one material from the palette. No sculpting, no textures.
+- **No rig and no animation at first.** The pet is one rigid mesh. It looks alive from motion you code: it follows, bobs up and down on a sine wave, and turns to face where it is going.
+- **Follow on the client.** The server only records which pet a player has equipped. Each player's device moves the pet models itself, anchored and without physics, in one loop for all pets (gameplay-systems-cookbook.md §4). Do not build pets as server-side physics objects: they jitter and cost every player.
+- **Variants, not new models.** Four or five dragons are one base mesh with a different palette entry and one changed outline feature each (bigger horns, a crest, wider wings), so rarer ones are recognisable by shape.
+- **Later:** flapping wings, a walk cycle or a skinned body are the next step, in `references/animation-and-rigs.md`.
+
+### Make it your game
+
+Coin Dash is scaffolding. Almost nobody wants to make a coin platformer: they want a pet simulator, a tycoon, an obby, a horror game. Once the coin loop works, turn it into the game the developer came for.
+
+The market gate does not apply here. Phase 1 of SKILL.md (one new verb, market position, saturation) is for games built to grow and earn. A first game is built to be finished. Claude never tells a beginner their idea is saturated, has been done, or will not get players; it helps them find the smallest version of exactly that idea. Market advice is given only when the developer asks how to get players or says income is the goal.
+
+Method:
+
+1. Open the matching file in `references/genres/`. Read only the Beginner row of "Start here by level": "Do first" is the scope, "Leave for later" is the postpone list. Do not read the monetisation or live-game sections yet.
+2. Map what already exists: the coin becomes the genre's resource, the upgrade pad becomes its first thing to spend on, the arena becomes its first area. Nothing built in week 1 is thrown away.
+3. Take "Systems to build, in order" from the same file. The first three to five items, up to wherever the Beginner row stops, are weeks 2 and 3: one system per sitting, each ending in a playtest. Their how-to is in gameplay-systems-cookbook.md.
+4. Count the art before promising anything: pieces × 30–60 minutes.
+5. Week 4 stays the same: test with people, release, fix the top three problems.
+
+Worked example: "a pet simulator with dragons" (`genres/pet-collection-hatching.md`).
+
+| Question | Answer |
+|---|---|
+| Smallest honest version | One small island. Walk around collecting gems. Spend gems at one egg. The egg hatches one of four or five dragons, chosen on the server from a weight table, with the odds shown on the egg from that same table. Your best dragon follows you and multiplies the gems you collect. Everything saves. That is a real pet simulator loop: collect, hatch, get stronger, collect faster |
+| From Coin Dash | Coins → gems (same script, new mesh). Upgrade pads → the egg stand. Jump upgrade → the dragon's gem multiplier |
+| Week 2 systems (genre list 1–3) | The roll table module on the server; the egg stand and hatch flow with a reveal the player can skip; a pet inventory (stacked counts) with an "equip best" button, saved in the profile |
+| Week 3 systems (genre list 4–5) | Dragons following on every client; the odds panel. The `PolicyService` gate in item 5 matters only once an egg can be bought with Robux, which this version does not have |
+| Art to make | The six kit pieces (four props, floor tile, platform), a gem, an egg, an egg stand, one dragon base mesh and four variants of it: 14 pieces, so roughly 7 to 14 hours `[house]`. It is the largest item in the plan; start it in week 1 |
+| Postpone (the genre file's "Leave for later") | Eggs bought with Robux, luck boosts, mutations and merge machines, trading, multi-hatch, seasonal eggs; also a second island, rebirth, an index, and animated or rigged dragons |
+| Done when | A friend can join, hatch a dragon within the first two minutes, come back the next day and still have it |
 
 ### First shipped game: weeks 2 to 4
 
 | Week | Goal | Must be true at the end |
 |---|---|---|
-| 2 | Nothing earned can be lost or duplicated | Save survives leave-and-rejoin and a server shutdown; every remote checks type, range and rate on the server; one game pass and one developer product go through a single `ProcessReceipt` with `PurchaseId` deduplication; four onboarding funnel events fire |
-| 3 | It looks like a game and lasts 30 to 60 minutes | One style, one lighting preset; icon and three thumbnails drafted on day one of the week, not launch night `[lihfolk]`; maturity questionnaire done; played on a real phone |
-| 4 | Public | Early testers first, then release (age-checked 16+ at first; reaching younger players has extra requirements and a 250-engaged-play gate `[VS]`, see analytics-and-discovery.md); fix the top three problems and nothing else; write a one-page postmortem |
+| 2 | The genre's first systems work, and nothing earned can be lost or duplicated | Systems 1–3 from "Make it your game" are playable; the save survives leave-and-rejoin and a server shutdown; every remote checks type, range and rate on the server |
+| 3 | It looks like a game and lasts 30 to 60 minutes | The remaining beginner systems; one style, one lighting preset; icon and three thumbnails drafted on day one of the week, not launch night `[lihfolk]`; maturity questionnaire done; played on a real phone |
+| 4 | Other people play it | Early testers first, then a public release. A new game is shown to players who are age-checked 16 or older and to your trusted friends: that describes the audience, not you, and it is the same for a creator of any age `[official]` `[VS]`. Reaching younger players is a later, optional step with its own requirements (the under-16 box above; analytics-and-discovery.md). Fix the top three problems and nothing else; write a one-page postmortem |
 
-Shipped means: public; a save verified by rejoining; one purchase made with real Robux in the live game; played on a phone; five strangers have played. Never cut: data safety, receipt handling, server validation, the phone layout, the maturity questionnaire `[lihfolk]`.
+Shipped means: released; a save verified by rejoining; played on a phone; five people who are not you have played. Never cut: data safety, server validation, the phone layout, the maturity questionnaire `[lihfolk]`.
+
+Optional stretch, only after people come back for a second session: one game pass or developer product. A first learning game does not need to sell anything, and the house rule about pushing microtransactions is for games built to earn. If the developer wants to learn purchases: one `ProcessReceipt` with `PurchaseId` deduplication (data-and-purchases.md), the offer rules in monetization-and-policy.md, and testing with Studio's test purchases, which the prompt itself labels as not charged `[lihfolk]` `[community]`. Claude never tells a minor to spend Robux or real money to test; confirming a real purchase in the live game is something an adult developer does, or a parent does with them.
 
 ### Ignore for now
 
@@ -296,7 +352,7 @@ All paths are under `references/` unless they start with `templates/`. Files in 
 | Typical failure | Spending every week in the favourite role | Everyone builds content; saves, security and analytics wait until launch week | Finished work queues behind one approver |
 | AI agents | One Claude session with the Studio MCP | One agent in Studio, others on git branches | The multi-agent protocol in studio-workflow.md §10 |
 
-Solo rotation that prevents the favourite-role trap `[lihfolk]`: name the role each day belongs to (for example two days systems, two days content, one day testing and community).
+Solo rotation that prevents the favourite-role trap `[lihfolk]`: give every working day one role in advance (say Monday and Tuesday for systems, Wednesday and Thursday for content, Friday for testing and community).
 
 ## 8. Scope by time budget
 
@@ -304,7 +360,7 @@ Capacity first: productive hours = available hours × focus factor (section 7). 
 
 | Budget | Productive hours (solo) | What fits | What does not |
 |---|---|---|---|
-| Weekend | 10–16 | One verb, one arena from an 8-piece kit, one upgrade axis, a save, friends-only release. A mechanic slice whose only question is "is the verb fun?" | Monetisation beyond one pass, more than one zone, any custom rig |
+| Weekend | 10–16 | One verb, one arena from the first kit, one upgrade axis, a save, friends-only release. A mechanic slice whose only question is "is the verb fun?" | Monetisation beyond one pass, more than one zone, any custom rig |
 | 4 weeks | 60–100 | One loop, one progression axis, one reason to return; a 20–40 piece kit; at most three products; 30–60 minutes of content; funnel analytics; public release. Plan in process-and-playtesting.md §6 | Trading, a second mode, quests and daily systems (first update instead), hand-built large maps, vehicles |
 | 3 months | 250–300 (a part-time team of three is in the same range `[lihfolk]`) | The default product set; 2–4 hours of content plus a rebirth or meta layer; quests; one event; localisation; soft launch two to three weeks before the push; weekly update day rehearsed before launch | Open-world roleplay, battle royale, anything whose content list cannot be counted |
 
@@ -337,6 +393,8 @@ Rules:
 - [ ] The answer matched the level in scope, tooling and depth, and no safety rule was simplified away.
 - [ ] Beginner: one next step, the exact container for each script, and a way to verify were given; nothing from the "ignore for now" list was introduced unasked.
 - [ ] Beginner project: every visible object comes from the Blender kit and collides; practice places with Parts are not published.
+- [ ] First learning game: re-skinned to the genre the developer wanted using that genre file's Beginner row; the market gate was not applied and the idea was never called saturated; no purchase was required.
+- [ ] Developer under 16: the audience and Team Create rules were explained from the docs with `[VS]`, gaps in the docs were named, a parent was brought in for anything involving money, and nobody was told to spend Robux.
 - [ ] Intermediate: the lowest failing rung was addressed before higher ones.
 - [ ] Expert: numbers were requested or cited with date; lower-risk and bold options were both stated.
 - [ ] Scope was checked against productive hours, with a written cut list.
@@ -346,7 +404,7 @@ Rules:
 
 Accessed 2026-11-10.
 
-- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `tutorials/index.md` and the `tutorials/curriculums/` and `tutorials/first-experience/` listings, `studio/setup.md`, `includes/studio/system-reqs.md`, `production/publishing/publish-games-and-places.md`, `projects/collaboration.md`, `projects/place-files.md`, `projects/assets/packages.md`, `ai/coding-harness.md`, `assistant/guide.md` (read) — https://github.com/Roblox/creator-docs
+- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `tutorials/index.md` and the `tutorials/curriculums/` and `tutorials/first-experience/` listings, `studio/setup.md`, `includes/studio/system-reqs.md`, `production/publishing/{publish-games-and-places,kids-and-select,account-verification}.md`, `production/monetization/developer-exchange.md`, `projects/collaboration.md`, `projects/place-files.md`, `projects/assets/packages.md`, `ai/coding-harness.md`, `assistant/guide.md` (read) — https://github.com/Roblox/creator-docs
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `00 Start Here.md`, `ROUTER.md`, `13 Production and Case Studies/{Ship a Game in 30 Days - Week-by-Week Plan for a Solo Dev, Planning and Scoping a Roblox Game, Scoping and Roles for Small Teams, Team Roles and Workflows}.md`, `15 AI Tools/{Prompting and Verifying AI Output, AI Pitfalls - Stale APIs and Luau}.md`, `52 Core Concepts/Core Concepts Start Here.md` (read)
 - https://devforum.roblox.com/t/5-mistakes-that-i-made-when-learning-game-development/3646350 (search summary)
 - https://dev.to/aprincessplays/top-mistakes-to-avoid-when-making-your-first-roblox-game-m61 (search summary)

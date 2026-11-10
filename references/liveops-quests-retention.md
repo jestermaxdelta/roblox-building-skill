@@ -12,9 +12,7 @@ Terms: **LiveOps** = everything done to a game after launch (updates, events, of
 | Intermediate | The calendar method: measure throughput, plan mostly config and reskin events, one buffer week a month, a one-page brief per event. Notifications at warranted moments. The T-10 to T+7 timeline. Read each update's curve | Per-flag percentage rollouts; seasonal resets |
 | Expert | Calendar and patch notes as validated Config data; staged rollout with written abort criteria; season XP budget with 15–20% slack and boundary-purchase rules; notification scheduling when no server is running; lazy season rollover; reviews that feed the next quarter's capacity numbers | — |
 
-## Contents
-
-Onboarding · Social rewards · Benchmarks · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table
+Contents: Onboarding · Social rewards · Benchmarks · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table Related (implementation): gameplay-systems-cookbook.md §6 Quests and achievements, §7 Daily rewards and playtime rewards, §8 Codes, §24 Server-wide events and boosts.
 
 ## Onboarding (first session)
 
@@ -71,7 +69,7 @@ Order of work: the loop first, then these. `[community]` Developers who post res
 
 | System | Done right | Evidence | Limits `[VS]` |
 |---|---|---|---|
-| Daily reward | Cumulative calendar counting days played; never resets. One-tap claim inside the HUD, not a join pop-up. The reward feeds the player's current goal (a boost, upgrade material), with marquee items on day 7 and day 28 anyone can reach. If a streak exists, grant free freezes and drop a few tiers on a miss, never to zero | `[community]` Opinion on streaks is split; one unsourced Reddit case claims about 3× D7; the "30–50% D7 lift" figures on script-seller pages have no source | The Engagement Rewards package's `Daily` type is a login streak; handle a missed day yourself. No guilt or "streak ends soon" notifications |
+| Daily reward | Cumulative calendar counting days played; never resets. One-tap claim inside the HUD, not a join pop-up. The reward feeds the player's current goal (a boost, upgrade material), with marquee items on day 7 and day 28 anyone can reach. A consecutive-day streak that resets or drops tiers on a miss is rejected (house rule: no punishment) | `[community]` Opinion on streaks is split; one unsourced Reddit case claims about 3× D7; the "30–50% D7 lift" figures on script-seller pages have no source | The Engagement Rewards package's `Daily` type is a login streak; handle a missed day yourself. No guilt or "streak ends soon" notifications |
 | Playtime reward | A ladder at about 5, 10, 20 and 40 minutes that accumulates per day, not per session, so leaving loses nothing. Stop at 60 min. Pay on active play | `[community]` Holds players in a session; does not by itself bring them back | Playtime beyond 60 min per user per day adds nothing to ranking `[official]`. `Player.Idled` (client-only) fires about 2 min after input stops, then every 30 s; Roblox disconnects after 20 min idle `[official]` |
 | Quests | 3–5 daily across at least three categories; process goals ("deliver 10") beside outcome goals; the quest nearest completion feeds the next-goal line; unclaimed rewards auto-granted | `[official]` quest and season-pass guides | Never require hard currency |
 | Collection index | Silhouettes for undiscovered entries; completion % visible; small set bonuses; a diegetic Blender index board | Market pattern (every 2025–26 hit); no measured evidence found | No entry obtainable only through paid random items; odds shown; `PolicyService` gate |
@@ -94,8 +92,8 @@ Which hook serves which window `[lihfolk]`: D1 is a great first session plus one
 
 | Decision | Options | Choose |
 |---|---|---|
-| Shape | Strict streak (a miss resets); streak with grace or a weekly freeze; cumulative count; repeating 7-day cycle; 28-day ladder with a weekly highlight `[lihfolk]` | Cumulative, or a 28-day ladder with weekly highlights. Strict streaks are the shape most likely to feel like punishment to a child who missed a day for reasons outside their control |
-| Day boundary | Fixed UTC midnight (simple, one "resets in" timer; evening reset in the Americas; a 23:50 and 00:10 double claim is possible). Rolling 24 h (claim time drifts later every day). Rolling window: claim any time after 20 h, streak survives to 48 h `[lihfolk]` | UTC day number for a cumulative calendar; the 20 h / 48 h window if any streak exists. Align every daily reset in the game to the same UTC hour |
+| Shape | Strict streak (a miss resets: rejected); streak with grace or a weekly freeze (rejected: still a loss on the second miss); cumulative count; repeating 7-day cycle; 28-day ladder with a weekly highlight `[lihfolk]` | Cumulative, or a 28-day ladder with weekly highlights. Strict streaks are the shape most likely to feel like punishment to a child who missed a day for reasons outside their control |
+| Day boundary | Fixed UTC midnight (simple, one "resets in" timer; evening reset in the Americas; a 23:50 and 00:10 double claim is possible). Rolling 24 h (claim time drifts later every day). Rolling window: claim any time after 20 h, streak survives to 48 h `[lihfolk]` | UTC day number for the cumulative calendar. Align every daily reset in the game to the same UTC hour |
 | Clock | Client or server | Server `os.time()` only |
 | Claim order | Pay then mark, or mark then pay | Mark the claim, save at once, then pay; a crash or double click cannot pay twice. Throttle the remote. Session locking must already be in place or two servers can both pay (data-and-purchases.md) |
 | Reward size | Fixed, or scaled | Scale soft currency to the player's stage (for example a share of the next gate price) so day 3 matters at hour 1 and hour 100 `[lihfolk]` |
@@ -107,7 +105,7 @@ Conflict: the LihFolk reference project shipped a strict 7-day streak that reset
 ### Playtime gifts, offline earnings and AFK: measured examples
 
 - **Playtime gifts** `[lihfolk]` (reference project): a small gift every 5 minutes of play (9 a day), a medium every 15 (4 a day), a large every 60 (1 a day). Counted in play time, not wall-clock time; the timer banks at most one interval when a gift is ready, so nothing is lost by not claiming; caps reset at UTC midnight; reward pools show their odds and roll the odds shown. The caps stop the screen becoming an overnight income engine, and the largest gift lands on the 60-minute mark where ranking playtime stops counting. If a timer skip or extra gift is ever sold for Robux, the gift becomes a paid random item and must disclose odds `[VS]`.
-- **Offline earnings** `[lihfolk]` (reference project): 15% of the active rate, capped at 8 hours (12 with VIP), nothing for absences under 5 minutes, and filling only after the tutorial is finished so the first session is about active play. Our economy file suggests 25–50% efficiency with an 8–12 h cap (economy-and-progression.md); both are inside a sane range. Pick one, state the cap in the UI, and model it in the balance sheet.
+- **Offline earnings** `[lihfolk]` (reference project): 15% of the active rate, capped at 8 hours (12 with VIP), nothing for absences under 5 minutes, and filling only after the tutorial is finished so the first session is about active play. The house default is 25–50% efficiency with an 8–12 h cap (economy-and-progression.md owns the number); treat 15% as the low end. State the cap in the UI and model it in the balance sheet.
 - **AFK** `[lihfolk]`: there are real reasons to allow some idle progress (children leave devices running; auto-modes help players with motor difficulties). If you do: idle yields less than active play; idle activities sit in the social hub so idle avatars at least make it look alive; an auto-action keeps the verb visible (a small reel over the head, not a hidden counter); no idle income before onboarding ends; auto-modes never spend paid consumables. This refines, and does not overturn, the "prefer none" row above.
 
 ## Notifications done right `[official]` `[VS]`
@@ -430,14 +428,11 @@ Non-negotiables: nothing bought with Robux is taken away without equal or better
 
 Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared hub) → display (titles, rare-pull announcements) → parallel play → cooperation (shared bosses, server goals) → exchange (trading, gifting) → competition → expression and roleplay. Aim for at least three rungs, and design for a server of three before a server of thirty: a feature that needs ten players in a room fails most of the day. Credit every meaningful contributor (damage share or participation), never last hit only. A scheduled server event needs a join window (reference project: a rift open for 45 s, starting when everyone is in or time runs out). PvP is opt-in with normalised damage.
 
-
 - Intentional co-play (friends joining together, parties, shared plots) counts toward the co-play discovery signal; random matchmaking does not.
-- Friend bonus of about +10% income or XP when playing with a friend is a cheap, honest co-play incentive.
 - Server sizes: 6–12 for co-op gameplay, 20–30 for hubs and hangouts. Set from playtest data.
 - Waiting time for a match or round under 30 seconds; show something to do while waiting.
-- Griefing controls: build-zone ownership, personal plots, report buttons, cooldowns on destructive actions.
+- Griefing controls: build-zone ownership, personal plots, report buttons, cooldowns on destructive actions; all user-visible text is filtered (community-moderation-safety.md).
 - Social friction audit: for every social feature, list how a stranger could ruin it and what stops them.
-- Filter all user-visible text with `TextService:FilterStringAsync`.
 - Server Luck or server-wide gifts show a thank-you banner naming the buyer (a social reward that costs nothing).
 - Social service APIs: `SocialService:CanSendGameInviteAsync` → `PromptGameInvite(player, ExperienceInviteOptions)` with `LaunchData` up to 200 characters read through `GetJoinData()`; referrals through `ReferredByPlayerId`; `ExperienceNotificationService:CanPromptOptInAsync()` / `PromptOptIn()` with a 30-day re-prompt lockout; notifications need 100+ visits, one per user per day, 13+ opted-in users `[VS]`.
 

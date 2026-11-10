@@ -8,7 +8,7 @@ Platform facts (APIs, limits, policy, dashboards) are checked against the offici
 
 ## LihFolk Vault V2
 
-Points tagged `[lihfolk]` in the references are adapted, in our own words, from [LihFolk Vault V2](https://github.com/lihfolk-cy/v2-vault), © 2026 LihFolk, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Each reference file lists the notes it drew on in its `## Sources` section. No LihFolk assets, images or system code are included here, and this skill does not depend on the LihFolk plugin. If you want a large note vault and ready-made systems alongside this skill, their plugin is worth a look.
+Points tagged `[lihfolk]` in the references are adapted from [LihFolk Vault V2](https://github.com/lihfolk-cy/v2-vault), © 2026 LihFolk, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). We compared its notes with our own research, kept what added depth, rewrote most of it, and rejected what conflicts with this skill's house rules. Some facts, figures, lists and table rows still follow its wording closely; those are used under the same licence, with changes. Each reference file lists the notes it drew on in its `## Sources` section. No LihFolk assets, images or system code are included here, and this skill does not depend on the LihFolk plugin. If you want a large note vault and ready-made systems, their plugin is worth a look.
 
 ## The 31 repositories behind the knowledge base
 

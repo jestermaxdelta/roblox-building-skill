@@ -1,6 +1,18 @@
 # Game Programming Patterns in Luau
 
-Distilled from knowledge-base section 2.12 (Nystrom's 19 patterns mapped to Roblox). Add a pattern only when the problem it solves is actually present. The Roblox mappings are the compiler's translation (general knowledge); snippets are unexecuted sketches.
+Distilled from knowledge-base section 2.12 (Nystrom's 19 patterns mapped to Roblox). Add a pattern only when the problem it solves is actually present. The Roblox mappings are the compiler's translation (general knowledge); snippets are unexecuted sketches. Tags: `[VS]` version-sensitive, `[house]` house rule or estimate.
+
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | Use three patterns only: Command (remote intents validated on the server), Observer (a Signal module) and Component (CollectionService tags). Copy the Init/Start bootstrap instead of writing singletons | ECS, Data Locality, Bytecode, Double Buffer |
+| Intermediate | State machines for NPCs and screens; Type Object data for enemies, items and pets; Object Pool for projectiles and effects; Dirty Flag for computed stats; a fixed-step Game Loop where determinism matters | jecs, Actors, parallel arrays |
+| Expert | Data Locality, jecs and Parallel Luau only after a MicroProfiler capture shows the hot loop (performance.md); Event Queue aggregation; whitelisted ops for designer-authored abilities; grid-hash Spatial Partition for data-only entities | — |
+
+Related: loader, layout and toolchain in engineering-architecture.md; language idioms in luau-mastery.md; whole systems built from these patterns in gameplay-systems-cookbook.md.
+
+## Pattern table
 
 | Pattern | Roblox and Luau form | Use when |
 |---|---|---|
@@ -29,6 +41,7 @@ Distilled from knowledge-base section 2.12 (Nystrom's 19 patterns mapped to Robl
 Command (server whitelist with undo, cap history at 50, clear on `PlayerRemoving`):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local Commands = {}
 Commands.PlaceProp = {
 	validate = function(player: Player, args): boolean
@@ -54,6 +67,7 @@ end)
 Observer (Signal whose handlers run in their own threads):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local Signal = {}
 Signal.__index = Signal
 function Signal.new() return setmetatable({ _handlers = {} }, Signal) end
@@ -76,6 +90,7 @@ Singleton alternative: every service module exposes `Init` (internal state, no c
 Game Loop (fixed step inside `Heartbeat`):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local STEP, accumulator = 1 / 20, 0
 RunService.Heartbeat:Connect(function(dt)
 	accumulator += math.min(dt, 0.25) -- clamp hitches
@@ -90,6 +105,7 @@ end)
 Type Object (breeds with parent inheritance resolved once at load, then frozen):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local raw = {
 	Troll = { health = 25, attack = "The troll hits you!", model = "Troll" },
 	TrollArcher = { parent = "Troll", attack = "The troll archer fires an arrow!" },
@@ -112,6 +128,7 @@ return resolved
 Component via tags (attach behaviour and cleanup to every tagged instance, including streamed-in ones):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local CollectionService = game:GetService("CollectionService")
 local cleanups: { [Instance]: () -> () } = {}
 local function onAdded(instance: Instance)
@@ -131,6 +148,7 @@ jecs (v0.11 API in the source; check the current version): `local world = jecs.w
 Event Queue (per-frame drain with aggregation; requests made while handling go to the next frame):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local pending: { [string]: { position: Vector3, count: number } } = {}
 local function requestSound(name: string, position: Vector3)
 	local request = pending[name]
@@ -148,6 +166,7 @@ end)
 Dirty Flag (stats in layers base → flat → percent → clamp; every write path sets the flag):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 function Stats:addModifier(stat: string, flat: number, percent: number)
 	table.insert(self.modifiers, { stat = stat, flat = flat, percent = percent })
 	self.dirty = true
@@ -171,6 +190,7 @@ end
 Object Pool (park by CFrame far away rather than reparenting; reset reused state; pick an overflow policy: skip, steal oldest, or grow):
 
 ```lua
+-- fragment (unexecuted sketch; add `--!strict` and types when adopting)
 local HIDDEN = CFrame.new(0, -10000, 0)
 function Pool.new(template: BasePart, size: number, folder: Instance)
 	local self = setmetatable({ free = table.create(size), template = template }, Pool)
@@ -201,3 +221,18 @@ Spatial Partition: prefer engine queries (`OverlapParams` with `FilterType = Inc
 Bytecode alternative: `loadstring` is disabled via `ServerScriptService.LoadStringEnabled` and enabling it for untrusted text is a serious security risk. Use a flat list of whitelisted ops: `{ { "damage", 12 }, { "effect", "Burn" }, { "heal", 3 } }` interpreted by `Ops[instruction[1]](ctx, table.unpack(instruction, 2))`.
 
 Pushdown screen stack: `push(screen)` pauses the top and enters the new one; `pop()` exits the top and resumes the one below, so Back always returns exactly where you were.
+
+## Review gate
+
+- [ ] Each pattern in use solves a problem that is actually present; none was added "for later".
+- [ ] Remote commands are validated on the server before `execute`; per-player history is capped and cleared on `PlayerRemoving`.
+- [ ] Services use Init/Start through one bootstrap; no module relies on require order or a hidden singleton.
+- [ ] Tag components bind on `GetInstanceAddedSignal` and clean up on removal, so streamed instances work.
+- [ ] Pools reset reused state, park by `CFrame`, and state their overflow policy; pooled projectiles are non-colliding visuals and the server decides every hit.
+- [ ] Type data is resolved once and frozen; computed stats are cached behind a dirty flag that every write path sets.
+- [ ] `loadstring` stays disabled; designer-authored behaviour runs through whitelisted ops.
+- [ ] ECS, Actors or parallel arrays were adopted only after profiling showed the need.
+
+## Sources
+
+- `references/knowledge-base.md` section 2.12 (grep `## 2.12`), which maps Robert Nystrom's *Game Programming Patterns* to Roblox and Luau; the jecs API line comes from the same section. No web sources were opened for this file; the Roblox mappings are general knowledge and unexecuted.

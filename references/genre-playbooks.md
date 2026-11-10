@@ -79,7 +79,7 @@ Engineering:
 - Movement is client-owned by default. For competitive movement or hit registration, validate on the server or adopt the server authority model (`Workspace.AuthorityMode`) `[official]` `[VS]`.
 - Budget for a 3 GB Android phone in the busiest scene of the genre (the plaza, the peak wave, the 10-player brawl).
 - Timers and schedules come from server time (`Workspace:GetServerTimeNow()`), replicated as end timestamps, so every client and server agrees.
-- Round-based games clean up per round (a janitor) and isolate errors per round; leaks surface after dozens of rounds, not in testing `[lihfolk]`.
+- Round-based games clean up per round (a Trove) and isolate errors per round; leaks surface after dozens of rounds, not in testing `[lihfolk]`.
 
 ## Hybrid genres
 

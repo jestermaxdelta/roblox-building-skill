@@ -2,7 +2,7 @@
 
 What this is: frame and memory budgets, the profiling workflow, engine-feature status and the fix for each cost centre. Open it when setting budgets for a new game, or jump to "Level-up audit" when a live game lags, crashes or loads slowly. Distilled from knowledge-base sections 5.1–5.6, 5.9, 5.12 and 4.9; platform facts re-checked against `Roblox/creator-docs` on 2026-11-10. Design for a 3 GB Android phone first. Tags: `[official]` docs, `[community]` forum practice, `[VS]` version-sensitive (device statistics change yearly; several engine features are new), `[house]` house estimate.
 
-Contents: Start here by level · Frame budgets and device targets · Profiling workflow · Luau performance idioms · Rendering · Streaming · Engine features and status · Physics and collision · Parallel Luau · VFX, animation and audio budgets · Loading and join · Mobile crashes and memory · Level-up audit · Measured investigation by problem class (A compute, B memory leak, C network, D place size, E mobile tiers) · Performance review gate · Sources
+Contents: Start here by level · Frame budgets and device targets · Profiling workflow · Luau performance idioms · Rendering · Streaming · Engine features and status · Physics and collision · Parallel Luau · VFX, animation and audio budgets · Loading and join · Mobile crashes and memory · Level-up audit · Measured investigation by problem class (A compute, B memory leak, C network, D place size, E mobile tiers) · Review gate · Sources
 
 ## Start here by level
 
@@ -13,6 +13,8 @@ Contents: Start here by level · Frame budgets and device targets · Profiling w
 | Expert | Leak hunts by slope with heap snapshot diffs; a per-player bandwidth budget with interest tiers; Parallel Luau and native code on measured hot paths; graphics tiers; a regression guard left behind by every fix | Nothing: read it all |
 
 Terms: *frame time* is the milliseconds one frame takes (16.67 ms at 60 FPS). A *draw call* is one batch of geometry sent to the GPU. *Overdraw* is the same pixel painted several times, usually by transparent layers. *Heartbeat* is the server's simulation step, capped at 60 per second. *Data ping* is round-trip time through the replication queue, as opposed to raw network ping.
+
+Related: lighting-and-atmosphere.md (cost of lights, shadows and post effects, low-detail order); vfx-and-juice.md (particle budgets and quality scaling); debugging-and-testing.md (leak hunting, Network Simulator); ui-input-crossplatform.md (UI performance).
 
 ## Frame budgets and device targets
 
@@ -88,6 +90,7 @@ Anti-patterns: per-frame work that could run on change or at 5–10 Hz; creating
 Instancing: two MeshParts share a draw call only when they share the same MeshId and identical SurfaceAppearance (or matching TextureContent, or matching material). Upload each kit piece once and reuse its id; re-importing a scene creates duplicate ids (40 lamp posts become 40 draw calls). Audit:
 
 ```lua
+-- fragment (unexecuted sketch); run in edit mode
 local seen = {}
 for _, d in workspace:GetDescendants() do
 	if d:IsA("MeshPart") then seen[d.Name] = seen[d.Name] or {}; seen[d.Name][d.MeshId] = true end
@@ -328,7 +331,7 @@ Conflict: LihFolk splits a 60 FPS phone frame as rendering 8–10 ms, engine sim
 1. Check it is a leak. Memory rises for the first 5–10 minutes (modules, pools, streamed assets), and server memory never shrinks when players leave. Neither is a leak.
 2. Hold the workload constant, take at least three samples after warm-up, and express growth as MB per hour or KB per repetition. Time to failure = (ceiling − current) ÷ slope. 60 MB per hour from 1.1 GB kills a 2 GB phone within one long session; the same slope on a 1.5 GiB server takes about 42 hours to reach 4 GiB. Client leaks are usually the urgent ones.
 3. Find the label that grows: F9 > Memory, or the sampler below. `debug.setmemorycategory("Name")` in large scripts makes the script-memory view readable.
-4. Build a loop that multiplies the leak: respawn, zone change, menu open and close, equip and unequip, 100 times.
+4. Amplify the leak by repeating the suspect action 100 times in a script (respawning, crossing a zone border, opening and closing a menu, equipping and unequipping).
 5. Bisect: disable half the systems, rerun, keep the half where the slope remains.
 6. Take Luau heap snapshot A after warm-up, run the loop 100 times, wait 10 s idle, take snapshot B. A count that grew by exactly 100, or a multiple, is the leak; growth of 3 or 7 is noise.
 7. Usual holders: a connection per character to a long-lived signal; per-player tables never cleared; a loop spawned per object that never ends; caches keyed by user input with no cap; animation tracks loaded per use; tag handlers with no removal path; menus cloned on every open.
@@ -371,7 +374,7 @@ Conflict: the staff article's "about 50 KB/s per client" is used above as a guid
 
 Not adopted from LihFolk: its per-asset content budgets (for example up to 140 beams and 30 emitters for one sword swing, 44 and 10 on low). They are specific to its project and exceed the mobile VFX budget in this file.
 
-## Performance review gate
+## Review gate
 
 - [ ] Low-end Android holds ≥ 30 FPS in the busiest scene; mid-range about 60; no spikes over about 50 ms in a 2-minute capture.
 - [ ] Server heartbeat about 60 Hz with a full server; memory flat over a 1-hour soak and under 50% of the limit.

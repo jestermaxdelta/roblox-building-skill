@@ -152,7 +152,7 @@ return Motion
 
 ```lua
 --!strict
--- Client/UI/Presenter.luau: one window open; state-driven, so rapid toggling ends in the last requested state.
+-- Unexecuted sketch. Client/UI/Presenter.luau: one window open; state-driven, so rapid toggling ends in the last requested state.
 local ContextActionService = game:GetService("ContextActionService")
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
@@ -233,7 +233,7 @@ Frameworks and tooling (GitHub activity on 2026-11-10):
 | Storybooks: `flipbook-labs/flipbook` (MIT), `PepeElToro41/ui-labs` (GPL-3.0), `Kampfkarren/hoarcekat` | 124★ / 202★ / 148★ | Any code-built component library: preview states without playtesting |
 | Springs: `fraktality/spr` (2024-07), `littensy/ripple` (2026-07); `Reselim/Flipper` (2021-11, stale) | 146★ / 137★ / 144★ | Motion that is retargeted mid-flight |
 
-- Declarative libraries pay off with many states, data-driven lists or several UI programmers; a few static windows do not need one. Their cost is learning and tooling, not runtime; the cost of imperative UI is state bugs that grow with every feature. `[lihfolk]`
+- Declarative libraries pay off with many states, data-driven lists or several UI programmers; a few static windows do not need one. What you pay for them is the learning curve and build setup rather than frame time; hand-wired UI instead pays in state bugs, and the bill rises with each feature added. `[lihfolk]`
 - Traps in any library `[lihfolk]`: animating through component state (60 re-renders a second: tween instances instead); lists keyed by index (instances are recreated on reorder: key by item id); connections not cleaned up when a screen closes; derived values that loop over the whole inventory on every change; 600 declarative cards are still 600 sets of instances, so virtualise.
 - **Conflict:** this file once named Fusion 0.4 as the "bold" option. By repository activity Vide and react-luau are the actively maintained choices and Fusion is quieter. The default does not change. Pick a library only when more than about five screens share live state or lists exceed a few hundred rows, and recheck activity first `[VS]`.
 
@@ -289,6 +289,7 @@ Measure, in this order: (1) real low-end phone at its lowest graphics level; (2)
 Any text one player writes that others can see is filtered on the server (unexecuted sketch):
 
 ```lua
+-- fragment (unexecuted sketch)
 local TextService = game:GetService("TextService")
 SetSignText.OnServerEvent:Connect(function(player, raw: string)
 	if typeof(raw) ~= "string" or #raw > 60 then return end
@@ -399,6 +400,7 @@ Run through the Studio MCP `execute_luau` (Edit datamodel) or the command bar. I
 
 ```lua
 --!strict
+-- unexecuted sketch
 local StarterGui = game:GetService("StarterGui")
 local findings: { string } = {}
 local function flag(inst: Instance, msg: string)

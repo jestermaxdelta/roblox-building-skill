@@ -12,6 +12,8 @@ How to design a Roblox HUD, shop, inventory and reward flow in Figma (through th
 
 Terms used below: a **token** is a named design value (a colour role, a size, a duration) stored once and referenced everywhere. **9-slice** stretches an image's edges and centre while keeping its corners fixed. A **presenter** is the one module that opens and closes windows. **Virtualising** a list means creating only the visible cells and recycling them as the player scrolls.
 
+Related: `accessibility-and-player-qol.md` (text size, colour-blind safety, reduced motion, the settings menu and QoL features every screen must honour); `ui-input-crossplatform.md` (implementation, safe areas, input); `monetization-and-policy.md` (shop and offer rules behind the shop recipe).
+
 ## Contents
 
 The one rule of the pipeline · Design system and tokens · Method: from brief to design system · Frames and scale · Screen inventory · Patterns with sizes · Screen build recipes (HUD, shop, inventory, settings, codes, daily rewards, rebirth, notifications, loading screen) · Motion spec · Figma MCP workflow (px → Roblox, mapping gotchas) · Export and import settings (converters) · Theme module · Generic-UI tells · Polish checklist · Level-up table · Review gate · Sources

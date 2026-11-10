@@ -20,7 +20,7 @@ A large share of Roblox players are children, so every social feature is designe
 
 | Problem | Who acts | The developer's job |
 |---|---|---|
-| Child endangerment, grooming, sexual content, threats, self-harm | Roblox, through the platform report | Make the platform report easy to find, remove the player from the server, **never investigate it yourself** |
+| Grooming or any risk to a child, sexual content, threats of violence, self-harm | Roblox's own report flow | Keep that report one tap away, take the reported player out of the server, and **do not run your own investigation** |
 | Harassment, hate, bullying in chat or voice | Roblox, plus you inside your game | Game-level mute or kick; tell the victim to report and block |
 | Scams for Robux or accounts | Roblox | No free text in trades; "we never ask for your password or items" messaging |
 | Breaking your game's rules (griefing, exploiting, teaming) | You | Your report flow, enforcement and appeals. Roblox does not mediate these unless your rules or enforcement themselves break the Community Standards `[official]` |
@@ -32,7 +32,7 @@ Never build:
 - A feature whose purpose is to move a conversation off-platform: "type your Discord", free-text trade notes, links, handles or invite codes in game text. Moving a child to a less moderated space is the common pattern in grooming cases `[lihfolk]`.
 - Requests for real names, ages, photos, schools, locations, emails or phone numbers, in game or in any community space.
 - Primarily private spaces (bedrooms, bathrooms, closets) in a game open to under-18s; add bounding-box limits on beds and similar props `[official]`.
-- A moderator process where a child reports abuse to your volunteer and the volunteer handles it privately. The script is: "Thank you. Please use Roblox's Report button on that player now; I am removing them from this server" `[lihfolk]`.
+- A moderator process where a child reports abuse to your volunteer and the volunteer handles it privately. A volunteer's whole reply is three things: thanks, a pointer to Roblox's Report button for that player, and a statement that the player is being removed from the server now `[lihfolk]`.
 - Anything that infers a player's age (from voice eligibility, `PolicyService` flags, typing style) or pressures players to verify their age.
 
 ## 2. Age framework in 2026 `[VS]`
@@ -166,7 +166,7 @@ end
 
 **Player-made content** `[official][lihfolk]`: filters do not understand shapes. Options in rising cost: preset pieces only on public surfaces; "hide this build" per viewer plus report; builds visible to the builder and friends until reviewed; a trusted-builder privilege (playtime, no reports, `Player:IsVerified()`); human review for anything featured. `IsVerified` is an identity signal (phone or ID), not an age check; the docs suggest it for ranked play and trading integrity.
 
-**Action ladder** (mildest action that stops the harm): hide for the reporter → game mute (`TextSource.CanSend`) → restrict a privilege (no building, no trading) via a profile flag → kick → timed ban → permanent ban → economy correction through the ledger. A muted griefer who cannot build is often quieter than a kicked one who rejoins on an alt `[lihfolk]`.
+**Action ladder** (mildest action that stops the harm): hide for the reporter → game mute (`TextSource.CanSend`) → restrict a privilege (no building, no trading) via a profile flag → kick → timed ban → permanent ban → economy correction through the ledger. Taking away the tool (chat, building) while leaving the player in the server often ends the problem; a kick tends to bring the same person back on a second account `[lihfolk]`.
 
 When not to build this: a small obby with no UGC, trading or social hub needs default chat, filtered names, owner-only kick and ban, and a weekly look at the dashboard.
 
@@ -313,13 +313,13 @@ Containment tools, fastest first `[lihfolk][official]`: config kill switch for t
 |---|---|---|---|
 | **Data loss or corruption** | Read-only saves; note the start time; check the Roblox status page before blaming your code | DataStore versions: versioned backups expire 30 days after a newer write overwrites them and the latest never expires `[official][VS]`; the vault adds that a backup is cut on the first write per key per UTC hour `[lihfolk]`. Inspect before restoring; never write under a live session lock (`data-and-purchases.md`). Restore, compensate, or both | "Saves are paused while we fix a problem. Progress before 14:00 UTC is safe." |
 | **Purchases charged, not granted** | Flag off the prompts | A handler that errored (did not return `PurchaseGranted`) is retried by Roblox once fixed; one that returned granted needs manual grants from your purchase log | "Purchases are paused. Nothing you bought is lost; it will arrive automatically." |
-| **Dupe or economy exploit** | Flag off trading and the affected faucet; snapshot ledgers | Close the validation hole first; remove duplicated value from holding accounts; freeze suspicious trades; avoid global rollbacks; action accounts by the ladder (§7) | "Trading is off while we fix a bug. Your items are safe. Please do not trade until this message is gone." |
+| **Dupe or economy exploit** | Flag off trading and the affected faucet; snapshot ledgers | Close the validation hole first; remove duplicated value from holding accounts; freeze suspicious trades; avoid global rollbacks; action accounts by the ladder (§7) | "We have paused trading to fix a bug. Nothing you own is at risk. Trading returns when this notice disappears." |
 | **Exploit wave** (fly, kill-all, server crash) | Raise server-side checks, enable stricter config thresholds, restart affected servers | Patch the remote or validation gap; ban by evidence, not by reports alone | "We are removing cheaters and have tightened checks. Report with the in-game button." |
 | **Offensive content incident** (unfiltered text, offensive build or image visible, bypassed asset) | Hide or disable the surface with a flag; remove the content; restrict the uploader's privilege | Fix the filter or review gap; check the Safety dashboard; update the questionnaire if a feature changed; if Roblox moderated the game, fix first, then appeal through Safety ⟩ Issues & appeals describing the change `[official]` | "We removed content that broke our rules and turned the feature off while we fix it." |
 | **Compromised staff or owner account** | From another account with rights, remove its roles; rotate API keys and secrets; check versions, prices, payouts | Restore from known-good versions; Roblox Support for owner recovery | Tell the team and community through channels the attacker does not control |
 | **Raid or harassment wave** | Extra moderators, slow mode, temporary server-size or join restrictions | Report to Roblox; talk to any creator involved | Short rules reminder; where to report |
 
-Communication rules `[lihfolk]`: acknowledge before you know the cause; say what is safe and what players should not do; update every 30–60 minutes during SEV1 even if only "still working"; a config-driven in-game banner under about 120 characters; close with what happened, what was fixed and what compensation is coming; do not blame Roblox unless its status page confirms it; never blame players.
+Communication rules `[lihfolk]`: acknowledge before you know the cause; say what is safe and what players should not do; update every 30–60 minutes during SEV1 even if only "still working"; a config-driven in-game banner under about 120 characters; the closing message states the cause, the fix and the compensation; name Roblox as the cause only when its status page says so, and never point at players.
 
 Compensation: generous, quick, uniform, once per player, recorded in the save, with an expiry, and not farmable.
 

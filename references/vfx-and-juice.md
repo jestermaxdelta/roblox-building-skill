@@ -1,6 +1,6 @@
 # VFX and juice: particles, beams, meshes, timing, shake, replication, budgets, safety
 
-What this is: the build-level reference for visual effects and game feel on Roblox: every effect instance and its traps, effect anatomy and timing in milliseconds, hit-stop and camera work, the client-only replication pattern, pooling, budgets for a 3 GB Android phone, and motion and flash safety. Open it when building an effect or auditing why a game feels flat, laggy or unreadable. It extends `game-craft.md` §1 (tier table, trauma-shake module, reward pop sketch) and `core-loop-tuning.md` §7 (juice ordered by build cost); neither is repeated here. Sound is in `audio-sfx-music.md`; frame budgets in `performance.md`.
+What this is: the build-level reference for visual effects and game feel on Roblox: every effect instance and its traps, effect anatomy and timing in milliseconds, hit-stop and camera work, the client-only replication pattern, pooling, budgets for a 3 GB Android phone, and motion and flash safety. Open it when building an effect or auditing why a game feels flat, laggy or unreadable. It extends `game-craft.md` §1 (tier table, trauma-shake module, reward pop sketch) and `core-loop-tuning.md` §8 (juice ordered by build cost); neither is repeated here. Sound is in `audio-sfx-music.md`; frame budgets in `performance.md`.
 
 Tags: `[official]` Roblox docs (mirror commit ccc2b01), `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers come from one production combat game and are starting points, not laws), `[VS]` version-sensitive, `[house]` house estimate. Terms: *VFX* = visual effects; *juice* = small non-gameplay responses that confirm an action; *emitter* = `ParticleEmitter`; *additive* = colours add to what is behind (glow); *overdraw* = the same pixel drawn several times by stacked transparent layers; *telegraph* = a warning drawn before an attack lands.
 
@@ -363,7 +363,7 @@ end)
 | Impact frames, blur, full-screen flashes | Off; replace with a steady edge vignette and a directional indicator |
 | UI motion | Snap or fade (`ui-input-crossplatform.md`) |
 
-- Settings to ship with any shake, flash or FOV juice (tier 2 in `core-loop-tuning.md` §7): shake slider (default 60–80%), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
+- Settings to ship with any shake, flash or FOV juice (tier 2 in `core-loop-tuning.md` §8): shake slider (default 60–80%), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
 - Flash safety: no more than 3 full-screen flashes in any second (WCAG 2.3.1); avoid saturated red full-screen flashes; rapid hits merge into one sustained tint; prefer reducing contrast, frequency and area over a warning screen (Xbox Accessibility Guideline 118). No Roblox-specific rule was found, so this is the developer's job.
 - Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`. Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
 

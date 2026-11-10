@@ -1,6 +1,16 @@
 # Process: concept, pillars, prototyping, scope, milestones, playtesting, review
 
-Distilled from knowledge-base sections 1.10 to 1.13 and 2.13. Use this during the concept, one-pager, prototype and review phases, and whenever scope needs cutting. `[VS]` marks version-sensitive facts as of 2026-11-08.
+Distilled from knowledge-base sections 1.10 to 1.13 and 2.13. Use this during the concept, one-pager, prototype and review phases, and whenever scope needs cutting. Tags: `[VS]` version-sensitive facts as of 2026-11-08 (re-check at create.roblox.com/docs), `[house]` house rule or estimate.
+
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | Fill the one-pager (§1) and three pillars (§2). Write a prototype brief with KEEP IF and KILL IF before any code (§4). Watch two outsiders play without helping (§7). Cut by the triage order in §5 | Rubric scoring, weekly experiment SOP, A/B tests |
+| Intermediate | Lean GDD parts 1–9 (§3); the right slice for the question, not a vertical slice first (§4); milestone exit criteria (§6); five-tester think-aloud sessions with a written hypothesis (§7); the review rubrics (§8); a postmortem after every launch and major update (§9) | Experiments on small traffic |
+| Expert | Pre-registered weekly experiments with guardrail metrics and a rollback owner (§7, sample sizes in analytics-and-discovery.md); triangulated telemetry, observation and interviews; one-way-door decision records (§5); cross-checking rubrics against churn points (§8) | — |
+
+Related: templates/game-one-pager.md, templates/lean-gdd.md and templates/playtest-plan.md are the fill-in forms for §1, §3 and §7; core-loop-tuning.md owns the first-10-minutes script and the loop scorecard; audit-existing-game.md is the process for a game that is already live.
 
 ## 1. Concept one-pager
 
@@ -115,7 +125,7 @@ Solo pitfalls: over-ambition, isolation, not letting others test, perfectionism.
 | Moderated think-aloud | FTUE and UX | 5 finds about 85% of usability issues; 8–10 recommended |
 | Unmoderated telemetry | Funnels, balance, churn | Balance 15–30; retention 30–100+ |
 | Closed or open beta | Scale, economy, social | Hundreds |
-| A/B test | One variable | At least 20 per variant, 50+ recommended |
+| A/B test | One variable | In-person comparison: at least 20 per variant, 50+ recommended, and it shows only large usability differences. Live metric tests need hundreds to thousands per arm (table in analytics-and-discovery.md); under about 1,000 DAU compare weekly cohorts instead |
 | Regression testing | Nothing regresses | Automate |
 
 Running a session: write a hypothesis ("4 of 5 testers can restate the core conflict within 1 minute"); control build, device, instructions, time; the observer does not help unless the tester is stuck more than 2 minutes; log timestamps of confusion, frustration and delight with severity; interview with "What were you trying to do?", "When did you feel most/least in control?", "What would you tell a friend this game is?", laddering "why" three deep. Never ask leading, compound or defensive questions, "would you pay $5?", or use jargon. Reports never use "fun", "engaging" or "balanced" without concrete definition.
@@ -152,11 +162,28 @@ After every jam, launch and major update: goal and hypothesis with pre-set thres
 
 ## 10. Source conflicts resolved (section 1.13)
 
-- Microtransactions: generic sources prefer cosmetic-only; house rule 3 requires boosts and convenience. Resolution: boosts only speed loops that are already fun, no paid PvP power, permanent paid multipliers at 2× or less combined, additive stacking recommended, offers only at delight peaks.
+- Microtransactions: generic sources prefer cosmetic-only; house rule 3 requires boosts and convenience. Resolution: boosts only speed loops that are already fun, no paid PvP power, the paid multiplier stack capped (permanent ≤ 4× in total, ≤ 8× including timed boosts; economy-and-progression.md owns the cap), offers only at delight peaks.
 - Prototype art: greybox-with-primitives sources vs house rule 1. Resolution above (blockout kit recommended).
 - Scarcity: only genuine, disclosed limits ("until Dec 31"); never fake stock counts.
 - Engagement psychology: BlackBook's manipulation toolkit is banned; use only its analytical audits.
 - "Each extra click costs 10% conversion" and "30% randomness": unverified; measure your own funnel.
 - Retention benchmarks: Creator Analytics similar-game benchmarks first, GameAnalytics percentiles second; generic F2P targets (D1 40%) are not Roblox norms.
 - Pacing: compress PC/console milestones 5–10× for Roblox.
-- Retention mechanics: cumulative calendars, streak freezes, announced timers, no absence punishment.
+- Retention mechanics: cumulative calendars (never a login streak that resets), announced timers, no absence punishment.
+
+## Review gate
+
+- [ ] One-pager filled; the pitch fits one sentence; the scope ratio (full vision to smallest fun version) is under 10:1.
+- [ ] Three pillars exist as measurable rules, and the last review named what contradicts them.
+- [ ] Every prototype had a brief (question, timebox, KEEP IF, KILL IF) and ended in keep, kill or refactor; no spike code was promoted.
+- [ ] Nothing built with primitives left the throwaway place: outside tests used the Blender blockout kit (house rule 1).
+- [ ] The current milestone's exit criteria are written and met before the next one starts.
+- [ ] Playtests had a written hypothesis, an observer who did not help, and at least five outsiders before a keep decision.
+- [ ] Every metric collected maps to a decision; experiments were pre-registered with a guardrail and a rollback owner.
+- [ ] Review findings state the failure and the metric, not "needs balancing"; at most three action items per retro.
+- [ ] A postmortem exists for the last launch or major update.
+
+## Sources
+
+- `references/knowledge-base.md` sections 1.10–1.13 (concept, prototyping, scope, playtesting, source conflicts) and 2.13 (jam workflow); grep `## 1.10` to `## 1.13` and `## 2.13`. Those sections list their own upstream repositories and the owner's vault notes. No web sources were opened for this file.
+- Market facts tagged `[VS]` (250-play gate, wave length, thumbnail and video figures) come from `references/market-scan-2026-11.md`, a 2026-11-07 snapshot.

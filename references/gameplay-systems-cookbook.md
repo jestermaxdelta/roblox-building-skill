@@ -167,7 +167,7 @@ end
 |---|---|---|
 | Server authoritative | Client sends "I swung"; the server waits until `hitAt` minus clamped one-way latency, then queries its own shape | PvE and casual PvP, with a slightly generous box and a short windup |
 | Hybrid | Client runs the same shape for instant feedback and claims targets; the server re-checks rate, existence, reach + tolerance, line of sight, one hit per target per swing | Competitive melee, fast bullets |
-| Rewind | As hybrid, checked against a short position history at `now − ping/2 − interpolation`, capped at about 250 ms | Shooters; costs memory and complexity |
+| Rewind | As hybrid, checked against a short position history at `now − ping/2 − interpolation`, capped at about 250 ms. Conflict (rewind cap): community threads suggest 300–500 ms `[community]`, LihFolk's melee project clamps at 0.4 s `[lihfolk]`, and the cookbook sketch uses 0.25 s `[house]`. Start at 0.25 s and raise it only when logs show honest claims failing | Shooters; costs memory and complexity |
 | Server authority mode `[VS]` | Engine predicts and rolls back | New competitive projects (networking-and-security.md) |
 
 - **Split and remotes:** `Swing(comboIndex)`, `Ability(slot, aimPoint)`, `Guard(held)`, `Dash(direction)`; server to client: reliable damage numbers, unreliable distance-filtered cosmetics. The attacker's client plays its own swing at once; damage numbers wait for the server.

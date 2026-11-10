@@ -14,6 +14,8 @@ Contents: Start here by level · Client-server model essentials · Project archi
 
 Terms: a *service* is a server module that owns one system; a *controller* is its client counterpart. *Replication* is the engine copying instances and properties from server to clients. A *sourcemap* is the file that tells external tools where each script sits in the DataModel. *Version skew* is old and new servers running at the same time after a publish.
 
+Related: studio-workflow.md (Studio setup, Script Sync or Rojo, publishing from Studio); luau-mastery.md (language); architecture-patterns-luau.md (patterns); debugging-and-testing.md (tests and live debugging).
+
 ## Client-server model essentials
 
 - One authoritative server, many clients. Only server state is real; everything on a client is a replica, a prediction or decoration.

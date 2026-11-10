@@ -36,7 +36,7 @@ Level: beginners fill "Product set", "Offer gate configuration" and the policy c
 | 8 | Auto-Collect | Game pass | 199–299 | Shop; contextual after 20 manual collects | attribute `AutoCollect` | Manual collect | pass_autocollect | |
 | 9 | Extra storage / slots | Game pass | 129–199 | Shop; when storage is full | | Sell items | pass_storage | |
 | 10 | Permanent 2× Cash | Game pass | 399 | Shop | | Timed boost | pass_2x_cash | |
-| 11 | VIP | Pass 799 or subscription 499/mo ($4.99) | Shop | cosmetic + convenience, no PvP power | | pass_vip | |
+| 11 | VIP | Game pass or subscription | 799 one-time, or 499/mo ($4.99) | Shop | cosmetic + convenience, no PvP power | One-time pass beside the subscription | pass_vip | |
 | 12 | Gift <pass> | Dev product | same as pass | Shop gift tab; price-level gated | recipient `Entitlements[pass]`; MessageAsync if offline | | gift_<pass> | |
 | 13 | Currency packs | Dev product | 49 / 99 / 399 / 999 / 2,499 | Shop | +5 / +10 / +15% bulk bonus | Play | pack_s/m/l/xl/xxl | |
 | 14 | Revive / second chance | Dev product | 15–30 | After run ends, never mid-chase | | Rewarded video revive | revive | |

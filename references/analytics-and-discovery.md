@@ -64,6 +64,34 @@ Other dashboards worth a weekly look `[official][VS]`:
 
 Open Cloud `[official][VS]`: the Analytics Query API (`/analytics-query-api/v1/universes/{id}/metrics`) returns the same metrics with breakdowns and filters, and the experimental Benchmarks API (`/analytics-benchmark/v1/universes/{id}/benchmarks`) returns the P10/P50/P90 benchmark series; both use the `universe.analytics:read` scope, which the Studio MCP exposes through `open_cloud_invoke`. Standard metrics go back 4 years, performance metrics 28 days. Metric names are listed in audit-existing-game.md §1.
 
+## Benchmarks: one table
+
+Snapshot 2026-11-10 `[VS]`. This is the one benchmark table for the skill; other references link here. Order of trust: (1) the game's own Creator Analytics percentile, always, when the owner can read it (100+ DAU); (2) rows marked **Drives triage**; (3) rows marked Cross-check; rows marked **Weak** are listed only so a quoted figure can be recognised and discounted.
+
+| Metric | Value | Sample and source | Use |
+|---|---|---|---|
+| D1 retention | P25 8.4% · median 10.3% · P75 12.9% · P90 15.9% · P99 22.2% | GameAnalytics 2026 Roblox report: 500+ titles above 1M MAU, Aug 2025–Jul 2026; read through search summaries (figures as recorded in liveops-quests-retention.md) `[community]`. Large titles only, so a small game at the median is doing well | **Drives triage**: under 8.4% below; 8.4–12.9% near median; over 12.9% above |
+| D7 retention | P25 1.0% · median 1.6% · P99 9.1% | Same report and sample | **Drives triage**: under 1.0% below |
+| D30 retention | Median 0.5% · top 1% 4.7% | Same report and sample | **Drives triage**, coarse: under 0.5% below |
+| D1 by average session length | 0–3 min 4.3% · 7–12 min 7.9% · 13–18 min 10.2% · 19–24 min 11.5% (top 2% 32.3%; D7 median 1.6%, top 2% 8.5%) · 25+ min 10.8% | GameAnalytics 2025 Roblox report (aggregated titles, Jan 2023–Jul 2025), via the owner's vault. The vault copy has no 4–6 min row; interpolate between 4.3% and 7.9% and say so | Cross-check: is D1 low for the engagement the game already has? |
+| Session length | Median 6.6 min · top quarter 14.5 min · top 10% 26.4 min | Same 2025 report, via the vault | Cross-check; house target 19+ min `[house]` |
+| Daily playtime per user | Median 16.8 min · top 10% 64.9 min | Same 2025 report, via the vault. Ranking counts at most 60 min per user per day `[official]` | Cross-check |
+| Sessions of comparable hits | 14–27 min (vault sample of management and +1 games, one morning, 7 Nov 2026) | market-scan-2026-11.md; about 10 games | Weak: tiny sample, survivors only |
+| D1 by genre | Obby 25–35% · tycoon 20–28% · shooter 22–30% · roleplay 15–22% | RoWatcher, July 2026: no sample or method stated; far above the measured medians | **Weak: never triage from it** |
+| D1 dashboard example | P50–P90 12.11–18.73% (docs); 12.4–24.1% (a DevForum announcement) | Illustrations of how the dashboard displays a range `[official]`; each game gets its own | **Weak: not a benchmark** |
+| D1 / D7 / D30 "40 / 15 / 5" | Mobile-industry rule of thumb | Not Roblox | **Weak: aspirational only** |
+| PTR and first-play bounce | No public figure found | Roblox publishes none; creators report 26–40% PTR drops across the 12 Oct 2026 measurement change | Dashboard only; rebaseline after 12 Oct 2026 |
+| Payer conversion, ARPPU, ARPDAU | No reliable public Roblox figure found | Dashboard benchmarks exist for all three `[official]` | Dashboard only; under 100 DAU compare with your own last month |
+| Like ratio | Ad-running games median 79%; others 92% | Vault coding of Home feed tiles (72 + 177 tiles, 7 Nov 2026) `[community]` | House floor 85% before paid traffic `[house]` |
+| Client crash rate | Investigate above 2–3%; Roblox's alert example fires at 5% for 5 minutes | Knowledge-base "Doc" value; alerts page `[official]` | **Drives triage** (T2) |
+| Client memory | Memory-usage-percentage near 100% on a platform means out-of-memory exits | Performance dashboard page `[official]` | **Drives triage** (T2) |
+| Server health | Frame rate 60; CPU time under 16 ms; memory under 50% of the server total, or under 3 GB | Performance dashboard page `[official]` | **Drives triage** (T2) |
+| Thumbnail personalisation lift | +8.5% qualified PTR on average, up to +50% | Roblox's own test figure `[official]` | Expectation, not a target |
+
+How to read one number against it: a D1 of 9% is "near median, lower half" on the triage row. The genre row would call the same game far below and the docs example would call it below P50; both are weak rows and are ignored. The session cut then asks a second question: if that game's average session is 13–18 min (bucket median 10.2%), its D1 is slightly low for its engagement, which points at return reasons rather than the first minute.
+
+Conflict, resolved: the 2025 report's per-session medians and the 2026 report's overall distribution are different cuts of similar populations, not a disagreement. The tracker's genre ranges do disagree with both; the 2026 report attributes figures of that size to small samples of already-promoted games, so the measured distributions are trusted.
+
 ## Event API and limits `[VS]`
 
 All events are server-side, only in published games, and logged after the action succeeds:
@@ -262,4 +290,5 @@ Accessed 2026-11-10. Creator docs read from the `Roblox/creator-docs` GitHub mir
 - https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)
 - https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/improvements-to-game-search-ranking/673608 (search summaries)
 - Vault: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read)
+- GameAnalytics 2026 Roblox report percentiles: https://www.gameanalytics.com/reports/2026-roblox-report and https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summaries; percentile figures as recorded in `references/liveops-quests-retention.md`)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `61 Thumbnails and CTR/` notes "From CTR to CCU - Impressions, Play-Through and the Discovery Loop", "Thumbnail and Icon A-B Testing - Method, Sample Size and Reading Results", "Thumbnail Review Checklist and Scoring Rubric"; `27 Marketing and Growth/A-B Testing and Experiments on Roblox.md`, `Update Cadence and Hype Cycles.md` (read). Adapted in our own words.

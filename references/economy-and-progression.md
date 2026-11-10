@@ -14,6 +14,8 @@ Terms: a **faucet** creates currency, a **sink** destroys it; **soft** currency 
 
 Contents: Design first · Time to afford · Hard currency or direct Robux · Progression curves and upgrade tracks · Rebirth · Paid multipliers · Offline income · Large numbers · Random rewards, pity and supply · Event currency · Pricing soft currency · Server rules · Trading and dupes · Measuring a live economy · Simulation · Live rebalancing and resets · Level-up table · Review gate · Sources.
 
+Related: monetization-and-policy.md (what is sold, price ladders, boost rules); gameplay-systems-cookbook.md §1 Currency and wallet, §3 Shop, §5 Upgrades and rebirth (implementation); data-and-purchases.md (saving balances, dupes, receipts); templates/economy-balance-sheet.md (the fill-in sheet).
+
 ## Design the economy before you build it
 
 1. **Name every currency and resource, then limit them.** The Creator Analytics economy dashboard shows up to 5 currencies and the event limits allow 10 resource types. Fewer currencies are easier to balance and to read.
@@ -160,6 +162,8 @@ offline = floor(min(secondsAway, maxHours × 3600) × ratePerSecond × efficienc
 ```
 
 Use efficiency 0.25–0.5 and a cap of 8–12 hours. Say what the cap is in the UI, and never claim "earning while away" beyond the honest cap. A 2× offline earnings product or rewarded-video doubler is a good non-invasive sale on return.
+
+Conflict (offline cap): LihFolk suggests about 2 hours at 50% because long caps devalue playing `[lihfolk]`; this skill's default is 8–12 hours at 25–50% so an overnight return pays. Keep the longer cap for the day-1 return, use the lower efficiency, and state the cap either way.
 
 ## Large numbers
 
