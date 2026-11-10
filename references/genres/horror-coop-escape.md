@@ -1,0 +1,136 @@
+# Horror and co-op escape playbook
+
+Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror, asymmetric killer-versus-survivors rounds and co-op chase games. Open it when fear, tension and escape drive the loop, when choosing a maturity target, or when auditing a live horror game for replay value and mobile lighting cost. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+
+## Snapshot
+
+- Market position (vault, 2026-11-07): **strong after Halloween, liminal sub-wave rising**. Dandy's World 128K CCU, DONT SPLASH 81K (launched 16 Oct 2026, peak 97–167K, poolrooms, tense 10-player servers), Evade 64K, Violence District 57K, Forsaken 42K (launched Dec 2024, 138K+ peak, steady roster updates and lore), Sell Fries! [Anomaly] 40K.
+- Seasonality: horror runs about 4× normal on 28–31 Oct; Roblox's The Hollow event (22 Oct–2 Nov 2026) peaked at 507.6K and lifted partner games (Dandy's World +711% on its update).
+- Volatility: Animal Hospital (Anomaly) won Best New Game and still fell about 90% (564K → 21.5K). "Anomaly × job sim" is now crowded (vault).
+- Open gap (vault): fishing or deep-sea horror; nothing above 2K (It Hears The Water 1.5K, Scary Fishing 37).
+- Audience: older than the platform average and friend-group driven; durable hits share co-op or skill play, real depth and weekly updates.
+- Maturity decides reach `[official]` `[VS]`: mild fear fits a Mild label, moderate fear needs Moderate. Only Minimal and Mild games are eligible for Roblox Kids (5–8) and Select (9–15), and accounts without an age check see nothing above Mild (vault), so a Moderate label removes most under-16 reach.
+
+## Core loop with timings
+
+| Variant | Loop | Timing |
+|---|---|---|
+| Co-op run (rooms/floors) | Lobby → pre-run shop → explore → tension → chase or scare → escape → next floor | Run 10–20 min so a discovery player can finish one `[house]` |
+| Anomaly / liminal | Do a routine task → notice what changed → respond correctly → next shift | Shift 3–8 min `[house]` |
+| Asymmetric | Lobby → 1 killer vs survivors → objectives → escape or die → results | Forsaken: 3–4 min round timer (vault) |
+| Co-op chase | Round starts → evade → revive team-mates → survive the timer | Rounds of a few minutes |
+
+- Tension graph: long quiet build-ups, short peaks, a safe room after each peak. Jump scares are rare and earned.
+- The AI telegraphs and misses; a director controls pacing so two threats never stack on a struggling party.
+
+## First 5 minutes
+
+1. 0:00 lobby with a visible "start" spot for parties; solo queue starts inside 30 s.
+2. 0:45 inside the first space; one interaction teaches the core verb (hide, close, check).
+3. 2:00 first sign of the threat, with no damage possible yet.
+4. 3:30 first real encounter, tuned so nearly everyone survives.
+5. 5:00 first safe room or end of shift, with a visible count of how far the run goes.
+- Lobby time is the bounce risk: get a new player into the first room in under a minute.
+
+## Progression and economy shape
+
+- Run state and profile state are strictly separate. Within a run: consumables, keys, light. Across runs: currency, cosmetics, unlockable characters or roles, lore pages, badges for depth reached.
+- Replay value comes from variation: seeded room order, rotating entities, modifiers, rare rooms, secrets. A fixed linear scare sequence is played once.
+- Asymmetric games progress through a roster (character unlocks, vault) and mastery, not stat growth.
+- Meta-currency sinks: pre-run consumables, cosmetics, roster. Keep power creep out of co-op difficulty and out of killer-versus-survivor balance.
+- Difficulty modes or modifiers give experts a reason to return without gating newcomers.
+
+## Monetisation set that fits
+
+- Keep from the default set: Revive / second chance at 15–30 R$ (vault: DOORS sells revives at 30 R$ and gives new players one free), Starter Pack, currency packs, VIP (cosmetic), gift passes, private servers (friend groups are the audience).
+- Pre-play shop model `[official]`: the DOORS lobby sells only its currency; the elevator pre-run shop sells consumables. Sell before or after the run, never during a chase.
+- Add: cosmetic flashlights, skins, emotes, death effects, extra lives in party modes.
+- Delete: 2× Cash permanents, Auto-Collect, extra storage, Luck (unless loot rolls exist with odds shown).
+- **Conflict (market vs house rule 3):** asymmetric leaders sell points packs (vault: Forsaken 40 R$ for 100 points up to 7,600 R$ for 20K) and packs that raise the chance of playing the killer. Role-chance for money is a paid advantage in a competitive mode; do not sell it. Sell cosmetics and earnable-roster shortcuts that carry no stat edge.
+- Revive rules: capped per run, fairly priced, offered on the death screen after the chase ends, with a free alternative (team revive, rewarded video).
+- Rewarded video `[official]` (survival playbook): Second Chance, pre-round power-up, streak saver, daily kit; deterministic consumables, daily cap. Benchmark opt-in 13%+, frequency 2.5+. Evade uses Second Chance plus Streak Saver.
+
+## Retention and social hooks
+
+- Co-op is the retention engine: party teleport, private servers, proximity play. Design for 2–4 friends first.
+- Fixed update cadence with new entities, floors or roster characters; lore drops; seasonal modes with real end dates. Plan the year around 28–31 Oct.
+- Shareable moments: deaths and near-misses are clips; keep them readable from the spectator camera.
+- Badges for depth and secrets; daily modifiers.
+
+## UI patterns
+
+- Minimal HUD; diegetic where possible (battery on the flashlight, stamina on the hand). Nothing that explains the threat in advance.
+- Spectate on death with a team view and a calm death recap; purchase options appear here, small and dismissible.
+- Accessibility toggles: reduce flashes, reduce camera shake, subtitle critical audio cues.
+- Mobile: hide and interact on large context buttons; a sprint toggle rather than hold.
+
+## Technical hot spots
+
+- **Lighting on phones.** The Future lighting technology is expensive and community reports say many Android devices fall back or struggle `[community]`. Author the look so it survives on lower lighting tiers: baked-in contrast in Blender textures, fog and atmosphere for depth, few shadow-casting lights (a community repro for shadow FPS drops uses 16+ shadowed PointLights), one shadowed flashlight per client and unshadowed lights for other players.
+- **Flashlight**: create and aim it on the client; a light parented to the character can visibly lag on low-end devices `[community]`.
+- **Audio carries the genre**: positional audio budgets, occlusion faked with volume and filters, heartbeat and breath on the client. Never replicate scare triggers as sounds from the server.
+- **Entity AI on the server, presentation on the client.** Pathfinding is budgeted (recompute on a timer, not every frame); chases use simple steering between waypoints. Clients interpolate the model and play animation locally.
+- **Hidden information**: anything replicated can be read by exploiters (entity position, hiding spots, the anomaly list). Replicate an entity only when it should be perceivable; keep the round's seed and answers on the server.
+- **Procedural runs**: rooms are Blender kit pieces snapped by attachments from a server seed; pool and stream rooms; destroy rooms two behind the party.
+- **Parties and runs** live in reserved servers reached by teleport; pass party and seed data through teleport data and validate it on arrival.
+- **Asymmetric rounds** need server-side hit validation and anti-speed checks on both roles (see `shooter-pvp.md` and `fighting-battlegrounds.md`).
+
+## The one-new-verb angle
+
+- Pair a calm job with dread: the anomaly formula works when the routine is itself a satisfying verb (fishing by day, cutting loose what is on the line at night: the vault's shelved concept).
+- A new setting with a clear rule (poolrooms: do not splash) beats a new monster.
+- Co-op roles that force talking (one sees, one acts).
+
+## Common failure modes
+
+- Scripted linear scares with no variation; no reason for a second run.
+- Jump-scare spam; fear turns into annoyance and the rating drops.
+- Solo-only design on a social platform.
+- Darkness as the only technique; unreadable on phone screens in daylight.
+- Long lobbies and unskippable intros before the first room.
+- A Moderate label chosen by accident (blood or intensity that the design did not need).
+- Revive or shop prompts during a chase.
+- Launching in November after the Halloween window.
+
+## Level-up checklist for a live game
+
+| # | Check | Fix if failing |
+|---|---|---|
+| 1 | New player is in the first room within 60 s | Shorten the lobby; auto-start solo |
+| 2 | A full run fits 10–20 min | Add an early exit with rewards; shorten floors |
+| 3 | Two runs differ (seeded rooms, rotating entities, modifiers) | Add a seed and at least three variable systems |
+| 4 | Tension graph has quiet stretches and safe rooms | Remove stacked threats; add a director |
+| 5 | Works for 2–4 friends with party teleport and private servers | Add party flow and reserved servers |
+| 6 | Maturity label matches intent; Mild if the design allows | Remove needless intensity; retake the questionnaire |
+| 7 | Holds frame rate on a 3 GB phone in the darkest, busiest room | Cut shadowed lights; client-only flashlight |
+| 8 | Scene reads on a phone at 50% brightness | Raise ambient floor; use fog and silhouette |
+| 9 | Entity state is replicated only when perceivable | Move seeds and answers to the server |
+| 10 | Offers appear only pre-run and post-death | Move or delete mid-run prompts |
+| 11 | First revive is free; revives are capped per run | Add the grant and the cap |
+| 12 | No role-chance or stat power is sold | Convert to cosmetics |
+| 13 | Flash and shake toggles exist | Add accessibility settings |
+| 14 | A seasonal plan exists for 10 Oct–3 Nov | Schedule content and Experience Events |
+
+## Review gate
+
+- [ ] The loop has a rule players can state in one sentence and a verb beyond "walk and get scared".
+- [ ] Runs vary by seed; run state and profile state are separate.
+- [ ] Lighting, audio and AI budgets are met on the low-end phone.
+- [ ] The maturity label is deliberate and its audience cost understood.
+- [ ] Shops are pre-run or post-death; revives capped; no power or role-chance sold.
+- [ ] Rooms, props, entities and lights' fixtures are Blender models with real collision.
+
+## Sources
+
+Accessed 2026-11-10.
+
+- Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` §Genre deep dives, §Trend lifecycle (read; 2026-11-07 snapshot).
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/contextual-purchases.md (read; DOORS lobby and pre-run shop)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/survival.md (read)
+- https://devforum.roblox.com/t/guide-to-making-better-horror-experiences/2212571 (search summary)
+- https://devforum.roblox.com/t/very-poor-performance-with-future-lighting-technology/1439704 (search summary)
+- https://devforum.roblox.com/t/severe-fps-drops-due-to-aggressive-shadow-recalculations-during-object-movementappearance/3875739 (search summary)
+- https://devforum.roblox.com/t/pointlight-no-longer-always-follows-humanoidrootpart-in-future-lighting/3620431 (search summary)
+- https://endsights.com/horror-game-design (search summary; host not reachable for a full read)
+- https://github.com/ahmicy/simplepath (search listing; 70 stars, MIT; pathfinding wrapper, reference only)

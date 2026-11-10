@@ -163,7 +163,7 @@ Returning players: `AnalyticsService:GetPlayerSegmentsAsync(player)` (server-onl
 - No start menu, play button or cutscene before the verb. `[community]` developers describe menus as friction for casual games; put settings and server choice behind a small HUD button. Round-based games spawn the player into a lobby where the verb already works (practice target, mini-loop) and keep the wait under 30 s.
 - The spawn pad faces the first verb target, which is within about 3 s of walking `[house]`. Veterans' builds and effects may be in view as a promise of the future, but nothing they do may cover the first prompt.
 - Keep the spawn zone light so control arrives fast on a 3 GB Android phone: instance streaming on, preload only the first-screen UI and spawn-zone assets, load the rest behind play (performance.md). The docs' loading-screen sample holds its screen for a fixed 5 s; do not copy that delay.
-- Measure it: seconds from join to `FirstAction` (the `FtueBeat` event in core-loop-tuning.md §6), under-60 s bounce, and the Performance dashboard by memory group and place version.
+- Measure it: seconds from join to `FirstAction` (the `FtueBeat` event in core-loop-tuning.md §6), under-60 s bounce, and the Performance dashboard (crash rate, out-of-memory exits) by device type and place version.
 
 ### 7.3 Goal clarity: the "what do I do next" problem
 

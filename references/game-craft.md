@@ -1,10 +1,12 @@
 # Game craft: feel, level design, camera, audio, AI, procgen, saves, physics
 
-Distilled from knowledge-base sections 2.0 to 2.2, 2.4, 2.6 to 2.10. UI design and input live in ui-input-crossplatform.md. Four platform facts shape everything here: the server is authoritative and the client untrusted (rules on the server, juice on the client); the engine owns the game loop (hook `RunService` events); every device shares one server (design for a small landscape phone); players arrive mid-session from discovery (teach the verb in 30–60 s with no reading).
+Distilled from knowledge-base sections 2.0 to 2.2, 2.4, 2.6 to 2.10, plus a 2026-11-10 research pass on game feel. Open it when building or auditing the feel of a verb, a level, the camera, audio, NPCs, generators or saves. UI design and input live in ui-input-crossplatform.md; the cost-ordered juice checklist and the loop scorecard live in core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[VS]` version-sensitive, `[house]` house estimate. Four platform facts shape everything here: the server is authoritative and the client untrusted (rules on the server, juice on the client); the engine owns the game loop (hook `RunService` events); every device shares one server (design for a small landscape phone); players arrive mid-session from discovery (teach the verb in 30–60 s with no reading).
 
 Art-direction guard against "AI slop" (from the asset pipeline source): describe the style along named axes (shape language, silhouette, value, colour, edge, material, light, detail density, camera, motion), approve one hero asset before producing families, and judge every asset at three distances (close, gameplay, far).
 
 ## 1. Game feel and juice
+
+What the evidence says. `[official]` "Anytime a player takes an action in a game, it's imperative to provide clear feedback"; without it players wonder whether the action did anything or whether the game is bugged. The docs' examples are plain: a hit-reaction animation, button hover and press states, a "cha-ching" on purchase, a progress bar filling as quest objectives complete. `[community]` No measured Roblox data was found linking shake, particles or hit-stop to retention; polish threads list "juice" as a step without numbers, and general game-feel writing warns that effects should echo the core action and that shake and squash suit only some moments. So: make every verb, reward and goal legible first (tiers 0–1 of core-loop-tuning.md §7), add spectacle only where the event is big, and measure it behind a Config key rather than assuming.
 
 A polished "hit" is a cluster of 5–8 small responses inside about 100 ms: target flash, hit-stop, camera shake, particle burst, sound, squash/scale pop, damage number, sometimes rumble. Everything returns to rest.
 
@@ -24,8 +26,62 @@ Anti-patterns: shaking the character instead of the camera; per-frame random sha
 
 Roblox mapping: `TweenService` with `Enum.EasingStyle.Back`; camera shake as an additive offset on `workspace.CurrentCamera.CFrame` removed before and re-added after the default camera step (`BindToRenderStep` at `Enum.RenderPriority.Camera.Value - 1` and `+ 1`), or `Humanoid.CameraOffset` for position-only; `ParticleEmitter` with `Enabled = false` and `emitter:Emit(count)`; `Trail` and `Beam`; `Highlight` (keep one per target and toggle `Enabled`; the client limit is 255 per current docs, previously 31 `[VS]`); `UIScale` tweens; hit-stop via `track:AdjustSpeed(0)` on the client only. Never fire one RemoteEvent per particle: send one event per gameplay fact ("hit at X, tier medium") and let the client build the cluster. Cap emitter counts on weak devices.
 
+Reward sequence (the most repeated feedback in any progression game) `[house]`: the pickup pops and plays a pitch-varied sound in the same frame → an icon flies to its counter in 0.3–0.5 s → the counter counts up and pops → the goal bar advances with a tween → at 100% the bar chimes and the next goal appears within 1 s. Rarer rewards get a longer hold, a distinct sound and colour, never a longer wait before control returns.
+
+Platform rules for effects:
+
+- Client only. A server-side `TweenService` tween replicates the property to every client every frame, which is jittery and costs bandwidth `[official]`. Send one remote per gameplay fact; the client builds the cluster.
+- Hit-stop changes animation speed on the client. It never pauses the server simulation or other players.
+- In shared servers a player's own effects play in full; other players' effects are reduced and culled by distance, or big moments become unreadable and the frame rate falls.
+- Budget on the 3 GB Android phone: pooled emitters, per-tier particle caps, a low-effects setting chosen automatically from frame time (performance.md).
+- Haptics: `HapticEffect` gives waveform feedback on supported phones and gamepads `[official]` `[VS]`; use it for large-tier events only, with a setting to turn it off.
+
 ```lua
--- LocalScript. Trauma-based camera shake that never accumulates.
+--!strict
+-- Unexecuted sketch. Client module. Tier 0 reward feedback: counter pops and counts up, sound pitch varies.
+local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
+
+local POP = TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local COUNT = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local rng = Random.new()
+
+local function rewardPop(label: TextLabel, scale: UIScale, sound: Sound, from: number, to: number)
+	scale.Scale = 1.3
+	TweenService:Create(scale, POP, { Scale = 1 }):Play()
+	sound.PlaybackSpeed = rng:NextNumber(0.94, 1.06) -- about one semitone either way
+	SoundService:PlayLocalSound(sound)
+
+	local counter = Instance.new("NumberValue")
+	counter.Value = from
+	counter.Changed:Connect(function(value: number)
+		label.Text = string.format("%d", math.floor(value + 0.5))
+	end)
+	local tween = TweenService:Create(counter, COUNT, { Value = to })
+	tween.Completed:Once(function()
+		counter:Destroy()
+	end)
+	tween:Play()
+end
+return rewardPop
+```
+
+Level-up: feel symptoms → likely cause → fix.
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| "Feels cheap" or "dead" in feedback; the verb is dull with reward UI hidden | No same-frame response; silent UI | Tier 0 on verb and reward: sound, pop, number |
+| Players miss drops or leave rewards unclaimed | Reward feedback is off-screen or identical to routine events | Fly-to-counter, rarity-scaled sound and colour, goal-bar chime |
+| Frame rate dips on phones at big moments | Unpooled emitters, uncapped particles or highlights | Pool, cap by device tier, low-effects setting |
+| Effects stutter or arrive late | Server-driven tweens, one remote per effect | Client tweens; one remote per gameplay fact |
+| Motion or nausea complaints | Per-frame random shake, no slider, large FOV swings | Trauma² with noise, slider default 60–80%, reduce-motion option |
+| Combat feels floaty | Feedback waits for the server; no anticipation or hit-stop | Predicted local feedback under 80 ms, 0.04–0.06 s hit-stop, wind-up frames |
+| Everything is loud all the time | Maximum juice on every event | Scale by tier; let things return to rest |
+| Big moments unreadable in full servers | Everyone's effects at full strength | Own effects full, others' reduced and distance-culled |
+
+```lua
+--!strict
+-- Unexecuted sketch. LocalScript module. Trauma-based camera shake that never accumulates.
 local RunService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
 local Shake = {}
@@ -108,3 +164,29 @@ Save data, not objects. Version every save and keep one migration function per s
 ## 8. Physics and performance (brief; detail in performance.md)
 
 Fast objects tunnel: cap speed so `speed / step_rate` is below wall thickness. Mass does not change fall speed; tune "heavy" with gravity, drag and animation. Keep interacting mass ratios within about 1:10. Clamp `dt` spikes. Roblox: anchor everything static; set `CanTouch` and `CanQuery` false on decoration; cheapest `CollisionFidelity` that still feels solid (`Box` or `Hull` for most props, `PreciseConvexDecomposition` only where the shape truly matters); deliberate network ownership (server owns NPCs and shared objects); `StreamingEnabled` for large maps; reuse mesh IDs; `workspace:BulkMoveTo`; batch remote state at 10–20 Hz.
+
+## Review gate
+
+- [ ] Every core verb, reward and goal has a same-frame visual, a varied sound and a UI reaction (juice tiers 0–1) before any tier 2–3 work.
+- [ ] Effects are tiered by event size, return to rest, and never hide a telegraph.
+- [ ] All effects run on the client from one remote per gameplay fact; no server-side tweens on visible objects.
+- [ ] Shake slider, reduce-flashing and reduce-motion options exist if shake, flashes or FOV changes are used.
+- [ ] Effects pooled and capped; frame rate checked on a 3 GB Android phone during the largest event.
+- [ ] Movement metrics derived and stored in one module; critical gaps at or below the safe gap; soft-lock check passes.
+- [ ] Spawn faces the first objective; next objective visible from every checkpoint.
+- [ ] Camera smoothing is frame-rate independent; drag-heavy UI is off the right side on phones.
+- [ ] Audio buses, loudness targets and polyphony caps set; rarer rewards sound better.
+- [ ] NPC decisions ticked at 5–15 Hz with repath limits; generators seeded, validated and built from Blender modules.
+- [ ] Saves versioned, validated on load, never trusted from the client.
+
+## Sources
+
+Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at commit ccc2b01; "(search summary)" = seen only through web search result text. Sections 2–8 come from `references/knowledge-base.md` sections 2.0–2.2, 2.4 and 2.6–2.10 (grep `## 2.1`, `## 2.2`, `## 2.4`, `## 2.6` to `## 2.10`), which list their own sources.
+
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/onboarding-techniques.md (read; feedback section)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/ui-ux-design.md (read; feedback section)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/performance-optimization/improve.md (read; server-side TweenService replication)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/reference/engine/classes/HapticEffect.yaml (read)
+- https://devforum.roblox.com/t/real-game-feel-and-execution-on-roblox/4199862 (search summary; a question with no answers shown)
+- https://devforum.roblox.com/t/how-to-polish-game/3244775 (search summary)
+- https://gamedeveloper.com/design/squeezing-more-juice-out-of-your-game-design- (search summary; general, not Roblox-specific)

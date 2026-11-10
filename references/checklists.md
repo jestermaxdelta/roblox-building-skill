@@ -2,6 +2,47 @@
 
 Collected from knowledge-base sections 1.12.3 (design review), 3.8 (compliance), 3.10 (launch), 4.11 (engineering anti-patterns) and 5.13 (pre-launch performance and content). Each topic reference file ends with its own detailed gate; this file is the short version to run at each phase. Items marked (HR) enforce a house rule.
 
+Two entry points. Building from scratch: run Gate 0 → Gate 5 in order. Levelling up an existing game: run Gate A first; it tells you which of Gates 0–5 to re-run and in what order, and every change it produces ships through the live-change items at the end of Gate A.
+
+## Gate A: level-up audit (existing games)
+
+Method, scoring criteria and benchmark table: `references/audit-existing-game.md`. Report: `templates/game-audit-report.md`.
+
+Before touching anything
+
+- [ ] Intake answered: universe and place IDs, 6-week goal and target metric, source owner (Rojo, Script Sync or Studio), data layer and schema version, last 30 days of changes.
+- [ ] Baseline recorded: 14 days (minimum 7) of PTR, bounce < 60 s and 61–180 s, D1/D7/D30, session time, conversion, ARPPU, ARPDAU, crash rate, plus the live place version number. No PTR comparison across 12 Oct 2026.
+- [ ] Benchmark named for every number: the game's own Creator Analytics benchmark and its type, or the dated fallback when under 100 DAU.
+- [ ] Audit ran read-only: Studio MCP in Edit mode, "Save & load data" and publish permissions off, no `multi_edit`, no DataStore calls, nothing saved or published.
+
+Findings
+
+- [ ] All ten dimensions scored 0–5 with one evidence line each: first session, core loop, progression and economy, retention and LiveOps, monetisation, UI/UX, art and house rules, performance, security and data, discovery and growth.
+- [ ] Caps applied: no live numbers → at most 3; (HR) any visible primitive, marketplace or generated asset, walk-through mesh, invasive or non-compliant offer, client-trusted value or data-loss path → at most 1 and listed as a blocker.
+- [ ] (HR) House-rule scan run in every place; output pasted into the report.
+- [ ] Timed first-session log filled: seconds to playable, first reward, first upgrade, first prompt, first Robux offer.
+- [ ] Triage step named (T0–T8) with the numbers that selected it; platform causes (seasonality, competitors, algorithm change) ruled in or out.
+
+Plan
+
+- [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to; top 10 ranked; blockers first.
+- [ ] Decision stated with its rule: quick-wins sprint, rebuild the loop in the same universe, or park. A rebuild keeps the universe, DataStore keys, purchases and community.
+- [ ] 2-week plan has one target metric and one variable per dimension per week; 6-week plan ends with a re-audit.
+- [ ] The gates to re-run are listed (for example Gate 3 after any offer change, Gate 4 after any art or performance change, Gate 2 before every release).
+
+Shipping changes to a live game
+
+- [ ] Version History note on the live version; local `.rbxl` and git tag saved; restore path understood (restore → publish → restart servers).
+- [ ] Changes built in a separate test universe; no production data touched from Studio.
+- [ ] Each behaviour change sits behind a Configs key whose code default is the old behaviour; Experiment (50/50, early-harm watched) or a dated cohort comparison chosen.
+- [ ] Save data: additive schema only, version bumped, migration tested on copies of real profiles, readable by servers still on the old version, key pattern unchanged, nothing wiped.
+- [ ] (HR) Nothing a player paid for is removed or weakened; compensation planned and announced where a paid item changes.
+- [ ] Release at off-peak; restart only outdated servers with a delay; `ServerRestartScheduled` countdown shown.
+- [ ] Alerts on crash rate, out-of-memory exits and server frame rate; Performance dashboard watched by place version for 2 hours.
+- [ ] Rollback triggers written before release; Config flip first, version restore second.
+- [ ] Update announcement (60 characters), Experience Event and in-game changelog posted; thumbnails and title changed only with the update.
+- [ ] Result read after the lag (PTR and bounce 24–72 h, D1 2 days, D7 8 days) and logged as kept or reverted.
+
 ## Gate 0: before any code (design review)
 
 - [ ] One-pager complete: player fantasy, one-sentence pitch, three pillars, core loop, session loop, long-term loop, target audience and age tier, platform priority (mobile first), comparable games, risks.
@@ -142,3 +183,20 @@ Timing
 - [ ] Re-run the MicroProfiler and Scene Analysis after each content update.
 - [ ] Review safety dashboard reports and ban appeals.
 - [ ] Ship the weekly update on the announced day.
+- [ ] Check the Performance dashboard by place version after each publish; read the Feedback dashboard for a downvote spike.
+- [ ] Every 6 weeks, or after two flat weeks, re-run Gate A and rescore.
+
+## Growth gate: before paid or creator-driven traffic
+
+Detail in `references/growth-and-marketing.md`.
+
+- [ ] Bounce and D1 at or above the benchmark median (fallback D1 > 11%); like ratio ≥ 85%; crash rate under 2–3%.
+- [ ] Funnels and economy events live; 30-day revenue per new user by source known; max cost per play computed with a stop-loss date.
+- [ ] One share link per channel and per creator; creatives are real captures of the game and match the first minute.
+- [ ] (HR) No giveaway, Robux or "free" wording in title, thumbnails or description; social rewards stay bonuses after the first win; no restarting countdowns or false scarcity in event marketing.
+- [ ] No URLs, invite codes or handles in-game; social links only on the details page; paid creator content disclosed.
+- [ ] Engagement-objective spend (for the 250-play gate) has its own budget and is paused at the goal.
+
+## Sources
+
+This file restates gates defined in the topic references; evidence and source lists live there. Gate A and the growth gate were added on 2026-11-10 from `references/audit-existing-game.md` and `references/growth-and-marketing.md` (creator docs read from the `Roblox/creator-docs` mirror, commit dated 2026-11-07).

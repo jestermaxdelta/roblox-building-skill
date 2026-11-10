@@ -1,6 +1,18 @@
 # Launch checklist: <Title>  — target date <YYYY-MM-DD>
 
-Run top to bottom in the final two weeks. Each line has an owner and a date. Detailed gates are in references/checklists.md; this is the sign-off sheet. (HR) = house rule.
+Run top to bottom in the final three weeks. Each line has an owner and a date. Detailed gates are in references/checklists.md; this is the sign-off sheet. (HR) = house rule.
+
+Mode: [ ] New launch · [ ] Relaunch or major update of a live game. For a live game run Gate A first (references/audit-existing-game.md), keep the universe and DataStore keys, and treat every line marked (LIVE) as mandatory.
+
+## T-21 days: reach and audience
+
+- [ ] Kids/Select path chosen and started: creator verified with 2FA, questionnaire done, Plus/Premium for 2 months or the 1,000 R$ fee; plan for 250 engaged age-checked 16+ plays inside 60 days (older-audience content, community, or an Engagement-objective campaign with its own budget), or the 50,000 R$ expedited review. Owner: __ Date: __
+- [ ] Roblox group live and linked; social links set on the details page (owner age-verified 16+); no URLs, invite codes or handles anywhere in-game.
+- [ ] One share link per channel and per creator created; LaunchData perks tested.
+- [ ] Clip features in the build: hide-UI creator cam, reveal moments with real odds, readable in-world numbers, private servers.
+- [ ] Creator shortlist contacted with a build, a private server and a code; paid deals carry disclosure and a share link.
+- [ ] Standout Games nomination submitted if the game is original; launch or update event drafted (Off-Platform Featuring needs 7+ days' notice).
+- [ ] (LIVE) Baseline window recorded: PTR, bounce, D1/D7, session time, conversion, crash rate, live place version.
 
 ## T-14 days: content and quality freeze
 
@@ -28,7 +40,10 @@ Run top to bottom in the final two weeks. Each line has an owner and a date. Det
 
 - [ ] Five custom 16:9 1920×1080 thumbnails (< 3 MB), 2–5 active; icon 512×512 readable at 150 px.
 - [ ] Title with status tag and verb phrase; description hook in the first 160 characters; genre set; supported languages set.
-- [ ] Video thumbnail (optional): authentic gameplay, no spoken audio or ad text.
+- [ ] Gameplay video uploaded: authentic gameplay, no spoken audio, lyrics, real-life footage or ad text (3 uploads per month; rejections count).
+- [ ] Thumbnails are distinct hooks, not recolours; each shows something reachable in the first minute; no Robux, giveaway or "free" wording in title, thumbnails or description (HR).
+- [ ] Languages enabled (Experience Information and Strings); Automatic Text Capture on; no text baked into UI images.
+- [ ] Experience Event created with Notify Me for launch or update day; update announcement drafted (60 characters, specific).
 - [ ] Share links per channel; invite prompt and referral banner wired and tested.
 - [ ] Age-tier plan: launch at <16+ / Select>; under-16 eligibility steps started (verification, 2FA, questionnaire, Plus/Premium or 1,000 R$ fee).
 - [ ] Matchmaking weights set (Friends and Occupancy raised for social games).
@@ -38,7 +53,10 @@ Run top to bottom in the final two weeks. Each line has an owner and a date. Det
 - [ ] Onboarding, Shop, Offer and RV funnels plus economy and custom events verified in the test place dashboards.
 - [ ] Every tunable is a Configs key with a correct default; Experiments for the first two tests drafted.
 - [ ] Weekly update day chosen and announced; first four updates planned; first event dated with its own currency.
-- [ ] Performance Dashboard alerts: crash rate above 2–3%, heartbeat, memory; `ServerLowMemoryWarning` logged.
+- [ ] Performance Dashboard alerts: crash rate above 2–3%, out-of-memory exits, server frame rate, memory, sent to a webhook; `ServerLowMemoryWarning` logged.
+- [ ] Rollback triggers written (for example crash rate +2 points, purchase failures, early-harm flag); owner on call for the first 2 hours.
+- [ ] `DataModel.ServerRestartScheduled` handled: in-game countdown and save before a delayed restart.
+- [ ] (LIVE) New behaviour sits behind Configs keys whose defaults are the old behaviour; save schema change is additive, tested on copies of real profiles and readable by servers still on the old version; nothing a player paid for is removed.
 - [ ] Safety: `BanAsync` tooling, report handling and appeal path ready; ban rules published.
 - [ ] Rollback plan: previous version id recorded; data migrations backwards compatible or Migrate To Latest Update chosen.
 
@@ -51,9 +69,18 @@ Run top to bottom in the final two weeks. Each line has an owner and a date. Det
 
 ## Launch day (Saturday, inside a seasonal window if possible)
 
-- [ ] Publish at <time>; verify join on phone and PC; watch Performance Dashboard and console errors for the first 2 hours.
+- [ ] Publish at <time>; verify join on phone and PC; watch Performance Dashboard (by place version) and console errors for the first 2 hours.
+- [ ] (LIVE) Restart only servers with outdated versions, with a 5–10 minute delay; confirm the restore path (restore version → publish → restart).
+- [ ] Send the update announcement; start the event; switch the title tag and thumbnail set; post the first clip and the group and community posts with share links.
 - [ ] Monitor PTR, bounce and D1 daily for the first week; fix the largest onboarding funnel drop first.
 - [ ] Post the first update on the announced weekly day.
+
+## Week 1 after launch
+
+- [ ] Read the launch cohort, not the blended average: daily cohort table, first-session retention curve, Home Recommendations signals; wait 24–72 h for PTR and bounce, 2 days for D1, 8 days for D7.
+- [ ] Read the share-link funnel per channel (users with qualified plays, 7-day playtime, D7, 30-day revenue per user); drop the channels that bring players who leave.
+- [ ] No paid traffic until the growth gate in references/checklists.md passes (bounce and D1 at or above benchmark median, like ratio ≥ 85%, max cost per play computed). Exception: a capped measurement buy or the Engagement objective for the 250-play gate.
+- [ ] Thumbnails left alone for 7+ days; change one variable per release.
 
 ## Sign-off
 
@@ -64,3 +91,5 @@ Run top to bottom in the final two weeks. Each line has an owner and a date. Det
 | Compliance (HR) | | | |
 | Performance and content (HR) | | | |
 | Discovery and LiveOps | | | |
+| Growth and community | | | |
+| Live-change safety (LIVE) | | | |

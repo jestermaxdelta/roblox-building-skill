@@ -6,7 +6,7 @@ Method for pointing the skill at a game that already exists (prototype, soft-lau
 
 - Evidence before opinion. Every finding cites a number, a screenshot, a script path and line, or a timed observation. "Needs polish" is not a finding.
 - Read-only first. No edit, publish, config change or DataStore call until the report is accepted.
-- Fix in funnel order (reach → stability → first session → D1 → D7 → D30 → monetisation → paid growth). A fix lower in the funnel is wasted while a higher step leaks `[official: Roblox says to fix retention before monetisation]`.
+- Fix in funnel order (reach → stability → first session → D1 → D7 → D30 → monetisation → paid growth). A fix lower in the funnel is wasted while a higher step leaks. Roblox's own guidance: if retention is low, fix core gameplay first; improve monetisation once retention is strong `[official]`.
 - House rules are findings, not preferences: visible primitives, marketplace or generated assets, walk-through meshes and invasive offers are P0 regardless of metrics.
 - One variable per dimension per week, measured against a recorded baseline.
 

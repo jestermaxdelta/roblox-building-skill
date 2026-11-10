@@ -82,6 +82,16 @@ Standard schema (see templates/analytics-event-plan.md):
 
 The system retrieves candidates and then ranks them per user. Ranking counts only organic Recommended For You users, and it uses per-user averages, not totals.
 
+How it behaves `[official]`:
+
+- Retrieval needs only "a very low minimum" of plays from any source (ads, search, friends, share links); ranking then tests the game daily on small groups, expands if they stay, and tries other users if they do not (explore and expand). About 100 games reach each user's Home.
+- No penalty for a weak start: signals use a moving window, so a fixed onboarding is re-tested. New games do not wait 28 days: PTR and bounce arrive first, then D1, then D2–7, then D8–28.
+- Value = long-term retention + long-term monetisation. If retention is low, fix core gameplay first; once retention is strong, monetisation raises impressions. Strong in one still gets impressions; strong in both gets the broad distribution.
+- Four things move impressions: your changes, algorithm changes, seasonality (Saturday peak, summer, back to school, holidays) and competitors improving faster than you.
+- When impressions drop, read the Home Recommendations signals in order: PTR, bounce, play days and playtime first, across D8–28, D2–7 and D1; only if those are stable look at co-play, qualified sessions, spend days and Robux per user.
+- Since 15 June 2026 the algorithm reads a 28-day view instead of 7 days and measures play-through, session quality and retention separately, explicitly to stop over-rewarding short-term engagement and attention-grabbing tiles.
+- A user acquired by an ad generally stops seeing the organic tile, so organic impressions can dip during a campaign; that is not a penalty.
+
 - Most important signals: PTR, bounce, play days, playtime (capped).
 - Important: co-play days, qualified sessions, spend days, Robux per user.
 - 2026 changes: 9 March deep PTR; 26 March "Not interested" button; 15 June 28-day window with split D1 / D2–7 / D8–28 signals and a qualified-PTR split; 12 October measurement pipeline change, so PTR before and after is not comparable. Signals lag about 24 hours; impression changes take days.
@@ -93,9 +103,40 @@ Thumbnails and metadata:
 - Custom 16:9 thumbnails at 1920×1080 under 3 MB are required for Home. Up to 10 thumbnails; keep 2–5 active so personalization can pick (average +8.5%, up to +50%). Video thumbnails: 3 uploads per month, authentic gameplay only, not shown on console or VR.
 - Icon 512×512; check readability at 150 px. Shift+P gives a free camera for captures.
 - Market rules: show the first minute of play, one focal point, at most 5 elements, a big number, a visible climb in one frame, readable at 150 px, genre colour coding, a face, fill all 5 slots. Title pattern is a status tag plus a verb phrase (for example `[UPD 🔫] Realistic Ragdoll Playground 🩸`). Copy the format, not the art.
-- Description hook in the first 160 characters.
+- Description hook in the first 160 characters. (Roblox labels this guidance experimental, for select creators and aimed at external search engines; the general rule is a first sentence that summarises the game, plus relevant keywords.)
+- Name and description rules `[official]`: keep the name consistent (frequent renames break search for the old name); no repeated or irrelevant keywords ("may result in demotion"); one or two well-placed emoji at most. A beta Promotional Text field holds a short secondary line `[VS]`.
 
-Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metadata, run a weekly update day, measure PTR and bounce daily. Bold: pay 50,000 R$ for an expedited under-16 review, launch with an influencer plus an admin event, and buy Ads Manager traffic with `max cost per play ≈ ARPU 30d + rewarded-video earnings per user + Audience Expansion share`. Attribution windows are 30 days (click) and 7 days (view).
+Thumbnail and icon testing `[official][VS]`:
+
+- Personalisation is the built-in test: activate 2–5 Home thumbnails and a bandit shows each to random groups, then shifts impressions to the winner per group while still exploring. It optimises **qualified** play-through (plays that last), not clicks. Results appear after a few hours in the Thumbnail Performance table (impressions, qualified plays, average playtime, qualified PTR, winning segment).
+- Keep several active instead of crowning one winner; upload a new set with each major update and then leave it until the next. Switching back to an older icon or thumbnail does not hurt discoverability.
+- Judge a variant on qualified PTR and average playtime together. A tile that lifts clicks and shortens sessions is a loss.
+- Under about 1,000 DAU expect little effect (vault). There is no official icon A/B tool; `[community]` developers have asked for one. Sponsored campaigns accept up to 10 creatives split evenly, which is the practical way to compare hooks quickly (growth-and-marketing.md §3).
+- Thumbnails can be managed through Open Cloud; per-thumbnail metrics are in the Analytics Query API.
+
+What clickbait costs:
+
+| Tactic | Consequence |
+|---|---|
+| Tile or video shows content the first minutes do not contain | Bounce rises (a top negative signal); "mismatched metadata" is not recommended and ranks lower in search `[official]` |
+| Title or tile leads with Robux, giveaways or rewards | Not prioritised for recommendations `[official]` |
+| Same title and visuals as an existing game | Not prioritised; among lookalikes the first to add unique metadata or a unique place file wins `[official]` |
+| Keyword stuffing in name or description | "May result in demotion" `[official]` |
+| Misleading video thumbnail (enhanced graphics, narration, ad text) | Rejected and counted against the 3-per-month quota `[official]` |
+| Players tap "Not interested" | Negative signal since 26 Mar 2026 (vault) |
+
+A reduced-exposure banner appears on the Creator Dashboard and updates daily; quality is reassessed with every update. If it is wrong, file Support → Discovery Content Quality → Quality Reduced Exposure with the universe ID.
+
+Search `[official]` unless tagged:
+
+- Search historically matched exact queries against titles; it now also understands natural-language queries ("food games") in every supported language. Use accurate genre and subgenre and a first-sentence summary with real keywords.
+- Search results also demote mismatched and non-unique games.
+- `[community]` (staff replies quoted on DevForum): ranking learns from player behaviour on a query and can take days to adjust; a query also matches translated titles, so enabling languages widens search reach.
+- Search ads place a sponsored result at the top or right after an exact-name match (growth-and-marketing.md §3).
+
+Other surfaces: Continue (returning users; not Recommended For You impressions), Friends, Sponsored, Standout Games (curated; nominate), Live Events, Charts (Top Playing Now, Trending, Up-and-Coming, Top Revisited, Trending Events), the details page (events, group, passes), notifications. Social links on the details page are visible only to age-verified 16+ users and may not appear in-game `[official][VS]`.
+
+Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metadata, run a weekly update day, measure PTR and bounce daily. Bold: pay 50,000 R$ for an expedited under-16 review, launch with an influencer plus an admin event, and buy Ads Manager traffic with `max cost per play ≈ ARPU 30d + rewarded-video earnings per user + Audience Expansion share`. Ad attribution: 30 days for a first-time player, 7 days for a player who returns after 7+ days away, that session only for a recent player. (Correction: an earlier version said "30 days click, 7 days view".) The full readiness gate, formats, costs and the cost-per-play worked example are in growth-and-marketing.md.
 
 ## Scaling, safety and matchmaking `[VS]`
 
@@ -113,4 +154,47 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 - [ ] Launch date inside a seasonal window, ideally a Saturday; weekly update day announced.
 - [ ] Share links, invite prompt and referral banner wired.
 
-Grep `references/knowledge-base.md` for `## 3.1`, `## 3.9`, `## 3.10` and `## 3.11`.
+## Level-up: symptoms → likely cause → fix
+
+| Symptom in the dashboards | Likely cause | Fix |
+|---|---|---|
+| Impressions near zero | Default thumbnail, "Exclude from recommendations" on, 16+ trial not cleared, exposure banner | Clear the eligibility item first |
+| Impressions fell, own signals flat | Seasonality, competitor, algorithm change | Compare with last year's week and the benchmark trend; do not thrash the game |
+| PTR fell after 12 Oct 2026 | Measurement change | Rebaseline; never compare across the date |
+| PTR up, bounce up | Tile over-promises | Show the real first minute; judge on qualified PTR |
+| PTR low, retention fine | Weak or single thumbnail, unclear title | 3–5 distinct hooks, gameplay video, title pass |
+| Bounce < 60 s high on one platform | Crash, memory or slow join on that platform | Performance dashboard by platform and place version |
+| First-session curve drops at one minute mark | That onboarding step | Funnel event per step; fix the largest drop |
+| D1 fine, D2–7 play days low | Nothing new on day 2: wall or no daily reason | Progression re-curve, timers, offline income |
+| Playtime per user far above 60 min for a few, low for most | Whales carry the average; cap hides it | Design for the median player's first 20 minutes |
+| Conversion fine, spend days low | Only one-time purchases | Cheap repeatable dev products |
+| Metrics changed after an update, cause unknown | No annotation, several changes at once | One variable per release; Performance by place version; Configs history |
+| Dashboard empty | Under 10 DAU for 7 days, or events logged in Studio only | Events record only in published games; seed plays (audit-existing-game.md §4) |
+
+## Review gate
+
+- [ ] KPIs read against the game's own benchmark (type stated), with the baseline window written down.
+- [ ] Onboarding, shop and offer funnels plus economy events are live and verified in a published place.
+- [ ] Home Recommendations signals read in priority order before any discovery change.
+- [ ] 2–5 honest thumbnails active; variants judged on qualified PTR and playtime; no change more often than once per update.
+- [ ] Title, description and video match the first minute; no giveaway lead; no keyword stuffing; name unchanged unless necessary.
+- [ ] Every tunable is a Configs key; the two riskiest numbers are in an Experiment or a dated before/after test.
+- [ ] Alerts exist for crash rate, out-of-memory exits and server frame rate; Performance checked by place version after each publish.
+- [ ] No PTR comparison across 12 Oct 2026; signal lag (24 h) and impression lag (days) respected before judging.
+- [ ] `[VS]` facts re-checked at create.roblox.com/docs.
+
+## Sources
+
+Accessed 2026-11-10. Creator docs read from the `Roblox/creator-docs` GitHub mirror (commit dated 2026-11-07). Source text for the original sections: grep `references/knowledge-base.md` for `## 3.1`, `## 3.9`, `## 3.10` and `## 3.11`.
+
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/discovery.md, discovery-faq.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/analytics-dashboard.md, acquisition.md, retention.md, engagement.md, monetization.md, performance.md, alerts.md, feedback.md, insights.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud/guides/analytics/index.md, metrics.md, benchmarks.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/configs.md, experiments.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/thumbnails.md, descriptions.md, publish-games-and-places.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/ads-manager.md, social-media-links.md (read)
+- https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
+- https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 (search summary)
+- https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)
+- https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/improvements-to-game-search-ranking/673608 (search summaries)
+- Vault: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read)

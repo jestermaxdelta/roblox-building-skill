@@ -6,7 +6,7 @@ What this is: player data (ProfileStore), DataStore and MemoryStore limits, idem
 
 | Need | Use |
 |---|---|
-| Player progress, inventory, currency, purchase history | Standard DataStore through a session-locking library (ProfileStore or Lapis) |
+| Player progress, inventory, currency, purchase history | Standard DataStore through a session-locking library (ProfileStore by default; see library status below) |
 | Global leaderboards | Ordered DataStore (integers only), cached and refreshed every few minutes |
 | Matchmaking queues, server lists, cross-server locks, trade escrow | MemoryStore (sorted map, queue, hash map); expires within 45 days |
 | Broadcast hints (announcements, "refresh your cache") | MessagingService (best effort, about 1 KB) |
@@ -63,9 +63,8 @@ Library status at 2026-11-10 `[VS]` (last commit dates read from the repos):
 | Lyra (paradoxum-games) 0.6.0 | Last commit 2026-03; transactions (`txAsync`), auto-sharding past 4 MB, validation, migrations, import of existing data. README: early development, "avoid … where data loss would be catastrophic" | Evaluate when atomic trades or very large saves are core; soak-test first |
 | Lapis | Last commit 2025-02; Promise API, validation, migrations; README: not battle-tested | Niche |
 | DataStore2 | Last commit 2023-03; the docs call it legacy; Roblox ships a beta migration tool `[official]` | Migrate off |
-| Official player-data sample | Session locking, ordered retries, 180 s autosave `[official]` | Read it before judging any library |
 
-Suphi's DataStore and DocumentService appear in forum comparisons; no evidence gathered here.
+Read the official player-data sample (session locking, ordered retries, 180 s autosave) before judging any library `[official]`. Suphi's DataStore and DocumentService appear in forum comparisons; no evidence gathered here.
 
 ## DataService with schema migration
 
@@ -338,13 +337,11 @@ print(totals) -- more than one store name per player, or zero BindToClose with n
 | Full wipes reported after an outage | Failed load fell back to default data, then autosave wrote it | Kick on failed load; never save an unloaded profile; restore from versions |
 | Last minutes lost on leave or shutdown | No final save, or it failed; autosave too rare | Library session end and shutdown handling; autosave every 3–5 min (the official sample uses 180 s) |
 | Duplicated items after trades | Two independent saves; no session lock; one side rolled back on purpose | Both profiles locked on one server, mutate with no yield, save both; escrow or a transaction library across servers; log trade ids |
-| Robux spent, nothing granted | Grant in `PromptProductPurchaseFinished`; `PurchaseGranted` before the save; second `ProcessReceipt` assignment | The ReceiptService pattern above |
-| Purchase granted twice | No `PurchaseId` dedupe in saved data | Dedupe list saved with the grant |
+| Robux spent and nothing granted, or granted twice | Grant in `PromptProductPurchaseFinished`; `PurchaseGranted` before the save; second `ProcessReceipt` assignment; no `PurchaseId` dedupe in saved data | The ReceiptService pattern above |
 | Throttle errors at peak | Reads or writes during gameplay; leaderboard written on every change; every server polling one key | Buffer in memory; throttle ordered writes; jitter; shard hot read keys |
 | Storage near the limit | One data store per player (DataStore2, "Berezaa method"); dead test data; uncapped arrays | Official migration packages; delete test stores; cap lists |
 | Saves fail only for veterans | Profile near 4 MB, or over 4 MB per minute of writes on one key | Prune; split into a few deterministic keys; or an auto-sharding library |
 | "Loaded on another server" kicks | Stale lock after a crash, or teleports that do not wait for the old session to end | Let the library time the lock out; never `Steal`; end the session before teleporting |
-| Leaderboard slow or wrong | Ordered store read per player or written too often | Cache one page per server, refresh every few minutes |
 
 ## Review gate (data and purchases)
 
@@ -367,9 +364,6 @@ Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
 
 - https://github.com/Roblox/creator-docs: `content/en-us/cloud-services/data-stores/{best-practices,error-codes-and-limits,versioning-listing-and-caching,observability,data-stores-manager,right-to-be-forgotten,player-data-purchasing}.md`, `cloud-services/extended-services.md`, `cloud-services/memory-stores/index.md` (read)
 - https://github.com/MadStudioRoblox/ProfileStore, https://github.com/MadStudioRoblox/ProfileService, https://github.com/paradoxum-games/lyra, https://github.com/nezuo/lapis, https://github.com/Kampfkarren/Roblox (DataStore2) (read: README and last commit)
-- https://devforum.roblox.com/t/datastores-access-and-storage-updates/3597255, https://devforum.roblox.com/t/extended-services-for-data-stores-is-now-available/4504347, https://devforum.roblox.com/t/extended-services-update/4070634 (search summary)
-- https://devforum.roblox.com/t/weekly-recap-july-13-%E2%80%93-17-animation-graphs-go-live-5%C3%97-more-data-store-storage/4743286 (search summary)
-- https://devforum.roblox.com/t/datastores-migration-packages-for-the-berezaa-method-and-datastore2-module-public-beta/3631514 (search summary)
-- https://devforum.roblox.com/t/session-locking-explained-datastore/846799, https://devforum.roblox.com/t/exploiting-how-to-prevent-exploiters-from-abusing-data-store-rollbacks-and-sanitizing-against-data-store-vulnerabilities/2019989 (search summary)
-- https://devforum.roblox.com/t/what-is-the-best-datastore-module-to-use-currently/3598021, https://devforum.roblox.com/t/should-i-use-profilestore-or-profileservice/3871636 (search summary)
+- Limits and Extended Services (search summary): https://devforum.roblox.com/t/datastores-access-and-storage-updates/3597255, https://devforum.roblox.com/t/extended-services-for-data-stores-is-now-available/4504347, https://devforum.roblox.com/t/extended-services-update/4070634, https://devforum.roblox.com/t/weekly-recap-july-13-%E2%80%93-17-animation-graphs-go-live-5%C3%97-more-data-store-storage/4743286
+- Libraries, dupes and migration (search summary): https://devforum.roblox.com/t/datastores-migration-packages-for-the-berezaa-method-and-datastore2-module-public-beta/3631514, https://devforum.roblox.com/t/session-locking-explained-datastore/846799, https://devforum.roblox.com/t/exploiting-how-to-prevent-exploiters-from-abusing-data-store-rollbacks-and-sanitizing-against-data-store-vulnerabilities/2019989, https://devforum.roblox.com/t/what-is-the-best-datastore-module-to-use-currently/3598021, https://devforum.roblox.com/t/should-i-use-profilestore-or-profileservice/3871636
 - No evidence found: a public post-mortem of a specific large data-loss or dupe incident with numbers.

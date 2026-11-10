@@ -87,9 +87,9 @@ Reading: 0–4 the micro loop is not fun; rebuild the verb before tuning anythin
 Read in this order; stop at the first chart that is clearly bad. Fixing a later stage while an earlier one leaks wastes the work.
 
 1. **Monitoring → Performance** (100+ DAU for charts) `[official]`: client crash rate, unexpected out-of-memory exits, frame rate and memory percentage, broken down by platform and by **Place Version**. A regression here explains any retention drop that follows an update.
-2. **Engagement → New User First Session Retention** `[official]`: share of new users still playing at each minute, current period against the previous one. Note the minute of the steepest drop: before 1 min is arrival; 1–3 min is first payoff; 4–8 min is a missing meso goal; a late cliff is a wall or session cap.
+2. **Engagement → New User First Session Retention** `[official]`: share of new users still playing at each minute, current period against the previous one. Note the minute of the steepest drop. Reading `[house]`: before 1 min is arrival; 1–3 min is first payoff; 4–8 min is a missing meso goal; a late cliff is a wall or a session cap.
 3. **Funnels → Onboarding** `[official]`: the step with the largest loss relative to its neighbours is the work item. Log win and lose outcomes separately. Skipped steps auto-complete and repeated steps count once, so log steps in a fixed order.
-4. **Engagement → Average session time**, filtered by platform and memory group. A phone figure far below PC is controls, UI or performance, not the loop.
+4. **Engagement → Average session time**, filtered by platform and, where offered, memory group `[VS]`. A phone figure far below PC is controls, UI or performance, not the loop.
 5. **Retention → D1, D7, D30 with Breakdown = Source** `[official]` (announced October 2025): compare Home Recommendations cohorts only. A fall in overall D1 during an ad or external-link spike is traffic mix, not a design regression.
 6. **Retention → cohort table** `[official]`: daily cohorts over their first 10 days, weekly over 10 weeks, each with 7-day playtime, 7-day payer conversion and 7- and 30-day revenue per user. Compare the cohort that first played after a change with the one before it.
 7. **Progression distribution** `[official]`: count players per level or stage (grant a marker on advance). A pile-up at one level is the D7 wall.
@@ -104,7 +104,7 @@ Benchmarks. Use the similar-games range in Creator Analytics first (shown as 50t
 | D1 similar-games range | Docs example 12.11–18.73%; DevForum announcement example 12.4–24.1%. Both illustrative; every game gets its own range | `[official]` |
 | D1 / D7 / D30, large titles | Median 10.3% / 1.6% / 0.5%. D1 P25 8.4%, P75–P90 12.9–15.9%, P99 22.2%. D7 P25 1.0%, P99 9.1%. D30 top 1% 4.7%. GameAnalytics 2026 report: 500+ titles with 1M+ MAU, Aug 2025–Jul 2026 | `[community]` third-party, read through search summaries |
 | Session | Median 9.8 min and 1.56 sessions per player per day (secondary write-up of the same 2026 report). GameAnalytics 2025: half of tracked games under 6 min, P95 near 30 min; games with 0–6 min sessions sit below 10% D1 | `[community]` |
-| "20% is good, 40% is excellent" | The 2026 report says these circulating figures come from small samples of already-promoted games | `[community]` |
+| Folk targets (D1 20% "good", 40% "excellent") | The 2026 report says these circulating figures come from small samples of already-promoted games | `[community]` |
 
 Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalytics 2025 figures (median session 6.6 min, P90 about 26 min; D1 4.3% for sessions under 3 min, 11.5% for 19–24 min). The 2026 report samples only titles above 1M MAU, so its medians are higher. Both stand; neither is a target. The target is the game's own P50, then P90, in Creator Analytics.
 
@@ -114,7 +114,7 @@ Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalyti
 
 | Symptom | Likely loop cause | Experiment (one variable) | Expected movement |
 |---|---|---|---|
-| Under-60 s bounce high; first-session curve loses 30%+ in minute 1 | Arrival: slow join, crash on low-memory phones, a menu or play button, spawn far from the verb, tile promises something else | Check Performance by memory group first. Then: spawn at the verb with one prompt and no menu, against the current flow | Under-60 s bounce falls within days; D1 follows. Reported: 45% → 18% leaving in the first 30 s after the spawn got one clear first action. Instance streaming cut join times by at least 20% according to a Roblox DevForum streaming thread `[VS]` |
+| Under-60 s bounce high; first-session curve loses 30%+ in minute 1 | Arrival: slow join, crash on low-memory phones, a menu or play button, spawn far from the verb, tile promises something else | Check Performance (crash rate, out-of-memory exits) by device type first. Then: spawn at the verb with one prompt and no menu, against the current flow | Under-60 s bounce falls within days; D1 follows. Reported: 45% → 18% leaving in the first 30 s after the spawn got one clear first action. Instance streaming cut join times by at least 20% according to a Roblox DevForum streaming thread `[VS]` |
 | 61–180 s bounce high, under-60 s fine | Verb found, no payoff: first reward late or weak, first upgrade too expensive, tutorial text in the way | `loop_first_upgrade_cost` or `ftue_start_coins` at two values; or the tutorial at 3 steps against 5 | `FirstUpgrade` conversion up, then 61–180 s bounce down. Reported: D1 6% → 15% after a 5-step tutorial became 3; session 7.5 → 9.5 min after a tutorial change. Counter-case: a more hand-holding tutorial moved 6 → 6.5 min only |
 | One funnel step loses over twice its neighbours | That step is hard to find or not fun | Timed hint at (time most players need + 1 s); move the target into line of sight; `ftue_hint_delay_s` 5 against 10 | Per-user funnel conversion at that step up; D1 only if the step is early |
 | Session time 3–6 min; curve cliff at 4–6 min | No meso goal, or the first wall comes too soon | Lower early thresholds (`xp_curve_early`, `cost_growth_early`); add the goal ladder HUD | Survival from minute 5 to 10 up; session time up; D1 with a lag |
@@ -127,7 +127,7 @@ Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalyti
 | D1 falls during an ad burst or a viral spike | Cohort mix | None. Read D1 by source | Home Recommendations D1 unchanged |
 | Metrics fall the day an update ships | Regression: crash, memory, a new onboarding step, a broken reward | Performance by place version; first-session curve current against previous; roll back or fix | Returns to baseline within 2 cohorts |
 | Event-day spike, then a baseline below the old one | Events have replaced progression; players wait for the next giveaway | Event rewards in an event currency; events at most weekly; make ordinary play pay | Between-event DAU stabilises |
-| Dislikes and feedback say "I don't know what to do" | No visible next goal | Next-goal HUD (design-foundations.md §7); rerun scorecard check 5 | Check 5 passes; session time up |
+| Dislikes and feedback say "I don't know what to do" | No visible next goal | Next-goal HUD (design-foundations.md §7.3); rerun scorecard check 5 | Check 5 passes; session time up |
 
 ## 6. Tuning procedure with Configs and Experiments
 
@@ -138,7 +138,7 @@ One variable at a time. A change that cannot be expressed as one Config key is a
 3. **Write the hypothesis** before touching anything: "Because <evidence>, changing <key> from A to B will raise <goal metric>; guardrails <metrics> must not fall."
 4. **One key, code default = control.** Stage the Config and test it in Studio with `ConfigService:SetTestingValue` `[VS]`.
 5. **Check the minimum detectable effect** on the experiment creation screen. If it is implausibly large (the docs give "more than 100%" as hopeless, and say games under about 1,000 DAU struggle), use the small-game protocol below.
-6. **Enrol at the point of use.** `GetConfigForPlayerAsync` then `GetValue` enrols the player for that key; calling it on join enrols players who never reach the system and dilutes the result `[official]`. Targeting is evaluated per session, so persist the assigned value in the profile when a flow spans sessions.
+6. **Enrol at the point of use.** `GetConfigForPlayerAsync` then `GetValue` enrols the player for that key; calling it on join enrols players who never reach the system and dilutes the result `[official]`. With audience targeting, eligibility is re-evaluated every session, so persist the assigned value in the profile when a flow spans sessions.
 7. **Add up to three custom metrics** built from events already logging: per-user funnel conversion at the target step, participation % on a custom event, average net currency delta `[official]` `[VS]`. Metrics cannot change after the start.
 8. **First 24 hours: harm only.** Playtime, payer conversion and ARPU refresh every 5 minutes; thresholds are −10%, −20% and −20%, judged only once 10,000 players are enrolled across variant and control. A sample-ratio-mismatch banner means stop and restart `[official]` `[VS]`.
 9. **Run the full term** (14–60 days; up to two variants and a control). The key is locked. Do not ship content that touches the same system; do not overlap experiments that could interact.
@@ -252,7 +252,7 @@ Accessed 2026-11-10. "(read)" = content opened in the `Roblox/creator-docs` mirr
 - https://www.gameanalytics.com/reports/2026-roblox-report and https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
 - https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
 - https://blog.rrqworld.com/roblox-game-retention/ (search summary; session and sessions-per-day figures)
-- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summary of r/robloxgamedev posts via a third-party mirror; the 45% → 18%, 6% → 15% and 7.5 → 9.5 min cases)
+- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z and https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summaries of r/robloxgamedev posts via a third-party mirror, not opened; the 45% → 18%, 6% → 15% and 7.5 → 9.5 min cases)
 - https://devforum.roblox.com/t/improving-onboarding-for-our-zombie-shooter/3323657 (search summary; 6 → 6.5 min)
 - https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (search summary; daily rewards did not help)
 - https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (search summary)

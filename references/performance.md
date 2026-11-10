@@ -116,7 +116,7 @@ Checked against the docs mirror on 2026-11-10. Re-check before relying on any ro
 | Texture streaming | Automatic `[official]`: baseline quality first, then raised by free memory, distance and screen size. Covers MeshPart, SurfaceAppearance, Texture, Decal, MaterialVariant, Beam, ParticleEmitter | Texture budgets still apply: UI images are not covered, and unique pixel count is still the memory cost |
 | Unified lighting | `Lighting.Technology` is deprecated; use `LightingStyle` (Soft or Realistic) plus `PrioritizeLightingQuality` `[official]`. Old mapping `[community: announcement]`: Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off | Mobile-first default is Soft. `PrioritizeLightingQuality = false` keeps view distance and drops shading first as quality scales down. Ship Realistic only if a low-end capture still holds 30 FPS |
 | SLIM model and avatar LOD | Documented (see LOD above); needs streaming, a cloud-saved place and Team Create | First LOD lever for static kit models and crowds |
-| Frustum streaming | `Player.FrustumStreaming`: Default (= Disabled), Disabled, Automatic, Enabled. Adds to the streaming radius, never replaces it; costs memory | Only for scopes, racing and free cameras |
+| Frustum streaming | `Player.FrustumStreaming`: Default (= Disabled), Disabled, Automatic, Enabled. Adds to the streaming radius, never replaces it; costs memory | Only for scopes, racing and free cameras. Conflict: this file used to suggest Automatic for every game; the docs call it opt-in and note the memory cost |
 | Native code generation | Server scripts and Android clients only `[official]` | Unchanged: measured hot maths only |
 | Server authority | Full release in 2026 (see networking-and-security.md) | The server simulates everything and clients roll back and resimulate: profile server CPU and low-end client CPU before adopting |
 | Extended Services for Compute | Paid: more than doubles per-player server CPU; first 100K playtime hours per month free, then $0.001 per playtime hour, billed while enabled `[official]` | Last resort after optimising. Roblox says most games see no benefit |
@@ -196,7 +196,7 @@ Hardware test matrix: one 2–4 GB Android phone, one mid-range phone, a tablet,
 
 Order matters: live data, then one device, then static scans, then fixes by return on effort.
 
-1. **Live data (10 min).** Performance and Crashes dashboards: note the worst OS and the worst metric (crash rate, memory-%, client FPS, server FPS, memory by server age). No dashboard access: start at step 2.
+1. **Live data (10 min).** Performance and Crashes dashboards (charts need at least 100 daily active users; use the P90 filter, not only averages): note the worst OS and the worst metric (crash rate, memory-%, client FPS, server FPS, memory by server age). No access or too few users: start at step 2.
 2. **Reproduce on a 2–4 GB Android phone.** Stopwatch the join. Walk to the busiest scene. Record F9 Memory (PlaceMemory labels), Shift+F2 draw calls and triangles, Shift+F5 FPS, and a 2-minute MicroProfiler dump. Keep playing 10–15 minutes for thermal drop.
 3. **Classify** with the tag table above: memory, client CPU, GPU (red bars), server CPU, network or load time. Fix the worst class only.
 4. **Static scan** in Studio Edit mode with sketches A and B (command bar, or Studio MCP `execute_luau` with `datamodel_type = Edit`). Both are read-only.
