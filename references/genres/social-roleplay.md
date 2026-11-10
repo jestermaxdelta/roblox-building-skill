@@ -82,7 +82,7 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §15 Interaction, §16 Plots, tycoon ownership and placement, §2 Inventory and equip, §3 Shop, §21 Party and friends features, §22 Chat commands and admin tools. Its "Build order by genre" table gives a second opinion.
 
 1. Emote and quick-phrase wheel; role tags.
 2. Vehicle spawner with ownership, caps and despawn.

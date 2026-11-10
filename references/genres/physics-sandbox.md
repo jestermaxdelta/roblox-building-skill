@@ -74,7 +74,7 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *fl
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`; constraints and ownership are in `references/physics-and-vehicles.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §15 Interaction, §16 Plots, tycoon ownership and placement, §1 Currency and wallet, §3 Shop. Its "Build order by genre" table gives a second opinion. Constraints and ownership are in `references/physics-and-vehicles.md`.
 
 1. Grab beam: raycast target, attachment, constraint, visible line.
 2. Throw and velocity clamp.

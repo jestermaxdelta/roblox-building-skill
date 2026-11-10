@@ -79,7 +79,7 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *ra
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`; vehicle construction is in `references/physics-and-vehicles.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §20 Checkpoints and obby stages, §10 Rounds, match state machine and intermission, §9 Leaderboards, §2 Inventory and equip, §3 Shop. Its "Build order by genre" table gives a second opinion. Vehicle construction is in `references/physics-and-vehicles.md`.
 
 1. Vehicle controller (input for keyboard, touch, gamepad) and one chassis.
 2. Vehicle spawner with per-player cap, ownership on sit, despawn on leave and when abandoned.

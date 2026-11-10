@@ -79,7 +79,7 @@ Terms: *hidden information* = state some clients must not be able to read; *team
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, match state machine and intermission, §14 Tools and abilities, §17 Trading, §22 Chat commands and admin tools, §2 Inventory and equip. Its "Build order by genre" table gives a second opinion.
 
 1. Round loop: intermission, role assignment, grace, play, resolution, rewards.
 2. Role service with private replication.

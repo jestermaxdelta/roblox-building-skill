@@ -80,7 +80,7 @@ Terms: *Wins* = the soft currency paid by lane gates; *World* = a themed lane wi
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §1 Currency and wallet, §4 Pets, eggs and hatching with odds, §5 Upgrades and rebirth, §20 Checkpoints and obby stages, §7 Daily rewards and playtime rewards, §6 Quests and achievements, §21 Party and friends features. Its "Build order by genre" table gives a second opinion.
 
 1. Stat tick service (pad occupancy, multipliers, 1 Hz) and counter HUD.
 2. Lane gates with server validation and Wins payout.

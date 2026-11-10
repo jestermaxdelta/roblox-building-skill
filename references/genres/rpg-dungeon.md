@@ -84,7 +84,7 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §13 NPC and enemy spawning and AI, §2 Inventory and equip, §6 Quests and achievements, §18 Crafting, §11 Teams, matchmaking, queues and reserved servers, §14 Tools and abilities. Its "Build order by genre" table gives a second opinion.
 
 1. Combat core: attack input, server validation, damage formula, health.
 2. Enemy spawners and mob AI (data on the server, visuals on clients).

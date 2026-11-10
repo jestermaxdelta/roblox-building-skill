@@ -77,7 +77,7 @@ Terms: *judged round* = a round whose winner is decided by other players' rating
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, match state machine and intermission, §2 Inventory and equip, §3 Shop, §9 Leaderboards, §8 Codes. Its "Build order by genre" table gives a second opinion.
 
 1. Round loop with phases and a theme list.
 2. Outfit system: equip, colour, layer limits, save and load.

@@ -84,7 +84,7 @@ Terms: *paid random item* = any random reward bought with Robux or with currency
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §4 Pets, eggs and hatching with odds, §2 Inventory and equip, §17 Trading, §3 Shop, §24 Server-wide events and boosts. Its "Build order by genre" table gives a second opinion.
 
 1. Roll table module (weights, probabilities, luck) on the server.
 2. Egg stands and hatch flow with a skippable reveal.

@@ -80,7 +80,7 @@ Terms: *luck* = a modifier that raises the chance of rarer outcomes; *pity* = a 
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §4 Pets, eggs and hatching with odds, §2 Inventory and equip, §18 Crafting, §24 Server-wide events and boosts, §5 Upgrades and rebirth. Its "Build order by genre" table gives a second opinion.
 
 1. Roll table module with `roll` and `probabilities` from the same weights.
 2. Roll service on the server with rate limiting; auto-roll loop.

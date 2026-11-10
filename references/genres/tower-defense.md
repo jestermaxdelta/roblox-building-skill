@@ -64,7 +64,7 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 - Keep from the default set: 2× Cash as a timed in-match or reward boost, 2× EXP (unit and account XP), Starter Pack with a fixed disclosed unit, currency packs (gems), extra slots (unit storage, loadouts, team presets), VIP, gift passes, private servers, Luck 2× and Server Luck on summons.
 - Add: 2× and 3× game speed for solo (convenience), tower skins, auto-skip waves, a season pass with real fixed end dates, unique towers as passes only if balanced against free ones.
 - Delete: Revive (replace with a capped "continue from wave N" in PvE), Auto-Collect.
-- Policy `[official]` `[VS]`: summons, crates and trait rerolls bought with Robux or with currency purchasable with Robux are paid random items. Show every outcome and numeric odds before purchase, update odds live under luck boosts, gate with `PolicyService` (`ArePaidRandomItemsRestricted`, and `IsPaidItemTradingAllowed` if units trade). Fallback for restricted players: direct purchase at expected value or earn-only banners.
+- Policy `[official]` `[VS]`: summons, crates and trait rerolls bought with Robux or with currency purchasable with Robux are paid random items. Show every outcome with odds as percentages summing to exactly 100% before purchase, update odds live under luck boosts, gate with `PolicyService` (`ArePaidRandomItemsRestricted`, and `IsPaidItemTradingAllowed` if units trade). Fallback for restricted players: direct purchase at expected value or earn-only banners.
 - House rule 3: banners rotate on real dates and do not restart; no "last chance" unit that returns next week; no paid unit power in PvP or leaderboard modes.
 - Offers only between waves or on the result screen, never mid-wave.
 - Speed control: consider giving 2× free and selling 3×; time-saving purchases are well tolerated `[lihfolk]`.
@@ -85,7 +85,7 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enemy spawning and AI, §16 Plots, tycoon ownership and placement, §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §4 Pets, eggs and hatching with odds, §17 Trading. Its "Build order by genre" table gives a second opinion.
 
 1. Map and path data (waypoints with cumulative distances).
 2. Enemy simulation as data; wave director with spawn tables.

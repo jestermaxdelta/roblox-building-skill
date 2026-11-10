@@ -80,7 +80,7 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §18 Crafting, §2 Inventory and equip, §13 NPC and enemy spawning and AI, §16 Plots, tycoon ownership and placement, §23 Time and day cycle, §10 Rounds, match state machine and intermission. Its "Build order by genre" table gives a second opinion.
 
 1. Resource nodes and gathering with tool tiers.
 2. Inventory and server-authoritative crafting.

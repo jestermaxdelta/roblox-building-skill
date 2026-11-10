@@ -74,7 +74,7 @@ Terms: *possession model* = while a player has the ball it is positioned at thei
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §12 Combat, §9 Leaderboards, §21 Party and friends features. Its "Build order by genre" table gives a second opinion.
 
 1. Teams and auto-balancing; round and match flow (kickoff, score, timer, results).
 2. Ball system: possession, launch, deterministic flight, server decisions.

@@ -81,7 +81,7 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §20 Checkpoints and obby stages, §9 Leaderboards, §3 Shop, §10 Rounds, match state machine and intermission. Its "Build order by genre" table gives a second opinion.
 
 1. Checkpoints and stage saves (server-validated pad touches, respawn at stage).
 2. Kill zones with client feedback and server confirmation.

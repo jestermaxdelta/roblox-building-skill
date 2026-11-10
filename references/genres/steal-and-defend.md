@@ -1,6 +1,16 @@
 # Steal-and-defend (base raid) playbook
 
-Covers "Steal a ___" games: each player owns a base that earns per second from collected items, and every other player can walk in and carry one off. Open it when theft between players is the core action, or when auditing a live steal game for exploit load, complaints and the house-rule conflicts this genre carries. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers "Steal a ___" games: each player owns a base that earns per second from collected items, and every other player can walk in and carry one off. Open it when theft between players is the core action, or when auditing a live steal game for exploit load, complaints and the house-rule conflicts this genre carries. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | Bases with slots and per-second income; one shared source of items (conveyor or nests) from a server weight table; a base lock on a server timestamp; server-validated steal (distance, lock, carry, cooldown); newcomer shield; session-locked saves | Rebirth, mutations, fusion, events, trading, guardians, biomes |
+| Intermediate | Rarity ladder with 1–3 mutation multipliers from one config; rebirth that adds slots and lock time; restock or spawn timers shown on the HUD; steal-back route and per-victim cooldown; speed and teleport sanity on carriers | Cross-server events, crossovers |
+| Expert | Event framework with scheduled server-wide spectacles; alt and transfer-pattern detection; income-gap theft limits; mobile budget for full pens; weekly numbered updates; original characters and UI reviewed for legal distance from leaders | — |
+
+Terms: *base lock* = a timed shield during which nothing can be stolen; *carry state* = the server's record that a player is holding a stolen item; *mutation* = a multiplier variant of an item (Gold, Rainbow); *admin event* = a scheduled live spectacle run by the developers.
 
 ## Snapshot
 
@@ -9,6 +19,9 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 - Legal and policy heat: "hundreds" of Steal a Brainrot clones and at least 4 lawsuits; Steal An Egg was briefly pulled in Aug 2026 over an in-game video feed (vault). Near-identical titles, visuals or place files are penalised in discovery.
 - Audience: broad and young; drama between players is the content. Large shared lobbies. Sessions are driven by "just catch the next spawn" timers.
 - Partial gap (vault): steal × tower defence (Garden TD 6.8K, Brainrot TD 932).
+- Session and longevity signals `[lihfolk]`: trend hits in this family average 15–16 min sessions against 25–31 min for longer-lived sims; games that held their rank combined about 90%+ approval with 25–30 min sessions, and spikes with 15-minute sessions faded fastest.
+- "Is the trend dead?" heuristics `[lihfolk]`: the original's 30-day peak is under about 10% of its all-time peak and each new entrant peaks lower; the meme source has been declared over; clones with no twist cannot clear a few thousand CCU. Even then the loop often survives as a stable genre, as the egg re-skin a year later showed.
+- Conflict (server size): the vault's pattern 14 gives steal games larger shared lobbies; LihFolk measured the current leader at 7-player servers, which keeps every pen within one screen of travel and fits a phone budget. Trust the measurement for egg-pen formats; larger lobbies suit conveyor-and-plaza formats.
 
 ## Core loop with timings
 
@@ -23,6 +36,7 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 
 - Fan guides describe a 30 s base lock on joining a server, with lock duration growing per rebirth `[community]`.
 - Pace `[house]`: first owned item inside 30 s, first income tick inside 45 s, first successful steal inside 5 min, first time being stolen from only after the newcomer shield ends.
+- What the leaders do well `[lihfolk]`: a shared, visible shop that moves (scarcity is public and shopping is a race); income per second as the headline number; a base lock with a visible countdown that everyone understands ("safe for 60 seconds"); a rebirth that adds safety (longer lock, more slots), not only multipliers; scheduled spectacle on all servers at once.
 
 ## First 5 minutes
 
@@ -40,6 +54,9 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 - Theft is a transfer, not a sink. Add real sinks: rebirth costs, base upgrades, fusion, slots.
 - Loss limits (house rule: no retention through punishment) `[house]`: newcomer shield for the first 10–15 min of lifetime play; items cannot be stolen while their owner is offline (the base leaves with the player); per-victim cooldown so one base is not emptied in a streak; a stolen item keeps paying the victim a reduced rate until the thief banks it, or can be reclaimed if the thief is tagged in transit.
 - Speed, carry weight and lock duration are the PvP stats. Earn them in play.
+- Newcomer grace can be a time window or theft limits based on the income gap between thief and victim, so a first theft is a lesson, not a loss `[lihfolk]`.
+- Each biome adds one movement idea (ice, jump pads, darkness) so speed upgrades unlock new play, not only new items `[lihfolk]`.
+- No wagers or coin flips of items between players: Roblox prohibits simulated and real gambling `[lihfolk]` `[VS]`.
 
 ## Monetisation set that fits
 
@@ -49,6 +66,8 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 - **Conflict (market vs house rule 3):** leaders sell Robux gear and buyable admin powers (vault), and player guides list paid steal-speed and lifetime double-money passes `[community]`. Selling steal speed, stuns, lock length or trap damage is stat power in a competitive mode and is not allowed here. Sell income, convenience and cosmetics; keep every raid and defence stat earnable only.
 - Social-action boosts (like, favourite, group) are bonuses only: vault example 10K free Speed. Keep them out of the title, thumbnail and description.
 - Offers never fire on being robbed. Positive triggers only: after a successful steal banked, a rebirth, a new index entry.
+- LihFolk reaches the same conclusion as house rule 3: selling theft tools or power over other players draws "pay to win" reviews and press criticism; sell self-only boosts and cosmetics `[lihfolk]`.
+- Converting an existing power pass: removing purchased functionality without proper notice is listed under fraud in Roblox's standards `[lihfolk]` `[VS]`. Announce the change and replace the benefit with equal non-combat value.
 
 ## Retention and social hooks
 
@@ -63,6 +82,23 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 - Carry state: clear icon over the carrier, slow-down shown, a line to the home base on mobile.
 - Base board in the world: owner name, lock time, top item (drives envy and target choice).
 - Steal log: who took what, with a path to steal it back.
+- Conflict (raid alert): LihFolk's juice list for the format includes a steal alarm and siren; this skill keeps the alert calm and informative for a young audience (no siren loop, no shake). A short distinct sound is fine; a repeating alarm is not.
+- A friendly "Chances" tab on every egg or crate, built from the table that rolls, builds trust with parents and passes review `[lihfolk]`.
+
+## Systems to build, in order
+
+Closest sections of `references/gameplay-systems-cookbook.md`: §19 Stealing and base defence, §16 Plots, tycoon ownership and placement, §1 Currency and wallet, §4 Pets, eggs and hatching with odds, §5 Upgrades and rebirth, §24 Server-wide events and boosts, §17 Trading. Its "Build order by genre" table gives a second opinion.
+
+1. Base assignment, slots and per-second income tick.
+2. Item config (rarities, mutations, prices) and the shared spawn source (conveyor, nests) with server weights.
+3. Player data with session locking, autosave and close handling.
+4. Base lock with server timestamps.
+5. Steal, carry and bank state machine with validation.
+6. Newcomer shield, per-victim cooldown, steal log.
+7. Rebirth.
+8. Index, fusion and mutations.
+9. Timers and event framework (rare spawns, server events, admin commands).
+10. Shop with policy-gated luck; then trading and cross-server events.
 
 ## Technical hot spots
 
@@ -73,6 +109,10 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 - **Server hopping and alts**: detect repeated transfers between the same two accounts and cap per-pair transfers per hour; treat private servers as the easiest place to feed an alt and apply the same caps there `[house]`.
 - **Physics griefing**: disable player-player collision inside bases or use collision groups; no pushable unanchored props near pedestals.
 - **Scale**: 20–30 player lobbies with dozens of items per base; items are anchored Blender meshes rendered once, income is a number, not an instance per tick.
+- **Shared restock or spawn clock**: derive stock from server time with a deterministic seed (or broadcast it) so every server shows the same items at the same moment; that turns a restock into a shared event `[lihfolk]`.
+- **Pens on phones**: many animated items per base; cap visible ones, use shared animations and client-side idle motion `[lihfolk]`.
+- **Guardian or chaser NPCs**: the server decides caught-or-not; clients smooth the visuals. Make the chase readable with a safe-line effect, a wind-up sound and a distance meter `[lihfolk]`.
+- **Free models and kits**: "complete steal-game kits" circulate; free models are the most common source of backdoors (look for `require` with asset ids and obfuscated code) `[lihfolk]`. House rule 1 already forbids shipping them.
 
 ## The one-new-verb angle
 
@@ -108,6 +148,8 @@ Covers "Steal a ___" games: each player owns a base that earns per second from c
 | 12 | Weekly numbered update on a fixed day | Commit to a day; log Experience Events |
 | 13 | Raid alert is calm and informative | Remove sirens, shake and red flashes |
 | 14 | Title, art, UI and place file are distinct from the leaders | Restyle; rename; rebuild copied layouts |
+| 15 | Approval near 90% and median session trending toward 25 min | Fix theft frustration first; add depth before events |
+| 16 | Stock and spawn timers are identical across servers | Derive from server time with a shared seed |
 
 ## Review gate
 
@@ -131,3 +173,5 @@ Accessed 2026-11-10.
 - https://allthings.how/steal-a-brainrot-roblox-efficient-stealing-events-and-rebirths (search summary; player guide: 30 s join lock, paid passes)
 - https://www.pcgamer.com/games/sim/one-of-robloxs-biggest-experiences-right-now-is-a-bizarre-italian-brainrot-character-stealing-simulator-and-lord-help-me-i-now-understand-why-its-so-popular (search summary)
 - Web search for DevForum threads on building base-lock or steal systems (2026-11-10): no evidence found; results were player guides and exploit-script pages (not opened).
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-trend-game/SKILL.md` and `references/trend-games-research.md` §1.2, §2, §3.2–3.3, §7, §8; `59 Viral and Trend Game Teardowns/Teardown - Steal An Egg.md`; `32 Case Studies of Top Roblox Games/Case Study - Steal a Brainrot.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

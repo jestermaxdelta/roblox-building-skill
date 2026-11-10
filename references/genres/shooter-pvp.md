@@ -85,7 +85,7 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §14 Tools and abilities, §9 Leaderboards. Its "Build order by genre" table gives a second opinion.
 
 1. Weapon data table and weapon controller (fire, reload, recoil, spread).
 2. Server hit validation (rate, ammo, origin, range, line of sight).

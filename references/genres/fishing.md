@@ -59,7 +59,7 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 - Add "anywhere" convenience: sell anywhere, appraise or enchant anywhere, spawn boat anywhere. They remove a walk, not a challenge `[lihfolk]`. Observed prices `[lihfolk]` `[VS]`: sell-anywhere 315–399 R$, double XP 195–239, cosmetic packs 99, luck passes in three sizes at 50 / 245 / 545.
 - Add: bobber and rod skins, emote packs, boats as cosmetics, a season pass with real end dates.
 - Delete: Revive, Auto-Collect (unless AFK fishing is the product), permanent power in any fishing tournament mode.
-- **Luck is regulated** `[official]` `[VS]`: a paid item that improves odds must state its effect numerically before purchase, and displayed odds must update live while it is active. Rolls bought with Robux or Robux-bought currency (crates, gacha, appraisal rerolls) need full outcome lists summing to 100%, the `PolicyService` gate, and a trading check. The "1 in X" habit is a strong base: extend the same table into the purchase screen `[lihfolk]`.
+- **Luck is regulated** `[official]` `[VS]`: a paid item that improves odds must state its effect numerically before purchase, and displayed odds must update live while it is active. Rolls bought with Robux or Robux-bought currency (crates, gacha, appraisal rerolls) need full outcome lists as percentages summing to exactly 100% ("1 in X" may sit beside the percentage, not replace it), the `PolicyService` gate, and a trading check. The "1 in X" habit is a strong base: extend the same table into the purchase screen `[lihfolk]`.
 - Offer timing: after a new bestiary entry or a rare catch, at the seller, on return. Never mid-reel.
 
 ## Retention and social hooks
@@ -79,7 +79,7 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §4 Pets, eggs and hatching with odds, §2 Inventory and equip, §3 Shop, §6 Quests and achievements, §23 Time and day cycle, §24 Server-wide events and boosts. Its "Build order by genre" table gives a second opinion.
 
 1. Cast and reel minigame (client feel, server validation).
 2. Weighted catch table with "1 in X" display.

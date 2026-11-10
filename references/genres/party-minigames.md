@@ -75,7 +75,7 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §20 Checkpoints and obby stages, §13 NPC and enemy spawning and AI, §3 Shop. Its "Build order by genre" table gives a second opinion.
 
 1. Round manager (phases, timers, end conditions that count remaining players).
 2. Minigame contract and loader; per-round janitor.

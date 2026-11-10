@@ -83,7 +83,7 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §16 Plots, tycoon ownership and placement, §1 Currency and wallet, §3 Shop, §5 Upgrades and rebirth, §13 NPC and enemy spawning and AI, §7 Daily rewards and playtime rewards, §24 Server-wide events and boosts. Its "Build order by genre" table gives a second opinion.
 
 1. Plot assignment, ownership and release.
 2. Button chain as data; purchase pads with server validation.

@@ -81,7 +81,7 @@ Terms: *tension director* = server logic that decides when threats appear based 
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enemy spawning and AI, §15 Interaction, §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §21 Party and friends features, §3 Shop. Its "Build order by genre" table gives a second opinion.
 
 1. Lobby, party formation and teleport to a reserved run server.
 2. Run state machine (floors or chapters, checkpoints, win and fail).

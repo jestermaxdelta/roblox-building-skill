@@ -80,7 +80,7 @@ Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §1 Currency and wallet, §2 Inventory and equip, §3 Shop, §5 Upgrades and rebirth, §4 Pets, eggs and hatching with odds, §9 Leaderboards, §6 Quests and achievements, §8 Codes, §24 Server-wide events and boosts. Its "Build order by genre" table gives a second opinion.
 
 1. Core verb with client feedback and a batched, rate-limited server credit.
 2. Capacity (backpack) and sell point.

@@ -198,7 +198,7 @@ Facts: Open Cloud Luau Execution starts a headless server from a place version; 
 ## Memory-leak hunting
 
 1. **Is it a leak?** Growth with time or repetitions under a constant workload that never comes back. Not leaks: server memory not falling when players leave (it never shrinks `[official]`); a Luau heap sawtooth with flat troughs (allocation churn; rising **troughs** are the leak); texture and sound caches that plateau after one round trip; the first 5–10 minutes of warm-up. Need three samples after warm-up `[lihfolk]`.
-2. **How urgent?** Express the slope as MB per hour or KB per repetition. A 20-player server has about 8.2 GiB (6.25 GiB + 100 MiB × players `[official]`): 60 MB/h from 1.5 GiB takes about 42 hours to reach the 50% line. The same slope on a 2 GB phone ends a long session, so client leaks usually come first `[lihfolk]`.
+2. **How urgent?** Express the slope as MB per hour or KB per repetition. A 20-player server has about 8.2 GiB (6.25 GiB + 100 MiB × players `[official]`): 60 MB/h from 1.5 GiB takes about 44 hours to reach the 50% line. The same slope on a 2 GB phone ends a long session, so client leaks usually come first `[lihfolk]`.
 3. **Which category?** F9 Memory, or the sampler below.
 
 | Growing | Usual cause |

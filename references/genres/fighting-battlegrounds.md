@@ -82,7 +82,7 @@ Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after
 
 ## Systems to build, in order
 
-System names refer to `references/gameplay-systems-cookbook.md`.
+Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §14 Tools and abilities, §10 Rounds, match state machine and intermission, §11 Teams, matchmaking, queues and reserved servers, §2 Inventory and equip. Its "Build order by genre" table gives a second opinion.
 
 1. Fighter state machine on the server (idle, attacking, blocking, stunned, ragdolled, dashing).
 2. Input layer with buffering for keyboard, touch and gamepad.
