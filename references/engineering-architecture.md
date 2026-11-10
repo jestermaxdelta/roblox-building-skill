@@ -2,6 +2,18 @@
 
 What this is: the client-server model, project architecture, Luau standards, toolchain, testing, CI and Studio MCP working rules. Open it when setting up a project or choosing tools, or jump to "Level-up audit" to assess and untangle an existing codebase. Distilled from knowledge-base sections 4.1, 4.2, 4.3 and 4.10; tool versions and MCP tools re-checked on 2026-11-10 (GitHub repos, `Roblox/creator-docs`). Snippets are unexecuted sketches to adapt. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
+Contents: Start here by level · Client-server model essentials · Project architecture · Luau standards · Toolchain · Testing · CI/CD with Open Cloud · Runbook: shipping an update to a live game · AI agents and the Studio MCP · Level-up audit · Review gate · Sources
+
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | (1) Server code in ServerScriptService, shared code in ReplicatedStorage, loading screen in ReplicatedFirst. (2) One server entry Script and one client entry; everything else is ModuleScripts. (3) `--!strict`, `task.wait` not `wait`, `pcall` around every `...Async` call. (4) Handle players who joined before your `PlayerAdded` connection. (5) Use Studio plus Script Sync and git before learning Rojo | Frameworks, ECS, CI, Parallel Luau |
+| Intermediate | Init/Start loader; behaviour by CollectionService tags; a Trove per lifetime; pinned toolchain with lint, format and type checks in CI; a test universe; the update runbook | Custom networking codegen, ECS |
+| Expert | Expand-then-contract releases across mixed server versions; versioned cross-place messages; in-engine Jest suites through Luau Execution; headless audit scripts; MCP-driven playtests; jecs where entity counts demand it | Nothing: read it all |
+
+Terms: a *service* is a server module that owns one system; a *controller* is its client counterpart. *Replication* is the engine copying instances and properties from server to clients. A *sourcemap* is the file that tells external tools where each script sits in the DataModel. *Version skew* is old and new servers running at the same time after a publish.
+
 ## Client-server model essentials
 
 - One authoritative server, many clients. Only server state is real; everything on a client is a replica, a prediction or decoration.
@@ -39,6 +51,14 @@ One server entry `Script` and one client entry `Script`; everything else is Modu
 
 Rules: no require cycles (resolve lazily in `Init`); shared modules never require server modules; services expose functions, not mutable tables; no server logic in replicated modules.
 
+More rules that prevent slow-burning problems `[lihfolk]`:
+
+- State versus moments: anything that stays true (health, round phase, a door being open) replicates as an attribute or property so late joiners and re-streamed instances see it; remotes carry moments (a request, a hit effect). Per-player private state uses an owner-only channel (networking-and-security.md).
+- Defer client modules that the first playable frame does not need (shop catalogue, settings panels); requiring everything at client start is a common cause of slow phone joins.
+- Find children through dedicated folders or tags, never by a name that map content could reuse.
+- Test switches (test profile keys, simulated failures, debug panels) are read only when `RunService:IsStudio()` is true or the user is on a server allowlist, and the boot log prints every switch that is on. Tester commands follow the admin rules in networking-and-security.md.
+- Keep backups, archives and import sources out of the place file; split a script by responsibility long before it becomes unmanageable (place-size numbers in performance.md).
+
 Typed loader sketch (server; mirror it on the client with `Controllers/`):
 
 ```lua
@@ -72,7 +92,8 @@ Framework choice:
 | Option | Status | Verdict |
 |---|---|---|
 | Plain modules + typed loader + RbxUtil Signal/Trove/Component + ProfileStore + a typed remote guard | Recommended baseline | Full type inference, no magic, easiest for AI agents |
-| Knit | Archived, unmaintained | Do not start new projects on it |
+| Knit | Archived July 2024, unmaintained | Do not start new projects on it. Existing games keep working; migrate one service at a time (`KnitInit`/`KnitStart` become `Init`/`Start`, `GetService` becomes `require`, the `Client` table becomes explicit remote registrations) and keep remote names stable so mixed-version servers still talk `[lihfolk]` |
+| Flamework (roblox-ts) | Not re-checked here `[lihfolk]` | Only if the team has already chosen TypeScript; that choice is bigger than the framework |
 | jecs ECS (0.11 at reading `[VS]`) | Active | Bold option for thousands of similar entities (TD waves, bullet hell, swarms); steeper onboarding |
 | Template stacks (MonzterDev) | Pins older libraries | Reference only |
 
@@ -147,6 +168,7 @@ Rojo when the filesystem is the source of truth (git, CI, AI agents, non-script 
 - Data code runs against `ProfileStore.Mock`.
 - Multi-client tests: `StudioTestService` (`ExecuteMultiplayerTestAsync`, `AddPlayers`) and `UserInputService:CreateVirtualInput()`.
 - Leak audit: respawn 20 times and rejoin repeatedly; memory and connection counts return to baseline.
+- What to test, cheapest first `[lihfolk, adapted]`: pure logic and migrations against fixture saves (data-and-purchases.md); remote handlers with the fuzz corpus and race test (networking-and-security.md); time-based features (daily rewards, boosts, cooldowns) through an injectable clock instead of `os.time()` calls scattered in code; streaming bugs by forcing stream-out (`StreamingTargetRadius = 64`); long sessions with a soak loop (performance.md, procedure B). Harness design and worked examples: debugging-and-testing.md.
 
 ## CI/CD with Open Cloud `[VS]`
 
@@ -157,6 +179,37 @@ Place publishing: `PATCH https://apis.roblox.com/assets/v1/assets/{placeId}` wit
 Pipeline: on every PR run `rokit install`, `wally install` + lock diff, `selene src`, `stylua --check src`, `rojo sourcemap`, `luau-lsp analyze`, Lune unit tests. On merge: `rojo build -o game.rbxl`, publish to a test place in a separate test universe, run in-engine tests. On release tag: publish to production with a manual approval, using Migrate To Latest Update for non-backwards-compatible data migrations. Keys live in CI secrets, scoped to one universe and minimum permissions, created on a dedicated automation account with an IP allowlist and an expiry (networking-and-security.md).
 
 Collaboration: place files do not merge; code merges in git; one place-file owner at a time; Git LFS with locking for binaries; only CI publishes production.
+
+## Runbook: shipping an update to a live game
+
+Publishing does not move players: old and new servers run side by side until old ones empty or you restart them `[official]`. Rules 1–5 adapted from `[lihfolk]`.
+
+1. **Every saved record carries a schema version**, and old code never writes data newer than it understands (the guard in data-and-purchases.md).
+2. **Expand, then contract.** Release N reads old and new shapes and still writes what old servers need. Release N+1, after every server has restarted, removes the old shape. The same applies to remote payloads: keep remote names stable and accept the previous payload for one release.
+3. **Cross-place messages are versioned contracts.** Teleport data, MemoryStore tickets and MessagingService payloads carry a `v` field; receivers accept the current and previous version.
+4. **Features ship dark** behind a Configs flag and are switched on after the restart completes.
+5. **Multi-place order:** publish the receiving place (match, dungeon) first and restart its outdated servers with a short delay (5–10 minutes); then publish the sender (lobby) with a longer bleed-off (15–30 minutes); then flip the flag; drop the old version next release.
+6. **Restart** from Creator Hub (or Open Cloud): "Restart only servers with outdated versions", plus "Delay server restart" of 1–60 minutes. Roblox stops matchmaking into those servers (invites and teleports can still enter), waits, then teleports each old server's players together to a new one `[official]`.
+7. **Drain** when `game.ServerRestartScheduled(restartTime, source, attributes)` fires `[official]`: warn players with a countdown, save everyone once early, refuse new trades, stop enqueuing matchmaking tickets, and start no round that cannot finish before `restartTime`. `source` is `DeveloperUpdate` for your restarts and `RobloxMaintenance` (with empty attributes) for Roblox's, so the handler needs a default policy.
+8. **Watch** error report, load-failure counters and the performance dashboard for an hour; compare session length and next-day return of players moved by the update with a normal day `[lihfolk]`.
+9. **Emergency.** A bad update with no data impact: revert in Version History, publish, restart outdated servers with a 1–5 minute delay. If the bad build wrote data, rolling code back does not roll data back: fix forward, or ship the rollback build with a reader that tolerates the new fields (incident runbook in data-and-purchases.md).
+
+```lua
+--!strict
+-- Unexecuted sketch: one drain switch that other services read before starting long activities.
+local Drain = { restartAt = nil :: DateTime? }
+function Drain.canStart(durationSeconds: number): boolean
+	local restartAt = Drain.restartAt
+	return restartAt == nil or DateTime.now().UnixTimestamp + durationSeconds < restartAt.UnixTimestamp
+end
+game.ServerRestartScheduled:Connect(function(restartTime: DateTime, _source: Enum.CloseReason, _attributes: { [string]: any })
+	Drain.restartAt = restartTime
+	workspace:SetAttribute("RestartAtUnix", restartTime.UnixTimestamp) -- clients show the countdown
+end)
+return Drain
+```
+
+A single-place game with no schema change and no long activities can simply publish and restart outdated servers with a 10–15 minute delay.
 
 ## AI agents and the Studio MCP `[VS]`
 
@@ -263,6 +316,8 @@ print(byPlace, legacy) -- Workspace/Script above zero means scripts inside model
 - [ ] One owner of the source (Rojo or Script Sync or Studio), written down; no unmaintained tools adopted (Mantle, Knit, TestEZ for new suites).
 - [ ] Existing game: sketch F run; identical script copies and scripts inside Workspace models listed with an owner and a release to remove them.
 - [ ] MCP client permissions at Balanced or lower; high-risk scopes off outside the task that needs them.
+- [ ] Update runbook followed: versioned saves and cross-place messages, expand-then-contract, "outdated only" restart with bleed-off, `ServerRestartScheduled` drain handler present.
+- [ ] No test switch is readable in production; the boot log lists active switches.
 
 Grep `references/knowledge-base.md` for `## 4.1`, `## 4.2`, `## 4.3` and `## 4.10`.
 
@@ -271,6 +326,8 @@ Grep `references/knowledge-base.md` for `## 4.1`, `## 4.2`, `## 4.3` and `## 4.1
 Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
 
 - https://github.com/Roblox/creator-docs: `content/en-us/studio/{mcp,mcp-open-cloud,cli}.md`, `scripting/sync.md`, `ai/coding-harness.md`, `projects/{external-tools,collaboration,server-authority/index}.md`, `production/analytics/error-report.md` (read)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/41 Multiplayer Services/Server Shutdowns Soft Updates and Migration.md`, `03 Architecture and Networking/{Project Structure and Bootstrapping, Server Lifecycle and Shutdown, Frameworks - Knit Matter and Others, Interest Management and Per-Player Replication}.md`, `04 Data and Persistence/Data Loss Prevention and Recovery.md`, note titles in `12 Performance Testing and Debugging/` (read)
+- `Roblox/creator-docs` `projects/update-games.md`, `reference/engine/classes/DataModel.yaml` (`ServerRestartScheduled`) (read)
 - Tags and last commits (read via git): https://github.com/rojo-rbx/rojo, https://github.com/rojo-rbx/rokit, https://github.com/UpliftGames/wally, https://github.com/Kampfkarren/selene, https://github.com/JohnnyMorganz/StyLua, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/lune-org/lune, https://github.com/Roblox/jest-roblox, https://github.com/jsdotlua/jest-lua, https://github.com/Roblox/testez, https://github.com/Sleitnick/rbxcloud, https://github.com/blake-mealey/mantle, https://github.com/Sleitnick/Knit, https://github.com/red-blox/zap, https://github.com/1Axen/blink, https://github.com/Ukendio/jecs
 - READMEs (read): https://github.com/Roblox/studio-rust-mcp-server, https://github.com/Roblox/jest-roblox, https://github.com/blake-mealey/mantle
 - Rojo 7.7 release notes, seen through https://newreleases.io/project/github/rojo-rbx/rojo/release/v7.7.0-rc.1 and a release mirror (search summary)

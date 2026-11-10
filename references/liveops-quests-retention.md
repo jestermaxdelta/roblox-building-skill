@@ -271,14 +271,19 @@ local function apply(raw: any)
 	local ok, decoded = pcall(function()
 		return if typeof(raw) == "string" then HttpService:JSONDecode(raw) else raw
 	end)
+	local source = if ok and typeof(decoded) == "table" then decoded.events else nil
+	if typeof(source) ~= "table" then
+		warn("[Calendar] unreadable; keeping the previous calendar")
+		return
+	end
 	local list: { LiveEvent } = {}
-	for _, e in if ok and typeof(decoded) == "table" and typeof(decoded.events) == "table" then decoded.events else {} do
+	for _, e in source do
 		if typeof(e) == "table" and typeof(e.id) == "string" and typeof(e.startsAt) == "number" and typeof(e.endsAt) == "number" then
 			local kind = if typeof(e.kind) == "string" then e.kind else "rotation"
 			table.insert(list, { id = e.id, kind = kind, startsAt = e.startsAt, endsAt = e.endsAt, boosts = e.boosts })
 		end
 	end
-	local problem = if #list == 0 then "empty or unreadable" else problemWith(list)
+	local problem = problemWith(list)
 	if problem then
 		warn(`[Calendar] rejected ({problem}); keeping the previous calendar`)
 		return
@@ -362,7 +367,7 @@ Platform tools `[official]` `[VS]`: Experience Events (at most 10 ongoing or upc
 |---|---|---|
 | Cadence | Weekly, fixed day and hour | Fixed day every 2 weeks, alternating a content update with a quality-of-life plus event update; a rest week after each season. Announce a skip rather than miss silently |
 | Scope | New systems and maps from a team | At most 3 working days per update: variants of existing Blender meshes, a new tier at the end of progression, one quest set. New systems are expansions on their own schedule |
-| Pre-update event | Staff-run admin event | A scripted 10-minute server event started by a Config timestamp in every server at once; earnable drops in event currency; no staff needed (sketch below) |
+| Pre-update event | Staff-run admin event | A scripted 10-minute server event started by a Config timestamp in every server at once; earnable drops in event currency; no staff needed (a calendar entry; module above) |
 | Countdown | Title tag, socials, in-world timer | A Blender update board reading the same Config timestamp; an Experience Event created several days ahead so Notify Me exists |
 | Update log | In-game panel, Discord, video | The same board lists the 3 headline changes; one update announcement |
 | Codes | Several per update across channels | One dated code on the board; one milestone ladder for likes or visits |

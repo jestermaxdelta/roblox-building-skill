@@ -6,31 +6,31 @@ Tags: `[official]` Roblox docs (mirror commit ccc2b01), `[community]` forum prac
 
 ## Contents
 
-1. Start here by level · 2. Pick the right instance · 3. ParticleEmitter · 4. Beam, Trail, Attachment · 5. Highlight · 6. Meshes and textures (Blender) · 7. Timing and ability anatomy · 8. Hit-stop, shake, FOV · 9. Screen effects and number popups · 10. Tween or spring · 11. Replication · 12. Pooling, budgets, quality scaling · 13. Reduced motion and flash safety · 14. Juice ladder by frame cost · 15. Common mistakes · 16. Level-up table · Review gate · Sources
+Start here by level · 1. Pick the right instance · 2. ParticleEmitter · 3. Beam, Trail, Attachment · 4. Highlight · 5. Meshes and textures (Blender) · 6. Timing and ability anatomy · 7. Hit-stop, shake, FOV · 8. Screen effects and number popups · 9. Tween or spring · 10. Replication · 11. Pooling, budgets, quality scaling · 12. Reduced motion and flash safety · 13. Juice ladder by frame cost · 14. Common mistakes · 15. Level-up table · Review gate · Sources
 
-## 1. Start here by level
+## Start here by level
 
 | Level | Do first | Ignore for now |
 |---|---|---|
 | Beginner | (1) Every effect runs in a LocalScript; the server only sends "what happened". (2) Emitters stay `Enabled = false`; fire them with `:Emit(n)`. (3) Set `LightInfluence = 0` on every emitter. (4) One flash, one shape, a few sparks, a sound: stop there. (5) Add a shake slider and honour Reduce Motion before shipping any shake | Flipbooks, mesh VFX, governors, hit-stop budgets |
-| Intermediate | Design each effect as a layer table (§7) before opening Studio. Pool effect roots. Give every bright stack one dark layer. Play the caster's effect on input and skip the echo. Scale burst counts yourself on weak devices. Tie effects to animation markers, not timers | Per-client particle governors, catch-up hit-stop |
+| Intermediate | Design each effect as a layer table (§6) before opening Studio. Pool effect roots. Give every bright stack one dark layer. Play the caster's effect on input and skip the echo. Scale burst counts yourself on weak devices. Tie effects to animation markers, not timers | Per-client particle governors, catch-up hit-stop |
 | Expert | Budget per cast, per caster window and per client; never cull gameplay information. Count cost from templates with a script. Catch-up hit-stop, FOV-normalised shake, noise frequency capped by frame rate. Measure on a hot phone with 8 casters at one spot | — |
 
-## 2. Pick the right instance
+## 1. Pick the right instance
 
 | Need | Use | Why |
 |---|---|---|
 | Sparks, smoke, flashes, dust, rain, pickup pops | `ParticleEmitter` | Camera-facing or velocity-aligned quads; cheapest to author |
 | A line or ribbon between two points: laser, tether, guide arrow, slash arc, ring outline of constant width | `Beam` | Cubic Bézier ribbon; texture can scroll (`TextureSpeed`) |
 | The path something just travelled: blade, dash, projectile | `Trail` | Records two attachments each frame |
-| "This object matters": interactable, target, ally through walls, hit flash | `Highlight` | Outline and fill on a whole model; strict rules in §5 |
+| "This object matters": interactable, target, ally through walls, hit flash | `Highlight` | Outline and fill on a whole model; strict rules in §4 |
 | A shape with volume or a silhouette particles cannot give: shock ring, crescent, dome, pillar, shards, telegraph disc | Blender mesh (`MeshPart`) tweened on the client | House rule 1: authored in Blender |
 | Light on the scene from the effect | `PointLight` in an Attachment, `Shadows = false`, one per effect | Particles never light the world, even at `LightEmission = 1` `[official]` |
-| Whole-screen response | GUI overlay or a post effect on the Camera (§9) | Post effects on `Workspace.CurrentCamera` show for that player only `[official]` |
+| Whole-screen response | GUI overlay or a post effect on the Camera (§8) | Post effects on `Workspace.CurrentCamera` show for that player only `[official]` |
 
 Runtime `EditableImage`/`EditableMesh` are not a VFX tool: they need an experience permission and have tight memory budgets; bake offline and upload `[lihfolk]` `[VS]`.
 
-## 3. ParticleEmitter
+## 2. ParticleEmitter
 
 Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachment` (spawn at a point; rotate the attachment rather than using `EmissionDirection`). `Sphere` and `Cylinder` shapes do not display correctly on an Attachment `[official]`.
 
@@ -45,7 +45,7 @@ Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachm
 | `Orientation` | `FacingCamera`, `FacingCameraWorldUp`, `VelocityParallel`, `VelocityPerpendicular` `[official]` | Flat card in any plane: `VelocityPerpendicular`, `Speed` 0.001, `SpreadAngle` 0, attachment pointing along the card's normal `[lihfolk]` |
 | `ZOffset` | Moves the sprite toward (+) or away from the camera in studs without resizing; fractional values work `[official]` | Sort layers: flash in front (+), dark layer behind (−) |
 | `Rate`, `Enabled` | Continuous emission. Cap 400/s per emitter, 100/s on mobile `[official]` | Scaled down by graphics level; one forum test measured `Rate × level / 10` `[community]` |
-| `:Emit(n)` | Instant burst; works with `Enabled = false` | Forum reports and one production measurement say bursts are not thinned by graphics level (one report disagrees) `[community]` `[lihfolk]`: scale `n` yourself (§12) |
+| `:Emit(n)` | Instant burst; works with `Enabled = false` | Forum reports and one production measurement say bursts are not thinned by graphics level (one report disagrees) `[community]` `[lihfolk]`: scale `n` yourself (§11) |
 | `Lifetime` | Per-particle age range; values above 20 s are capped; 0 emits nothing `[official]` | Alive particles ≈ `Rate × Lifetime.Max`: this is the cost |
 | `Speed`, `SpreadAngle`, `Acceleration`, `Drag` | Launch speed and cone; `Acceleration` is world space; `Drag` is exponential decay of speed `[official]` | High speed + high drag = a streak that stops at a fixed distance. Gravity on a rotated rig must be computed in world space |
 | `LockedToPart`, `VelocityInheritance` | Particles glued to the emitter, or given the parent's velocity at birth | Locked for auras on a moving body; inherited for dust shed by a foot |
@@ -63,7 +63,7 @@ Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachm
 
 **Value rules that separate amateur from professional effects** `[lihfolk]`: a thin white-hot core, the element colour as the body, and one saturated dark layer (blue-black, deep red; never grey) behind every bright stack so it keeps a shape; at most one accent hue; white only as a thin core; sparks follow the swing direction, not a radial sphere; later repeats of a layer are shorter and different, never identical copies. Test in the darkest and brightest zone of the map: an effect tuned at noon vanishes in a cave. Kid-friendly default: hit colours that do not read as blood, no persistent marks `[lihfolk]`.
 
-## 4. Beam, Trail, Attachment
+## 3. Beam, Trail, Attachment
 
 **Attachment** rules: an Attachment must be parented to a `BasePart`; author VFX sockets in Blender as `<Name>_Att` empties (`art-pipeline-blender.md`); for world-space effects use one invisible anchored host part (`Transparency = 1`, `CanCollide/CanTouch/CanQuery = false`, `CastShadow = false`) carrying several attachments.
 
@@ -86,7 +86,7 @@ Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachm
 - Wrap-around sheet: a trail left on through wind-up and follow-through wraps the character. Open it only for the cut (`TrailOn`/`TrailOff` animation markers). Trails suit arcs under about 120°; wider sweeps need a drawn crescent (beam or mesh) `[lihfolk]`.
 - Projectile streak length = speed × `Lifetime`; 12–30 studs reads as a shot, shorter reads as a dot, longer as a laser `[lihfolk]`.
 
-## 5. Highlight
+## 4. Highlight
 
 Limits `[official]`: at most 255 Highlights display per client and extras are silently ignored; a disabled Highlight still holds a slot, so destroy the ones you will not reuse. Adding or removing one can trigger a geometry rebuild (spike plus draw calls), while changing properties is lightweight. The first Highlight on screen costs up to 1 ms of GPU on mobile; on mobile the cost also grows with screen coverage. Low-end devices draw them more pixelated. Limit history: older code budgets against 31 `[VS]`.
 
@@ -98,7 +98,7 @@ Rules:
 - Keep highlighted objects out of each other's hierarchies; nested ones draw wrongly `[lihfolk]`.
 - Budget `[house]`: 2 live on the low tier, 5 mid, 8 high; one interact outline at a time. Occluded depth mode for anything decorative.
 
-## 6. Meshes and textures (authored in Blender)
+## 5. Meshes and textures (authored in Blender)
 
 Particles alone look thin; the silhouette of a strong effect is usually a mesh with a painted alpha texture that scales and fades for 0.2–0.5 s `[lihfolk]` `[community]`. Under house rule 1 every such mesh is a Blender model. Conflict: LihFolk builds bolts, projectile cores, shields and telegraphs from Neon primitive Parts, `ForceField` balls, `SpecialMesh` and `HandleAdornment`s; do not import that. Use the kit below.
 
@@ -122,12 +122,12 @@ Particles alone look thin; the silhouette of a strong effect is usually a mesh w
 **Texture authoring.**
 - Paint in white and grey with alpha; colour comes from the emitter, beam or part at runtime through palette roles (main, hot, dark, glow, spark, debris) so one template serves every element `[lihfolk]`.
 - Fade edges to transparent white, never transparent black, or sprites get a dark halo `[lihfolk]`.
-- Sizes: sprites 256² (specks 128²), strips and rings 512², flipbooks per §3. Cell margins about 16/12/8 px for 512/256/128 px cells `[lihfolk]`. Memory is unique pixel count (`performance.md`); share ring, strip and glow textures across effects. House budget: at most 8–12 VFX textures per kit, 3–4 flipbook sheets in memory on the low tier.
+- Sizes: sprites 256² (specks 128²), strips and rings 512², flipbooks per §2. Cell margins about 16/12/8 px for 512/256/128 px cells `[lihfolk]`. Memory is unique pixel count (`performance.md`); share ring, strip and glow textures across effects. House budget: at most 8–12 VFX textures per kit, 3–4 flipbook sheets in memory on the low tier.
 - Sources of frames: paint them (Krita, Photoshop, Figma); render a Blender simulation or animated noise to 16 or 64 orthographic frames and pack the grid; fluid tools such as EmberGen and After Effects are common in the community `[community]`.
 - Check orientation with an asymmetric arrow texture before painting the real one.
 - Bloom is scene-wide: get glow from the texture and brightness first, keep `BloomEffect` moderate, and remember post effects weaken or vanish at low quality levels `[official]`.
 
-## 7. Timing in milliseconds and ability anatomy
+## 6. Timing in milliseconds and ability anatomy
 
 Design the effect as a table (role, class, texture, size curve, life, brightness, ZOffset) before building. Study a reference frame by frame: each phase is shorter than expected, and when an effect feels long, cut it hard `[lihfolk]`.
 
@@ -138,7 +138,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 | Input → hit frame of a light attack | About 200 ms feels responsive if motion starts at once | `[lihfolk]` |
 | Enemy or boss telegraph | 250 ms reaction + escape distance ÷ 16 studs/s (default walk speed); add 100–200 ms for touch. Circle r = 10: at least 0.9 s, comfortable 1.1–1.4 s | `[lihfolk]` |
 | Hot flash | 1–3 frames at 60 FPS (16–50 ms), about 0.6× the body size, at the contact point, one frame after contact | `[lihfolk]` |
-| Hit-stop | None on light hits; 50–90 ms medium to ultimate (§8) | `[lihfolk]` |
+| Hit-stop | None on light hits; 50–90 ms medium to ultimate (§7) | `[lihfolk]` |
 | Body (the shape that reads) | 200–400 ms | `[lihfolk]` |
 | Secondary (sparks, shards, debris) | 300–800 ms | `[lihfolk]` |
 | Ground (rings, cracks, dust) | 300–700 ms | `[lihfolk]` |
@@ -165,7 +165,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 - Grandeur comes from escalating a few layers and cutting others, with at most one growing environmental element; re-check the character's silhouette at game distance after each addition `[lihfolk]`.
 - Readability budget per cast `[lihfolk]`: one ground piece at a time, at most 3 large pieces, at most 35% of the screen (55% for an ultimate), anything on the line between camera and the player's head at least 0.75 transparent.
 
-## 8. Hit-stop, camera shake and FOV kicks
+## 7. Hit-stop, camera shake and FOV kicks
 
 Base values and the shake module are in `game-craft.md` §1. Net-new rules:
 
@@ -209,13 +209,13 @@ end
 return hitStop
 ```
 
-## 9. Screen effects and number popups
+## 8. Screen effects and number popups
 
 - Instances: `ColorCorrectionEffect`, `BlurEffect` and `BloomEffect` parented to `Workspace.CurrentCamera` affect only that player; post effects never affect GUI and may work differently or not at all at low quality levels `[official]`. So no gameplay information may live only in a post effect. There is no vignette post effect: use a full-screen `ImageLabel` with a radial-gradient texture `[lihfolk]`.
 - One client module owns every screen-effect instance and composes requests each frame; several scripts tweening the same effect leave it stuck on `[lihfolk]`.
 - Hits are pulses (instant attack, 150–350 ms decay); low health is a level (below about 30%, fades over 1 s on heal). Clamp summed pulse strength so ten pellets do not white out the screen. No blur while aiming `[lihfolk]`.
 - Incoming-damage effects wait for the server-confirmed event and carry the attacker's position for a directional arc; outgoing hit feedback may be predicted `[lihfolk]`.
-- Full-screen overlays and post passes are the most expensive juice on phones (fill rate): off on the low tier (§12).
+- Full-screen overlays and post passes are the most expensive juice on phones (fill rate): off on the low tier (§11).
 
 **Number popups** (damage, +coins).
 - Motion `[house]`: pop 1.3 → 1 in 120 ms, rise 40–60 px over 600–800 ms, fade during the last 30%, random sideways drift; crits by size and colour, never by flashing.
@@ -223,7 +223,7 @@ return hitStop
 - Cost: BillboardGuis carry real overhead and hidden or fully transparent ones still cost `[community]` (`Pass3dAdorn` in `performance.md`). Pool them, set `Enabled = false` when idle, or draw labels in one ScreenGui placed with `Camera:WorldToViewportPoint`; measure both on a phone `[house]`.
 - The server sends the damage fact; the client draws the number.
 
-## 10. Tween or spring
+## 9. Tween or spring
 
 | Tool | Behaviour | Use for | Avoid for |
 |---|---|---|---|
@@ -237,7 +237,7 @@ return hitStop
 - Rigid R15 parts cannot squash; use pose. Single-mesh props can by `MeshPart.Size` `[lihfolk]`.
 - Easing choices are in `game-craft.md` §1; UI motion rules in `ui-input-crossplatform.md`.
 
-## 11. Replication: the server says what happened, each client draws it
+## 10. Replication: the server says what happened, each client draws it
 
 The server does no rendering; a server-built effect replicates every instance and property change to everyone and arrives late `[official]`. Pattern `[lihfolk]` `[community]`:
 
@@ -279,7 +279,7 @@ end
 return broadcast
 ```
 
-## 12. Pooling, budgets and quality scaling
+## 11. Pooling, budgets and quality scaling
 
 **Where cost goes** `[lihfolk]` `[official]`: fill rate and overdraw (screen area × layers; one 40-stud smoke puff at the camera can cost more than 300 sparks across the room), particles alive (`Rate × Lifetime` plus bursts), draw calls (emitters, beams, trails and textures batch poorly), instance churn (clone and destroy per hit shows up as a hitch seconds later), property churn, lights (shadows off, always), per-effect frame loops (use one shared stepper).
 
@@ -374,7 +374,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 
 **Measure** `[lihfolk]`: draw calls with Shift+F2 on a quiet frame versus a full-party ultimate; `debug.profilebegin("FxStep")` around the stepper; a debug counter of particles alive; stress protocol with one phone, one tablet and one PC in a server while 4–8 players cast at one spot, then at the phone's camera, then 200 studs away, at lowest and highest graphics. Target: the phone stays under 33 ms per frame in the worst repeatable fight. Cut order: onlooker share, others' decoration, big transparent pieces, stream lifetimes, then your own effects.
 
-## 13. Reduced motion and photosensitivity
+## 12. Reduced motion and photosensitivity
 
 - `GuiService.ReducedMotionEnabled` mirrors the player's Reduce Motion toggle; the docs frame it around UI tweens (snap or fade instead of slide) `[official]`. Extend it to camera and screen effects, add your own setting with three states (Follow Roblox, On, Off), and listen for changes at runtime `[lihfolk]`.
 - One comfort module answers every effect; effects that each read settings themselves drift apart `[lihfolk]`.
@@ -392,7 +392,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 - Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`.
 - Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
 
-## 14. Juice ladder ordered by frame cost
+## 13. Juice ladder ordered by frame cost
 
 `core-loop-tuning.md` §7 orders juice by build time. This orders it by what it costs a phone at runtime `[lihfolk]`; climb only while the frame holds.
 
@@ -403,14 +403,14 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 | 3 | Camera kick, shake, FOV punch | Negligible CPU | Comfort, not performance |
 | 4 | Counter count-up, number popup | Low to medium | Text reshaping every change: cap update rate |
 | 5 | Small particle burst (5–30) | Medium | Size on screen matters more than count |
-| 6 | Highlight flash | Medium | Slot and rebuild rules (§5) |
+| 6 | Highlight flash | Medium | Slot and rebuild rules (§4) |
 | 7 | Beams and trails | Medium | Segments and overdraw |
 | 8 | Mesh VFX layers | Medium | Instances and tweens per swing: pool |
 | 9 | `CanvasGroup` fades | Medium to high | Off-screen render target and memory |
 | 10 | Full-screen glows, overlays, blur and bloom pulses | High on phones | Fill rate over every pixel |
 | — | Creating instances per event | Hidden | The hitch lands seconds later |
 
-## 15. Common mistakes
+## 14. Common mistakes
 
 1. Building effects on the server, or tweening world objects there.
 2. Waiting for the server before showing the caster anything.
@@ -428,7 +428,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 14. A flipbook as the whole effect; unique 1024² textures per effect.
 15. No shake slider, flash toggle or reduced-motion path.
 
-## 16. Level-up: symptom → cause → fix
+## 15. Level-up: symptom → cause → fix
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
@@ -451,7 +451,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 | Fast weapons feel sticky | Hit-stop adds up in flurries | Rolling 140 ms per 0.6 s budget; reserve for finishers |
 | Shake reads as jitter, or is violent when zoomed | Noise above half the frame rate; no FOV scaling | Cap at 0.4 × FPS; scale by `tan(FOV/2)` |
 | FOV drifts after long sessions | Exponential decays, several writers | Finite envelopes ending at 0; one owner |
-| Motion sickness or flash complaints | No comfort settings; roll; strobing | §13 table; three-flash limit; replacement feedback |
+| Motion sickness or flash complaints | No comfort settings; roll; strobing | §12 table; three-flash limit; replacement feedback |
 | Fights unreadable | No readability budget; everyone's effects at full strength | One ground piece, 3 large pieces, 35% screen; onlookers reduced |
 
 ## Review gate
@@ -462,7 +462,7 @@ The rise test is "holding the target", not "beating it by 20%" as in the LihFolk
 - [ ] Beam and trail textures preloaded with their owner; trails cleared and windowed; arcs over 120° drawn as crescents.
 - [ ] Highlights persistent, one owner per object, counted against a budget.
 - [ ] VFX meshes are Blender kit pieces, non-colliding, pooled, with a 2–3 layer low version; textures greyscale, shared and counted.
-- [ ] Timing checked against §7; effects fire from animation markers; telegraph drawing and server hit test share one shape table.
+- [ ] Timing checked against §6; effects fire from animation markers; telegraph drawing and server hit test share one shape table.
 - [ ] Hit-stop is client-only, budgeted, one per swing; shake starts after the stop; FOV has one owner and returns to exactly 0.
 - [ ] Pools capped; per-cast, per-caster and per-client budgets written; gameplay information never culled.
 - [ ] Detail scales from the player's setting and measured frame time; verified on a hot 3 GB Android phone with 8 casters at one spot.

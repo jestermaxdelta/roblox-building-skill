@@ -1,8 +1,18 @@
 # Game craft: feel, level design, camera, audio, AI, procgen, saves, physics
 
-Distilled from knowledge-base sections 2.0 to 2.2, 2.4, 2.6 to 2.10, plus a 2026-11-10 research pass on game feel. Open it when building or auditing the feel of a verb, a level, the camera, audio, NPCs, generators or saves. UI design and input live in ui-input-crossplatform.md; the cost-ordered juice checklist and the loop scorecard live in core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[VS]` version-sensitive, `[house]` house estimate. Four platform facts shape everything here: the server is authoritative and the client untrusted (rules on the server, juice on the client); the engine owns the game loop (hook `RunService` events); every device shares one server (design for a small landscape phone); players arrive mid-session from discovery (teach the verb in 30–60 s with no reading).
+Distilled from knowledge-base sections 2.0 to 2.2, 2.4, 2.6 to 2.10, plus a 2026-11-10 research pass on game feel. Open it when building or auditing the feel of a verb, a level, the camera, audio, NPCs, generators or saves. UI design and input live in ui-input-crossplatform.md; the cost-ordered juice checklist and the loop scorecard live in core-loop-tuning.md. Deep dives on effects and sound are in vfx-and-juice.md and audio-sfx-music.md; this file keeps the rules a designer needs to tune feel. Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; "reference project" = one anonymised production combat game; other figures are rules of thumb), `[VS]` version-sensitive, `[house]` house estimate. Four platform facts shape everything here: the server is authoritative and the client untrusted (rules on the server, juice on the client); the engine owns the game loop (hook `RunService` events); every device shares one server (design for a small landscape phone); players arrive mid-session from discovery (teach the verb in 30–60 s with no reading).
 
 Art-direction guard against "AI slop" (from the asset pipeline source): describe the style along named axes (shape language, silhouette, value, colour, edge, material, light, detail density, camera, motion), approve one hero asset before producing families, and judge every asset at three distances (close, gameplay, far).
+
+## Start here by level
+
+Terms: **juice** = the small responses (flash, sound, shake, number) that make an action feel acknowledged. **Hit-stop** = a brief freeze of the attacker's animation on impact. **Trauma** = a 0–1 value that drives camera shake and decays over time. **Input buffer** = remembering a press for a fraction of a second so an early press still counts. **Coyote time** = allowing a jump shortly after leaving a ledge.
+
+| Level | Do this | Leave for later |
+|---|---|---|
+| Beginner | Every verb answers on the frame of the press with a visual, a sound and a number (§1). Use the default camera (§3). Spawn facing the first objective and keep jumps at or under the safe gap (§2). Give every UI action a sound (§4) | Custom cameras, hit-stop, behaviour trees, generators |
+| Intermediate | Tier feedback by event size; add jump buffer and coyote time (§1.2); trauma-based shake with a slider; the reward sequence; pooled effects and a low-effects tier; a beat table per level; audio buses and ducking | Per-move stop budgets, FOV-scaled shake, sound onset trimming |
+| Expert | One strength value driving stop, trauma and kick; flurry budgets; frame-counted flashes; cancel windows; onset and peak per combat sound; a frame-time governor with hysteresis; multi-target scaling; server tolerance for client forgiveness | — |
 
 ## 1. Game feel and juice
 
@@ -17,6 +27,20 @@ A polished "hit" is a cluster of 5–8 small responses inside about 100 ms: targ
 | Large | kill, boss hit, explosion, rare drop | 0.70–1.00 | 0.10–0.15 s | 20–40 | flash, brief zoom, big number |
 
 Values: trauma 0–1 decaying 1.0–1.5/s, shake = trauma², driven by smooth noise (never per-frame random), max roll 0.05–0.12 rad and about 0.3–0.8 studs offset at third-person distance. Hit-stop timed on a real-time clock; only the newest hit-stop restores speed. Pop: scale 1.3 on one axis and 0.7 on the other, tween back over about 0.18 s with Back Out. Flash 1–3 frames. Damage numbers rise, fade, drift sideways.
+
+Advanced tuning `[lihfolk]` (full treatment in vfx-and-juice.md):
+
+- **Think in frames.** One frame is 33–40 ms on a hot phone, 17 ms at 60 fps, 4–8 ms on a fast PC. A stop shorter than two phone frames (about 66 ms) is seen only some of the time on weak devices: give stops that matter at least 66 ms and treat shorter ones as seasoning. Effects that must last exactly N frames (a white flash) count rendered frames (`RunService.PreRender`), not seconds; a 1/30 s flash is eight strobing frames at 240 fps.
+- **One strength value per hit** (for example 0.3 light to 1.3 ultimate) from which stop, trauma and directional kick are all derived, so weapons are tuned in data and never drift apart.
+- **Budgets for fast weapons:** at most about 140 ms of hit-stop in any rolling 0.6 s, stop time under 15% of a move's length, visible shake under 10% of combat time. Rapid-fire weapons get per-shot recoil and save stops for kills.
+- **Multi-target hits:** one stop per swing; strength is the maximum across targets, not the sum; trauma grows with the logarithm of the count (`× (1 + 0.35 × log2(n))`).
+- **Shake is a fraction of the screen, and depends on FOV, not resolution.** One degree of rotation moves the image about 1.25% of screen height at FOV 70 and about 2.4% at FOV 40, so scale rotational shake by `tan(FOV / 2) / tan(35°)` when zoomed. At 30 fps keep the noise frequency under about 0.4 × the frame rate or shake aliases into jitter.
+- **Where not to use them:** no hit-stop on the victim (it arrives late over the network and reads as lag) or on other players' attacks; no shake on a purchase button; nothing but a small kick under reduced motion.
+- **Sound never leads the picture.** Sound 0–30 ms after the visual fuses with it; 80–150 ms late reads as input lag; 20 ms early feels wrong. Many effect files carry 30–80 ms of lead-in: trim reactive sounds to an onset under about 5 ms, start scheduled sounds early by their peak time, preload combat sounds so the first hit of a session is not silent, and pool about four voices per cue (audio-sfx-music.md).
+- **Reward reveals are a time budget.** Common results take 0.3–0.5 s, rare 1–1.5 s, the top one or two tiers 5–6 s; each tier adds a layer instead of only getting louder, and whole channels (world dimming, hidden HUD, server-wide banner) are reserved for the top. Keep total reveal time under about 10% of an hour of play; give auto modes a compact reveal and a skip after first view. The server decides the result before any animation; reels show only reachable items; tells derive from the real result (house rule).
+- **Scale with the device, with hysteresis:** drop an effects tier when average frame time exceeds 1.15× the target for 2 s, raise one after 10 s under 0.8×, ignore single spikes, never rise above the player's setting (performance.md).
+
+Conflict: the tier table above gives larger values (medium hit-stop 0.04–0.06 s with trauma 0.30–0.50; large 0.10–0.15 s with 0.70–1.00) than the LihFolk reference project (light: none; medium 50 ms and 0.12; heavy 66 ms and 0.25; finisher 75 ms and 0.35; ultimate 89 ms and 0.60). Theirs are measured in a combat game where hits land several times a second; ours suit single, spaced events (a launch, a rare drop, a boss slam). Use theirs for high-frequency combat and ours as the ceiling for isolated moments. In both, light hits get no stop and no shake.
 
 Easing: Back Out for pops, Quad/Cubic Out for settling, Cubic In for wind-ups, Sine InOut for camera and menus, Linear only for real-time progress bars.
 
@@ -78,6 +102,78 @@ Level-up: feel symptoms → likely cause → fix.
 | Combat feels floaty | Feedback waits for the server; no anticipation or hit-stop | Predicted local feedback under 80 ms, 0.04–0.06 s hit-stop, wind-up frames |
 | Everything is loud all the time | Maximum juice on every event | Scale by tier; let things return to rest |
 | Big moments unreadable in full servers | Everyone's effects at full strength | Own effects full, others' reduced and distance-culled |
+
+### 1.2 Input responsiveness: budget, buffering, cancel windows, coyote time `[lihfolk]`
+
+Most "this feels bad" reports are about input, not effects: a jump that did not fire at a ledge, an early attack that was swallowed, a button that reacts on finger-up.
+
+| What the player perceives | Target |
+|---|---|
+| Something reacts to the press (pose shift, button state, sound) | Within 1–2 frames of the input being read (under about 35 ms at 60 fps) |
+| The action is clearly under way | Within about 100 ms |
+| The outcome (hit, damage, reward) | When the design says; hundreds of ms is fine if the first two are met |
+
+First-frame rule: every press shows something on the frame it is read, even when the action must wait. A move on cooldown plays a small "denied" tick; a server-validated action starts its anticipation at once and the result follows the reply. The worst offender is `InvokeServer` in an input handler before any animation: at 150 ms round trip that is 150 ms of nothing. Local presentation first, server confirmation second (networking-and-security.md).
+
+| Action | Buffer window | Note |
+|---|---|---|
+| Jump before landing | 0.10–0.15 s | Longer feels like a jump nobody pressed |
+| Light attack in a combo | 0.15–0.30 s | Players mash; too short drops combos, too long fires after they stopped |
+| Dodge or roll, ability | 0.10–0.20 s | Must feel immediate |
+| Interact, menu toggles | None, or 0.1 s | A late interaction on the wrong target is worse than a missed press |
+
+Buffer rules: record on press, never on release (a release trails the press by 50–150 ms); a buffered press fires once, then is gone; when several are waiting, defensive actions outrank offensive ones; the latest direction wins; death, stun, menus and cutscenes clear the buffer; hit-stop must not eat the window (pause its ageing during a stop, or make it longer than the longest stop).
+
+Cancel windows: a light attack is roughly 20–30% wind-up, 10–20% active frames and 50–70% recovery. Recovery is where feel lives: allow the next combo hit at the link point and a dodge shortly after the active frames (a 0.1–0.15 s lock), with a 0.05–0.1 s animation fade so the cancel does not pop.
+
+Coyote time on the default Humanoid (0.08–0.15 s): once the Humanoid is in `Freefall`, setting `Humanoid.Jump` does nothing, so the forgiving jump is forced with `Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)` (community practice, not a documented guarantee: test it on your rig `[VS]`). Do not grant it after a jump, a knockback or launch, a dash, or while stunned. Brief `Freefall` on stairs is covered for free. Server-side movement checks need a tolerance for it, or your own forgiveness is flagged as an exploit.
+
+```lua
+--!strict
+-- Unexecuted sketch. LocalScript under StarterCharacterScripts. Coyote time plus jump buffering on the default Humanoid.
+local UserInputService = game:GetService("UserInputService")
+
+local COYOTE, BUFFER = 0.1, 0.12
+local character = script.Parent :: Model
+local humanoid = character:WaitForChild("Humanoid") :: Humanoid
+local leftGroundAt, pressedAt, jumped = -math.huge, -math.huge, false
+
+local function blocked(): boolean
+	return humanoid.Health <= 0 or character:GetAttribute("Launched") == true or character:GetAttribute("Stunned") == true
+end
+
+humanoid.StateChanged:Connect(function(_old: Enum.HumanoidStateType, new: Enum.HumanoidStateType)
+	if new == Enum.HumanoidStateType.Jumping then
+		jumped = true
+	elseif new == Enum.HumanoidStateType.Freefall then
+		if not jumped then
+			leftGroundAt = os.clock() -- walked off a ledge: the coyote window opens
+		end
+	elseif new == Enum.HumanoidStateType.Landed or new == Enum.HumanoidStateType.Running then
+		jumped = false
+		leftGroundAt = -math.huge
+		if os.clock() - pressedAt <= BUFFER and not blocked() then
+			pressedAt = -math.huge
+			task.defer(function() -- after the state change has finished
+				humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			end)
+		end
+	end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+	local now = os.clock()
+	if humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
+		return -- grounded: the default controls already jump
+	end
+	if not jumped and now - leftGroundAt <= COYOTE and not blocked() then
+		jumped = true
+		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+	else
+		pressedAt = now -- remember the press for the landing (test a held jump key: the default controls also re-jump)
+	end
+end)
+```
 
 ```lua
 --!strict
@@ -171,6 +267,8 @@ Fast objects tunnel: cap speed so `speed / step_rate` is below wall thickness. M
 - [ ] Effects are tiered by event size, return to rest, and never hide a telegraph.
 - [ ] All effects run on the client from one remote per gameplay fact; no server-side tweens on visible objects.
 - [ ] Shake slider, reduce-flashing and reduce-motion options exist if shake, flashes or FOV changes are used.
+- [ ] Every press shows a response on the frame it is read; nothing waits for the server before local feedback; jump buffer and coyote time in any game with platforming; attack buffers consume once and clear on stun or death.
+- [ ] Stops that matter are at least 66 ms; fast weapons respect the stop budget; no stop or shake on light hits, victims or other players' attacks; sound never plays before its visual.
 - [ ] Effects pooled and capped; frame rate checked on a 3 GB Android phone during the largest event.
 - [ ] Movement metrics derived and stored in one module; critical gaps at or below the safe gap; soft-lock check passes.
 - [ ] Spawn faces the first objective; next objective visible from every checkpoint.
@@ -190,3 +288,4 @@ Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at co
 - https://devforum.roblox.com/t/real-game-feel-and-execution-on-roblox/4199862 (search summary; a question with no answers shown)
 - https://devforum.roblox.com/t/how-to-polish-game/3244775 (search summary)
 - https://gamedeveloper.com/design/squeezing-more-juice-out-of-your-game-design- (search summary; general, not Roblox-specific)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/47 Game Feel and Juice/Input Responsiveness Buffering and Coyote Time.md`, `…/Hit-Stop and Screen Shake Tuning by Numbers.md`, `…/Feedback Timing - Sound Visual and Haptic Sync.md`, `…/Reward Moments and Celebrations.md`, `…/Juice on a Budget - Mobile and Low-End.md` (read). Ideas and figures adapted and rewritten; the code is our own.
