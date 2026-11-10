@@ -123,22 +123,18 @@ local function connectCoin(trigger: BasePart, mesh: BasePart)
 		local character = hit:FindFirstAncestorOfClass("Model")
 		local player = character and Players:GetPlayerFromCharacter(character)
 		local root = character and character:FindFirstChild("HumanoidRootPart")
-		if not (player and root and root:IsA("BasePart")) then
-			return
+		if player and root and root:IsA("BasePart") and (root.Position - trigger.Position).Magnitude <= MAX_REACH then
+			available = false
+			mesh.Transparency = 1
+			mesh.CanCollide = false
+			local coins = player:GetAttribute("Coins")
+			player:SetAttribute("Coins", (if typeof(coins) == "number" then coins else 0) + COIN_VALUE)
+			task.delay(RESPAWN_SECONDS, function()
+				mesh.Transparency = 0
+				mesh.CanCollide = true
+				available = true
+			end)
 		end
-		if (root.Position - trigger.Position).Magnitude > MAX_REACH then
-			return
-		end
-		available = false
-		mesh.Transparency = 1
-		mesh.CanCollide = false
-		local coins = player:GetAttribute("Coins")
-		player:SetAttribute("Coins", (if typeof(coins) == "number" then coins else 0) + COIN_VALUE)
-		task.delay(RESPAWN_SECONDS, function()
-			mesh.Transparency = 0
-			mesh.CanCollide = true
-			available = true
-		end)
 	end)
 end
 

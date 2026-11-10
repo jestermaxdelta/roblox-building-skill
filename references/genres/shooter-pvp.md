@@ -1,6 +1,16 @@
 # Shooter and PvP duels playbook
 
-Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena and team modes. Open it when aiming and shooting is the core action, when choosing a netcode model for hit registration, or when auditing a live shooter for cheating, time-to-kill balance and cosmetic revenue. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena and team modes. Open it when aiming and shooting is the core action, when choosing a netcode model for hit registration, or when auditing a live shooter for cheating, time-to-kill balance and cosmetic revenue. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | Start from the official FPS System or Laser Tag template; two weapons as data rows; one small map; team deathmatch; client raycast with server checks on rate, ammo, range and line of sight; spawn with a default loadout | Ranked, attachments, battle pass, killcams, projectile weapons, more than three maps |
+| Intermediate | A weapon sheet with TTK per range band; learnable recoil; hit markers and damage direction; position history with capped rewind; aim assist and touch layout; bots for empty queues | Custom matchmaking, statistics-based cheat review |
+| Expert | Server authority mode or a custom predicted controller; statistical aimbot detection with review; skill-based matchmaking; mixed-input fairness (touch versus mouse); seasonal ranked | — |
+
+Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray rather than a travelling projectile; *ADS* = aiming down sights; *breakpoint* = a damage value at which STK changes.
 
 ## Snapshot
 
@@ -23,6 +33,9 @@ Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena a
 
 - Gunplay knobs (house defaults): hitscan or projectile per weapon; damage falloff (full to 20 m, floor 0.4× by 60 m); headshots 1.5–2×; recoil as a decaying offset; spread with a square-root distribution; `TTK = (ceil(hp / damage) - 1) / fire_rate`.
 - Decisions happen in the breaks (death screen, lobby, results), so that is where UI and offers live.
+- Time scales `[lihfolk]`: an engagement lasts 1–5 s, a life 20 s–2 min, an objective match 8–12 min with a 15–30 s scoreboard and map vote between matches. Keep players in the same server between matches and rebalance teams.
+- Time to first shot under 30 s from joining: spawn first with a default loadout and customise between lives `[lihfolk]`.
+- TTK sets identity `[lihfolk]`: fast (0.2–0.4 s for a rifle up close) rewards first-shot aim and positioning; slow (0.8–1.5 s) rewards tracking and makes fights reversible, which is kinder to touch and controller players.
 
 ## First 5 minutes
 
@@ -41,6 +54,9 @@ Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena a
 - Currencies: soft (matches, contracts) for weapons and basic skins; premium for cosmetic cases or direct skins. Skin cases bought with Robux or Robux-bought keys are paid random items: full odds, `PolicyService` gate, trading gated by `IsPaidItemTradingAllowed` `[official]`.
 - Sinks: skins, charms, kill effects, emotes, finishers, season pass tiers.
 - Balance by TTK bands per range; publish patch notes on the fixed update day.
+- Weapon balance sheet `[lihfolk]`: one row per weapon (damage by zone, fire rate, magazine, reload, falloff start and end, minimum damage, hip and aimed spread, recoil class, move speed, ADS time). Compute STK and TTK per range band and plot them. Each class owns a band (SMG close, rifle mid, sniper long); a weapon that is best in every band is broken; flag anything 20–30% better than its class median.
+- Breakpoints `[lihfolk]`: 34 damage against 100 HP kills in 3 shots, 33 damage in 4, a one-third TTK change from one point of damage. The first shot lands at time zero: 4 STK at 10 shots a second is 0.3 s, not 0.4 s. Real TTK divides by accuracy; add ADS time for scoped weapons.
+- Recoil should be learnable (fixed or semi-fixed patterns reward practice; pure random feels unfair). Spread is small when aimed and grows with movement and sustained fire; derive it from a seed the server can reproduce `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -64,6 +80,23 @@ Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena a
 - Settings: FOV, per-scope sensitivity, aim assist options, crosshair editor, controller dead zones, colour-blind enemy outline.
 - Mobile: fire on the right thumb with optional auto-fire on target, large jump and crouch, gyro aim if offered; controller: aim assist with slowdown, not snap.
 - Loadout and shop never open during a live round.
+- Third person `[lihfolk]`: raycast from the camera to find the aim point, then fire from the muzzle to that point, so players hit what the crosshair shows; offer a shoulder swap.
+- Readable art over realism: clean silhouettes, team-coloured outlines, low visual noise behind enemies. Sightline length matches the weapon roster (no 400-stud lanes without long-range weapons) `[lihfolk]`.
+
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Weapon data table and weapon controller (fire, reload, recoil, spread).
+2. Server hit validation (rate, ammo, origin, range, line of sight).
+3. Health, damage, death and respawn with a default loadout.
+4. Teams, round and match flow, scoreboard, map vote.
+5. Feedback: hit markers, damage direction, kill feed.
+6. Position history and lag compensation.
+7. Loadouts and unlocks; player data.
+8. Bots and join-in-progress.
+9. Cosmetics, contracts, battle pass.
+10. Ranked rating, matchmaking and cheat statistics.
 
 ## Technical hot spots
 
@@ -76,6 +109,11 @@ Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena a
 - **Performance**: tracers and impacts are pooled meshes or `Beam`s; viewmodels render only for the local player; third-person weapon models are low-poly Blender LODs; raycast validation can run in Parallel Luau.
 - **Maps**: every visible mesh is solid, so cover is honest: what looks like cover blocks rays, and collision meshes match the Blender visual closely enough that shots do not hit invisible edges.
 - **Matchmaking**: lobby place plus reserved match servers; skill buckets stored in a memory store; backfill rules for leavers.
+- **Cadence checks** `[lihfolk]`: shots per second never exceed the weapon's fire rate plus a small tolerance; ammo and reload time are tracked on the server.
+- **Headshots** need their own tighter check (rewind the head position, or accept the body hit and decide the multiplier strictly); generous headshot tolerance is the easiest thing for silent-aim to exploit `[lihfolk]`.
+- **Statistics** `[lihfolk]`: headshot ratio, time from target visible to first hit, angular snap speed. Flag outliers for review; never auto-ban on one stat.
+- **Killcams** need recorded positions of every player for the last few seconds; budget memory before promising them `[lihfolk]`.
+- Touch against mouse is the genre's hardest fairness problem: aim slow-down near targets, optional auto-fire when the crosshair rests on an enemy, and input-based matchmaking where population allows `[lihfolk]`.
 
 ## The one-new-verb angle
 
@@ -110,6 +148,8 @@ Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena a
 | 11 | Offers appear only in lobby and results | Remove in-round prompts |
 | 12 | Ranked, contracts and a weekly drop exist | Add progression loops |
 | 13 | Frame rate holds on a 3 GB phone in a full firefight | Pool effects; LOD weapons; cull distant VFX |
+| 14 | TTK plotted per weapon per range band; each class owns a band | Build the sheet; fix weapons that win everywhere |
+| 15 | First shot within 30 s of joining | Default loadout; customise between lives |
 
 ## Review gate
 
@@ -138,3 +178,5 @@ Accessed 2026-11-10.
 - https://github.com/easy-games/chickynoid (read README; 266 stars, MIT, last pushed 2024-05)
 - https://github.com/1Axen/Secure-Cast (read README; 30 stars, MIT, archived)
 - https://github.com/weenachuangkud/FastCast2 (search listing; 30 stars, licence unclear; not used)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Shooters FPS and TPS.md`, `10 Game Design and Genres/Time-to-Kill Math and a Weapon Balance Sheet.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

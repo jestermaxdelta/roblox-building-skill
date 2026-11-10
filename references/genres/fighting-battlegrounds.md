@@ -1,6 +1,16 @@
 # Fighting, battlegrounds and anime gacha playbook
 
-Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or-reroll ("gacha") ability layer that many of them carry. Open it when melee or ability PvP is the core action, when deciding where hit detection runs, or when auditing a live fighter for ping complaints, exploit load or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or-reroll ("gacha") ability layer that many of them carry. Open it when melee or ability PvP is the core action, when deciding where hit detection runs, or when auditing a live fighter for ping complaints, exploit load or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | One character with a 4-hit basic chain, block, dash and two abilities; a server state machine; server-validated hits with a range margin; respawn in 2–5 s with a 2 s shield; a training dummy | More characters, ultimates, ranked, gacha, ragdoll physics, matchmaking |
+| Intermediate | Character data modules; combo rules (hitstun decay, combo time cap, breaker); input buffer of 100–200 ms; position history and capped rewind; VFX pooling; touch layout with soft targeting | Awakening modes, bounties |
+| Expert | Lag compensation tuned on live servers; custom matchmaking signals; per-character mastery; win-rate and pick-rate telemetry for balance; server authority mode; cheat statistics | — |
+
+Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after being hit; *i-frames* = invulnerability frames; *guard break* = a block being broken by enough hits or a heavy attack; *rewind* (lag compensation) = checking a hit against where the target was when the attacker pressed.
 
 ## Snapshot
 
@@ -22,6 +32,9 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 
 - Depth comes from interactions, not stat growth: block beats M1, grab beats block, dash beats grab, counter windows, combo extenders, environmental hits.
 - Round-based modes (1v1 ranked, 2v2) sit beside the open arena for players who want a result.
+- Genre grammar players already know `[lihfolk]`: a 4-hit basic chain whose last hit knocks back or ragdolls, with short end lag; block that reduces damage heavily and breaks after N hits or a heavy attack; four abilities per character on 5–25 s cooldowns (a combo starter, a mobility move, a counter, a finisher); an ultimate charged by dealing and taking damage that transforms the move set for 30–60 s. Deviate deliberately, not by accident.
+- Time scales `[lihfolk]`: an exchange lasts 1–5 s, a fight 10–60 s. Open battlegrounds have no rounds; respawn time (2–5 s) is the main pacing knob. Arena modes use best of three or five with 60–99 s round timers.
+- Server size `[lihfolk]`: 10–20 players in one arena. Below 8 fights are hard to find; above about 25 third-party chaos ruins duels and physics cost climbs.
 
 ## First 5 minutes
 
@@ -40,6 +53,8 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 - Currencies: one soft currency from fights (cosmetics, emotes) and optionally a premium one. No stat shop.
 - Gacha layer (anime fighters): styles, clans or traits rolled by spins. In a PvP game random power is the most contested design choice. Under house rule 3: spins that affect combat must be earnable in play only; anything bought with Robux or Robux-bought currency is cosmetic. Any Robux-linked roll is a paid random item with full odds and the `PolicyService` gate `[official]`.
 - Balance cadence: patch notes on the fixed update day; rotate a free-trial character weekly.
+- Combo rules that prevent infinites, the genre's most common design bug `[lihfolk]`: hitstun decays per hit or total combo time is capped (about 3–4 s); ragdoll ends the combo and getting up grants 0.5–1 s of invulnerability; a combo breaker on a long cooldown or meter cost works during hitstun; one wall bounce and one ground bounce per combo. Write combos as data and test with two clients at real latency.
+- Protect newcomers with matchmaking, spawn protection and a bounty on high-streak players (so the server gangs up on the leader, not the newcomer). Do not scale damage down on low-health victims; skilled players feel cheated `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -63,6 +78,22 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 - Mobile: abilities in the right-thumb arc, M1 as the largest button, auto-face or soft lock toward the nearest target, optional auto-block off by default.
 - Character select: full-screen only outside combat; one tap to respawn as the same character.
 - Settings: screen shake, flash intensity, camera FOV, ping display.
+- A fighter with four abilities, an ultimate, block, dash and attack is eight touch buttons: make them large, rest the basic attack under the right thumb, and soft-target abilities toward the nearest enemy in front `[lihfolk]`.
+
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Fighter state machine on the server (idle, attacking, blocking, stunned, ragdolled, dashing).
+2. Input layer with buffering for keyboard, touch and gamepad.
+3. Hitbox service (spatial queries per active frame) and server hit validation.
+4. Damage, stun and status module.
+5. Character and move-set registry as data.
+6. Respawn, spawn protection and multiple spawn points.
+7. Training area with dummy and combo counter.
+8. Ultimate meter.
+9. Position history and lag compensation.
+10. Cosmetics, mastery, streaks and bounties; then ranked rounds.
 
 ## Technical hot spots
 
@@ -75,6 +106,11 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 - **Exploit surface**: reach and kill-aura (range and rate checks), cooldown skipping (server timers), speed and fling (movement sanity or server authority), animation-cancel packets (validate state transitions), teleport-behind (rewind limit).
 - **Ragdoll and knockback**: apply impulses on the owner of the character and confirm on the server; cap velocity to stop fling abuse.
 - **Performance**: 20+ players each emitting VFX; cull effects by distance, cap particles, and keep the ultimate cinematic client-side.
+- **Lag compensation numbers** `[lihfolk]`: keep the last 1 s of root positions per player sampled at 20–30 Hz; rewind by the attacker's ping with a cap (about 250 ms). Past the cap give no extra compensation: rewinding further hits defenders long after they dodged, which feels worse than an occasional whiff. Show the attack on the attacker's client in under 100 ms.
+- **Server validation list** `[lihfolk]`: attacker alive and not stunned; move off cooldown by the server clock; target within range plus a latency margin; no more targets hit than the move allows; state transition legal.
+- **Input buffer** of 100–200 ms makes combos feel responsive `[lihfolk]`.
+- **Ragdoll cost** `[lihfolk]`: ten simultaneous ragdolls in a 20-player server is normal; keep them 1–2 s, simplify constraints and end them early on low-end devices.
+- **Matchmaking** `[lihfolk]` `[VS]`: Roblox lets creators weight matchmaking signals and add custom signals from their own data; use it to group similar skill. Verify the current configuration options in the docs.
 
 ## The one-new-verb angle
 
@@ -109,6 +145,9 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 | 11 | Shake and flash toggles exist | Add settings |
 | 12 | Patch notes ship on a fixed day with a character cadence | Commit to a schedule |
 | 13 | Ranked or streak goals exist beyond free-for-all | Add a ladder with cosmetic rewards |
+| 14 | Combo time is capped or hitstun decays; get-up invulnerability exists | Add both rules; retest every combo |
+| 15 | Position history at 20–30 Hz with rewind capped near 250 ms | Add the buffer and the cap |
+| 16 | Server size is 10–20 for open arenas | Resize servers |
 
 ## Review gate
 
@@ -136,3 +175,5 @@ Accessed 2026-11-10.
 - https://github.com/TeamSwordphin/ShapecastHitbox (read README and licence; 22 stars, MIT)
 - https://github.com/Swordphin/raycastHitboxRbxl (search listing; 69 stars, MIT; predecessor)
 - https://rowatcher.com/news/the-10-highest-earning-roblox-games-in-2026-and-what-they-mean-for-the-platform (search summary; third-party estimates)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Battlegrounds and Arena Fighters.md`, `43 Genre Systems End to End/Arena Rounds with Teams and Spectating End to End.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

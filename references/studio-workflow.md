@@ -22,7 +22,7 @@ Ten-minute setup:
 
 | Setting or step | Value | Why |
 |---|---|---|
-| Account: 2-step verification, age check | On, done | Needed to release to the public and to use Team Create with other people `[official]` `[VS]` |
+| Account: age check, 2-step verification | Done, on | The age check is needed for any public release and for Team Create with other people; 2-step verification for an all-ages release, and for every account with edit or revenue rights `[official]` `[VS]` |
 | `Auto-Recovery Enabled`, `Auto-Recovery Interval (Minutes)` | On, 5 | The only net for an unsaved local file. Check once that the AutoSaves folder fills (`%LOCALAPPDATA%\Roblox\RobloxStudio\AutoSaves`, macOS `~/Library/Application Support/Roblox/RobloxStudio/AutoSaves/`) `[official]`; forum reports describe it empty `[lihfolk]` `[community]` |
 | Output window: Show Context, Show Source | On | Every line says client or server and which script printed it |
 | `Clear Output On Start` | On | Old test logs stop hiding new errors |

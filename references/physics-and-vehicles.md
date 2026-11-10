@@ -23,7 +23,7 @@ What this is: how Roblox simulates and replicates physics, and how to build char
 
 ## 2. Assemblies and mass
 
-- An assembly is every part joined rigidly (`WeldConstraint`, `Weld`, `Motor6D`, `RigidConstraint`). It has one velocity, one mass, one owner. Constraints with freedom (hinge, spring, rope) connect **separate** assemblies into a mechanism.
+- An *assembly* is every part joined rigidly (`WeldConstraint`, `Weld`, `Motor6D`, `RigidConstraint`). It has one velocity, one mass, one owner. Constraints with freedom (hinge, spring, rope) connect **separate** assemblies into a *mechanism*. A *mover* is a constraint that applies force or torque to reach a target; *kinematic* means moved by script with no forces (anchored and animated by `CFrame`).
 - Root part order `[official]`: anchored first, then non-`Massless`, then higher `RootPriority`, then size (with multipliers for seats and character roots). Set `RootPriority` when code must find a stable root.
 - `Massless` only takes effect when the part is welded to a non-massless part, and never on the root. Use it on every visual mesh so body panels, accessories and held weapons do not move the centre of mass.
 - Choose mass; do not inherit it. Put the mass in one low, simple root collider with `CustomPhysicalProperties` density, and read `AssemblyMass` and `AssemblyCenterOfMass` (draw a marker there while tuning). Friction combines the two touching surfaces by `FrictionWeight`, so a tyre with friction 1.5–2 and a high weight still slides on an ice material.
@@ -32,7 +32,7 @@ What this is: how Roblox simulates and replicates physics, and how to build char
 
 ## 3. Network ownership
 
-Rules `[official]`:
+The network owner is the one machine (the server or a single client) that simulates an unanchored assembly; every other machine sees replicated, interpolated positions. Rules `[official]`:
 
 | Fact | Consequence |
 |---|---|
