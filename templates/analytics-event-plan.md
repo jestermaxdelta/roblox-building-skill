@@ -89,7 +89,7 @@ List every tunable the game reads from `ConfigService` with its code default: of
 |---|---|---|---|---|
 | Offer grace | 10 vs 20 min | ARPDAU | D1 | 14–28 days |
 | Hint delay | 5 vs 10 s | FirstUpgrade rate | bounce | 14 days |
-| Boost price | 29 vs 49 R$ | revenue per DAU | conversion | 28 days |
+| Boost price (sequential change of one product, or Managed Pricing; never duplicate products at two prices) | 29 then 49 R$ | revenue per DAU | conversion | 14 days each side |
 | Starting currency | 0 vs 100 | D1 | sink ratio | 14 days |
 
 Under 1,000 DAU statistical power is weak; run fewer, bigger tests.

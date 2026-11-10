@@ -376,7 +376,8 @@ end
 - **Exploit surface:** MessagingService payloads are untrusted input (validate like a remote; receivers re-read the authoritative key); luck boosts are probability modifiers, so paid ones fall under the paid random item rules (show boosted odds live, gate by policy).
 - **Performance:** one key and one message per change; never per-player messages.
 - **Common bugs:** a boost that restarts when the buyer rejoins; a server that started after the announcement and never learns of the boost; a countdown reset by a redelivered receipt.
-- **Conflict:** the `ReceiptService` sketch in data-and-purchases.md stores timed boosts as a real-time `os.time()` expiry, and LihFolk's library does the same, while LihFolk's own status-effects note argues that anything bought with Robux should pause offline. Both are allowed if the UI says which. House default: personal paid boosts count play time (save remaining seconds, tick only while online); server-wide boosts run in real time and say so.
+- **Personal boosts:** a personal paid boost is saved as remaining play seconds in the profile, ticked down by the server only while the player is online (it pauses offline) and mirrored to the client as an `endsAt` attribute recomputed at join; the `ReceiptService` sketch in data-and-purchases.md and the Boosts module in monetization-and-policy.md follow this. Server-wide boosts run in real time and show their end time. The product card states which.
+- **Conflict:** LihFolk's library stores timed boosts as a real-time `os.time()` expiry, while its own status-effects note argues that anything bought with Robux should pause offline `[lihfolk]`. House ruling: personal paid boosts count play time; server-wide boosts run in real time.
 
 ## Build order by genre
 
@@ -416,7 +417,7 @@ Admin tools (22) and the kill switches ship before the first public test in ever
 | Bases appear on the wrong plot or lose items after an update | World-space saves; no revalidation on load | Plot-local cells; revalidate and return failures to inventory (16) |
 | Crowded servers lag with no hot script | Bulky per-player state in Player attributes; pets simulated on the server | Owner-only channel; client-rendered pets (0, 4) |
 | Codes "invalid" for some players | Old servers have not refreshed; case or spaces | 5-minute refresh plus messaging nudge; normalise input (8) |
-| Boost vanished or restarted on rejoin | Stored in memory, or as a countdown | Saved expiry or remaining seconds; attributes from server time (24) |
+| Boost vanished or restarted on rejoin | Stored in memory, or as a client countdown | Personal boost saved as remaining play seconds, server-wide boost as a real-time end; attributes from server time (24) |
 | Staff abuse or unexplained grants | Client rank checks, no audit, leftover test remote | One registry, capabilities, audit log, flags off in production (22) |
 
 ## Review gate

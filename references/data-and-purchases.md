@@ -22,7 +22,7 @@ Terms: a *profile* is one player's saved table. A *session lock* (or lease) mark
 | Global leaderboards | Ordered DataStore (integers only), cached and refreshed every few minutes |
 | Matchmaking queues, server lists, cross-server locks, trade escrow | MemoryStore (sorted map, queue, hash map); expires within 45 days |
 | Broadcast hints (announcements, "refresh your cache") | MessagingService (best effort, about 1 KB) |
-| Live feature flags and tuning | Configs (read-only at runtime, about 5-minute deploy) |
+| Live feature flags and tuning | Configs (read-only at runtime; a published change reaches servers in about 15 s to 1 min `[VS]`) |
 | API keys and tokens | Secrets store |
 | Per-server caches | Luau tables |
 
@@ -268,8 +268,8 @@ local SAVE_CONFIRM_TIMEOUT = 25
 type Grant = (player: Player, data: any, receipt: { [string]: any }) -> () -- synchronous; validate before mutating
 local GRANTS: { [number]: Grant } = {
 	[1111111] = function(_p, data) data.Cash += 1000 end,
-	[2222222] = function(_p, data) -- 2x Cash 10 min: extend, never stack
-		data.Boosts.DoubleCash = math.max(data.Boosts.DoubleCash or 0, os.time()) + 600
+	[2222222] = function(_p, data) -- 2x Cash 10 min: remaining PLAY seconds; extend (cap 6 h), never stack
+		data.Boosts.DoubleCash = math.min((data.Boosts.DoubleCash or 0) + 600, 6 * 60 * 60)
 	end,
 	[3333333] = function(_p, data) -- Starter Pack
 		data.Cash += 500
@@ -340,6 +340,8 @@ return ReceiptService
 - Apply character perks on every `CharacterAdded`. Expose perks through attributes (`player:SetAttribute("VIP", true)`) and also honour `data.Entitlements[pass]` from gifts.
 
 ```lua
+--!strict
+-- fragment (unexecuted sketch): PassService and MarketplaceService are defined by the surrounding module
 local NEGATIVE_TTL = 60
 type Entry = { owned: boolean, checkedAt: number }
 local cache: { [Player]: { [number]: Entry } } = {}
@@ -358,7 +360,7 @@ end
 
 - Subscriptions: `GetUserSubscriptionStatusAsync(player, subscriptionId)` → `{ IsSubscribed, IsRenewing }`; listen to `Players.UserSubscriptionStatusChanged`; fail closed.
 - Gift passes are developer products granting `Entitlements[pass] = true` in the recipient's data. Store the intended recipient as a pending gift in the **buyer's** profile before prompting (receipts carry only the buyer's id and may replay on another server). In the grant, mutate the recipient's loaded profile, or send `store:MessageAsync(recipientKey, { type = "gift", item = "VIP", giftId = purchaseId })` and dedupe by `giftId` in the recipient's handler. Because `MessageAsync` yields, give gift products their own branch that sends first and returns `NotProcessedYet` if it fails, then records the `PurchaseId`. Gate with `GetUsersPriceLevelsAsync` (the docs disagree on its return shape; log and verify `[VS]`).
-- Timed boosts store a UTC expiry (`os.time()`), extend on repurchase, and apply in server reward code only. Server-wide boosts live server-side with an expiry announced through an attribute.
+- Timed boosts: a personal paid boost stores remaining play seconds in the profile, ticks down on the server only while the player is online (so it pauses offline), extends on repurchase and applies in server reward code only. A server-wide boost lives server-side with a real-time expiry (`os.time()`) announced through an attribute, and shows its end time. The product card states which kind it is (ruling and module sketch in monetization-and-policy.md).
 - Prices: `GetProductInfoAsync(id, Enum.InfoType.Product or GamePass).PriceInRobux`; regional pricing means players see different prices. `RankProductsAsync` once at join.
 
 ## Teleports, reserved servers and messaging
@@ -427,7 +429,7 @@ print(totals) -- more than one store name per player, or zero BindToClose with n
 - [ ] Leaderboard writes throttled; `leaderstats` display only; trades mutate both locked profiles synchronously.
 - [ ] Exactly one `ProcessReceipt` (or filtered handlers); dedupe by `PurchaseId` in saved data; `PurchaseGranted` only after confirmed save; `NotProcessedYet` on absent player, unloaded data, unknown product, failed grant or save.
 - [ ] Nothing granted from `PromptProductPurchaseFinished`; pass ownership checked on the server and cached correctly.
-- [ ] Prices from `GetProductInfoAsync`; gifts gated by price level; boosts extend, never stack.
+- [ ] Prices from `GetProductInfoAsync`; gifts gated by price level; boosts extend, never stack; personal boosts count play time, server-wide boosts run in real time.
 - [ ] RTBF templates cover every user-keyed store (exact `{UserId}` token; `scope_pattern` "global" for default scopes).
 - [ ] Snapshot taken before any update that changes save logic; restore drill done in a test universe; Data Stores dashboard checked at peak.
 - [ ] Migration steps are pure, total and audited; fixtures from every schema era pass, including the idempotence check; paid balances never shrink.

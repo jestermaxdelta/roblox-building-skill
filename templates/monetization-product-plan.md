@@ -26,12 +26,12 @@ Level: beginners fill "Product set", "Offer gate configuration" and the policy c
 
 | # | Product | Type | Price (R$) | Trigger / surface | Grant logic (server) | Free alternative | Analytics SKU | Creator Hub id |
 |---|---|---|---|---|---|---|---|---|
-| 1 | 2× Cash, 10 min | Dev product | 29–49 | Shop; after-win offer | `Boosts.DoubleCash` expiry +600 s, extend | Rewarded video 5 min | boost_cash_10 | |
-| 2 | 2× Cash, 30 min | Dev product | 79–99 | Shop | +1,800 s | | boost_cash_30 | |
+| 1 | 2× Cash, 10 min | Dev product | 29–49 | Shop; after-win offer | `Boosts.DoubleCash` +600 play seconds (pauses offline), extend | Rewarded video 5 min | boost_cash_10 | |
+| 2 | 2× Cash, 30 min | Dev product | 79–99 | Shop | +1,800 play seconds | | boost_cash_30 | |
 | 3 | 2× Speed, 10 min | Dev product | 25–39 | Shop; contextual near the slow thing | | Rewarded video | boost_speed_10 | |
 | 4 | 2× EXP, 10 / 30 min | Dev product | 29–49 / 79–99 | Shop | | | boost_exp_10 | |
 | 5 | Luck 2×, 15 min | Dev product | 49–79 | Shop (only with luck mechanics) | boosted weights; odds shown live; PolicyService gate | Free daily luck hour | boost_luck_15 | |
-| 6 | Server Luck | Dev product | 149–249 | Shop | server attribute with expiry; banner thanks buyer; odds shown to all | | server_luck | |
+| 6 | Server Luck | Dev product | 149–249 | Shop | server attribute with a real-time end shown to all; banner thanks buyer; odds shown to all | | server_luck | |
 | 7 | Starter Pack | Dev product | 49–99 | Offer gate after first win; once per account | `Entitlements.StarterPack`, Cash, item | Earned in 30 min of play | starter_pack | |
 | 8 | Auto-Collect | Game pass | 199–299 | Shop; contextual after 20 manual collects | attribute `AutoCollect` | Manual collect | pass_autocollect | |
 | 9 | Extra storage / slots | Game pass | 129–199 | Shop; when storage is full | | Sell items | pass_storage | |
@@ -150,11 +150,11 @@ Eligibility: 2,000+ monthly visitors, publisher 13+, ID-verified, 2FA, public ga
 
 | Experiment (one lever each) | Variants | Primary metric | Guardrail | Stop rule |
 |---|---|---|---|---|
-| Boost price | 29 vs 49 R$ | ARPDAU | Conversion | 14 days or significance |
+| Boost price (sequential change of the one product, never duplicate products at two prices) | 29 then 49 R$ | ARPDAU | Conversion | 14 days each side |
 | Starter-pack trigger | First win vs first rebirth | Payer conversion | D1, like ratio | |
-| Starter-pack price | 49 vs 99 R$ | Revenue per new user | Conversion | |
+| Starter-pack price (sequential, one product) | 49 then 99 R$ | Revenue per new user | Conversion | 14 days each side |
 | Grace period | 10 vs 20 min | D1 | ARPDAU | |
-| Boost timer | Real time vs play time | Boost repeat purchases | Complaints | |
+| Boost duration | 10 vs 15 min of play time (personal boosts always pause offline) | Boost repeat purchases | Complaints | |
 
 Games above about 60,000 transactions a month: let Managed Pricing run the price tests and keep Experiments for timing and surfaces.
 

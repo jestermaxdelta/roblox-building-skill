@@ -62,7 +62,7 @@ Memory labels (F9 > Memory > PlaceMemory `[official]`): GraphicsTexture and Grap
 | MicroProfiler | Ctrl+Alt+F6 (client), Ctrl+F6 (Studio) | Per-frame timing; Ctrl+P pauses; dumps open in a browser with flame graphs and diffs |
 | Performance Stats | Ctrl+Alt+F7 | CPU, GPU, memory, network overlay |
 | Debug stats | Shift+F1–F5 | Shift+F2 Render (draw calls, triangles); Shift+F3 streaming panels |
-| Network Simulation | Alt+S in Studio | Latency and packet loss |
+| Network Simulator `[VS]` | Studio: Test > Device Simulator > Network pill (beta: enable "New Device Simulator") | Latency, jitter and packet loss presets (Home Wi-Fi, 4G, 3G); values and usage in debugging-and-testing.md |
 | Scene Analysis | Window > Performance Summary | Script memory, unparented instances, triangle categories, audio and animation memory |
 | Luau heap snapshots, Script Profiler | Developer Console | Snapshot diffs for leaks (unique references, unparented instances); per-function CPU |
 | Performance Dashboard | Creator Hub > Monitoring > Performance | Client: frame rate, crash rate and count, unexpected out-of-memory exits, memory and memory-% by OS, CPU time. Server: CPU time, frame rate, memory, memory by server age, cores used per server |

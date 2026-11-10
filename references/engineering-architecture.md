@@ -118,7 +118,7 @@ Declare remotes in the project file (or create them on the server at boot) so th
 
 ## Luau standards
 
-- `--!strict` on every new file. `--!nocheck` only for vendored code. `[VS]` The new type solver is still rolling out; prefer simple type shapes.
+- `--!strict` on every new file. `--!nocheck` only for vendored code. `[VS]` The new type solver is generally released (use it for new code; `Workspace.UseNewLuauTypeSolver` selects it per place); fixes still land, so prefer simple type shapes. Detail in luau-mastery.md.
 - Types: `export type`, generics, unions, `T?`, `typeof(setmetatable({} :: Fields, Class))` for classes, `unknown` for untrusted input (forces refinement), singleton string types for enums.
 - Naming: PascalCase for services, modules, types and instances; camelCase for locals and functions; SCREAMING_SNAKE_CASE constants; `_private`; `is/has/can` booleans; **`Async` suffix on every yielding function**.
 - Errors: `pcall` every yielding call to a web service (DataStores, MemoryStores, MessagingService, MarketplaceService, TeleportAsync, HttpService). `xpcall(fn, debug.traceback)` when you need a trace. `assert` for programmer errors only. Never swallow errors silently; `warn` with context. Retries use exponential backoff with jitter.

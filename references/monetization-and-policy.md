@@ -86,12 +86,12 @@ Unit economics `[lihfolk]`. The dashboard shows daily averages; decisions need c
 
 | Product | Type | Price (R$) | Notes |
 |---|---|---|---|
-| 2× Cash, 10 min | Dev product | 29–49 | Real-time expiry; buying again extends |
+| 2× Cash, 10 min | Dev product | 29–49 | Counts play time, pauses offline; buying again extends |
 | 2× Cash, 30 min | Dev product | 79–99 | |
 | 2× EXP, 10 / 30 min | Dev product | 29–49 / 79–99 | Only if the game has XP |
 | 2× Speed (delivery, gather, click), 10 min | Dev product | 25–39 | |
 | Luck 2×, 15 min | Dev product | 49–79 | Only with luck mechanics; paid random item rules apply |
-| Server Luck | Dev product | 149–249 | Announced to all, with activator and end time |
+| Server Luck | Dev product | 149–249 | Server-wide, runs in real time; announced to all, with activator and end time |
 | Starter Pack | Dev product | 49–99 | One per account (saved flag); popup after first win only; contents listed with their shop value |
 | Auto-Collect | Game pass | 199–299 | Convenience |
 | Extra storage / slots | Game pass | 129–199 | |
@@ -104,7 +104,7 @@ Unit economics `[lihfolk]`. The dashboard shows daily averages; decisions need c
 
 Market prices are a 2026-11-07 snapshot `[VS]`. Luck and Server Luck exist only in games with random rewards; in those games they are paid random items and need odds disclosure plus the PolicyService gate.
 
-Boost rules: stacking the same boost extends duration (cap it, for example at 6 hours) and never multiplies; different boost types multiply with each other; state whether the timer is real time or play time; show a HUD timer pill with the honest remaining time.
+Boost rules: stacking the same boost extends duration (cap it, for example at 6 hours) and never multiplies; different boost types multiply with each other; personal paid boosts count play time and pause offline, server-wide boosts run in real time and show their end time, and the product card says which; show a HUD timer pill with the honest remaining time.
 
 Recommendation. Lower-risk: ship the default set above plus two or three rewarded-video placements, all surfaced through the shop and contextual, dismissible offers. Bold: add a VIP subscription, a premium season pass and Server Luck events, but only after D1 and D7 retention meet your genre's benchmark; monetizing a leaky funnel burns the audience Recommended For You sends you.
 
@@ -228,22 +228,23 @@ end
 
 The Bundles feature package sample prompts a StarterBundle on `PlayerAdded`. Do not copy that; call `Bundles.promptIfValidAsync(player, "StarterBundle")` from the offer gate after the first win.
 
-Boosts module sketch (unexecuted sketch; state is `{ [boostId]: unixExpiry }` in the profile):
+Boosts module sketch (unexecuted sketch; personal boosts are `{ [boostId]: remainingPlaySeconds }` in the profile, ticked by the server only while the player is online; a server-wide boost is a server-side `endsAt` in real time):
 
 ```lua
 --!strict
 local MAX_STACK_SECONDS = 6 * 60 * 60
-function Boosts.add(state, boostId: string, seconds: number)
-	local now = os.time()
-	local current = state[boostId]
-	local base = if current ~= nil and current > now then current else now
-	state[boostId] = math.min(base + seconds, now + MAX_STACK_SECONDS)
+function Boosts.add(state: { [string]: number }, boostId: string, seconds: number)
+	state[boostId] = math.min((state[boostId] or 0) + seconds, MAX_STACK_SECONDS)
 end
-function Boosts.remaining(state, boostId: string): number
-	local e = state[boostId]
-	return if e ~= nil then math.max(0, e - os.time()) else 0
+function Boosts.tick(state: { [string]: number }, dt: number) -- once a second per online player
+	for boostId, left in state do
+		state[boostId] = if left > dt then left - dt else nil
+	end
 end
-function Boosts.multiplier(state, boostId: string): number
+function Boosts.remaining(state: { [string]: number }, boostId: string): number
+	return state[boostId] or 0
+end
+function Boosts.multiplier(state: { [string]: number }, boostId: string): number
 	return if Boosts.remaining(state, boostId) > 0 then 2 else 1
 end
 ```
