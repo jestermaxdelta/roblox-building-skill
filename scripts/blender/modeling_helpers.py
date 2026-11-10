@@ -23,7 +23,7 @@ the others only read.
 
 Tested 2026-11-10 with the standalone `bpy` 5.2.3 LTS module: every function was called on
 test meshes (bevelled cube, 12-sided cylinder, icosphere) and the results checked by hand
-(a bevelled cube reports 44 triangles and 19/19/62 % up/down/side; a mirrored build reports
+(a size-2 cube with a 0.1 one-segment bevel reports 44 triangles and 19/19/62 % up/down/side; a mirrored build reports
 symmetry error 0.0; an open-bottomed cylinder reports 12 open edges).
 Not tested: the Blender desktop binary, other Blender versions, meshes with shape keys.
 """
