@@ -24,7 +24,7 @@ Blockout rule: no primitive greybox ships. Prototype with a Blender blockout kit
 | Texture size | Up to 4096² is supported; texture streaming (automatic) loads a baseline first and raises quality to the device's memory budget. Doc guidance: 256² per 5×5 studs, 512² per 10×10, 1024² per 20×20. |
 | Texture formats | png, jpg, tga, bmp. Open Cloud images must be under 8000×8000. Albedo and normal 24-bit RGB (normal: OpenGL tangent space); roughness, metalness, emissive mask 8-bit grey. |
 | Import formats | `.fbx`, `.gltf`/`.glb`, `.obj`. FBX and glTF carry hierarchies, PBR textures, cages, rigs, animation data and vertex colours. Asset Manager bulk import does not take rigs, skins or animation. |
-| glTF hierarchy | Each node becomes a Model; each primitive of its mesh becomes a MeshPart named after the **mesh**. If node and mesh share a name, one gets `_Node`. |
+| glTF hierarchy | Each node becomes a Model holding one MeshPart per primitive of its mesh (FBX: MeshParts sit directly in the top Model). If a node and its mesh share a name, one of them gets `_Node`. |
 | Naming hooks | `_Att` → Attachment; `_OuterCage` → WrapTarget; `_InnerCage` + `_OuterCage` → WrapLayer. No collision-mesh naming hook exists. |
 | Skinned meshes | Bones scale 1, rotation 0; root at origin; ≤ 4 influences per vertex; none on the root; one animation track per FBX. |
 | `RenderFidelity` | Automatic: full detail under 250 studs, medium 250–500, lowest beyond 500. Performance and Precise are the manual options. No import path for hand-made LOD chains. |
@@ -103,7 +103,7 @@ PBR details (trim and unique routes): ColorMap sRGB, near-white if tinted; Norma
 | `<Object>_Mesh` | Mesh datablock name, set by the export script |
 | `<Name>_SA` / `M_<Library>_<Name>` | SurfaceAppearance / Blender placeholder material |
 
-Blender's default datablock names (`Cube.014`) become MeshPart names under glTF, and Reimport matches on mesh path and name, so the export script renames every datablock to `<Object>_Mesh`. Split multi-part assets into named children (`Door`, `Frame`, `Handle_Att`) so moving parts can animate and each piece gets the right collision. `_Att` empties are the hand-off between art and code: scripts find attachments by name instead of hard-coding offsets.
+Under glTF the mesh datablock name reaches Studio as well as the object name (hence the `_Node` rule), and Reimport matches on mesh path and name. Blender's defaults (`Cube.014`) are neither unique nor stable, so the export script renames every datablock to `<Object>_Mesh`; which name lands on the MeshPart is not documented, so check one test import `[VS]`. Split multi-part assets into named children (`Door`, `Frame`, `Handle_Att`) so moving parts can animate and each piece gets the right collision. `_Att` empties are the hand-off between art and code: scripts find attachments by name instead of hard-coding offsets.
 
 ## Collision authoring
 
