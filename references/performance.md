@@ -2,6 +2,18 @@
 
 What this is: frame and memory budgets, the profiling workflow, engine-feature status and the fix for each cost centre. Open it when setting budgets for a new game, or jump to "Level-up audit" when a live game lags, crashes or loads slowly. Distilled from knowledge-base sections 5.1–5.6, 5.9, 5.12 and 4.9; platform facts re-checked against `Roblox/creator-docs` on 2026-11-10. Design for a 3 GB Android phone first. Tags: `[official]` docs, `[community]` forum practice, `[VS]` version-sensitive (device statistics change yearly; several engine features are new), `[house]` house estimate.
 
+Contents: Start here by level · Frame budgets and device targets · Profiling workflow · Luau performance idioms · Rendering · Streaming · Engine features and status · Physics and collision · Parallel Luau · VFX, animation and audio budgets · Loading and join · Mobile crashes and memory · Level-up audit · Measured investigation by problem class (A compute, B memory leak, C network, D place size, E mobile tiers) · Performance review gate · Sources
+
+## Start here by level
+
+| Level | Do this | Ignore for now |
+|---|---|---|
+| Beginner | (1) Keep streaming on. (2) Anchor everything that does not move. (3) Textures 512² or smaller. (4) Use events, not loops that run every frame. (5) Play on a real cheap phone before every publish | Parallel Luau, `--!native`, SLIM, bandwidth budgets |
+| Intermediate | Fill the budget table with your own measured numbers; MicroProfiler captures with your own labels; a collision-fidelity pass; effects built on clients; a lean ReplicatedStorage; dashboards checked after each update | Buffer packing, Actors |
+| Expert | Leak hunts by slope with heap snapshot diffs; a per-player bandwidth budget with interest tiers; Parallel Luau and native code on measured hot paths; graphics tiers; a regression guard left behind by every fix | Nothing: read it all |
+
+Terms: *frame time* is the milliseconds one frame takes (16.67 ms at 60 FPS). A *draw call* is one batch of geometry sent to the GPU. *Overdraw* is the same pixel painted several times, usually by transparent layers. *Heartbeat* is the server's simulation step, capped at 60 per second. *Data ping* is round-trip time through the replication queue, as opposed to raw network ping.
+
 ## Frame budgets and device targets
 
 Measure milliseconds per frame, not FPS; consistency beats the average.
@@ -22,7 +34,7 @@ Device reality `[VS]`: Android is about 65% of players; about 60% of Android dev
 | Triangles per mesh | ≤ 20,000 (import limit, not a target) | Doc |
 | Long-running script work | about 5 ms per frame, then yield | Doc |
 | Server memory | < 50% of (6.25 GiB + 100 MiB × peak players); the dashboard chart hides the total, so also stay < 3 GB | Doc |
-| Client memory, whole app | < 1.3 GB so 2 GB phones survive | `[community]` Roblox staff article |
+| Client memory, whole app | Target < 1.0 GB in the heaviest area; ceiling 1.3 GB so 2 GB phones survive. Conflict: the staff article says 1.3 GB, LihFolk says "well under 1 GB"; neither is an official limit, so aim for the lower | `[community]` staff article; `[lihfolk]` |
 | Stricter working budget | 500 draw calls and 500k triangles in view | `[community]` same article |
 | Client crash rate | investigate above 2–3% | Doc |
 | Particles | ≤ 400/s per emitter (100/s on mobile); lifetime ≤ 20 s | Doc |
@@ -198,7 +210,7 @@ Order matters: live data, then one device, then static scans, then fixes by retu
 
 1. **Live data (10 min).** Performance and Crashes dashboards (charts need at least 100 daily active users; use the P90 filter, not only averages): note the worst OS and the worst metric (crash rate, memory-%, client FPS, server FPS, memory by server age). No access or too few users: start at step 2.
 2. **Reproduce on a 2–4 GB Android phone.** Stopwatch the join. Walk to the busiest scene. Record F9 Memory (PlaceMemory labels), Shift+F2 draw calls and triangles, Shift+F5 FPS, and a 2-minute MicroProfiler dump. Keep playing 10–15 minutes for thermal drop.
-3. **Classify** with the tag table above: memory, client CPU, GPU (red bars), server CPU, network or load time. Fix the worst class only.
+3. **Classify** with the tag table above: memory, client CPU, GPU (red bars), server CPU, network or load time. Fix the worst class only, following the matching procedure (A–E) in the next section.
 4. **Static scan** in Studio Edit mode with sketches A and B (command bar, or Studio MCP `execute_luau` with `datamodel_type = Edit`). Both are read-only.
 5. **Fix in ROI order** `[house]`: (1) streaming on, radius tuned, Persistent audit; (2) texture sizes and duplicate uploads; (3) anchor static parts, Box or Hull collision, `CanTouch` and `CastShadow` off on clutter; (4) partial transparency, particle rates, shadowed lights; (5) shared MeshIds and SurfaceAppearances; (6) per-frame loops to events, server tweens to clients, remote rates; (7) ReplicatedStorage diet and preload list; (8) leaks (respawn 20 times, memory returns to baseline); (9) SLIM, then Parallel Luau or `--!native` for measured hot spots.
 6. **Re-measure** the same route on the same device. Ship one class of fix at a time and watch the dashboards for 48 hours `[house]`.
@@ -284,7 +296,80 @@ The duplicate-MeshId sketch is under Rendering. For Precise collision, the Explo
 | Server memory climbs with server age | Leaked connections or per-player tables; instances never destroyed | Out-of-memory snapshot treemap; Luau heap snapshot diff; Trove per lifetime |
 | Join over 15 s on phones | Heavy ReplicatedStorage or ReplicatedFirst, streaming off, long preload list | Print Join Size Breakdown; move maps to ServerStorage; preload only what the first screen shows |
 | Pop-in or falling through the floor after teleport | No `RequestStreamAroundAsync`; interactive models not Atomic | Request the area first; Atomic on doors, shops and vehicles |
-| Data ping far above network ping | Replication queue backlog: too many remotes or moving assemblies | Batch remotes to 10–20 Hz; anchor; under about 50 KB/s and 40–60 moving assemblies `[community: staff article]` |
+| Data ping far above network ping | Replication queue backlog: too many remotes or moving assemblies | Procedure C: budget per category, interest tiers, batching; anchor props; the staff article suggests 40–60 moving assemblies as a ceiling `[community]` |
+
+## Measured investigation by problem class
+
+Rules for every investigation `[lihfolk]`: name exactly one problem (compute, memory, load time or network) on one side (client or server); no fix without a measurement that points at it; one change per measurement; never conclude from Studio numbers; leave a guard behind (a profiler label, a budget assertion, a soak loop). Tool-by-tool detail and test harnesses: debugging-and-testing.md.
+
+Record this before touching code and again after each change. Report format: symptom, measurement before, cause, fix, measurement after, guard.
+
+| Metric | How to measure | Before | After |
+|---|---|---|---|
+| Frame time, typical and worst (ms) | MicroProfiler in the busiest scene on the target phone | | |
+| Client memory at the heaviest point (MB) and top three labels | F9 > Memory | | |
+| Server heartbeat and script time at a full server | F9 > Server Jobs, or the dashboard | | |
+| Join to playable (s) | Stopwatch, three runs | | |
+| Receive rate per player (kbps) and data ping minus network ping | Shift+F3, Performance Stats | | |
+
+**A. Compute (frame time).**
+
+1. Reproduce with production-like load on the device class your players use. Two Studio clients are not a 30-player server.
+2. Capture 30–90 frames (Ctrl+P pauses). For the server use the Developer Console's server MicroProfiler recording.
+3. Switch to Timers mode and sort by total time and by call count. A label that costs 0.05 ms and runs 2,000 times a frame is invisible in the timeline and at the top of Timers `[lihfolk]`.
+4. Name the family (scripts, physics, render, network, UI) and use the tag table above.
+5. Wrap suspects in `debug.profilebegin("ConstantName")` and `debug.profileend()`: constant names, balanced, never across a yield.
+6. Compare with the budget, change one thing, capture the same route again.
+
+Conflict: LihFolk splits a 60 FPS phone frame as rendering 8–10 ms, engine simulation 2–3 ms, your client scripts 2 ms, headroom 2–3 ms, and server scripts under about 5 ms per heartbeat at full player count. The house table above allows client Luau 3–4 ms. Both are estimates; treat 2 ms as the target and 3–4 ms as the ceiling.
+
+**B. Memory leak (hunt by slope, not by snapshot)** `[lihfolk]`.
+
+1. Check it is a leak. Memory rises for the first 5–10 minutes (modules, pools, streamed assets), and server memory never shrinks when players leave. Neither is a leak.
+2. Hold the workload constant, take at least three samples after warm-up, and express growth as MB per hour or KB per repetition. Time to failure = (ceiling − current) ÷ slope. 60 MB per hour from 1.1 GB kills a 2 GB phone within one long session; the same slope on a 1.5 GiB server takes about 42 hours to reach 4 GiB. Client leaks are usually the urgent ones.
+3. Find the label that grows: F9 > Memory, or the sampler below. `debug.setmemorycategory("Name")` in large scripts makes the script-memory view readable.
+4. Build a loop that multiplies the leak: respawn, zone change, menu open and close, equip and unequip, 100 times.
+5. Bisect: disable half the systems, rerun, keep the half where the slope remains.
+6. Take Luau heap snapshot A after warm-up, run the loop 100 times, wait 10 s idle, take snapshot B. A count that grew by exactly 100, or a multiple, is the leak; growth of 3 or 7 is noise.
+7. Usual holders: a connection per character to a long-lived signal; per-player tables never cleared; a loop spawned per object that never ends; caches keyed by user input with no cap; animation tracks loaded per use; tag handlers with no removal path; menus cloned on every open.
+8. Keep the loop as a regression test. Never hide a leak with a periodic "clear everything".
+
+```lua
+--!strict
+-- Unexecuted sketch: memory slope per label, once a minute. Start it after warm-up on a test server or client.
+local Stats = game:GetService("Stats")
+local TAGS = { Enum.DeveloperMemoryTag.LuaHeap, Enum.DeveloperMemoryTag.Instances, Enum.DeveloperMemoryTag.Signals,
+	Enum.DeveloperMemoryTag.GraphicsTexture, Enum.DeveloperMemoryTag.GraphicsMeshParts, Enum.DeveloperMemoryTag.Sounds, Enum.DeveloperMemoryTag.Gui }
+local first: { [Enum.DeveloperMemoryTag]: number } = {}
+local startedAt = os.clock()
+while true do
+	local hours = (os.clock() - startedAt) / 3600
+	for _, tag in TAGS do
+		local mb = Stats:GetMemoryUsageMbForTag(tag)
+		if first[tag] == nil then first[tag] = mb
+		else print(tag.Name, string.format("%.1f MB, %+.1f MB/h", mb, (mb - first[tag]) / hours)) end
+	end
+	task.wait(60)
+end
+```
+
+**C. Network (bandwidth and data ping).**
+
+1. Symptom: data ping well above network ping, rubber-banding or late hits on phones.
+2. Write a per-player budget by category. Example for a 20-player action game `[lihfolk, rule of thumb]`: character movement 8–12 kbps (engine-managed), unanchored props 0–4, combat remotes 6, enemy state 5, UI and economy 1, headroom 6: about 30 kbps server to client.
+3. Do the fan-out arithmetic for every broadcast: bytes × rate × recipients. 50 enemies × 20 Hz × about 30 bytes is 30,000 bytes per second, 240 kbps per client, from 1,000 remote calls a second. With interest tiers (15 near at 20 Hz, 20 mid at 5 Hz, the rest on change) and one `buffer` per tick at about 8 bytes per enemy it is 400 updates, 3,200 bytes per second, about 26 kbps from 20 calls `[house arithmetic]`.
+4. Interest tiers `[lihfolk]`: near (under 60 studs) 20 Hz with full state; mid (60–160) 5 Hz, position and coarse state; far (160–260) 1 Hz or on change; beyond that nothing. Add hysteresis at tier edges, tie distances to what the camera can show, and interpolate on the client (about 250 ms at 5 Hz).
+5. Replaceable streams go on unreliable remotes in batches under about 900 bytes (the limit is 1,000). Animate on clients: a server tween replicates a property update every frame to every client that has the instance.
+6. Measure by toggling one system and reading the receive rate; or count calls and approximate bytes per remote name inside the `Net` module to rank the top talkers; check the join payload with Print Join Size Breakdown. Record kbps per player with eight Studio clients in each release note.
+7. Stop when data ping matches network ping. A system under about 10 kbps per player rarely repays packing work `[lihfolk]`.
+
+Conflict: the staff article's "about 50 KB/s per client" is used above as a guideline; LihFolk reports its authors could not find documentation for it and treats it as folklore. There is no documented per-client cap: use your own budget and the data-ping gap as the test.
+
+**D. Place size and instance count** `[lihfolk, measured in its reference project]`. Count instances per top-level folder with replicated containers listed separately (sketch A). Keep backups, archives and import sources out of the place: export `.rbxm` files and rely on Version History. Their project reached about 1.07 million instances, where Studio ran at about 15 FPS on about 18 GB and cloud saves timed out; a 600k-instance ReplicatedStorage was a phone memory problem as much as a join-time one. Split scripts long before about 200,000 characters (a cap they measured; undocumented `[VS]`). Delete only what is proven unreferenced, never on a name search alone.
+
+**E. Mobile tiers** `[lihfolk]`. Offer an in-game graphics preset (performance, balanced, quality) that switches live and pre-selects by device. Every effect has a low tier, effects on other players are reduced first, ambient effects sleep with distance. Gameplay information (telegraphs, hit areas, timers) is identical on every tier. Each release: a 15-minute fixed route on a real phone (spawn, heaviest area, one full encounter, every major menu, one zone change), recording FPS, peak memory and crashes.
+
+Not adopted from LihFolk: its per-asset content budgets (for example up to 140 beams and 30 emitters for one sword swing, 44 and 10 on low). They are specific to its project and exceed the mobile VFX budget in this file.
 
 ## Performance review gate
 
@@ -299,6 +384,10 @@ The duplicate-MeshId sketch is under Rendering. For Precise collision, the Explo
 - [ ] Performance Dashboard alerts for crash rate, heartbeat and memory; re-profile after every content update.
 - [ ] `LightingStyle` and `PrioritizeLightingQuality` chosen deliberately and captured on the low-end phone; nothing relies on the deprecated `Technology` property.
 - [ ] Live game: audit steps 1–6 run, with before and after numbers for the worst metric recorded in the audit report.
+- [ ] Every fix has a row in the report (symptom, before, cause, fix, after, guard); nothing was changed without a measurement pointing at it.
+- [ ] Memory slope measured after warm-up (MB per hour) on client and server; the repetition loop kept as a regression test.
+- [ ] Per-player bandwidth recorded for this release; broadcasts are interest-filtered; unreliable batches under 900 bytes.
+- [ ] Graphics tiers exist and gameplay information is identical on all of them.
 
 Grep `references/knowledge-base.md` for `## 5.1` through `## 5.6`, `## 5.9`, `## 5.12` and `## 4.9`.
 
@@ -315,4 +404,6 @@ Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
 - https://devforum.roblox.com/t/occlusion-culling-now-live-in-roblox-client/3300953 and https://devforum.roblox.com/t/studio-beta-introducing-occlusion-culling/3250604 (search summary)
 - https://devforum.roblox.com/t/let-there-be-unified-light-unified-lighting-is-fully-live/3401512 (search summary)
 - https://devforum.roblox.com/t/analytics-diagnose-server-crashes-with-server-memory-snapshots/4525675 (search summary)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-performance-audit/SKILL.md`, `LihFolk Vault V2/12 Performance Testing and Debugging/{Hunting Memory Leaks Step by Step, Network Bandwidth Budgets and Measuring Them, Mobile and Low-End Optimization, MicroProfiler Guide}.md`, `03 Architecture and Networking/Interest Management and Per-Player Replication.md` (read)
+- `Roblox/creator-docs` `reference/engine/enums/DeveloperMemoryTag.yaml`, `reference/engine/libraries/debug.yaml`, `reference/engine/classes/Stats.yaml` (read)
 - No evidence found: an official per-device client memory crash limit; a controlled community before/after study of join time or mobile FPS.

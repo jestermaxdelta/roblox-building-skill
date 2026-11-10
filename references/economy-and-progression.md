@@ -23,7 +23,7 @@ Contents: Design first · Time to afford · Hard currency or direct Robux · Pro
 4. **Pick the first ten levels or upgrades for speed.** Early purchases should take 3–10 seconds each, so the player learns the loop while the numbers are still small.
 5. **Decide the long-term engine** (rebirth, prestige, collection completion or seasons) before launch. Retrofitting one changes every number.
 
-Warning signs of inflation: prices in player trades rise while nothing changed, the top 1% hold most of the wealth (Gini climbs), new players cannot afford starter items at market price, and the sink ratio drifts below 0.9. Fixes, in order of preference: add desirable sinks (cosmetics, upgrades, consumables), add a new currency for the event instead of inflating the old one, then and only then reduce faucets.
+Warning signs of inflation: prices in player trades rise while nothing changed, wealth concentrates inside one progress band (whole-population Gini is high by construction in exponential games), new players cannot afford starter items at market price, and the sink ratio for settled players drifts below 0.9 and keeps falling. Fixes, in order of preference: add desirable sinks (cosmetics, upgrades, consumables), add a new currency for the event instead of inflating the old one, then and only then reduce faucets.
 
 ## Time to afford: price everything from one income model
 
@@ -378,7 +378,7 @@ The knowledge base (`## 3.5`, "Inflation and deflation") has the basic signal ta
 |---|---|---|
 | Veterans clear a weekly update in one session | Paid and rebirth multipliers outran flat-priced content | Price new content geometrically from top-decile income; cap the multiplier stack; add a prestige sink |
 | Funnel drop at one specific upgrade or gate | Local wall: g too high early, or a gate jump far above ×4 | Flatten that step; first ten purchases 3–10 s each |
-| Rebirth-count histogram piles up at k | Additive multiplier flattening while cost grows by r | Move to a multiplicative model or lower r until the wait ratio is ×1.2–1.5 |
+| Rebirth-count histogram piles up at k | Cost growth r outrunning the multiplier at that k | Lower r (or change model) until the wait ratio is ×1.2–1.5; add a non-numeric rebirth reward |
 | Currency-pack sales decay week over week | Inflation made fixed packs worthless | Packs sized in minutes of current income; add sinks |
 | Sink ratio under 0.9; wallets pile up | Nothing left worth buying | Aspirational cosmetics, upgrade tiers, consumables |
 | Sink ratio above 1.1; sessions shorten | Starved faucets | Quest and offline income up; cheaper early upgrades |

@@ -20,6 +20,8 @@ Live game only: fill from Creator Hub ⟩ Monetization ⟩ Overview (last 28 day
 | Like ratio and D1 (guardrails) | | |
 | Symptom row matched in "Level-up: monetisation symptoms" | | |
 
+Level: beginners fill "Product set", "Offer gate configuration" and the policy checklist and stop. Intermediate adds the ladder check, timing map and platform setup. Expert adds the value tests, segments, price-change log and refund policy.
+
 ## Product set
 
 | # | Product | Type | Price (R$) | Trigger / surface | Grant logic (server) | Free alternative | Analytics SKU | Creator Hub id |
@@ -55,6 +57,18 @@ Every rung filled, at least one repeatable product on the first two rungs, nothi
 
 Bundles: ×1 / ×3 / ×10 at <> / <> / <> (bulk saving stated on the card, at most about 15%). "Best value" tag on: <one product; its unit price is the lowest>.
 
+Value tests for every sized ladder (packs, bundles). Labels are computed from this table by the server, never typed.
+
+| Rung | Amount | Price (R$) | Value per R$ (amount ÷ price) | Bonus vs smallest (%) | Extra bonus vs previous rung |
+|---|---|---|---|---|---|
+| S | | | | 0 | — |
+| M | | | | | |
+| L | | | | | |
+
+Pass when value per R$ rises with size and the extra bonus shrinks with each step. Bonus shown to players in units ("+500 Cash free").
+
+Segments served: minnow (entry rung, leftover-friendly prices 75 / 79 / 99) <>; dolphin (core passes, complementary pass, season pass) <>; whale (repeatable top rung, not a one-time mega pass) <>; non-payers (rewarded video and free alternatives) <>.
+
 ## Offer timing map
 
 One row per loop moment this game actually has. Popup rows spend the offer-gate budget; inline rows sit on a screen the player already opened. Delete rows that do not apply.
@@ -72,6 +86,13 @@ One row per loop moment this game actually has. Popup rows spend the offer-gate 
 | Pass just bought | | complementary pass | Inline in shop | — | Once |
 | Event start / weekly update | | limited bundle, ends <date> | Featured tab + one toast | Event currency | Real end time, no restart |
 | <game-specific moment> | | | | | |
+
+## Limited-time offers register
+
+| Offer | Window type (global from event calendar / personal from first view) | `endsAt` source | Reference price and how long it was live (30+ days) | Returns? (never / named rerun after 30+ days) |
+|---|---|---|---|---|
+
+No window under 24 hours; no quantity claim without a server-counted global stock; receipts honoured after expiry.
 
 ## Offer gate configuration (Configs keys)
 
@@ -136,3 +157,18 @@ Eligibility: 2,000+ monthly visitors, publisher 13+, ID-verified, 2FA, public ga
 | Boost timer | Real time vs play time | Boost repeat purchases | Complaints | |
 
 Games above about 60,000 transactions a month: let Managed Pricing run the price tests and keep Experiments for timing and surfaces.
+
+Price-change log (sequential tests for smaller games; one product at a time, 14+ days each side, same weekdays, no event inside the window):
+
+| Product | Old → new (R$) | Buyers per 1,000 exposed, before → after | Elasticity (% units ÷ % price) | Revenue per 1,000 exposed, before → after | Total revenue per user (cannibalisation check) | Keep / revert |
+|---|---|---|---|---|---|---|
+
+## Refunds and purchase support
+
+- Purchase log fields: `PurchaseId`, product key, Robux actually spent, exact grant, time. Stored in: <>.
+- Refund webhook endpoint and monitoring: <none yet / URL owner>. Signature verified; records bridged to a per-user key read at join.
+- Clawback policy: unspent currency <remove>; owned untraded item <remove>; consumed or traded <write off>; spent currency <write off, no debt>; repeat refunders <review>.
+- Support answer path for "paid and got nothing": <who, where, target response time>.
+- One-per-account limits enforced at prompt time; every paid receipt is granted.
+
+Credit: the value tests, limited-time register and clawback checklist adapt ideas from LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault); see references/monetization-and-policy.md §Sources.

@@ -2,6 +2,8 @@
 
 Build this as a spreadsheet (or a Luau config module with the same columns) before implementing the economy. Formulas and ranges come from references/economy-and-progression.md. Every number here becomes a Configs key with a code default.
 
+Level: beginners fill Sheets 1–3 and 5 and stop. Intermediate adds 2b, 3b, 4, 6–11. Expert adds 12–15 and runs the simulation in CI.
+
 ## Sheet 0: Mode and baseline (live games)
 
 Mode: <new game / level-up>. For a live game fill this from `LogEconomyEvent` data and the Creator Hub economy dashboard before changing a number; it is the "before" for every rebalance.
@@ -25,6 +27,8 @@ Mode: <new game / level-up>. For a live game fill this from `LogEconomyEvent` da
 
 Limit: at most 5 currencies on the dashboard; 10 resource types in analytics.
 
+For each currency: its one job <>; what it buys that nothing else buys <>; what happens when players stop caring <>. Premium currency only: anchor (1 unit ≈ <> R$); price and pack unit <50>; `Paid` and `Free` buckets with spend order <free first / paid first>; target free share <under 50%>; conversions allowed (one way only) <>.
+
 ## Sheet 2: Faucets per hour (by player stage)
 
 | Stage | Minutes played | Main loop income per min | Quest income per hour | Offline income per hour (capped) | Rewarded video per day | Total per hour |
@@ -33,6 +37,18 @@ Limit: at most 5 currencies on the dashboard; 10 resource types in analytics.
 | Early (day 1–3) | | | | | | |
 | Mid (week 1–2) | | | | | | |
 | Late (post-rebirth) | | | | | | |
+
+## Sheet 2b: Time to afford per zone (the income model every price reads)
+
+Target bands: small upgrade 1–3 min; meaningful upgrade 5–15 min; gate 15–45 min; rebirth 1–3 sessions.
+
+| Zone k | Income per min I_k | Income growth g | Gate price P_k | Price growth p | p ÷ g (aim 1.0–1.15) | T_k = P_k ÷ I_k (min) | Observed p50 / p90 (live) | Gate conversion within 3 days (live) |
+|---|---|---|---|---|---|---|---|---|
+| 0 | | — | | — | — | | | |
+| 1 | | | | | | | | |
+| … | | | | | | | | |
+
+Quest and event rewards are written as a share of the next gate price: <>%.
 
 ## Sheet 3: Sinks and price curves
 
@@ -43,6 +59,13 @@ Limit: at most 5 currencies on the dashboard; 10 resource types in analytics.
 | Zone unlock | | n/a (fixed) | | | | |
 
 Rules: first ten purchases take 3–10 s each; `cost(n) = floor(base × g^n)`; cost a→b `= base × g^a × (g^(b−a) − 1) / (g − 1)`.
+
+## Sheet 3b: Upgrade tracks (cost and benefit together)
+
+| Track | Benefit per level (additive / multiplicative) | Benefit in one unit (% income) | g | Payback at L = 0 / 5 / 10 (min) | Natural cap L* at 60-min tolerance | Greedy-path level after one session | Rounded to 2 s.f. + monotonic? |
+|---|---|---|---|---|---|---|---|
+
+`L* = ln(paybackMax × gainPerLevel ÷ baseCost) ÷ ln g` for additive tracks. A multiplicative track needs g well above its per-level multiplier. If the greedy path leaves a track at level 2 while another reaches 40, reprice it.
 
 ## Sheet 4: Sink ratio by week
 
@@ -84,6 +107,8 @@ Rules: first ten purchases take 3–10 s each; `cost(n) = floor(base × g^n)`; c
 
 Odds shown must equal odds rolled and sum to 100%.
 
+Pity and supply: rule <flat / ramp from roll N / hard cap K>; expected rolls per top-tier hit <Σ S(k)>; effective rate <1 ÷ E>; share of players reaching the hard cap <>; featured-item rule and carry-over <>; duplicate protection <none / top tier only>. Copies of each top-tier item per day = rolls per day × odds × average luck = <>; luck cap <>; copy sink (fusion, crafting) <>.
+
 ## Sheet 9: Robux anchors
 
 - Earning rate used for pricing: <> soft currency per minute.
@@ -123,6 +148,41 @@ Odds shown must equal odds rolled and sum to 100%.
 
 Order of preference: new sink → new tier priced for current income → event currency → slower future faucet growth → faucet cut. Nothing bought with Robux is reduced.
 
+## Sheet 14: Simulation spec
+
+| Archetype | Share | Sessions per day | Mean minutes | Income multiplier |
+|---|---|---|---|---|
+| Casual | 0.55 | 0.8 | 12 | 1 |
+| Regular | 0.30 | 1.5 | 25 | 1 |
+| Grinder | 0.12 | 2.5 | 55 | 1 |
+| Payer | 0.03 | 2.0 | 35 | <full stack M> |
+
+Replace with measured clusters after launch. Spending policy: <gate → upgrade if payback ≤ 60 min → rolls from <>% of income>. Churn: base <>% a day, +<>% when the next goal is more than 60 min away. Runs: 30 days, 5 seeds, baseline and change on the same seeds.
+
+| Day-30 output | Baseline | After change | Golden-number tolerance in CI |
+|---|---|---|---|
+| Stuck share | | | ±10% |
+| Sink ÷ faucet | | | ±10% |
+| Top-item supply | | | ±20% |
+| Median zone by archetype | | | |
+| Share of coins held by finishers | | | |
+| Days for a grinder to finish launch content (vs update cadence) | | | |
+
+## Sheet 15: Telemetry and alerts
+
+- One wallet module logs every economy event after commit. Custom fields: progress band, config version, experiment variant. SKU and transaction-type names are frozen here: <list>.
+
+| Metric (per progress band) | Source | Healthy range | Alert |
+|---|---|---|---|
+| Hours of income held, p50 / p90 | balance ÷ income per hour at save | Mid-game under 1–2 h | Rising week over week |
+| Net flow by transaction type, per DAU | `LogEconomyEvent` | | A sink halves; robust z above 3 |
+| Free premium granted per DAU | wallet | | Robust z above 3; page above 5 |
+| New copies of each top-tier item per DAU | mint ledger | rolls × odds × luck | Robust z above 3; page above 5 |
+| Top 0.1% share of each currency | own aggregate | | Doubles day over day |
+| Payer progress gap at equal playtime | own aggregate | Within the declared gap | Above the gap |
+
+Robust z = (today − median of the same weekday over 4+ weeks) ÷ (1.4826 × MAD).
+
 ## Validation plan
 
 - [ ] Simulate week 1 and week 4 for a casual (20 min/day) and a heavy (90 min/day) player; both must have a visible next purchase at all times.
@@ -133,3 +193,7 @@ Order of preference: new sink → new tier priced for current income → event c
 - [ ] Full-stack payer simulated: stack within the cap, runway and free-to-payer gap recorded in Sheet 11.
 - [ ] Hard currency absent or justified; every random sink bought with it is disclosed and PolicyService-gated.
 - [ ] Live game: Sheet 0 filled before the change and Sheet 13 after it.
+- [ ] p ÷ g between 1.0 and about 1.15 for every zone step; every system's prices derived from Sheet 2b.
+- [ ] Each rebalance in Sheet 13 has a numeric hypothesis, a simulated comparison and a one-week read.
+
+Credit: Sheets 2b, 3b, 14 and 15 adapt ideas and starting values from LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault); see references/economy-and-progression.md §Sources.

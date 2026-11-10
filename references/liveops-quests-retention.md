@@ -1,6 +1,20 @@
 # LiveOps, quests, retention and social design
 
-Distilled from knowledge-base sections 1.7, 1.8, 3.3 and 3.4, plus a 2026-11-10 research pass on retention systems, notifications and LiveOps practice. Use it when planning onboarding, quests, season passes, events, update cadence and social features, and when a live game's D7, D30 or play days sit below benchmark. Loop-level diagnosis (first session, session time, D1) is in core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum, press or third-party practice, `[VS]` version-sensitive, `[house]` house estimate.
+Distilled from knowledge-base sections 1.7, 1.8, 3.3 and 3.4, plus a 2026-11-10 research pass on retention systems, notifications and LiveOps practice. Use it when planning onboarding, quests, season passes, events, update cadence and social features, and when a live game's D7, D30 or play days sit below benchmark. Loop-level diagnosis (first session, session time, D1) is in core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum, press or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its "reference project" is one anonymised production game, its other figures are rules of thumb dated October 2026), `[VS]` version-sensitive, `[house]` house estimate.
+
+## Start here by level
+
+Terms: **LiveOps** = everything done to a game after launch (updates, events, offers, communication). A **return hook** is a designed reason to come back at a particular time. **Play days** = the number of distinct days a player returns in a window. A **season pass** (battle pass) is a time-limited reward track climbed with season XP. A **kill switch** is a Config boolean that turns a risky system off without a publish.
+
+| Level | Do this | Leave for later |
+|---|---|---|
+| Beginner | The onboarding blueprint. One cumulative daily calendar, 3 daily quests and capped offline earnings from the toolkit. One fixed update day you can keep. An in-game What's New panel. Real end dates on everything | Season passes, admin events, notifications, staged rollouts |
+| Intermediate | The calendar method: measure throughput, plan mostly config and reskin events, one buffer week a month, a one-page brief per event. Notifications at warranted moments. The T-10 to T+7 timeline. Read each update's curve | Per-flag percentage rollouts; seasonal resets |
+| Expert | Calendar and patch notes as validated Config data; staged rollout with written abort criteria; season XP budget with 15–20% slack and boundary-purchase rules; notification scheduling when no server is running; lazy season rollover; reviews that feed the next quarter's capacity numbers | — |
+
+## Contents
+
+Onboarding · Social rewards · Benchmarks · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table
 
 ## Onboarding (first session)
 
@@ -74,6 +88,28 @@ Order of work: the loop first, then these. `[community]` Developers who post res
 
 Saturdays and December are the peak weeks for Recommended For You traffic; schedule big updates for them.
 
+Which hook serves which window `[lihfolk]`: D1 is a great first session plus one unfinished goal or a timer that resolves tomorrow. D7 is weekly quests, walls with a visible next step, collections and the calendar's day 7. D30 is updates, live events, friends, trading, leaderboards and seasons. Combine three or four hook families (calendar, timer, goal, accumulation, social, content, collection) so that every join has **at least one thing ready**, and never more than one automatic pop-up at a time (the pop-up gate in core-loop-tuning.md §3).
+
+### Building a daily reward that cannot be exploited or resented
+
+| Decision | Options | Choose |
+|---|---|---|
+| Shape | Strict streak (a miss resets); streak with grace or a weekly freeze; cumulative count; repeating 7-day cycle; 28-day ladder with a weekly highlight `[lihfolk]` | Cumulative, or a 28-day ladder with weekly highlights. Strict streaks are the shape most likely to feel like punishment to a child who missed a day for reasons outside their control |
+| Day boundary | Fixed UTC midnight (simple, one "resets in" timer; evening reset in the Americas; a 23:50 and 00:10 double claim is possible). Rolling 24 h (claim time drifts later every day). Rolling window: claim any time after 20 h, streak survives to 48 h `[lihfolk]` | UTC day number for a cumulative calendar; the 20 h / 48 h window if any streak exists. Align every daily reset in the game to the same UTC hour |
+| Clock | Client or server | Server `os.time()` only |
+| Claim order | Pay then mark, or mark then pay | Mark the claim, save at once, then pay; a crash or double click cannot pay twice. Throttle the remote. Session locking must already be in place or two servers can both pay (data-and-purchases.md) |
+| Reward size | Fixed, or scaled | Scale soft currency to the player's stage (for example a share of the next gate price) so day 3 matters at hour 1 and hour 100 `[lihfolk]` |
+| Day 7 / 28 | More of the same, or a different texture | Something different: a guaranteed higher-rarity roll, a cosmetic. Show the whole week up front; name rewards in plain words ("4 Tempered Iron", not "x4") |
+| Where | Join pop-up, or a place | A claimable object or HUD badge. The reference project used a chest model in the hub (make it a Blender prop) |
+
+Conflict: the LihFolk reference project shipped a strict 7-day streak that resets on a miss, and its notification note lists "your daily streak resets in 3 hours" as usable sparingly. Its own ethics note recommends grace days instead. Our rule is firmer: no streak wipes, no streak-warning notifications. Trust ours; the loss-based version trades a short-term pull for resentment in a young audience.
+
+### Playtime gifts, offline earnings and AFK: measured examples
+
+- **Playtime gifts** `[lihfolk]` (reference project): a small gift every 5 minutes of play (9 a day), a medium every 15 (4 a day), a large every 60 (1 a day). Counted in play time, not wall-clock time; the timer banks at most one interval when a gift is ready, so nothing is lost by not claiming; caps reset at UTC midnight; reward pools show their odds and roll the odds shown. The caps stop the screen becoming an overnight income engine, and the largest gift lands on the 60-minute mark where ranking playtime stops counting. If a timer skip or extra gift is ever sold for Robux, the gift becomes a paid random item and must disclose odds `[VS]`.
+- **Offline earnings** `[lihfolk]` (reference project): 15% of the active rate, capped at 8 hours (12 with VIP), nothing for absences under 5 minutes, and filling only after the tutorial is finished so the first session is about active play. Our economy file suggests 25–50% efficiency with an 8–12 h cap (economy-and-progression.md); both are inside a sane range. Pick one, state the cap in the UI, and model it in the balance sheet.
+- **AFK** `[lihfolk]`: there are real reasons to allow some idle progress (children leave devices running; auto-modes help players with motor difficulties). If you do: idle yields less than active play; idle activities sit in the social hub so idle avatars at least make it look alive; an auto-action keeps the verb visible (a small reel over the head, not a hidden counter); no idle income before onboarding ends; auto-modes never spend paid consumables. This refines, and does not overturn, the "prefer none" row above.
+
 ## Notifications done right `[official]` `[VS]`
 
 - **Who can receive:** opted-in users aged 13+. The game needs 100+ visits and must not be under moderation.
@@ -83,6 +119,20 @@ Saturdays and December are the peak weeks for Recommended For You traffic; sched
 - **Never** make opting in a condition of playing or progressing.
 - **Routing and measurement:** launch data (read with `Player:GetJoinData()`) takes the player to the thing the message was about; an analytics category per message type lets the dashboard compare them. A notification that mentions another user is delivered only if the two are friends.
 - **Sending:** server-side through the Open Cloud package (`createUserNotification(userId, { payload = { messageId, type = "MOMENT", parameters, joinExperience = { launchData }, analyticsData = { category } } })`) or the Open Cloud API, using a notification string created in the Creator Dashboard.
+
+The channels are not interchangeable `[official]` `[lihfolk]` `[VS]`:
+
+| | Experience notification | Update announcement | Event notification |
+|---|---|---|---|
+| Content | Your personalised string with parameters (keep it under about 99 characters `[lihfolk]`) | 60 characters of free text | Generated from the event |
+| Audience | Opted-in players aged 13+ | Everyone who enabled notifications for the game, under-13s included `[lihfolk]` | Players who tapped Notify Me |
+| Frequency | 1 per user per day per game, plus the user's cross-game cap | Once every 3 days | When the event starts |
+| Sent by | Server code or Open Cloud | You, from the dashboard | Roblox |
+| Lands the player | Wherever the launch data says | The start place | The event's place, with `EventId` in the join context |
+
+For a young audience most players cannot receive personal notifications at all, so in-game communication and update announcements carry the load.
+
+The scheduling problem `[lihfolk]`: "your egg hatched" must be sent hours later, possibly when no server holds that player. Options: (1) send from the server where the trigger happens, which only works for social triggers (a friend online beats the record); (2) a shared due-time queue in MemoryStore that any running server polls and sends from, which needs at least one live server and respects MemoryStore's maximum item lifetime `[VS]`; (3) an external scheduler calling the Open Cloud notification API, for games with quiet hours. Whichever is used, keep at most one queued notification per user and let the priority order below decide which survives. Show one line of context before the system prompt ("We can tell you when it hatches") so the fixed-text prompt makes sense.
 
 Priority for the one daily slot `[house]`: (1) something the player set in motion has finished (hatch, harvest, offline cap full); (2) a friend beat or visited them; (3) "N away from" a weekly goal. Never "we miss you", never a streak warning, never an offer. Game-wide news goes through update announcements and Experience Events, not personal notifications.
 
@@ -100,11 +150,44 @@ Rules: missions are daily, varied, and never reward hard currency; use at least 
 
 Badges: 5 free per day, then 100 R$ each; 512×512 icon; award with `BadgeService:AwardBadgeAsync` on the server after a confirmed achievement.
 
-## Season pass worked plan
+## Season pass
 
-- Length about one month, then a one-week rest. 10 tiers. The premium track is a superset of the free track.
-- 28-day season, 600 XP per active day, 16 active days expected = 9,600 XP.
-- Tier thresholds: 500, 650, 750, 850, 950, 1,000, 1,050, 1,150, 1,250, 1,400 (cumulative 9,550), so a typical active player finishes with a small margin.
+Build one only when the game can carry it `[lihfolk]`. A pass multiplies retention that exists; it creates none.
+
+| Precondition | Why |
+|---|---|
+| Players already return several days a week | Daily missions only work on players who come back daily |
+| New rewards can ship every month without stalling updates | A pass of recycled rewards reads as a cash grab by season 3 |
+| The loop has at least three distinct activities | Otherwise every mission is "do the verb 50 times" |
+| Sessions are long enough to finish a day's missions (about 15 min) | Otherwise each day ends with lost progress |
+| The economy can absorb a monthly burst of currency and items | Pass rewards are a faucet |
+
+Do not build one before launch or in the first month (the retention curve is unknown), under a few hundred daily players, for session games where nobody cares about cosmetics, or when the team already misses update dates: a season is a public promise with a fixed end.
+
+`[official]` starting values: about one month, at least a week of rest between seasons, about 10 tiers, automatic enrolment in the free track, daily missions across three or more categories that never need hard currency, premium as a superset, mid-season upgraders receive premium rewards for every tier already reached, claim by button with unclaimed rewards granted at season end, a retired final reward shown as a 3D model in the world (a Blender showcase piece), double XP in the final week.
+
+XP budget. Tune for a named target player, then leave slack:
+
+`expected XP = season days × share of days played × XP per play day`; set the last tier at **80–85%** of that `[lihfolk]`.
+
+Worked plan: 28 days; target player active 4 days a week = 16 play days; 3 daily missions at 100, 150 and 250 XP plus about 100 XP from play = 600 XP per play day; expected 9,600 XP. Ladder total about 8,100: tiers at 425, 550, 640, 720, 810, 850, 890, 980, 1,060, 1,190 (cumulative 8,115, 84.5%). Tier 1 lands in the first session.
+
+Conflict: this file's earlier ladder (500 … 1,400, cumulative 9,550) left 0.5% slack, so one missed day put the target player out of reach. The 15–20% slack rule is the better default; the ladder above replaces it. Players who realise on day 20 that they cannot finish stop playing the pass altogether, and premium buyers who cannot finish feel cheated.
+
+Structure and rewards `[lihfolk]`:
+
+- **Premium on the same XP bar finishes early** (extra missions = faster XP), which is partly paying to progress and leaves premium players idle in week four. Cleaner: one bar, premium bonus missions, and a few premium-only bonus tiers (11–15) that absorb the extra XP. Avoid separate ladders; they are hard to explain to young players.
+- **Slots:** tier 1 is an instant claim on both tracks. Early free tiers prove the pass works (currency, a potion, a small cosmetic). Premium tiers are cosmetics with visible flair; no stat power (house rule). The free track has its own smaller capstone. Premium tiers grant fixed items only: one crate or roll makes the whole premium pass a paid random item with odds and `PolicyService` duties `[VS]`.
+- **Premium currency refund:** returning part of the price to finishers feels generous; do the arithmetic first, and never when that currency is also the main sink.
+- **"Exclusive" is a promise.** If the final reward might ever return, call it "Season 3 reward", not exclusive.
+- **Late joiners, cheapest first:** final-week double XP; a small bank of missed daily missions (cap about 3 days); weekly missions completable in two or three sessions. Paid tier skips turn the deadline into the product; house default is not to sell them.
+
+Selling and edge cases `[lihfolk]` (implementation in data-and-purchases.md):
+
+- Key everything on a season id that is never reused. Record premium ownership per season id in the profile, with the receipt id; one developer product recorded per season is simpler than a new game pass every month.
+- **Boundary purchases:** a prompt opened at 23:59:50 and confirmed after the end still charges the player. Decide the rule in advance (hide the buy button for the last 10 minutes, or grant to the ended season and auto-claim everything reached). Every receipt resolves to a grant; never leave one unprocessed because a season ended.
+- **Mid-season upgrade:** claimability depends on the tier reached, not on when premium was bought.
+- **Double XP for one mission:** key completion by day number and mission id in the profile, so two servers or a teleport cannot both grant it.
 - Feature packages `[VS]`: Missions, Season Passes (beta; `SeasonPasses.addProgressToSeason()`), Engagement Rewards (`rewardClaimedHandlerFunction()`), Bundles (never prompt a StarterBundle on `PlayerAdded`; use the offer gate after the first win).
 
 ## Update and event cadence
@@ -123,6 +206,151 @@ Badges: 5 free per day, then 100 R$ each; 512×512 icon; award with `BadgeServic
 | Back to school | Late Aug – Sep | 0.8–0.9× |
 
 Recommendation. Lower-risk: a fixed weekly update day plus one monthly themed event with real dates. Bold: an admin-run live event every 2–4 weeks promoted through Experience Events (1,000 RSVPs puts an event on the Trending chart) `[VS]`; it drives spikes but needs reliable staffing and moderation.
+
+## LiveOps calendar: from capacity to dated events
+
+A live game runs on two clocks: what players see on each day, and what the team can build in a week. The calendar is the document that makes them agree. The method below is adapted from the LihFolk live-ops notes `[lihfolk]`; platform limits are `[official]` `[VS]`.
+
+**1. Three documents, not one.** A quarterly roadmap (seasons, major updates, holiday beats; changes monthly). The event calendar (every player-visible beat with UTC start and end; changes weekly; the only one the game servers read). A weekly work plan (tasks, owners, done criteria). Mixing "Halloween event" and "fix the pet dupe" in one sheet does not survive a busy week.
+
+**2. Measure throughput before drawing anything.** Count what shipped in the last four to six weeks in player-visible units: content units (a zone, a boss, an item set of 8–12), event units (a timed event with its own rewards and some new art), system units (trading, a pass). Maintenance (bugs, support, performance) takes 30–40% of a one-to-four-person team once a game is live, more just after a big update. Plan next quarter at the measured rate, not double it.
+
+**3. Spend the reuse budget.**
+
+| Event type | New work | Example | Share of the calendar |
+|---|---|---|---|
+| Multiplier | Config only | 2× XP weekend, luck boost | Occasional. Every weekend teaches players to wait for it and play less on weekdays; space them and compare weekday play before and after |
+| Rotation | Config, maybe an icon | Weekly shop, featured zone | Weekly, automatic |
+| Reskin | Art on existing systems | Themed hub, holiday variants of existing meshes | Most themed beats |
+| Mechanic event | New rules on existing systems | Boss rush, server-wide collection goal | At most one mechanic or content event a month |
+| Content event | A timed zone, boss or mode | A haunted map for two weeks | See above |
+
+**4. Keep one buffer week a month.** Something will break: a platform change, an exploit, a trend worth riding. Slack is what lets a bad week pass without cancelling a promised event.
+
+**5. Fixed beats first.** Holidays for the countries that make up most of your players (check analytics; summer and school terms differ by hemisphere), your own anniversaries and visit milestones. Then layer the repeating rhythm. Repeating beats are what players learn; one-off beats are what they talk about.
+
+**6. Write the overlap rules so they can be checked.** At most one headline event live at a time. Multipliers stack with a headline only by design, with a cap on the combined value. No major publish in a headline event's first 48 hours (fix by Config or kill switch). A season end and the next season's start never share a day. Event store offers end when the event ends and never return under another name.
+
+**7. Respect the platform limits.** At most 10 ongoing or upcoming Experience Events, so public events are for beats worth an RSVP, not every rotation. The Off-Platform Featuring programme needs the event submitted at least 7 days before it starts, public and accurate, and the docs say the best featured events run 7–30 days `[official]`; put "submit for featuring" on the calendar as its own dated line. Trending Events needs 1,000 RSVPs, so publish headline events about a week ahead to collect Notify Me taps. Update announcements: 60 characters, one per 3 days.
+
+**8. Durations and clocks.** Headline events 7–14 days (two weekends reach weekly players as well as daily ones), multipliers 2–3 days, seasons about a month. Long events get a mid-point beat (a second phase, a reward unlocking on day 5) rather than more days. All times are entered in UTC (daylight saving shifts hand-converted local times by an hour twice a year); the start lands in the afternoon or early evening of the largest region and outside its school hours.
+
+**9. The calendar is data the servers read.** One JSON Config key holds every event (`id`, `kind`, `startsAt`, `endsAt`, boosts). "Friday 18:00 UTC" is then one fact, not three (sheet, code constant, update note), and a slipped date needs no publish. Validate on load; a calendar that fails validation is rejected and the previous one keeps running; run the same validator before staging. Ids are permanent because reward claims and analytics key on them. Client countdowns compare the replicated end time with `workspace:GetServerTimeNow()`, never the device clock.
+
+```lua
+--!strict
+-- Unexecuted sketch. Server module. The event calendar is one JSON Config key; a bad edit is rejected, not run.
+local ConfigService = game:GetService("ConfigService")
+local HttpService = game:GetService("HttpService")
+
+export type LiveEvent = { id: string, kind: string, startsAt: number, endsAt: number, boosts: { [string]: number }? }
+local BOOST_CAP = 3 -- combined multiplier ceiling per stat
+local events: { LiveEvent } = {}
+local Calendar = {}
+
+local function problemWith(list: { LiveEvent }): string?
+	local seen: { [string]: boolean } = {}
+	for i, a in list do
+		if seen[a.id] then
+			return `duplicate id {a.id}`
+		elseif a.endsAt <= a.startsAt then
+			return `{a.id} ends before it starts`
+		end
+		seen[a.id] = true
+		for j = i + 1, #list do
+			local b = list[j]
+			if a.kind == "headline" and b.kind == "headline" and a.startsAt < b.endsAt and b.startsAt < a.endsAt then
+				return `headline events overlap: {a.id} and {b.id}`
+			end
+		end
+	end
+	return nil
+end
+
+local function apply(raw: any)
+	local ok, decoded = pcall(function()
+		return if typeof(raw) == "string" then HttpService:JSONDecode(raw) else raw
+	end)
+	local list: { LiveEvent } = {}
+	for _, e in if ok and typeof(decoded) == "table" and typeof(decoded.events) == "table" then decoded.events else {} do
+		if typeof(e) == "table" and typeof(e.id) == "string" and typeof(e.startsAt) == "number" and typeof(e.endsAt) == "number" then
+			local kind = if typeof(e.kind) == "string" then e.kind else "rotation"
+			table.insert(list, { id = e.id, kind = kind, startsAt = e.startsAt, endsAt = e.endsAt, boosts = e.boosts })
+		end
+	end
+	local problem = if #list == 0 then "empty or unreadable" else problemWith(list)
+	if problem then
+		warn(`[Calendar] rejected ({problem}); keeping the previous calendar`)
+		return
+	end
+	events = list
+end
+
+-- Combined boost for a stat from every event live now, capped. Also the test for "is the event running".
+function Calendar.boost(stat: string): number
+	local now, total = DateTime.now().UnixTimestamp, 1
+	for _, e in events do
+		local value = if e.boosts then e.boosts[stat] else nil
+		if typeof(value) == "number" and value > 0 and now >= e.startsAt and now < e.endsAt then
+			total *= value
+		end
+	end
+	return math.min(total, BOOST_CAP)
+end
+
+task.spawn(function()
+	local ok, snapshot = pcall(function()
+		return ConfigService:GetConfigAsync()
+	end)
+	if not ok then
+		return -- no configs: no events, the game still runs on code defaults
+	end
+	apply(snapshot:GetValue("calendar"))
+	snapshot:GetValueChangedSignal("calendar"):Connect(apply)
+	snapshot.UpdateAvailable:Connect(function()
+		snapshot:Refresh()
+	end)
+end)
+return Calendar
+```
+
+**10. One page per headline event.** If a row is empty the event is not ready.
+
+| Field | Example |
+|---|---|
+| Goal (one KPI) | Lift weekend D2–7 play days among players in zones 3–5 |
+| Player promise | "Defeat the Frost Titan with your server for a winter aura" |
+| Kind and dates (UTC) | Headline, Fri 18:00 to the Sunday after next 18:00 (9 days), mid-point beat on day 5 |
+| New assets | One boss reskin, one aura, three icons, a banner, a thumbnail variant (Blender time budgeted) |
+| Reused systems | Boss framework, server goal bar, rewards module |
+| Config keys and kill switch | `calendar`, `winterBossHp`, `winterDropRate`; `winterEventEnabled` |
+| Currency | Event currency with its own shop; nothing paid in the main soft currency |
+| Comms | Event page, 60-character update, What's New entry, featuring submission date |
+| Success metric and guardrail | Play days up by a stated amount; error rate and refund rate unchanged |
+| Returns? | Marked "never returns" or "may return" before launch |
+| Owner | One named person |
+
+The guardrail is the line most often skipped: an event that lifts playtime while doubling errors is not a success.
+
+**11. Timeline for one update or headline event** `[lihfolk]`:
+
+| When | Action |
+|---|---|
+| T-10 days | Feature freeze. Event created as private; featuring submission prepared |
+| T-7 | Event public with its own thumbnail; featuring submitted if eligible |
+| T-5 to T-2 | In-world hint: a closed gate, a covered statue, a Blender countdown board showing the real start time |
+| T-1 | Publish the build with the content gated behind the start time, so release bugs surface before players arrive |
+| T0 | Event starts from the calendar; update announcement; thumbnail variant on; code live |
+| T+1 to T+3 | Watch errors, economy and the first-session curve; no major publish for 48 h |
+| T+7 | Review: spike, decay, new baseline (curve patterns in core-loop-tuning.md §5) |
+
+What an update contains, by audience `[lihfolk]`: a new goal above where engaged players are; a reason and a fast route back for lapsed players (a What's New panel, a returning-player catch-up); one first-session fix for new players; something to do together; a visible change on the game page.
+
+When a date will slip: decide by T-3, not on the day; say so plainly with the new date and one sentence of why; change the event's start time before it passes (players who tapped Notify Me are watching); give something small and real on the original date if possible; never leave a countdown running to a date you will miss.
+
+**12. Review loop.** After each headline event and season: did it ship on the date; did it hit the goal and hold the guardrail; what did it cost in person-days against the estimate; what did players say; one change to the next plan. Feed the cost back into step 2. After two or three cycles the estimates stop being guesses.
+
+To step off the content treadmill, ship a system instead of a zone once in a while (a collection book, a ranked mode, crafting), raise depth instead of width (mastery tiers on existing items, harder versions of existing bosses), and let rotations run on data.
 
 ### The update-day ritual as top games run it (and a solo version)
 
@@ -143,48 +371,60 @@ Platform tools `[official]` `[VS]`: Experience Events (at most 10 ongoing or upc
 
 Rules: every "limited" claim has a real end date; event rewards never use the main soft currency; content for existing players goes at the end of progression so it is not consumed in a day `[official]`; if an update overruns its budget twice running, lengthen the cadence instead of cutting quality.
 
-```lua
---!strict
--- Unexecuted sketch. Server. A staff-free timed event: every server reads one start time from Configs.
-local ConfigService = game:GetService("ConfigService")
+The scripted pre-update event is one more calendar entry read by the module above; no separate timer code is needed.
 
-local ok, snapshot = pcall(function()
-	return ConfigService:GetConfigAsync()
-end)
-if ok then
-	snapshot.UpdateAvailable:Connect(function()
-		snapshot:Refresh()
-	end)
-end
+## Shipping an update: flags and staged rollout
 
-local function eventWindow(): (number, number)
-	if not ok then
-		return 0, 0
-	end
-	local startsAt = snapshot:GetValue("event_start_unix")
-	local length = snapshot:GetValue("event_length_s")
-	if typeof(startsAt) == "number" and typeof(length) == "number" then
-		return startsAt, startsAt + length
-	end
-	return 0, 0
-end
+Separating **deploying** code (publishing) from **releasing** a feature (players getting it) is what makes a publish routine. Flags live in Configs; engineering detail is in engineering-architecture.md and data-and-purchases.md. Design-level rules `[lihfolk]`:
 
-task.spawn(function()
-	local running = false
-	while true do
-		local startsAt, endsAt = eventWindow()
-		local now = DateTime.now().UnixTimestamp
-		local shouldRun = now >= startsAt and now < endsAt
-		if shouldRun ~= running then
-			running = shouldRun
-			-- Start or stop the event here, and replicate startsAt for the in-world countdown board.
-		end
-		task.wait(5)
-	end
-end)
-```
+| Flag kind | Purpose | Value when Configs cannot be read | Lifetime |
+|---|---|---|---|
+| Release | Hide unfinished work; staged rollout | Off | Weeks; deleted after full release |
+| Kill switch | Turn a risky system off in an incident | On (the system works) | Permanent |
+| Experiment | Choose a variant | Control | Length of the test |
+| Permission | Testers, admins | Off | Long-lived |
+
+A release flag that defaults on ships unfinished work the moment Configs fail to load; a kill switch that defaults off disables trading for everyone during a Config outage. Name flags positively (`tradingEnabled`). The platform publishes a Config to everyone in about a minute or gradually over 15 minutes and targets by attributes `[official]`; a "5% of players" dial is something you build: hash the user id with a per-flag salt into a bucket so membership is sticky and a different slice goes first each time. Evaluate once per session for anything visible; send the client only the booleans it needs.
+
+| Stage | Who | For | Abort if |
+|---|---|---|---|
+| Dark | Code shipped, flag at 0% | Until ready | New errors from the dormant modules |
+| Internal | Team and tester allowlist | 1–3 days | Any bug that touches saved data |
+| Canary | 1–5% | 1–2 days including a weekend evening | Errors clearly up; purchase or session numbers outside noise |
+| Wide | 25–50% | 2–4 days | A guardrail moves against you |
+| Full | 100%, flag kept one more release | A week | Late bugs: back to wide |
+
+Compare the flagged group with the unflagged group in the same hours, not with last week. Under about 1,000 daily players a 2% canary is 20 people: use it to catch catastrophic failures only, and use time (10% for a week) rather than a larger percentage to gather exposure. A flag turns code off; it does not undo data already written in a new shape. Ship code that reads both shapes first, then start writing the new one, and remove the old reader much later.
+
+## Patch notes and player communication
+
+The in-game What's New panel is the canonical patch note; every other channel is a pointer to it `[lihfolk]`. Under-13 players cannot receive personal notifications, and rules on external links in in-game text have tightened in 2026 `[lihfolk]` `[VS]` (check current policy before printing "join our community"), so the in-game notes must be complete on their own.
+
+- **Panel rules:** shown once per version, tracked on the server in the profile (mark as seen before showing, so a disconnect cannot re-show it); skipped for brand-new players, who have nothing to compare; one tap to dismiss, never over onboarding or combat; notes stored as a versioned JSON Config so a typo is fixed without a publish; the last few versions stay readable from a button; translated if the game is localised. The diegetic update board (Blender) shows the headline; the panel holds the detail.
+- **Template:** a one-line headline; New (3–6 bullets, each saying where to find it); Changes with numbers ("Ice Sword damage 120 → 105; attack speed unchanged"); Fixes players reported; Known issues; optionally one line on what is next. Readable in under a minute. Short sentences, the game's own names for things, player units ("about 2 seconds faster on phones"), no hype words in place of information. The docs single out "bug fixes" as an unhelpful update message `[official]`.
+- **Nerfs:** the change with numbers; the reason in one honest sentence; what affected players receive (compensation scales with investment, and is close to mandatory if the item was bought with Robux); what you will watch next.
+- **Removals:** announced before they happen, with what replaces the feature; anything purchased keeps working or is converted.
+- **Mistakes:** what happened in one sentence, who was affected, what you are doing by when, what you are giving back. Say what changed in your process, not "this will never happen again".
+- **Silent changes:** invisible refactors need no note. Anything a player can measure (damage, drop rates, prices, timers, rewards) does. A silently lowered drop rate will be found and framed as deception; for paid random items it is also a disclosure breach `[VS]`.
+
+## Resets, seasons and wipes
+
+Prefer the least damaging reset that solves a measured problem `[lihfolk]`; balance detail is in economy-and-progression.md.
+
+| Kind | Resets | Trust cost |
+|---|---|---|
+| Leaderboard season | Ranking stats only (a new `OrderedDataStore` name per season or week; the old board stays readable as a hall of fame) | Very low |
+| Ranked soft reset | Rating pulled toward the start value: `new = anchor + (old − anchor) × k`, k between 0.5 and 0.75 | Low |
+| Opt-in seasonal save | A separate season character; the main save is untouched | Low |
+| Currency reset | Soft currency | Medium to high |
+| Progress or full wipe | Levels, zones, items | High; after launch a last resort |
+
+Non-negotiables: nothing bought with Robux is taken away without equal or better compensation; receipt records are never wiped; settings survive; a reset is announced before, never discovered on login; something permanent (a title, a cosmetic) marks what was lost. Make resets cheap before they are needed by splitting the profile into permanent and seasonal parts from day one, rolling each profile over lazily the next time it loads (idempotent on season id, with a guard that never rolls early), and restarting servers at the boundary when the build changed.
 
 ## Social design
+
+Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared hub) → display (titles, rare-pull announcements) → parallel play → cooperation (shared bosses, server goals) → exchange (trading, gifting) → competition → expression and roleplay. Aim for at least three rungs, and design for a server of three before a server of thirty: a feature that needs ten players in a room fails most of the day. Credit every meaningful contributor (damage share or participation), never last hit only. A scheduled server event needs a join window (reference project: a rift open for 45 s, starting when everyone is in or time runs out). PvP is opt-in with normalised damage.
+
 
 - Intentional co-play (friends joining together, parties, shared plots) counts toward the co-play discovery signal; random matchmaking does not.
 - Friend bonus of about +10% income or XP when playing with a friend is a cheap, honest co-play incentive.
@@ -213,6 +453,13 @@ end)
 | Quest board finished in minutes by one play style | One mission category | At least three categories; one process goal per day |
 | Few players finish the season pass | XP plan assumes daily play | Re-plan for 4 active days a week; final-week double XP |
 | Update days slipping, quality falling | Cadence beyond the team | Move to the 2-week solo ritual; cut scope, not polish |
+| Events announced, then quietly cancelled | Calendar drawn before throughput was measured; no buffer `[lihfolk]` | Plan from the last six weeks' output; one buffer week a month |
+| Weekday play falls while weekends hold | A multiplier every weekend `[lihfolk]` | Space multipliers; rotate event types |
+| An event starts an hour off, or needs a publish to move | Local times, or dates hard-coded in scripts | UTC everywhere; calendar in Configs with validation |
+| Two events muddy each other's numbers | Overlapping headline events | Overlap rules enforced by the validator |
+| "Secret nerf" videos; dislikes after a balance patch | Changes shipped without numbers or reasons | Patch notes with numbers, a reason, and compensation |
+| "I bought premium and got nothing" at season end | A receipt arrived after the season closed and was refused | Boundary rule decided in advance; every receipt resolves |
+| A feature flag was turned off and saves broke | New data shape written before old code could read it | Read both shapes first; then write; remove later |
 
 ## Review gate
 
@@ -222,6 +469,13 @@ end)
 - [ ] Daily, weekly and seasonal content with real end dates.
 - [ ] Event currency per event; one KPI per event.
 - [ ] Update day and cadence chosen for the real team size and announced; countdown, update log and code plan exist.
+- [ ] Throughput measured; calendar is mostly config, rotation and reskin events with one buffer week a month; overlap rules written; all times UTC.
+- [ ] Calendar and patch notes stored as validated Config data; every headline event has a one-page brief with one KPI, a guardrail, a kill switch and a "returns?" decision.
+- [ ] Featuring submission and public event dated at least 7 days ahead; T-1 publish with content gated by start time.
+- [ ] What's New panel shows once per version, skips new players, never blocks play; nerfs and removals carry numbers, a reason and compensation.
+- [ ] Daily reward is server-timed, mark-then-save-then-pay, throttled, with no streak wipe; playtime gifts capped per day.
+- [ ] Season pass only if the preconditions hold; ladder totals 80–85% of the target player's expected XP; boundary-purchase rule written.
+- [ ] Release flags default off and kill switches default on; staged rollout plan has abort criteria; data changes follow read-both-then-write.
 - [ ] Notification opt-in prompt only at warranted moments, 13+ only; messages personalised and actionable; nothing gated on opting in.
 - [ ] Co-play incentives (friend bonus, party join) in place.
 - [ ] All user text filtered.
@@ -232,20 +486,9 @@ end)
 
 Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at commit ccc2b01; "(search summary)" = seen only through web search result text. Older sections come from `references/knowledge-base.md` sections 1.7, 1.8, 3.3 and 3.4 (grep `## 1.7`, `## 1.8`, `## 3.3`, `## 3.4`), which list their own sources.
 
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/retention.md and engagement.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/discovery.md and discovery-faq.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/experience-notifications.md with includes/experience-notifications/{eligibility,guidelines,delivery-system}.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/experience-events.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/alerts.md and production/configs.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/reference/engine/classes/Player.yaml (read; `Idled`, 20-minute disconnect)
-- https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157 (search summary)
-- https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030 (search summary)
+- Roblox/creator-docs (read), https://github.com/Roblox/creator-docs/tree/main/content/en-us/ : production/analytics/retention.md and engagement.md; discovery.md and discovery-faq.md; production/promotion/experience-notifications.md with includes/experience-notifications/{eligibility,guidelines,delivery-system}.md; production/promotion/experience-events.md; production/analytics/alerts.md and production/configs.md; production/game-design/design-for-roblox.md; reference/engine/classes/Player.yaml (`Idled`, 20-minute disconnect); production/promotion/experience-events.md (Off-Platform Featuring eligibility)
+- DevForum threads (search summary): https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157, https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030, https://devforum.roblox.com/t/do-daily-rewards-actually-keep-players-retention/3556728, https://devforum.roblox.com/t/low-engagement-on-new-game/3778071, https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644, https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566
 - https://www.gameanalytics.com/reports/2026-roblox-report and https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
-- https://devforum.roblox.com/t/do-daily-rewards-actually-keep-players-retention/3556728 (search summary)
-- https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (search summary)
-- https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (search summary)
-- https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566 (search summary)
 - https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summary of an r/robloxgamedev post via a third-party mirror; the 3× D7 claim)
 - https://www.sportskeeda.com/roblox-news/when-admin-abuse-start-grow-garden and https://www.gamepressure.com/newsroom/new-admin-abuse-date-in-grow-a-garden-you-get-to-decide-when-this/z78663 (search summary; admin-event timing)
 - https://consolepcgaming.com/roblox-smashes-ccu-record-during-admin-war-between-grow-a-garden-and-steal-a-brainrot (search summary)
@@ -253,3 +496,4 @@ Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at co
 - https://roonby.com/2025/09/24/why-rogueblox-was-closed-full-explanation-whats-next/ (search summary)
 - https://www.psu.com/news/the-cheap-trick-roblox-devs-use-to-keep-dead-games-alive/ (search summary; milestone codes)
 - https://jens.substack.com/p/gamification-of-user-engagement and https://gag.gg/guides/seed-restock-and-values (search summary; offline growth, restock timer)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/38 Live Ops Deep Dive/Event Calendars and Content Planning.md`, `…/Battle Pass and Season Design.md`, `…/Feature Flags and Staged Rollouts.md`, `…/Patch Notes and Player Communication.md`, `…/Economy Resets and Seasonal Wipes.md`, `…/Limited-Time Offers - Design and Ethics.md`, `LihFolk Vault V2/10 Game Design and Genres/Retention and Return Hooks.md`, `…/Core Loops and Session Design.md`, `…/Social Design and Multiplayer Play.md`, `…/Ethical Design and Player Trust.md`, `LihFolk Vault V2/27 Marketing and Growth/Update Cadence and Hype Cycles.md`, `LihFolk Vault V2/49 Roblox Platform Features/Experience Notifications and Return Prompts.md` (read). Ideas adapted and rewritten; code is our own.
