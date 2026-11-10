@@ -1,6 +1,16 @@
 # Horror and co-op escape playbook
 
-Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror, asymmetric killer-versus-survivors rounds and co-op chase games. Open it when fear, tension and escape drive the loop, when choosing a maturity target, or when auditing a live horror game for replay value and mobile lighting cost. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror, asymmetric killer-versus-survivors rounds and co-op chase games. Open it when fear, tension and escape drive the loop, when choosing a maturity target, or when auditing a live horror game for replay value and mobile lighting cost. For hidden-role rounds without horror see `social-deduction.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | One short chapter (10–15 min) for 1–4 players; one monster on a patrol with sight only; a minimum light level; checkpoints so death costs under two minutes; a bright, safe lobby | Procedural rooms, director, multiple entities, revives shop, asymmetric PvP |
+| Intermediate | Build–spike–release pacing; monster with sight plus hearing at 5 Hz and throttled repathing; client-only flashlight; spectate on death; party teleport to reserved servers; scare-reduction setting | Seeded variation, modifiers |
+| Expert | Tension director that reads party state; seeded room generation with pooling; replication limited to what is perceivable; low-end lighting pass; seasonal content plan for late October | — |
+
+Terms: *tension director* = server logic that decides when threats appear based on how the party is doing; *safe room* = a space where nothing can attack; *reserved server* = a private server instance created for one party's run.
 
 ## Snapshot
 
@@ -22,6 +32,9 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 
 - Tension graph: long quiet build-ups, short peaks, a safe room after each peak. Jump scares are rare and earned.
 - The AI telegraphs and misses; a director controls pacing so two threats never stack on a struggling party.
+- Pacing numbers `[lihfolk]`: a spike (scare, reveal, chase) lasts 5–60 s; a release (safe room, light, music change, a reward, a laugh) lasts 30 s–2 min. Players acclimatise within minutes: a jump scare every 20 seconds becomes comedy. Silence is a tool; cut ambience before a scare.
+- A chapter of 15–30 min fits a session `[lihfolk]`; this skill's 10–20 min run target sits at the short end so a first-time player finishes one.
+- Death should cost a group at most a minute or two of progress in chapter games; in round games keep rounds short enough that waiting is tolerable `[lihfolk]`.
 
 ## First 5 minutes
 
@@ -31,6 +44,7 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 4. 3:30 first real encounter, tuned so nearly everyone survives.
 5. 5:00 first safe room or end of shift, with a visible count of how far the run goes.
 - Lobby time is the bounce risk: get a new player into the first room in under a minute.
+- Cutscenes are skippable after a moment. One project's 27 s intro inside the first minute proved too long even with a 3 s skip and was removed `[lihfolk]`.
 
 ## Progression and economy shape
 
@@ -49,6 +63,7 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 - **Conflict (market vs house rule 3):** asymmetric leaders sell points packs (vault: Forsaken 40 R$ for 100 points up to 7,600 R$ for 20K) and packs that raise the chance of playing the killer. Role-chance for money is a paid advantage in a competitive mode; do not sell it. Sell cosmetics and earnable-roster shortcuts that carry no stat edge.
 - Revive rules: capped per run, fairly priced, offered on the death screen after the chase ends, with a free alternative (team revive, rewarded video).
 - Rewarded video `[official]` (survival playbook): Second Chance, pre-round power-up, streak saver, daily kit; deterministic consumables, daily cap. Benchmark opt-in 13%+, frequency 2.5+. Evade uses Second Chance plus Streak Saver.
+- Paid chapters work only when the free content is substantial `[lihfolk]`; discovery-driven games should keep the first full chapter free.
 
 ## Retention and social hooks
 
@@ -64,6 +79,21 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 - Accessibility toggles: reduce flashes, reduce camera shake, subtitle critical audio cues.
 - Mobile: hide and interact on large context buttons; a sprint toggle rather than hold.
 
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Lobby, party formation and teleport to a reserved run server.
+2. Run state machine (floors or chapters, checkpoints, win and fail).
+3. Interaction verbs: hide, door, pickup, light.
+4. Monster AI: senses, state machine, pathfinding with repath limits.
+5. Death, spectate and revive flow.
+6. Audio and lighting states (client-driven).
+7. Tension director.
+8. Player data: currency, cosmetics, badges.
+9. Pre-run shop and post-death offers.
+10. Seeded room generation or the round and role system for asymmetric modes.
+
 ## Technical hot spots
 
 - **Lighting on phones.** The Future lighting technology is expensive and community reports say many Android devices fall back or struggle `[community]`. Author the look so it survives on lower lighting tiers: baked-in contrast in Blender textures, fog and atmosphere for depth, few shadow-casting lights (a community repro for shadow FPS drops uses 16+ shadowed PointLights), one shadowed flashlight per client and unshadowed lights for other players.
@@ -74,6 +104,10 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 - **Procedural runs**: rooms are Blender kit pieces snapped by attachments from a server seed; pool and stream rooms; destroy rooms two behind the party.
 - **Parties and runs** live in reserved servers reached by teleport; pass party and seed data through teleport data and validate it on arrival.
 - **Asymmetric rounds** need server-side hit validation and anti-speed checks on both roles (see `shooter-pvp.md` and `fighting-battlegrounds.md`).
+- **Monster tuning** `[lihfolk]`: chase speed slightly below or equal to player sprint (for example monster 15, sprint 18, walk 12 studs/s) with stamina on the player side, so escapes depend on decisions (doors, hiding), not raw speed. A monster faster than sprint sounds scary and feels worst.
+- **Senses** `[lihfolk]`: sense at about 5 Hz (8 players × 5 Hz is 40 raycasts a second); mix hearing with sight so stealth is rewarded, rather than always targeting the nearest player, which punishes the bravest. Noise is derived on the server from movement state; a client "I made noise" remote lets exploiters stay silent or lure the monster.
+- **Pathfinding** `[lihfolk]` `[VS]`: cap repaths at about two a second; never path every frame. Agent defaults are radius 2, height 5, waypoint spacing 4. Call `SetNetworkOwner(nil)` on the monster so no client simulates it (prevents stutter near players and exploitation). A catch cooldown of about 6 s stops chain kills.
+- Test at the lowest graphics quality: a scene that is moody on PC can be pitch black or flat grey on a phone `[lihfolk]`.
 
 ## The one-new-verb angle
 
@@ -91,6 +125,7 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 - A Moderate label chosen by accident (blood or intensity that the design did not need).
 - Revive or shop prompts during a chase.
 - Launching in November after the Halloween window.
+- Monster always chases the nearest player; monster faster than sprint; pathfinding every frame; a client-reported noise remote `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -110,6 +145,8 @@ Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror,
 | 12 | No role-chance or stat power is sold | Convert to cosmetics |
 | 13 | Flash and shake toggles exist | Add accessibility settings |
 | 14 | A seasonal plan exists for 10 Oct–3 Nov | Schedule content and Experience Events |
+| 15 | Monster chase speed ≤ player sprint; senses at about 5 Hz; repath ≤ 2/s; server owns the monster | Retune speeds; throttle senses; set network owner to the server |
+| 16 | A scare-reduction setting and a way to leave a chapter exist | Add both |
 
 ## Review gate
 
@@ -134,3 +171,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/pointlight-no-longer-always-follows-humanoidrootpart-in-future-lighting/3620431 (search summary)
 - https://endsights.com/horror-game-design (search summary; host not reachable for a full read)
 - https://github.com/ahmicy/simplepath (search listing; 70 stars, MIT; pathfinding wrapper, reference only)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Horror and Story.md`, `43 Genre Systems End to End/Horror Monster Chase AI End to End.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

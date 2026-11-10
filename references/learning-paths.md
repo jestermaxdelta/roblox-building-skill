@@ -114,18 +114,16 @@ local COIN_VALUE = 1
 local RESPAWN_SECONDS = 5
 local MAX_REACH = 12 -- studs: ignore touches claimed from far away
 
-local function setUpCoin(coin: Instance)
-	local trigger = coin:FindFirstChild("Trigger")
-	local mesh = coin:FindFirstChild("Mesh")
-	if not (trigger and trigger:IsA("BasePart") and mesh and mesh:IsA("BasePart")) then
-		return
-	end
+local function connectCoin(trigger: BasePart, mesh: BasePart)
 	local available = true
 	trigger.Touched:Connect(function(hit: BasePart)
+		if not available then
+			return
+		end
 		local character = hit:FindFirstAncestorOfClass("Model")
 		local player = character and Players:GetPlayerFromCharacter(character)
 		local root = character and character:FindFirstChild("HumanoidRootPart")
-		if not (available and player and root and root:IsA("BasePart")) then
+		if not (player and root and root:IsA("BasePart")) then
 			return
 		end
 		if (root.Position - trigger.Position).Magnitude > MAX_REACH then
@@ -134,13 +132,22 @@ local function setUpCoin(coin: Instance)
 		available = false
 		mesh.Transparency = 1
 		mesh.CanCollide = false
-		player:SetAttribute("Coins", ((player:GetAttribute("Coins") :: number?) or 0) + COIN_VALUE)
+		local coins = player:GetAttribute("Coins")
+		player:SetAttribute("Coins", (if typeof(coins) == "number" then coins else 0) + COIN_VALUE)
 		task.delay(RESPAWN_SECONDS, function()
 			mesh.Transparency = 0
 			mesh.CanCollide = true
 			available = true
 		end)
 	end)
+end
+
+local function setUpCoin(coin: Instance)
+	local trigger = coin:FindFirstChild("Trigger")
+	local mesh = coin:FindFirstChild("Mesh")
+	if trigger and trigger:IsA("BasePart") and mesh and mesh:IsA("BasePart") then
+		connectCoin(trigger, mesh)
+	end
 end
 
 for _, coin in CollectionService:GetTagged("Coin") do
