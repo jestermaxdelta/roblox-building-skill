@@ -44,7 +44,7 @@ Conflict: the GameAnalytics 2026 report (500+ titles above 1M MAU, Aug 2025–Ju
 
 `[official]` Roblox describes the same structure in three parts: minute-to-minute interaction (explore), the most repeated set of actions (fight), and a progression engine (upgrade). If any of the three is missing the loop is not closed.
 
-Core-loop rubric for a paper design, 0–2 per row, pass at 7/10. For a build or a live game use the observable 0–10 scorecard and timing targets in core-loop-tuning.md §1 and §3:
+Core-loop rubric for a paper design, 0–2 per row, pass at 7/10. For a build or a live game use the observable 0–10 scorecard and timing targets in core-loop-tuning.md §1 and §4:
 
 | Dimension | 0 | 1 | 2 |
 |---|---|---|---|
@@ -163,7 +163,7 @@ Returning players: `AnalyticsService:GetPlayerSegmentsAsync(player)` (server-onl
 - No start menu, play button or cutscene before the verb. `[community]` developers describe menus as friction for casual games; put settings and server choice behind a small HUD button. Round-based games spawn the player into a lobby where the verb already works (practice target, mini-loop) and keep the wait under 30 s.
 - The spawn pad faces the first verb target, which is within about 3 s of walking `[house]`. Veterans' builds and effects may be in view as a promise of the future, but nothing they do may cover the first prompt.
 - Keep the spawn zone light so control arrives fast on a 3 GB Android phone: instance streaming on, preload only the first-screen UI and spawn-zone assets, load the rest behind play (performance.md). The docs' loading-screen sample holds its screen for a fixed 5 s; do not copy that delay.
-- Measure it: seconds from join to `FirstAction` (the `FtueBeat` event in core-loop-tuning.md §6), under-60 s bounce, and the Performance dashboard (crash rate, out-of-memory exits) by device type and place version.
+- Measure it: seconds from join to `FirstAction` (the `FtueBeat` event in core-loop-tuning.md §7), under-60 s bounce, and the Performance dashboard (crash rate, out-of-memory exits) by device type and place version.
 
 ### 7.3 Goal clarity: the "what do I do next" problem
 
@@ -195,7 +195,7 @@ Anti-patterns: a quest log that lives only in a menu; five quests at once in ses
 | Under-60 s bounce high on phones only | Control arrives late, or the first prompt is unreadable on a small screen | §7.2; test on the 3 GB phone |
 | "Just another <genre>" feedback | The twist is a theme, not a mechanic | Put the originality in the verb (§3) |
 
-Full metric-by-metric table with experiments: core-loop-tuning.md §5.
+Full metric-by-metric table with experiments: core-loop-tuning.md §6.
 
 ## 8. Light narrative and readable worlds
 

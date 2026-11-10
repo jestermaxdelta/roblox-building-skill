@@ -7,7 +7,7 @@ Covers click-or-collect simulators, "X Incremental" upgrade-board games, standal
 - Market position (vault, 2026-11-07): **crowded with a long tail**. "X Incremental": Depth Incremental 19.8K CCU and Noob Incremental 5.5K lead; about 30 of the first 40 results are under 1K. Standalone RNG is **winner-take-most**: Sol's RNG 41K (about 40K held for 2+ years by adding depth), Anime Dice 30K, then a fast drop under 3K. Clicker/collect: Tap Simulator REBORN 36–37K, Bee Swarm Simulator 32K, Cut a Rock 26K. Fishing is **durable, up 55% year on year**: Fisch 79K, Fish It 63K, Net a Fish 14K.
 - Simulators overall cooled from 55% to 35% of top-10 CCU between September and October 2026 (vault). A third-party tracker reports 189 new simulator launches in one quarter with average CCU per game down 20% `[community]`.
 - The leaders add a visible journey: Depth Incremental digs down a pit ("Day 1 → Day 100, +$23/s → +$23,382,465/s"); menu-only incrementals sit under 2K.
-- Audience: young, casual, plays one-handed on a phone; session 14–34 min in comparable games (vault). Server size is flexible: shared lobbies of 12–30 work because players do not compete for space.
+- Audience: young, casual, plays one-handed on a phone; session 14–34 min in comparable games (vault). Server size is flexible: shared lobbies of 12–30 work because players do not compete for space `[house]`.
 
 ## Core loop with timings
 

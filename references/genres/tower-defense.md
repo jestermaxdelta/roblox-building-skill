@@ -69,7 +69,7 @@ Covers wave-based tower defence: classic path TD, anime unit TD with summons and
 
 - **Enemies are data, not characters.** DevForum consensus `[community]`: do not give enemies Humanoids. Simulate each enemy on the server as path distance, HP and speed; replicate compact state; render pooled Blender models on clients, interpolating along the waypoint path with `AnimationController` rigs.
 - **Bandwidth is the second wall.** Do not replicate per-enemy CFrames every frame. Send spawn events (id, type, spawn time, path) and corrections on speed changes; clients derive position from time. Batch damage and death events per tick in a buffer.
-- **Targeting**: plain distance checks on the data list, or a spatial grid along the path; precompute which path segments fall inside each tower's range at placement. Run tower logic on one shared server loop at a fixed tick (10–20 Hz) `[house]`.
+- **Targeting**: plain distance checks on the data list (or `GetPartBoundsInRadius` if enemies have server proxies), or a spatial grid along the path; precompute which path segments fall inside each tower's range at placement. Run tower logic on one shared server loop at a fixed tick (10–20 Hz) `[house]`.
 - **Movement accuracy**: carry leftover distance past waypoints; humanoid `MoveTo` drifts on sharp turns `[community]`.
 - **Placement validation on the server**: unit owned and in loadout, cash, placement zone, spacing, cap per player. In maze TD run a BFS before accepting a placement so the path is never blocked.
 - **Match servers**: lobby place teleports parties to reserved servers; pass loadout and party in teleport data and re-validate against saved inventory on arrival.

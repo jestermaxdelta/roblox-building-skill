@@ -2,6 +2,18 @@
 
 How a Roblox game gets players beyond what Recommended For You hands it: the readiness gate, on-platform levers, Ads Manager, short-form video, creators, community, announcements, codes, cross-promotion, localisation and the rules that marketing most often breaks. Open it at Phase 11 (launch) and Phase 12 (LiveOps), and in level-up mode when the audit lands on triage step T8 or T1 (`references/audit-existing-game.md`). Evidence for off-platform tactics is thin and mostly anecdotal; those rows are tagged `[community]` and are heuristics.
 
+## Start here by level
+
+| Level | Do first | Ignore for now |
+|---|---|---|
+| Beginner | 1. Pass the readiness gate below before telling anyone. 2. Make one share link per place you post. 3. Create the Roblox group and one Experience Event. 4. Post real clips of the first minute | Ads, creator deals, experiments, localisation beyond auto-translate |
+| Intermediate | Soft launch with recommendations excluded, a measurement campaign, a fixed update day with an event each time, clip features in the game, per-channel cohorts in analytics | Scaling ad spend before the value of a player is known |
+| Expert | Value-per-player and payback by source, creative testing through campaigns, lapsed-player reactivation, creator programmes with disclosure briefs, the CCU model, search-query tracking | Nothing; re-check `[VS]` facts each quarter |
+
+Terms: **cost per play (CPP)** ad spend ÷ plays; **ROAS** value earned from an ad cohort ÷ spend; **share link** a trackable Roblox link that reports new users per channel; **LaunchData** a short string carried by a link or ad into the game (`Player:GetJoinData()`); **soft launch** public but not yet pushed, used to measure; **cohort** players grouped by first-play date or source.
+
+Contents: 1 Order of operations and soft launch · 2 Channel map · 3 Ads Manager · 4 Short-form video · 5 Creators · 6 Community · 7 Updates, events, launch window · 8 Codes · 9 Cross-promotion, search and localisation · 10 What breaks the rules · 11 Rescuing a weak launch · Level-up table · Review gate · Sources.
+
 ## 1. Order of operations
 
 Traffic multiplies whatever the game already does to a new player. Buy or borrow reach only after the readiness gate passes.
@@ -15,6 +27,17 @@ Traffic multiplies whatever the game already does to a new player. Buy or borrow
 | Stability | Crash rate under 2–3%, join ≤ 15 s on low-end Android | A spike magnifies crashes |
 | Value of a new player known | 30-day revenue per new user by source, from the Acquisition new-users funnel | Sets the cost-per-play ceiling |
 | Kids/Select status known | Trial (16+ only) or eligible | Decides audience and channel |
+
+Do not launch at all while any of these is true `[lihfolk]`: nobody outside the team has played the first session start to finish on a mid-range phone; join time on a phone is unknown; no funnel logs join to minute 10; the save system has not survived a forced server shutdown test. Delay a week instead; the first impression is spent once.
+
+Soft launch `[official]` setting, `[lihfolk]` method: publish publicly with Audience → Advanced → "Exclude from recommendations" on, bring a few hundred players you control (community, testers' friends, a small Plays campaign), and read four things in order: crash-free sessions with zero data loss, the shape of the onboarding funnel, median first-session length, D1 direction. Those players would not count toward ranking anyway, so the rehearsal is free. Rule-of-thumb bars before turning recommendations on `[lihfolk]`:
+
+| Soft-launch cohort metric | Fix before opening | Fine to open |
+|---|---|---|
+| New players reaching the first reward within 60 s | Under 70% | 85%+ |
+| Biggest single-step drop in the first 3 minutes | Over 25% | Under 15% |
+| Median first session | Under 5 min | 10+ min |
+| D1 | Clearly below the genre benchmark | Near or above it |
 
 What counts for ranking `[official]`: Recommended For You ranks only on users who arrived organically through it. Players from ads, search, friends, share links and social media never enter those signals, but any plays help a game get considered. So outside traffic cannot repair weak organic signals, and cannot damage them either.
 
@@ -43,11 +66,13 @@ Formats and mechanics `[official]`:
 | Sponsored experiences | A sponsored tile on Home; the same campaign also runs in search results. The sponsored tile and the organic tile can both show to one user |
 | Search ads | Up to 10 keywords per ad set, exact keyword match, shown at the top of results or directly after an exact-name match. No audience targeting (all regions, 13+). Second-price auction adjusted for relevance: bid only on keywords the game truly matches. The search-ads page still describes an older keyword flow with an objective named Visits while the Ads Manager page says campaigns appear in search automatically: check the live UI |
 | Immersive ads | Billboards (image, or video up to 30 s) and portals placed inside other creators' games; a portal teleports the player in. These are also what a publisher places to earn |
-| Objectives | **Plays** (broad, cheapest, early traffic and tests); **Earnings** (likely spenders, higher cost per play); **Engagement** (age-checked highly engaged players who count toward the Kids/Select 250-play threshold; smaller audience, higher cost, does not auto-pause at the goal) |
+| Objectives | **Plays** (broad, cheapest, early traffic and tests); **Earnings** (marked "Limited" in the docs; likely spenders, higher cost per play); **Engagement** (age-checked highly engaged players who count toward the Kids/Select 250-play threshold; smaller audience, higher cost, does not auto-pause at the goal) |
 | Audiences | All; New (never played or 180+ days away); Recent (last 30 days; needs 10,000+ recent players); Lapsed (30–180 days; needs 20,000+ lapsed players). Advanced targeting by location, age, gender, genre, device raises cost per play |
 | Budget and bidding | Daily or lifetime budget; automated bidding; engaging games receive ad-system discounts; unused credits return when the campaign ends |
 | Creatives | Up to 10 thumbnails per campaign, 16:9, split evenly, toggled individually. An "AI generate" option exists: do not use it (house rule 1 and the accuracy rule; creatives are real captures of the Blender-built game) |
 | Timing | Moderation within about 24 h; first 24 h is a learning phase; reports lag up to 48 h |
+| Fixed after publishing | Goal, audience and budget type cannot be edited; name, budget amount, schedule and creatives can. A wrong audience means a new campaign |
+| Invalid traffic | Campaigns are re-checked for fraudulent traffic 14 days after they end and billing is adjusted |
 | Attribution | New player: 30 days credited to the ad. Returned after 7+ days away: 7 days. Recent player: that session only. Read the Recent and Resurrected views, not only All Users |
 | Launch data | Advanced join options pass LaunchData so the game can tailor onboarding per campaign (tutorial for New, "welcome back" for Lapsed) |
 | API | Open Cloud Ads API (`/ads-management/v1`): v1 supports the ENGAGEMENT objective only; budgets are micro-USD strings; creatives are uploaded image assets |
@@ -81,6 +106,48 @@ max cost per play = value per ad player ÷ target margin (1.5 while learning, 1.
 - Read "30D revenue per user (cumulative)" for the Sponsored ads row in Acquisition → new users funnel; confirm whether it is before or after the 30% platform fee.
 - DevEx is $0.0038 per earned Robux (monetization-and-policy.md). Worked example: 4 earned R$ per ad player → $0.0152 → ceiling about $0.010 at a 1.5 margin. At 1 earned R$ the ceiling is about $0.0025, below every quoted cost per play: do not scale, fix conversion first.
 - When paying with ad credits bought with Robux, do the same sum in Robux using the conversion preview.
+
+Plays are not players `[lihfolk]`: Ads Manager counts plays, and one person can produce several. For cohort maths tag ad joins through LaunchData, count unique users and compute revenue per unique user; otherwise the two denominators disagree.
+
+Conflict: quoted costs differ by an order of magnitude. Roblox's posts and forum quotes put a play under $0.01; LihFolk's worked example uses an illustrative $0.10 per play and lands at a 30-day ROAS near 0.08, concluding that paid acquisition rarely pays back on purchases alone for small games. Neither is your number. Run the measurement campaign, read your own CPP and cohort revenue, and expect creative quality (CPP) and monetisation depth (revenue per player) to dominate; with auto-bidding there is no bid lever.
+
+Campaign patterns (structure adapted from `[lihfolk]`):
+
+| Pattern | Setup | Judge by |
+|---|---|---|
+| Measurement | Plays, New Players, small daily budget for 5–7 days, LaunchData tag per test, ideally while recommendations are excluded | A clean funnel read; not ROAS |
+| Creative test | Up to 10 creatives; switch off clear losers after enough impressions. To learn which promise brings players who stay, run one short campaign per concept, because LaunchData cannot tell creatives apart | CPP per creative and the D1 of the cohort it brought; low CPP with poor D1 is over-promising |
+| Reactivation | Lapsed Players (needs 20,000+), timed to a real update with an event live that day | Resurrected Users view; your own "returned after 30+ days" segment |
+| Eligibility | Engagement objective, its own budget, 3–5 days, paused by hand at the 250-play threshold | Audience Reach progress |
+
+Reading lag `[lihfolk]` (rule of thumb): decide on CPP after 2–3 days, on the ad cohort's D1 after 3–4 days, on 7-day revenue per user after 9–10 days. Never judge on the first evening.
+
+```lua
+--!strict
+-- Unexecuted sketch: classify how a player arrived, from LaunchData set on an ad or share link.
+-- Whitelist values so analytics field cardinality stays small and nobody can inject strings.
+local HttpService = game:GetService("HttpService")
+
+local ALLOWED: { [string]: boolean } = { ads = true, share = true, event = true, creator = true }
+
+local function acquisitionTag(player: Player): string
+	local raw: unknown = player:GetJoinData().LaunchData
+	if typeof(raw) ~= "string" or #raw == 0 or #raw > 200 then
+		return "organic"
+	end
+	local ok, decoded = pcall(HttpService.JSONDecode, HttpService, raw)
+	if not ok or typeof(decoded) ~= "table" then
+		return "organic"
+	end
+	local src: unknown = (decoded :: { [string]: unknown }).src
+	if typeof(src) == "string" and ALLOWED[src] then
+		return src
+	end
+	return "organic"
+end
+-- Log the tag as a custom field on the onboarding funnel; treat any LaunchData perk as public
+-- (links get copied): cosmetic or small, once per account, never tradeable.
+```
 
 Operating rules: start with Plays + New Players and 3–5 distinct honest creatives; cap the test budget; pause creatives with the worst cost per play after the learning day; add creatives rather than budget first; never run a creative the first minute does not deliver; run Lapsed campaigns only in update weeks.
 

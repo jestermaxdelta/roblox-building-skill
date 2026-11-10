@@ -13,6 +13,19 @@ Fill top to bottom while running `references/audit-existing-game.md`. Every scor
 | Data layer and schema version | |
 | Access used (dashboard screenshots, Open Cloud analytics, Studio MCP, repo) | |
 | 6-week goal and target metric | |
+| Developer level (beginner / intermediate / expert) and how it was set | |
+
+Report shape by level: **beginner** fill sections 0, 2 (scores only), 3 and the safe-change checklist, and write section 0 in plain language; **intermediate** fill everything except the expert rows; **expert** fill everything, including evidence grades, dismissed findings, experiment plans and the second-opinion block.
+
+## 0. Top 3 actions, explained (always fill; this is the whole plan for a beginner)
+
+Blockers first. For each action: what to change, why it matters to a player, exact steps, how to tell it worked and when.
+
+| # | Action | Why (one sentence a new developer understands) | Steps | Worked if (number and date) | Reference to open |
+|---|---|---|---|---|---|
+| 1 | | | | | |
+| 2 | | | | | |
+| 3 | | | | | |
 
 ## 1. Numbers (baseline window: <YYYY-MM-DD> to <YYYY-MM-DD>)
 
@@ -62,6 +75,14 @@ Things that changed in the baseline window (updates, thumbnails, title, ads, pri
 | 10 | Discovery and growth | | | |
 | | **Total / 50** | | | |
 
+Sub-checks (pass count out of 6; under 3 caps the parent at 2, 3–4 caps it at 4; a blocker item goes to section 3):
+
+| Sub-check | Parent | Passes / 6 | Failed items | Cap applied |
+|---|---|---|---|---|
+| 2a Game feel and audio | Core loop | | | |
+| 6a Accessibility and quality of life | UI/UX | | | |
+| 4a Community and safety | Retention and LiveOps | | | |
+
 Timed first-session log (from the MCP play pass or a recording):
 
 | Moment | Seconds from join | Note |
@@ -92,7 +113,7 @@ Census highlights (instances, scripts by container, remotes, unique MeshIds, fla
 
 ## 4. Findings and ranked actions
 
-Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (dev-days, min 0.5). Blockers and house-rule violations are listed first regardless of score.
+Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (dev-days, min 0.5). Blockers and house-rule violations are listed first regardless of score. In the Evidence column start with the grade: Measured, Observed, Static (not measured) or Inferred. Code findings add P0–P3.
 
 | Rank | Action | Dimension | Evidence | Metric it should move | I | C | E | Priority | Flag or experiment | Reference to open |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -111,11 +132,37 @@ Parked (real but below the line), one line each:
 
 - 
 
+Dismissed findings (pattern or suspicion, location, why it is not a problem), so the next audit skips them:
+
+- 
+
+Stopwatch comparison (optional; use when there is no dashboard benchmark). Fresh account, phone:
+
+| Measure | Leader A | Leader B | Peer C | This game |
+|---|---|---|---|---|
+| Load to control (s) | | | | |
+| First action (s) | | | | |
+| First reward (s) | | | | |
+| Pop-ups in first 3 min | | | | |
+| First purchase prompt (min) | | | | |
+
 ## 5. Decision
 
 - [ ] Quick-wins sprint · [ ] Rebuild the loop in the same universe · [ ] Park or kill
 - Rule that triggered it: __
 - Lower-risk option: __ · Bolder option: __ · Recommended: __
+
+Second opinion (required for rebuild, park, save-schema migration, live pricing or a ship decision; optional otherwise):
+
+| Field | Value |
+|---|---|
+| Question as framed (neutral wording) | |
+| Rubric fixed before answers (3–5 points) | |
+| Evidence pack given to every reviewer | |
+| Tier and reviewers (quick: 1 sceptic; standard: player advocate, systems engineer, producer or sceptic) | |
+| Reviewer verdicts and confidence | |
+| Strongest objection, and whether it changed the recommendation | |
+| Evidence that would flip the decision | |
 
 ## 6. Two-week plan (quick wins)
 
@@ -169,3 +216,9 @@ Weekly update day: __ · Events planned: __ · Growth actions unlocked when (met
 | Date | Total / 50 | Target metric | Changes shipped since last audit | Kept / reverted |
 |---|---|---|---|---|
 | | | | | |
+
+Deliverable scores (0–10; any failed gate caps at 5.0; 8.5 or more to call it done; at most three fix rounds):
+
+| Date | Deliverable | Gates | First score | Final score | Rounds | Lowest criterion and the fix that moved it |
+|---|---|---|---|---|---|---|
+| | | | | | | |

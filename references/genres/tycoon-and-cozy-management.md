@@ -35,7 +35,7 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 
 ## Progression and economy shape
 
-- Button order is a pacing graph: draw price against minute-of-play before building; one visible "next purchase" at all times.
+- Drivers `[official]`: efficiency, accumulation, time management. Button order is a pacing graph: draw price against minute-of-play before building; one visible "next purchase" at all times. Every purchased building is a Blender model that appears with a juicy build-in animation.
 - Costs: geometric, `g` 1.07–1.15 for common pads, 1.5–3 for building tiers (economy-and-progression.md). Income per pad grows slower than its cost so the wait ratio creeps up toward rebirth.
 - Staff are the collection: Hire 1/5/25 pads; merge 3 of a tier into the next (Rookie → Legendary); an index of everything produced or sold (Sushi: 24-fish index). Reuse one Blender worker mesh with material and accessory variants per tier.
 - Rebirth: multiplicative `q` with wait ratio ×1.2–1.5; keeps cosmetics, index and passes.
@@ -71,14 +71,14 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 - **Droppers are the classic performance trap.** Community reports of tycoons becoming unplayable on low-end devices trace to unanchored drop parts `[community]`. Compute income as numbers on a 1 Hz server tick; render conveyor items on each client from pooled Blender meshes moved by CFrame; cap visible items per plot; late-game droppers credit the bank directly.
 - **Workers**: no Humanoids. Server stores counts and tiers; clients animate pooled rigs with `AnimationController` along fixed paths. Other players' plots show a reduced crowd.
 - **Plot save**: persist purchase IDs (set or bitfield), staff counts per tier and decoration as `{id, cell, rot}`; never serialise instances. Rebuild on join in slices (about 5 ms per frame) to avoid a hitch. One key holds 4,194,304 characters `[official]` `[VS]`.
-- **Plot lifecycle**: assign on join, release and clean on `PlayerRemoving`; plot models streamed as units so neighbours do not pop in piecewise.
+- **Plot lifecycle**: assign on join, release and clean on `PlayerRemoving`; plot models streamed as units (`Atomic`; `PersistentPerPlayer` for the owner's own plot, see performance.md) `[VS]` so neighbours do not pop in piecewise.
 - **Exploit surface**: every pad purchase checks plot ownership, prerequisite, price and distance on the server; "collect" remotes carry no amount; merge consumes three and grants one in a single server step; decoration placement is clamped to the plot grid; offline income uses server `os.time()`, never a client clock.
 - **Numbers**: move to mantissa/exponent before balances approach 1e15.
 
 ## The one-new-verb angle
 
 - The job is the verb. Pick one hands-on action that is fun at 30 seconds and still readable at scale: pack neatly, flip a car, draw a route, bid on a locker.
-- Give the plot a visible journey (garage → mega-centre) rather than a longer menu.
+- Give the plot a visible journey (garage → mega-centre) rather than a longer menu. LINE UP! is the one map-based hit because drawing routes plays like a toy (vault).
 - Unclaimed pairings in the vault: hands-on warehouse fulfilment plus drawn routes (best hybrids under 2.3K CCU).
 
 ## Common failure modes

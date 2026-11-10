@@ -1,16 +1,50 @@
 # Economy and progression design
 
-How to model, tune and repair a game economy. Open it when you design currencies, XP curves, upgrade prices, rebirths or luck for a new game, or when a live game shows inflation, a progression wall, a dupe or a rebalance backlash (jump to "Level-up"). Distilled from knowledge-base sections 1.5, 1.6 and 3.5 and extended on 2026-11-10. Every number is a starting point to validate in playtests, not a law. Tags: `[official]` Roblox docs, `[community]` forum/press practice (heuristic), `[VS]` version-sensitive (check https://create.roblox.com/docs), `[house]` house estimate.
+How to model, tune and repair a game economy. Open it when you design currencies, XP curves, upgrade prices, rebirths or luck for a new game, or when a live game shows inflation, a progression wall, a dupe or a rebalance backlash (jump to "Level-up"). Distilled from knowledge-base sections 1.5, 1.6 and 3.5 and extended on 2026-11-10. Every number is a starting point to validate in playtests, not a law. Tags: `[official]` Roblox docs, `[community]` forum/press practice (heuristic), `[VS]` version-sensitive (check https://create.roblox.com/docs), `[house]` house estimate, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers are rules of thumb or simulated unless stated).
+
+## Start here by level
+
+| Level | Do these | Ignore for now |
+|---|---|---|
+| Beginner | One soft currency with a faucet list and a sink list. Write a time-to-afford target for each purchase type. First ten purchases 3–10 s each. Geometric upgrade costs (g 1.07–1.15). Every change to a balance happens on the server. | Hard currency, trading, simulation, pity ramps |
+| Intermediate | Derive every price from one income table and check p ÷ g per zone. Payback and the greedy path for each upgrade track. A declared multiplier cap and free-to-payer gap. Event currency with a lifecycle. `LogEconomyEvent` from one wallet with stable SKUs; hours of income held per zone. | Custom telemetry, cross-server markets |
+| Expert | Agent-based simulation on the game's own config, run in CI. Cohort telemetry with robust-z alerts. Effective pity rates and item supply per day. Market design for trading (binding, robust prices, taxes, cooldowns). Staged rebalances with a numeric hypothesis. | — |
+
+Terms: a **faucet** creates currency, a **sink** destroys it; **soft** currency is earned in play, **hard** (premium) currency is mainly bought with Robux; **time to afford** is price ÷ income per minute.
+
+Contents: Design first · Time to afford · Hard currency or direct Robux · Progression curves and upgrade tracks · Rebirth · Paid multipliers · Offline income · Large numbers · Random rewards, pity and supply · Event currency · Pricing soft currency · Server rules · Trading and dupes · Measuring a live economy · Simulation · Live rebalancing and resets · Level-up table · Review gate · Sources.
 
 ## Design the economy before you build it
 
 1. **Name every currency and resource, then limit them.** The Creator Analytics economy dashboard shows up to 5 currencies and the event limits allow 10 resource types. Fewer currencies are easier to balance and to read.
 2. **For each currency, write down who earns it, how (faucets), and what it is spent on (sinks).** Track every source and sink in a sheet. If a currency has no sink, it will inflate; if it has no faucet besides purchase, it is a hard currency and must be priced as one.
 3. **Keep sources minus sinks close to zero over a player's week.** The sink ratio (total spent divided by total earned) should sit within about 5% of 1.0 for soft currency. That ratio is a heuristic from the Roblox balance guide, not a documented rule.
+   Conflict: LihFolk's model argues the level is the wrong target in a growing exponential game: balances rise with progress, so the daily sink ÷ faucet ratio sits below 1 (0.29 in its simulated zone game with no endgame sink) and only the trend and the per-zone view carry information `[lihfolk]`. Trust both in their place: 0.95–1.05 is the design target for a settled player's week in the spreadsheet; on live data read the trend within a progress band (see "Measuring a live economy").
 4. **Pick the first ten levels or upgrades for speed.** Early purchases should take 3–10 seconds each, so the player learns the loop while the numbers are still small.
 5. **Decide the long-term engine** (rebirth, prestige, collection completion or seasons) before launch. Retrofitting one changes every number.
 
 Warning signs of inflation: prices in player trades rise while nothing changed, the top 1% hold most of the wealth (Gini climbs), new players cannot afford starter items at market price, and the sink ratio drifts below 0.9. Fixes, in order of preference: add desirable sinks (cosmetics, upgrades, consumables), add a new currency for the event instead of inflating the old one, then and only then reduce faucets.
+
+## Time to afford: price everything from one income model
+
+Players feel waiting time, not prices. For every purchase compute `T = price ÷ income per minute at the point the purchase becomes relevant`, and keep T inside a band chosen on purpose `[lihfolk]`:
+
+| Purchase | Target T, active play (rule of thumb) |
+|---|---|
+| Small upgrade, consumable | 1–3 min (3–10 s for the first ten purchases of the game) |
+| Meaningful upgrade (skill node, forge level) | 5–15 min |
+| Zone gate, big unlock | 15–45 min |
+| Rebirth or prestige | 1–3 sessions (the first one inside session one) |
+
+```
+zone k: income I_k = I0 × g^k, gate P_k = P0 × p^k   →   T_k = T0 × (p ÷ g)^k
+T0 = 10 min:  p ÷ g = 1.1 → 23.6 min at zone 9;  1.0 → 10 min;  0.9 → 3.9 min (the late game blurs past)
+```
+
+- Only the ratio p ÷ g matters. Below 1 is the commonest hidden inflation: no single gate looks wrong, but late zones are skipped. Much above about 1.15 builds walls: in LihFolk's simulation, moving from 1.15 to 1.23 roughly quadrupled the share of stuck players and cost about 5% of DAU within a month `[lihfolk]` (simulated; trust the direction, not the size).
+- One model, every system: gates, upgrade boards, forges and quest rewards all read the same income table. A system priced by hand is the one that breaks when income changes (their reference game cut cash income to ×0.55 and found a forge upgrade at 150K that should have cost 12–15K) `[lihfolk]`.
+- Carry-over: T assumes arriving with nothing. If old zones can be farmed forever, players arrive holding several gates' worth. Make the newest zone the best place to earn, and pay quests as a share of the next gate's price so they stay relevant.
+- An exponential soft currency cannot carry fixed-price content: a 250-coin cosmetic is free two zones later. Put flat-priced goods in a flat currency (premium, event tokens or a separate style currency), or cap multipliers so the flat scale survives.
 
 ## Hard currency or direct Robux prices?
 
@@ -24,6 +58,19 @@ Default `[house]`: price boosts, passes and packs directly in Robux and keep one
 | Pricing | Bundles and sub-1 R$ granularity | Roblox's subscription guide starts from "how much play earns the equivalent of 1 Robux"; keep that rate legible. A DevForum reply recommends rescaling so 1 gem ≈ 1 R$ rather than an odd rate `[community]` |
 
 If you add one: fixed public exchange rate, no random sink for restricted players, never tradeable, and log every source and sink with `AnalyticsService:LogEconomyEvent` (transaction type `IAP` for purchases).
+
+One job per currency `[lihfolk]`. A new currency must answer three questions: what does it buy that nothing else buys, where does it come from that nothing else pays, and what happens to it when the player stops caring (if the answer is "it piles up", it is a future inflation problem). A session game rarely needs more than one soft, one premium and one live event currency; crafting materials are inventory items with a count, not currencies. Two counters fit a phone's top bar; three crowd it.
+
+Premium-currency rules that are hard to undo `[lihfolk]`:
+
+- **Anchor.** Fix a value (1 gem ≈ 1 R$) and derive every pack, price and free grant from it. Changing it later reprices the whole shop.
+- **No stranded balances.** Make every gem price and every pack size a multiple of one unit. Packs of 100 / 550 / 1,200 against prices of 80 / 400 / 1,000 strand 20–200 gems per purchase; prices of 50 / 250 / 600 let every pack be spent to zero.
+- **Paid and free buckets.** Store `GemsPaid` and `GemsFree` separately from day one, with a written spend order. Refund handling, paid-item provenance (trading and paid-random rules) and the free-share metric all need the split; an item bought with a mix counts as paid.
+- **Free share** = free gems granted ÷ all gems granted. Above about half, pack sales erode month by month; near zero, free players never learn what gems buy. A 25-gem daily bonus on a pass is about 750 R$ of anchor value per holder per month: decide that on purpose.
+- **Sinks before packs.** A premium currency with nothing worth buying is not worth selling.
+- **Boosters priced in a fixed gem amount** become the best soft-currency faucet late in the game, because their yield scales with income. Bound the effect or price it against income.
+- **Conversions run one way**, from scarcer to commoner (premium → soft, event leftovers → soft). For any loop of conversions multiply the best-case rates; a product above 1 prints money. Floor what the player receives, ceil what they pay, and set a minimum amount, or scripts will convert one unit at a time.
+- Premium currency never trades, and currency bought with Robux never expires.
 
 ## Progression curves
 
@@ -51,6 +98,21 @@ doubling interval (levels until price doubles) = log 2 / log g   (≈ 5 at g = 1
 
 Buy-max buttons walk prices forward and stop when the next price exceeds the balance; precompute with the closed form above, do not loop on the client.
 
+### Upgrade tracks: payback, natural caps and the greedy path
+
+Adapted from LihFolk's pricing-curves note `[lihfolk]`; the maths is standard.
+
+- A track is two curves, cost(L) and benefit(L). For income upgrades players respond to **payback** = cost(L) ÷ extra income per minute, and stop buying when payback exceeds the time they expect to stay in the zone (an hour is a workable model).
+- Additive bonus with geometric cost has a natural cap: `L* = ln(paybackMax × gainPerLevel ÷ baseCost) ÷ ln g`. With +4 coins per minute per level, cost 150 × 1.15^L and a 60-minute tolerance, L* ≈ 3.4. The real length of the track is L*, not `maxLevel`. Scale track costs with zone income, or each new zone adds ln(income growth) ÷ ln g levels (6.8 at ×2.6 and g = 1.15) and tracks are maxed in seconds.
+- A multiplicative per-level bonus (×1.04 per level) has no natural cap: payback grows only by g ÷ 1.04 per level. Keep g well above the per-level multiplier and count the track in the multiplier stack. This is the commonest cause of income exploding after an update.
+- Price power tracks (damage, speed) in minutes of income. If kills limit income, +4% damage ≈ +4% income; if half the income is idle, it is worth half and should cost half.
+- **Greedy-path test.** Players and guides always buy the best benefit per coin. Simulate one session of greedy buying: if one track ends at level 40 and the rest at 2, the rest are decoration. Fix benefit per coin, not with prerequisites.
+- g by use: 1.07–1.10 for dozens of levels per session, 1.12–1.18 for a few per session, 1.2+ only near a cap. A polynomial cost on an uncapped track gets relatively cheaper forever; use it only on short, capped tracks.
+- **Rounding.** Round to two significant figures (three when g is under about 1.08), then run a monotonic pass so no level costs the same as or less than the one before. A "nice number" series (1, 1.2, 1.5, 2, 2.5, 3 …) with forced increases turns g = 1.15 into about 1.26, six times the intended price by level 20. Store the rounded prices in config so server, UI and model agree.
+- **Buy-max.** Largest affordable n from level L0 with M coins: `n = floor(ln(1 + M(g − 1) ÷ (base × g^L0)) ÷ ln g)`; confirm total(n) ≤ M < total(n + 1) because floats drift by one at the edge (base 100, g 1.15, L0 10, M 50,000 → n = 21, cost about 48,065). With rounded or hand-edited prices use prefix sums and a binary search instead. The client sends "buy max on track X", never a count; the button shows what the server will charge ("Buy max: 21 levels, 48.1K").
+- Caps on speed and cooldown tracks come from what the server can validate and streaming can bear; fit the price to the cap, not the reverse.
+- Respec: partial refunds of 50–80% are a sink and keep choices meaningful; full refunds on income tracks invite loop-probing.
+
 ## Rebirth and prestige math
 
 Rebirth resets soft progress for a permanent multiplier. Three common shapes:
@@ -67,6 +129,8 @@ Rebirths run on the server only. The client sends intent ("Rebirth"); the server
 Rebirth as practised in the 2026 stat-lane hits (owner's scan, `references/market-scan-2026-11.md`) `[community]` `[VS]`: multipliers step ×2 / ×3 / ×4 with level caps (22 / 34 / 48); the collection, passes and Robux purchases survive the reset; stage gates grow about ×4; eggs cost ×40–250 the previous egg; a new World unlocks at the first rebirth; 8–10 gates per World. Rebirth is also a sale moment: the post-reset grind is where a 2× boost is worth most.
 
 Conflict: the knowledge base puts the first rebirth at 15–25 minutes (inside session one); one community glossary says 30–60 minutes and "meaningful rewards across 20–50 rebirths". Keep 15–25 minutes: the median Roblox session is 6.6 minutes and 19–24 minutes is already a top band (market scan), so a 60-minute first rebirth is seen by few players.
+
+Conflict (which model): LihFolk prefers an additive multiplier with a cost that grows per rebirth (`C(n) = C0 × 1.25^n`) plus a second reward (a slot, an ability, a cosmetic), arguing that a multiplicative multiplier forces cost to grow at the same rate and so becomes cosmetic `[lihfolk]`. The two views meet at the wait ratio. Additive p = 0.5 with r = 1.25 gives ratios of 0.83, 0.94, 1.00, 1.09 and 1.15 at k = 0, 1, 2, 5 and 10: the first rebirths get shorter (a good hook) and later ones settle toward ×1.25. Default to additive with an escalating cost and a non-numeric second reward; use multiplicative only with r ÷ q held inside 1.2–1.5. A constant rebirth cost under any model ends in runs of a few minutes. If a rebirth resets upgrade tracks, price the tracks from the run's income including the multiplier.
 
 ## Paid multipliers and the curve
 
@@ -86,6 +150,8 @@ content runway for the payer = hours of new content / M       (10 h weekly updat
 - Timed boosts gain value as income grows; fixed-amount currency packs lose it. Size packs in minutes of the buyer's current income ("30 min of your income: 9,330 Cash" at 311 per minute), compute the amount on the server and show the exact number before purchase `[house]`. Rewarded-video rewards should likewise "be scaled so that they remain valuable to users as they advance through the game" `[official]`.
 - Rewarded video is a faucet: the reward must "not inflate currency or unbalance the game's economy" `[official]`. Cap ad income at about 10–15% of a day's earnings `[house]`.
 - No paid multiplier applies to anything ranked or competitive (house rule 3).
+- Stacking rule `[lihfolk]`: add bonuses inside a category (all potions, all passes) and multiply across categories. Fully multiplicative stacking explodes with the number of sources (five 1.5× sources = 7.6×). Compute the multiplier in one function, show its breakdown in one tooltip, and generate product descriptions from the same numbers (their reference VIP pass said 1.5× while the code gave 2×).
+- Track the **payer progress gap** live: median zone of payers ÷ non-payers at equal playtime. It is the measured form of the declared gap.
 
 ## Offline income
 
@@ -106,10 +172,19 @@ Past about 1e15 double precision loses integer precision. Store a mantissa and e
 - **Server Luck** applies to everyone in the server; announce the activator and the end time to all players and show the boosted odds to all.
 - **Pity**: guarantee the top tier by a fixed count (for example at 100 rolls). With a 1% rate, 63.4% of players already have it by roll 100, so pity protects the unlucky tail without changing the average. Disclose pity rules.
 - **Direct sale at expected value** is the fallback when paid random items are restricted: a 10 R$ roll with a 5% chance at the item implies a 200 R$ direct price.
+- **Effective rate of a pity ramp** `[lihfolk]`: with chance c(k) on roll k since the last hit and S(k) = Π(1 − c(j)) for j ≤ k, expected rolls per hit E = Σ S(k) for k = 0 … K − 1, and the effective rate is 1 ÷ E. Base 0.6%: no pity 167 rolls (median 116, p90 383); hard pity at 90 gives 69.7 rolls, 1.43%; a ramp of +6 points per roll from 74 with hard pity at 90 gives 62.3 rolls, 1.61%. With hard pity alone about 59% of players reach the guarantee, so most experience "guaranteed at 90", not "0.6%". Disclose the rule and the effective rate; community guides find a hidden ramp within days.
+- **Featured 50/50** (lose once, next top-tier hit is guaranteed featured): 1.5 top-tier hits per featured item, about 93 rolls on that ramp and 180 at worst. Say whether the guarantee and the counter carry across events and pools, and never change that mid-event `[lihfolk]`.
+- **Duplicate protection**: completing a tier of n equally likely items takes n × H(n) rolls without it (5 items 11.4, 20 items 72, 50 items 225) and exactly n with it. It is a 2–4.5× pacing buff, it starves fusion and trading of duplicates, and in a paid pool it is a probability modifier: per-item odds must reflect the player's own collection `[lihfolk]`.
+- **Item supply** `[lihfolk]`: copies per day = rolls per day × p × average luck. 50M rolls a day at 1 in 1,000,000 and 2× average luck mints about 100 copies a day, 3,000 a month. Every luck source multiplies the supply of every rare at once: cap total luck and show the cap, add new top tiers instead of raising luck, and treat a 2× luck weekend as a supply event to model before scheduling.
+- **Copy sinks**: fusion at three copies per star consumes 3^5 = 243 base copies for a five-star item (about 2.43M rolls for a 1-in-10,000 item); it scales with supply and gives a reason to keep rolling owned items `[lihfolk]`.
+- **Rolls versus progress.** If rolls cost the currency that also buys gates, some players roll their progress away (in LihFolk's first simulation non-payers stalled in zone 0 for a month). Use a separate roll currency, or a roll cost that scales slowly, or nudge toward the gate `[lihfolk]`.
+- **Prove display = roll**: in CI, roll each table a million times in every modifier state and compare with the displayed odds (chi-square) `[lihfolk]`. Never display a non-zero chance as 0%.
 
 ## Event currency example (why events need their own currency)
 
 A fishing game sells fish: Catfish 70% at 10 G, Trout 20% at 20 G, Salmon 10% at 30 G, expected value 14 G per cast. (The Roblox doc has a typo saying "Salmon 30% = 3 G"; the corrected 10% is used here.) Adding a 0.1% Golden Salmon worth 1,000 G, taken from Catfish's share, lifts EV to 14.99 G (+7.1%). If the event triples participation, daily income rises to about 44,970 G (+221%) and the main currency inflates. The fix is a unique event currency with its own sinks that expire with the event.
+
+Lifecycle `[lihfolk]`: announce → earn window (1–3 weeks) → spend-only grace (3–7 days) → convert or expire → archive (shop removed, ledger kept for support). Key balances by event id (`Event[eventId]`) and convert lazily on the player's next load, so a late returner is not punished and no batch job races live servers; log all of them under one analytics currency with the event id in a custom field. Convert leftovers into soft currency only, at 10–25% of what they bought in the event shop and capped at about one gate at the player's zone. Warn three days and one day before expiry: silent expiry is the top complaint after any event. Never sell an expiring currency; sell the track (a product that unlocks rewards), not the tokens.
 
 ## Pricing soft currency against Robux
 

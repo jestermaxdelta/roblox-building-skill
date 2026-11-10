@@ -4,7 +4,7 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **evergreen at the top, expensive to enter**. Blox Fruits 325K CCU (a 2019 evergreen; Fourth Sea due December), Attack on Titan Revolution 50K, King Legacy 40K. Roguelike Dead Rails about 29K from a 79K tracked peak ("roguelike variety, now niche").
+- Market position (vault, 2026-11-07): **evergreen at the top, expensive to enter**. Blox Fruits 325K CCU (one of the 2014–2020 evergreens; Fourth Sea due December), Attack on Titan Revolution 50K, King Legacy 40K. Roguelike Dead Rails about 29K from a 79K tracked peak ("roguelike variety, now niche").
 - Evergreens swing 2–5× on events and updates (vault lifecycle model). Anime incrementals and tower defence are the rising anime formats; anime RPGs are the incumbents.
 - Third-party trackers list "open world action" among categories with search demand and thin competition `[community]`; treat as a lead, not data.
 - Audience: older than the platform average (16+ invest more time and money and form communities); long sessions; guilds and trading communities.

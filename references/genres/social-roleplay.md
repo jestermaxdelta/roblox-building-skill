@@ -8,7 +8,7 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 - Evergreens swing 2–5× on events and updates. New entrants face incumbents with years of content; the openings are a new structured activity (as Dress To Impress did with a timed runway) rather than a bigger town.
 - Roblox's own guidance: many players treat the platform as a place to hang out; Brookhaven is "house" for kids; younger players prefer exploration, experimentation and socialising over competition `[official]`.
 - One tracker reports D1 15–22% for roleplay games with traffic `[community]`. Sessions are long and unstructured; return is driven by friends and fresh props.
-- **Classification decides reach** `[official]` `[VS]`: a game whose primary activity is talking or interacting through chat is a *social hangout*: 16+ only, or age-verified 18+ if it includes private spaces (enclosed spaces designed for one person or a very small number, such as a bathroom stall, bedroom or small tent). A *roleplay* game is exempt only when adopting a role and using in-game items to play it is central. A title or description that references hangouts triggers the hangout classification. Free-form user creation (drawing or writing shown to others) is also 16+; assembling houses or outfits from 3D assets is not.
+- **Classification decides reach** `[official]` `[VS]`: a game whose primary activity is talking or interacting through chat is a *social hangout*: 16+ only, or age-verified 18+ if it includes private spaces (enclosed spaces designed for one person or a very small number, such as a bathroom stall, bedroom or small tent). A *roleplay* game is exempt only when adopting a role and using in-game items to play it is central. A title or description that references hangouts triggers the hangout classification. Free-form user creation (drawing or writing shown to others) is also 16+; assembling houses or outfits from 3D assets is not. Conflict: a summary of the Aug 2025 safety announcement gives ID-verified 17+ for hangouts with private spaces; the current docs say age-verified 18+. Follow the docs and re-check.
 - Chat is off by default for Roblox Kids and for self-declared Select accounts `[official]` `[VS]`; a game for under-16s must work without text chat.
 
 ## Core loop with timings
@@ -22,6 +22,7 @@ Covers town and life roleplay, role-driven RP (jobs, emergency services, school)
 
 - Structured activities are the safe design for under-16 reach: rounds, jobs, shows and minigames give the game a primary activity that is not chat.
 - Roles should create interaction by design: staff and customers, police and civilians, judges and contestants.
+- Space design: dense but uncrowded, many sit and pose spots, light minigames, many interactable Blender props (doors, vehicles, job tools).
 
 ## First 5 minutes
 

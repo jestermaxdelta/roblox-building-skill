@@ -301,7 +301,7 @@ Sign-off: every asset passes the acceptance checklist under this lighting on a p
 
 Rules behind the template:
 - Constraints applied everywhere beat detail. Write the bible from a finished golden sample, not from intentions.
-- Community builders name the same tells for an amateur map: inconsistent art across the map, no contrast or focal point, flat ground and uniform heights, props scattered evenly instead of clustered, default lighting `[community]`. Consistency plus lighting and post-processing is the most cited fix `[community]`.
+- Recurring advice from community builders: keep the art consistent across the whole map, add contrast and a focal point, block out large shapes first, cluster props, vary heights and colour `[community]`. Consistency plus lighting and post-processing is cited as the biggest visual lever `[community]`.
 - Phone readability `[house]`: screenshot at 360 px wide and squint. Each interactable must read by silhouette; details under about 0.5 stud disappear at third-person distance; exaggerate handles, rails and frames for the chunky avatar; reserve the accent colours for things that can be used.
 - Anti-patterns: mixed texel densities, noisy procedural textures, saturated rainbow palettes, everything glowing, unbevelled boxes, one-off textures per prop, marketplace-looking proportions, text baked into textures (use SurfaceGui or decals for localisable signage).
 

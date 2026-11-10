@@ -49,7 +49,7 @@ Reading the retention pages `[official]` `[VS]`:
 - The cohort table shows daily cohorts over their first 10 days and weekly cohorts over 10 weeks, with 7-day playtime, 7-day payer conversion and 7- and 30-day revenue per user. Use it to compare players who first joined during an event or update with those before it.
 - Recommended For You reads signals in stages: first session (play-through rate, bounce), then D1, D2–7 (play days out of 6), D8–28. A strong D8–28 with a weak D1 is very unlikely, so fix in that order.
 
-Diagnosis rules: low D1 means core loop, onboarding or performance; session time at benchmark with low D1 means there is no stated reason to return; low D7 means a progression wall or empty mid-game; low D30 means no endgame or social reason to stay. Fix retention before adding monetization. The metric-by-metric table with experiments is in core-loop-tuning.md §5.
+Diagnosis rules: low D1 means core loop, onboarding or performance; session time at benchmark with low D1 means there is no stated reason to return; low D7 means a progression wall or empty mid-game; low D30 means no endgame or social reason to stay. Fix retention before adding monetization. The metric-by-metric table with experiments is in core-loop-tuning.md §6.
 
 ## Retention toolkit (no punishment anywhere)
 
