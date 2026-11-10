@@ -1,6 +1,16 @@
 # Genre playbooks: index and cross-genre rules
 
-Routes a concept or a live game to its deep playbook in `references/genres/`, and holds the rules that apply to every genre and to hybrids. Open it first when choosing or naming a genre, then open the one or two genre files it points to. Market positions are the owner's vault snapshot of 2026-11-07 `[VS]` (see `market-scan-2026-11.md`); rewarded-video benchmarks are Roblox's genre playbooks `[official]` `[VS]`.
+Routes a concept or a live game to its deep playbook in `references/genres/`, and holds the rules that apply to every genre and to hybrids. Open it first when choosing or naming a genre, then open the one or two genre files it points to. Market positions are the owner's vault snapshot of 2026-11-07 `[VS]` (see `market-scan-2026-11.md`); rewarded-video benchmarks are Roblox's genre playbooks `[official]` `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Use this index to | Then |
+|---|---|---|
+| Beginner | Pick one genre from the table whose asset bill you can finish (obby, simulator, tycoon, +1, party minigames are the lightest); read only that file's "Start here by level" row and "Systems to build, in order" | Build the beginner row, nothing else; ship; come back for the intermediate row |
+| Intermediate | Classify a working game by its host loop; run that file's level-up checklist; check the cross-genre rules below | Fix the top three failing checks before adding content |
+| Expert | Design or audit a hybrid (host plus layer); resolve every "Conflict" note; compare vault status with the pairing table | Model the economy and netcode choices the genre file names, then instrument them |
+
+Terms: *host loop* = the loop that fills most minutes of play; *layer* = a system borrowed from another genre; *CCU* = concurrent users.
 
 ## How to pick a genre
 
@@ -19,7 +29,9 @@ Dashboard genre settings `[official]` `[VS]`: set genre and optional subgenre in
 | Genre | File | Loop in one line | Vault status (2026-11-07) | Dashboard genre › subgenre |
 |---|---|---|---|---|
 | Tycoon and cozy management | `genres/tycoon-and-cozy-management.md` | Do the job by hand on your plot → hire → expand → idle income → rebirth | Cozy management rising (10–20K leaders); menu sims under 1K | Simulation › Tycoon |
-| Simulator, incremental, clicker, RNG | `genres/simulator-incremental.md` | Act → number up → upgrade → zone → rebirth | Crowded long tail; RNG winner-take-most; simulators cooling | Simulation › Incremental Simulator / Idle |
+| Simulator, incremental, clicker | `genres/simulator-incremental.md` | Act → number up → upgrade → zone → rebirth | Crowded long tail; simulators cooling | Simulation › Incremental Simulator / Idle |
+| RNG and aura rolling | `genres/rng-rolling.md` | Roll → reveal → keep best → convert duplicates → shift luck → raise cap | Winner-take-most (41K, 30K, then under 3K) | Simulation › Incremental Simulator / Idle |
+| Fishing and catch collection | `genres/fishing.md` | Cast → reel minigame → catch with rarity → index → better rod → new water | Durable, up 55% year on year (79K, 63K) | Simulation |
 | Pet collection and hatching | `genres/pet-collection-hatching.md` | Earn → hatch (odds shown) → equip → merge → index → trade | Peaked but dominant; casual animal games rising; egg journeys crowded | Roleplay & avatar sim › Pet Care, or the host loop's genre |
 | +1 per second and Evolution | `genres/plus-one-evolution.md` | Train a stat → run the stage lane for Wins → eggs and pads → World → rebirth | Healthy middle tier (14–46K); +1 obbies cooling | Simulation › Incremental Simulator |
 | Steal-and-defend (base raid) | `genres/steal-and-defend.md` | Acquire → earn per second at base → steal rarer → lock and defend → rebirth | Peaked, saturated, still #1 (1.14M) | No steal subgenre exists; pick by core loop (Simulation › Tycoon or Incremental Simulator) |
@@ -28,11 +40,17 @@ Dashboard genre settings `[official]` `[VS]`: set genre and optional subgenre in
 | RPG, dungeon, roguelite | `genres/rpg-dungeon.md` | Quest or room → fight → XP and loot → stronger → harder | Evergreen top (Blox Fruits 325K); costly to enter | RPG › Action RPG / Open World & Survival RPG |
 | Fighting, battlegrounds, anime gacha | `genres/fighting-battlegrounds.md` | Spawn → combo and abilities → kill or die → respawn | Durable upper-middle (73–89K) | Action › Battlegrounds & Fighting |
 | Tower defence | `genres/tower-defense.md` | Loadout → place and upgrade → survive waves → summon and level | Rising, anime-led (46–99K) | Strategy › Tower Defense |
-| Social roleplay and life-sim | `genres/social-roleplay.md` | Customise self and space → act out roles → show off and collect | Evergreen, dominant (Brookhaven 438K) | Roleplay & avatar sim › Life / Dress Up |
+| Social roleplay and life-sim | `genres/social-roleplay.md` | Customise self and space → act out roles → show off and collect | Evergreen, dominant (Brookhaven 438K) | Roleplay & avatar sim › Life |
+| Fashion, dress-up, judged creation | `genres/fashion-dress-up.md` | Theme → timed creation → runway → peer vote → podium → payout | Established, past peak, still large (67K) | Roleplay & avatar sim › Dress Up |
+| Social deduction and hidden roles | `genres/social-deduction.md` | Role reveal → short round of hunt and survive → full reveal → rewards | Evergreen (MM2 242K) | Survival › 1 vs All |
 | Survival and crafting | `genres/survival-crafting.md` | Gather → craft → build → survive the night → expand | Durable (99 Nights 221K) | Survival, or RPG › Open World & Survival RPG |
 | Shooter and PvP duels | `genres/shooter-pvp.md` | Queue → rounds of engage, shoot, reposition → result → rank | One durable leader (RIVALS 217K); thin middle | Shooter › Deathmatch Shooter |
+| Racing and driving | `genres/racing-driving.md` | Drive → earn → buy or tune a car → races and meets | Steady middle (33K, 29K); scooter micro-wave cooling | Sports & racing › Racing; Simulation › Vehicle Sim |
+| Sports and physics sports | `genres/sports.md` | Kick-off → possessions → score → result → rematch | Solid middle (36–38K); physics sports rising | Sports & racing › Sports |
+| Party and minigame collections | `genres/party-minigames.md` | Intermission → rule card → 1–3 min minigame → results → next | Long-standing; show-tied spikes fade | Party & casual › Minigame |
+| Physics sandbox and ragdoll | `genres/physics-sandbox.md` | Grab or launch → fling → be flung → invent games | Forming wave (21–45K); gap in progression hybrids | Simulation › Physics Sim |
 
-Each genre file uses the same headings: Snapshot · Core loop with timings · First 5 minutes · Progression and economy shape · Monetisation set that fits · Retention and social hooks · UI patterns · Technical hot spots · The one-new-verb angle · Common failure modes · Level-up checklist for a live game · Review gate · Sources.
+Each genre file uses the same headings: Start here by level · Snapshot · Core loop with timings · First 5 minutes · Progression and economy shape · Monetisation set that fits · Retention and social hooks · UI patterns · Systems to build, in order · Technical hot spots · The one-new-verb angle · Common failure modes · Level-up checklist for a live game · Review gate · Sources.
 
 ## Cross-genre rules
 
@@ -43,12 +61,15 @@ Design:
 - Timers at 5 / 15 / 30 minutes, capped and stated offline progress, a fixed weekly update day, events with real end dates.
 - Sessions of 19+ minutes are the target; a discovery player should complete one full loop (run, rebirth, match set) in the first session.
 - Retention never through punishment: no progress wipes, no streak-loss anxiety, loss capped to the current run.
+- Longevity signal `[lihfolk]`: games that held their rank combined about 90%+ approval with 25–30 min sessions; spikes with 15-minute sessions faded fastest. Depth and rating predict life better than peak size.
+- Bosses, walls and first losses are funnel cliffs in every genre: state the requirement, keep the retry cheap, and make the fix one step away `[lihfolk]`.
 
 Monetisation:
 - Dev-product-led catalogues with several items under 50 R$; passes are the convenience layer. Each genre file lists what to add to and delete from the default set in `monetization-and-policy.md`.
 - Offers only at positive moments and in breaks (after a win, between waves, on results); never on death, mid-fight or mid-chase.
 - No stat power sold in competitive modes. Where the market does it anyway, the genre file marks a "Conflict" and gives the house answer.
-- Any roll bought with Robux or with Robux-bought currency is a paid random item: every outcome and numeric odds before purchase, boosted odds shown live, `PolicyService` flags enforced, direct-sale fallback `[official]` `[VS]`.
+- Any roll bought with Robux or with Robux-bought currency is a paid random item: every outcome and numeric odds before purchase, boosted odds shown live, `PolicyService` flags enforced, direct-sale fallback `[official]` `[VS]`. Odds are shown as percentages summing to exactly 100%; a "1 in N" label may accompany but not replace them. Generate the display from the code that rolls: hand-typed labels drift from real odds `[lihfolk]`.
+- Before removing or weakening anything a player paid for, give notice and equal value; removal without notice is listed under fraud in Roblox's standards `[lihfolk]` `[VS]`.
 - Rewarded-video benchmarks by genre `[official]` `[VS]`: obby opt-in 15–25% at frequency 3 (best 30%+ at 4+); tycoon, RPG and sports 15%+ at 3+; incremental sim 13%+ at 2.8; survival 13%+ at 2.5+; shooter 10%+ at 3+.
 
 Engineering:
@@ -57,6 +78,8 @@ Engineering:
 - Save ids and counts, not instances; session-locked profiles; atomic, logged transfers wherever items move between players.
 - Movement is client-owned by default. For competitive movement or hit registration, validate on the server or adopt the server authority model (`Workspace.AuthorityMode`) `[official]` `[VS]`.
 - Budget for a 3 GB Android phone in the busiest scene of the genre (the plaza, the peak wave, the 10-player brawl).
+- Timers and schedules come from server time (`Workspace:GetServerTimeNow()`), replicated as end timestamps, so every client and server agrees.
+- Round-based games clean up per round (a janitor) and isolate errors per round; leaks surface after dozens of rounds, not in testing `[lihfolk]`.
 
 ## Hybrid genres
 
@@ -72,25 +95,22 @@ Most 2026 hits are hybrids: an idle core plus one borrowed system. Rules:
 |---|---|---|---|
 | +1 Stage lane × eggs × snowball theme | plus-one-evolution | pet-collection-hatching | Gap (owner's December game) |
 | Hands-on warehouse × drawn routes | tycoon-and-cozy-management | — | Gap, with real competition still rising |
-| Fishing × anomaly horror | horror-coop-escape | simulator-incremental (fishing) | Gap; longest expected life |
-| Ragdoll launch × incremental | simulator-incremental | — | Gap; 1–4 month lifespan |
+| Fishing × anomaly horror | fishing | horror-coop-escape | Gap; longest expected life |
+| Ragdoll launch × incremental | physics-sandbox | plus-one-evolution | Gap; 1–4 month lifespan |
 | Steal × tower defence | tower-defense | steal-and-defend | Partial gap |
 | +1 stat × eggs with no journey | — | — | Fails |
 | Steal a ___ × new theme; X Incremental × any theme; standalone RNG; anomaly × job sim | — | — | Saturated or crowded |
 
 ## Formats without a dedicated file
 
-- **Racing, driving and vehicles.** Loop: drive → earn → buy or tune a better vehicle → new routes or races.
-  - Market (vault): Driving Empire 33K, Kukirin Life about 29K; the Aug–Sep 2026 scooter and bike launches were a micro-wave (Drive A Kukirin 109K peak, now 6–29K each) and are cooling. Third-party trackers list driving among categories with search demand and thin competition `[community]`.
-  - Design: driving controls are hard for young players (vault); offer steering assist and auto-accelerate on touch. Sells: vehicle skins, body kits, garages, private servers; no paid top speed in ranked races.
-  - Technical: the driver's client owns the vehicle for responsiveness; community threads report jitter on ownership hand-off and flings on car-to-car collisions `[community]`. Cap speed on the server, despawn idle vehicles, and for ranked racing consider the server authority model, which Roblox documents for racing `[official]` `[VS]`.
-  - Start from the official Racing template (working car, modular track) `[official]`. Dashboard: Sports & racing › Racing, or Simulation › Vehicle Sim. Use `genres/social-roleplay.md` for open-world vehicle life games and `genres/shooter-pvp.md` for netcode.
-- **Fishing and collection sims.** Durable and up 55% year on year (Fisch 79K, Fish It 63K, Net a Fish 14K). Cast → timing minigame → catch with a rarity → index → better rod → new water. See `genres/simulator-incremental.md` for the loop and `genres/pet-collection-hatching.md` for index, odds and trading. A paid rod that improves odds must state the change numerically `[official]`.
-- **Sports and physics sports.** Loop: match → result → progression → rematch. Volleyball Legends 38K, Illegal Soccer 36K; physics sports are rising (Practical Basketball +523% on an update). Rewarded video: post-match boost, currency beside bundles, rematch rescue, pre-game edge lasting one match or session only; best triggers are before a match, after a loss, after a win; benchmark opt-in 15%+, frequency 3+ `[official]`. Use `genres/shooter-pvp.md` for matchmaking and netcode, `genres/fighting-battlegrounds.md` for ability balance.
-- **Ragdoll and physics sandbox.** A forming wave: five sandboxes at 21–28K, Fling Things and People 45K, every progression hybrid under about 2K (vault gap). Physics ownership and fling abuse are the hot spots; Roblox's Boneheads reference game shows co-op physics on server authority `[official]`.
-- **Social deduction and 1-vs-all rounds.** Murder Mystery 2 242K (192K → 473K in October with a 2.24M spike); knife trading and seasonal items carry value; battle pass and crates (odds rules apply). Roles are hidden information: never replicate them to other clients. Use `genres/horror-coop-escape.md` (asymmetric rounds) and `genres/pet-collection-hatching.md` (trading).
+Racing, fishing, sports, RNG, fashion, social deduction, party minigames and physics sandboxes now have their own files (see the routing table). The formats below have less market evidence in the vault; each entry points to the files to combine.
+
+- **Zombie and wave-survival co-op.** A director with a spawn budget releases enemies in a trickle, not all at once; party scaling is sublinear with a global cap on living enemies; downed, revive, bleed-out and spectate replace instant death with long respawns `[lihfolk]`. Use `genres/survival-crafting.md` (hordes, revives) and `genres/tower-defense.md` (wave sheets).
+- **Battle royale.** Choose lobby size and match length for the CCU the game really has; a large-lobby requirement at launch population is the classic failure. Lobby and match are separate places with reserved servers and teleport-failure handling; the zone is server-owned with timed damage checks and reachable final circles `[lihfolk]`. Use `genres/shooter-pvp.md`.
+- **Open-world city and crime roleplay.** Robberies are multi-step, timed and validated by position on the server; wanted level and alerts are server state, and markers show areas rather than exact positions by default; server size and police cap are live-tunable; avoid huge empty maps at low server sizes `[lihfolk]`. Use `genres/social-roleplay.md`, `genres/racing-driving.md` and `genres/shooter-pvp.md`.
+- **Naval and open-sea adventure.** Give players something to stop for every 30–90 s of sailing; use an arcade ship controller on a flat physics plane with waves drawn on the client rather than full buoyancy that throws crew off decks; the helm's client owns the ship with server speed and teleport checks `[lihfolk]`. Use `genres/racing-driving.md` and `genres/rpg-dungeon.md`.
 - **Roguelike and roguelite.** Covered in `genres/rpg-dungeon.md`: runs of 10–20 minutes, run state apart from profile state, one server `Random` per run, revives capped and offered after the fight.
-- **Puzzle.** The board model is the single source of truth; resolve → gravity → refill → cascade until stable; undo via snapshots including RNG state or reversible commands; detect deadlocks and reshuffle; build generated puzzles backwards from a solved state; lock input while resolving. The client may run a single-player board; the server validates completion by replaying the move list. Pieces are pooled Blender models. Sells: hint packs, extra moves (once per failed level, dismissible), cosmetic boards, starter pack.
+- **Puzzle.** The board model is the single source of truth; resolve → gravity → refill → cascade until stable; undo via snapshots including RNG state or reversible commands; detect deadlocks and reshuffle; build generated puzzles backwards from a solved state; lock input while resolving. The client may run a single-player board; the server validates completion by replaying the move list. Pieces are pooled Blender models. Sells: hint packs, extra moves (once per failed level, dismissible), cosmetic boards, starter pack. Escape rooms `[lihfolk]`: three hint tiers per puzzle and every valid solution accepted; answers and puzzle logic only on the server; guesses rate-limited (about 5 per 10 s per player) and distance-checked; interactables highlighted rather than pixel-hunted; group state synchronised for late joiners.
 - **Card game.** Every card lives in exactly one zone; atomic transfers; effects as data resolved through a stack or queue; triggers via an event bus; seeded Fisher–Yates shuffle. The server owns every deck and hand and never replicates hidden information (anything in `ReplicatedStorage`, attributes or remote payloads is visible to exploiters). Sells: card backs, boards, starter deck, gift packs; random packs show odds with honest pity.
 - **Visual novel and story.** Save anywhere (script position, flags, read lines); typewriter via `TextLabel.MaxVisibleGraphemes` `[VS]`; skip only read text; branch-and-merge structure. Decide early whether multiplayer choices are per-player or votes. Sells: chapter or route passes, outfits, gift passes.
 
@@ -129,6 +149,5 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/templates.md and `resources/boneheads/index.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://devforum.roblox.com/t/how-to-get-physics-to-chill-out-when-handing-over-network-ownership/2152568 and https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (search summary)
-- https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
-- https://github.com/Astrophsica/Racing-Kit-Roblox (read README; 2 stars, MIT; go-kart kit distributed as a toolbox model; reference only, never ship)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/` genre playbooks (summaries of Battle Royale, Naval and Open-Sea Adventure, Open-World City and Crime Roleplay, Zombie and Wave Survival Co-op, Puzzle and Escape Rooms; full notes cited in each genre file), `skills/roblox-trend-game/references/trend-games-research.md` (read)
+- Full game teardowns: `references/case-studies-teardowns.md`. Systems: `references/gameplay-systems-cookbook.md`.

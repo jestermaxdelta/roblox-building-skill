@@ -212,7 +212,7 @@ Find the row that matches the task and open that file. Paths are relative to thi
 | Task | Open |
 |---|---|
 | What to build, what is winning or saturated, the 14 shared patterns, thumbnail rules, the 250-play gate, launch timing | `references/market-scan-2026-11.md` (raw report: `references/market-research-v2-raw.md`) |
-| Choosing or shaping a genre | `references/genre-playbooks.md` (index), then the one file in `references/genres/` for that genre: tycoon and cozy management, simulator, pet collection, +1 evolution, steal-and-defend, obby, horror, RPG, fighting, tower defense, social roleplay, survival, shooter, racing, fishing and more |
+| Choosing or shaping a genre | `references/genre-playbooks.md` (index), then the one matching file in `references/genres/`: `tycoon-and-cozy-management`, `simulator-incremental`, `pet-collection-hatching`, `plus-one-evolution`, `rng-rolling`, `steal-and-defend`, `obby-tower`, `horror-coop-escape`, `rpg-dungeon`, `fighting-battlegrounds`, `tower-defense`, `shooter-pvp`, `survival-crafting`, `social-roleplay`, `fashion-dress-up`, `social-deduction`, `party-minigames`, `physics-sandbox`, `racing-driving`, `fishing`, `sports` (`.md`) |
 | How successful games actually work; doing a teardown of a competitor or your own game; trend or evergreen | `references/case-studies-teardowns.md` |
 | Fun, motivation, flow, difficulty, progression and retention theory, rubrics | `references/design-foundations.md` |
 | Designing, scoring, diagnosing and tuning the core loop; the first ten minutes; building the tutorial; reading the funnel | `references/core-loop-tuning.md` |

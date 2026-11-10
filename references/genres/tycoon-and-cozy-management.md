@@ -7,7 +7,7 @@ Covers plot-based income games: the classic button/dropper tycoon and its 2026 s
 | Level | Do first | Leave for later |
 |---|---|---|
 | Beginner | Auto-assigned plot; a button chain of 20–30 purchases stored as data; server income tick with no physical drops; save purchase ids; one visible next button | Workers, merge tiers, rebirth, offline income, decoration, raids |
-| Intermediate | A hands-on job before automation; Hire pads; payback sheet with `wait(k)` plotted; silent rebuild on join; capped offline income; client-only visual drops with pooling | Routes or map toy, co-op plots |
+| Intermediate | A hands-on job before automation; Hire pads; payback sheet with `gap(k)` plotted; silent rebuild on join; capped offline income; client-only visual drops with pooling | Routes or map toy, co-op plots |
 | Expert | Merge tiers and an index; rebirth that keeps the best staff; friend-help bonus; schema migrations for a changing chain; telemetry on the wait curve and per-pad drop-off | — |
 
 Terms: *button chain* = the ordered list of purchasable pads; *payback time* = cost ÷ income added; *dropper* = a machine that produces the items that become cash.
@@ -52,7 +52,7 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 - Rebirth: multiplicative `q` with wait ratio ×1.2–1.5; keeps cosmetics, index and passes.
 - Offline income: `min(away, cap) × rate × 0.25–0.5`, cap 8–12 h, cap stated in the UI.
 - Sinks: staff tiers, building tiers, decoration (cosmetic only), route or truck slots. Friend bonus +10–20% while a friend is in the server or helping on your plot.
-- Payback maths `[lihfolk]`: payback = cost ÷ added income. Early income buttons pay back in 10–60 s; payback grows slowly along the chain (about ×1.1–1.3 per income button). Decorations have zero payback, so space them so the wait never exceeds the stage target (about 2 min early, 5–10 min late), and put a spectacle button right after any long wait. In a sheet, compute `wait(k) = max(0, cost(k) − cash) ÷ incomePerSecond` for every row and plot it: spikes are where players leave.
+- Payback maths `[lihfolk]`: payback = cost ÷ added income. Early income buttons pay back in 10–60 s; payback grows slowly along the chain (about ×1.1–1.3 per income button). Decorations have zero payback, so space them so the wait never exceeds the stage target (about 2 min early, 5–10 min late), and put a spectacle button right after any long wait. In a sheet, compute `gap(k) = max(0, cost(k) − cash) ÷ incomePerSecond` for every row and plot it: spikes are where players leave.
 - If players can choose the order they will buy the best payback first: enforce the intended order with prerequisites, or make payback equal across simultaneous choices so the choice is about looks `[lihfolk]`.
 - Long loops after the plot is finished `[lihfolk]`: rebirth (keep cosmetics; players dislike losing a decorated base), more stages, upgrade tiers, decoration, a management layer (the vault's winning answer), leaderboards. Raids only as opt-in with shields and losses limited to temporary resources.
 - Conflict (offline cap): LihFolk suggests about 2 hours at 50% because long caps devalue playing; this skill's default is 8–12 hours at 25–50% so an overnight return pays. Keep the longer cap for the day-1 return, use the lower efficiency, and state the cap either way.
@@ -143,7 +143,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §16 Plots, tycoo
 | 12 | A collection exists (merge tiers, index) | Add staff tiers on reused meshes and an index panel |
 | 13 | Friend bonus and plot visits work | Add +10–20% co-play bonus and a help action |
 | 14 | Title and art differ from the nearest hit | Rename away from "Sell a Million"/"Run a"; restyle |
-| 15 | `wait(k)` plotted for the whole chain with no spike above the stage target | Insert bridge or spectacle buttons; smooth payback growth |
+| 15 | `gap(k)` plotted for the whole chain with no spike above the stage target | Insert bridge or spectacle buttons; smooth payback growth |
 | 16 | 1–3 buttons available at any moment | Add prerequisites; hide the rest |
 
 ## Review gate
