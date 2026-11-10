@@ -1,6 +1,16 @@
 # RPG, dungeon and roguelite playbook
 
-Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon crawlers and run-based roguelites. Open it when stats, gear and enemies drive progression, when sizing a content plan a small team can sustain, or when auditing a live RPG for mob performance, inventory bloat or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon crawlers and run-based roguelites. Open it when stats, gear and enemies drive progression, when sizing a content plan a small team can sustain, or when auditing a live RPG for mob performance, inventory bloat or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | One zone, three enemy types, one weapon line; server-side damage with a simple formula; XP and levels; a starter drop inside 30 s; one mini-boss with a recommended-power sign; compact inventory save | Classes, skill trees, open world, trading, guilds, procedural dungeons |
+| Intermediate | Data-driven mobs rendered on clients; quests as state machines; zone scaling sheet (health, coins, time per zone); open boss arenas that reset; party credit; instanced dungeons in reserved servers | Raids, seasonal content |
+| Expert | ECS-style mob simulation with tick budgets; build depth with readable trade-offs and cheap respec; boss phases; economy sinks and trade tax; funnel telemetry at every boss; live balance by pick and clear rates | — |
+
+Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops; *respec* = resetting spent skill points; *instanced dungeon* = a private copy of a dungeon for one party; *gear score* = a single number summarising equipment power.
 
 ## Snapshot
 
@@ -22,6 +32,7 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 
 - Roblox's three-layer test `[official]`: exploring (interaction) → fighting (repeated cycle) → upgrades and collections (progression engine). Each layer must feed the next.
 - Real-time action fits Roblox sessions better than turn-based.
+- Time-to-kill bands at the zone's expected power `[lihfolk]`: a regular enemy takes 2–5 hits (a starter weapon kills a zone-1 regular in about 3); an elite 10–20 s; a mini-boss 20–40 s; a region or world boss 1–3 min. One shipped project used about 25× regular health for mini-bosses and about 150× for world bosses, and aimed for 8–12 min per zone.
 
 ## First 5 minutes
 
@@ -31,6 +42,7 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 4. 3:00 level 2–3 with one stat or skill choice.
 5. 5:00 first ability unlocked and a mini-boss or dungeon door in sight.
 - No class or build screen before the first fight; defer choices until the player has context.
+- Tutorial enemies have reduced health and damage and target only their own player; nothing else pulls aggro onto someone mid-tutorial `[lihfolk]`.
 
 ## Progression and economy shape
 
@@ -42,6 +54,10 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 - Roguelite: keep run state and profile state strictly apart; meta-progression widens options more than it raises power.
 - Sinks: repair or upgrade costs, crafting, rerolls, respec, fast travel, cosmetics, bank slots. Trading needs a tax or bind-on-equip to control inflation.
 - Quests are state machines (available, active, complete, turned in) fed by an event bus; dialogue is a data graph with string ids.
+- Zone scaling from one project's plan `[lihfolk]`: enemy health about +55% per zone and coins per kill about ×1.6 per zone, so players slowly outscale by upgrading. Two regular enemy types plus one mini-boss per zone and one boss per world; a new enemy every zone keeps the treadmill feeling away. Variants (+15% size, +30% health, +15% damage, a tint and one trait) and elites (about 1 in 8 spawns later, ×2.5 health, an extra drop roll) stretch each mesh.
+- **Bosses are the best moments and the biggest retention risk.** One project's onboarding funnel lost 82% of players at its first boss step `[lihfolk]`. Its fixes: open arenas with no locked doors (walk away and the fight resets after 20 s empty), short telegraphed fights, a Recommended Power number on every boss gate, walls that take one upgrade or one better weapon to pass, and bosses that can be refought for drops.
+- Build depth comes from choices with readable trade-offs ("+30% damage, −20% health" beats a paragraph); let players respec cheaply, since young players experiment `[lihfolk]`.
+- Boss drops: guaranteed materials plus a chance at something rare; a first-clear bonus `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -65,6 +81,21 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 - Inventory: grid with rarity frames, compare-on-select, bulk sell, lock toggle. On phones, one-tap equip-best.
 - Ability buttons arranged in the right-thumb arc; target assist or soft lock for touch.
 - Dialogue: short lines, skip always available, `LocalizationTable` string ids.
+
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Combat core: attack input, server validation, damage formula, health.
+2. Enemy spawners and mob AI (data on the server, visuals on clients).
+3. XP, levels and stats (layered, never stored derived).
+4. Loot tables, drops and inventory with compact saves.
+5. Equipment and upgrades.
+6. Quests (state machine) and dialogue (data graph).
+7. Zones, gates and fast travel.
+8. Bosses with telegraphs, phases and recommended power.
+9. Party system and shared credit.
+10. Dungeons in reserved servers; then skills, crafting, trading.
 
 ## Technical hot spots
 
@@ -92,6 +123,7 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 - Selling power where PvP matters; rating and community turn.
 - Unbounded inventories and derived stats saved to data.
 - Tutorials and build screens before the first fight.
+- A boss that blocks progress with a locked arena and no stated power target; the single largest funnel cliff reported for the genre `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -110,6 +142,8 @@ Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon 
 | 11 | World boss or server event every 30 min | Add a timed event |
 | 12 | Trading or drops cannot duplicate items | Atomic, logged transfers; session locking |
 | 13 | Update cadence and roadmap are public | Commit to a fixed day |
+| 14 | Funnel shows no cliff at the first boss; arena is open and resets | Add recommended power; shorten the fight; unlock the doors |
+| 15 | Each zone takes about 8–12 min and adds an enemy type | Retune health and coin scaling per zone |
 
 ## Review gate
 
@@ -135,3 +169,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/script-planning-questions-for-performance/2815331 (search summary)
 - https://devforum.roblox.com/t/devas-of-creations-npc-replication-idea-smoothness/3151754 (search summary)
 - https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Combat and RPG.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.

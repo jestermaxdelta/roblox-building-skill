@@ -1,6 +1,16 @@
 # Survival and crafting playbook
 
-Covers co-op night-survival games, gather-craft-build survival, and round-based hazard survival. Open it when "prepare, then survive" is the loop, when planning base building and its save format, or when auditing a live survival game for horde performance and mid-game drop-off. Market numbers are the vault's 2026-11-07 snapshot `[VS]`.
+Covers co-op night-survival games, gather-craft-build survival, and round-based hazard survival. Open it when "prepare, then survive" is the loop, when planning base building and its save format, or when auditing a live survival game for horde performance and mid-game drop-off. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+
+## Start here by level
+
+| Level | Do first | Leave for later |
+|---|---|---|
+| Beginner | A run-based design (survive N nights, then reset) for 1–4 players; one resource, one tool tier, five recipes; day/night with a creature at night; needs that slow but never kill; meta unlocks saved, nothing else | Persistent bases, PvP, raids, large worlds, trading, classes |
+| Intermediate | Recipe DAG with an obvious next craft; grid-snapped building validated on the server; data-driven hordes; shared camp progress; revives; daily shop | Persistent shared worlds, offline protection |
+| Expert | Per-player base blueprints packed into buffers with incremental saves; structural support graph; streaming for thousands of pieces; opt-in PvP with offline protection; weekly biome cadence | — |
+
+Terms: *run-based* = each session is a complete arc that resets; *DAG* = a directed graph with no loops, here of recipes; *support graph* = which building pieces hold up which; *wipe* = a scheduled reset of a shared world.
 
 ## Snapshot
 
@@ -20,6 +30,8 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 
 - Needs (hunger, warmth, light) decay at graded rates with soft penalties first; death is the last step, not the first.
 - Threat escalates on a visible clock; tool tiers gate resources; recipes form a DAG so there is always one obvious next craft.
+- Loop lengths `[lihfolk]`: an action takes seconds; a trip 2–10 min (go out, gather, fight, return before night or before needs run out); a day cycle 8–20 min; the base is built over days to weeks.
+- Pick two or three pressure systems, not all `[lihfolk]`: needs (force trips but become tedious if drain is fast), day and night (rhythm), other players (highest tension, most toxicity), decay (keeps the world clean but players hate losing builds offline). A casual co-op game for young players can use only day/night and creatures.
 
 ## First 5 minutes
 
@@ -39,6 +51,9 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 - Sinks: tool durability or upgrades, building materials, consumables (food, fuel), class unlocks, cosmetics.
 - Long-term engine: night count records, new biomes weekly, badges, base persistence in sandbox variants.
 - Loss: on death drop a recoverable bag or lose only carried consumables; never wipe persistent progress.
+- Needs tuning `[lihfolk]`: one trip should use about half of a full bar, so players think about food once per trip, not every minute. Food variety matters (better food fills more or buffs), which gives farming and cooking a purpose.
+- Persistence model is the first decision `[lihfolk]`: run-based (20–60 min arcs, meta unlocks only; easiest to ship and safest for retention), a persistent personal world, a persistent shared server world wiped on a schedule (complex and risky), or the common compromise of a base saved per player in a world that resets per server.
+- Crafting time: instant for basics, 2–10 s timers for advanced items, never long real-time timers in a session game `[lihfolk]`.
 
 ## Monetisation set that fits
 
@@ -63,6 +78,21 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 - Team panel: teammate health, downed markers with distance, ping wheel that works without chat.
 - Inventory: stack counts, quick-transfer to chests, favourite lock.
 
+## Systems to build, in order
+
+System names refer to `references/gameplay-systems-cookbook.md`.
+
+1. Resource nodes and gathering with tool tiers.
+2. Inventory and server-authoritative crafting.
+3. Day/night cycle and threat schedule.
+4. Creature AI and spawning (data-driven at scale).
+5. Needs (hunger, warmth) with soft penalties.
+6. Building: grid placement, validation, structure health.
+7. Camp or base progression; storage.
+8. Death, revive and recovery.
+9. Player data: meta unlocks, classes, cosmetics; base blueprint if persistent.
+10. Daily shop, records and badges; then PvP rules.
+
 ## Technical hot spots
 
 - **Hordes**: enemies as server data with simple steering, rendered and animated on clients; no per-enemy Humanoid at scale; pathfinding recomputed on a timer and shared between enemies heading to the same target.
@@ -73,6 +103,11 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 - **Inventory and crafting**: server-authoritative; requests carry intent (`recipeId`, `count`), never results; rate-limit crafting and gather hits; validate gather distance and tool tier.
 - **World size**: `StreamingEnabled`; per-server camps mean no cross-server state, but persistent bases need load-on-join and unload-on-leave.
 - **Exploit surface**: item spawning through crafting remotes, gather-aura, teleport looting, duplication via drop-and-rejoin (session-locked profiles; ground items owned by the server).
+- **Base data** `[lihfolk]`: each piece is type, position relative to the base origin, rotation, health, owner and contents. Grid-snap so positions store as small integers; a 2,000-piece base as full-precision JSON approaches key limits, a packed format does not. Document the axis convention in the module: mixed-up axes are a common save bug.
+- **Scale** `[lihfolk]`: eight players with 1,500 pieces each is 12,000 models. Anchor everything, use simple meshes, turn off `CanTouch` and `CanQuery` where unused, and stream distant bases.
+- **Structural support**: require pieces to connect to a foundation; compute support as a graph walk from foundations when pieces are added or destroyed, and cache it `[lihfolk]`.
+- **Raids on player-built shapes**: pathfinding into bases is expensive; many games let creatures attack the nearest wall piece instead `[lihfolk]`.
+- **PvP and griefing** `[lihfolk]`: raiding offline bases is the most-complained-about mechanic in the genre. Use opt-in PvP (zones, flags or separate servers), offline protection, build permissions per plot, chest locks and team access.
 
 ## The one-new-verb angle
 
@@ -89,6 +124,7 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 - Saving bases as instance dumps; hitting key limits and save throttles.
 - Losing persistent progress on death.
 - Night scenes too dark for phones.
+- Too many pressure systems at once; offline raiding; free placement with no grid (hard to validate, overlap exploits) `[lihfolk]`.
 
 ## Level-up checklist for a live game
 
@@ -107,6 +143,9 @@ Covers co-op night-survival games, gather-craft-build survival, and round-based 
 | 11 | Night is readable on a 3 GB phone | Raise ambient floor; cut shadowed lights |
 | 12 | Daily shop and weekly update exist | Add the rotation and a fixed day |
 | 13 | Night records and badges exist | Add server and personal records |
+| 14 | Persistence model is deliberate; run-based unless a persistent base is the product | Simplify to runs with meta unlocks, or build the blueprint save properly |
+| 15 | One trip uses about half a needs bar | Retune drain |
+| 16 | PvP is opt-in with offline protection | Add zones or flags and protection |
 
 ## Review gate
 
@@ -131,3 +170,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/data-store-size-limit-question/4026178 (search summary)
 - https://github.com/Zyn-ic/Stoway (read README; 13 stars, MIT; inventory and hotbar system; reference only)
 - GitHub search for open survival frameworks (2026-11-10): only small personal projects without licences found.
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Survival and Crafting.md` (read)
+- See also `references/case-studies-teardowns.md` for full game teardowns.
