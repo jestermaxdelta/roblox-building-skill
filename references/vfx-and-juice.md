@@ -6,7 +6,7 @@ Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10; re-checked 20
 
 ## Contents
 
-Start here by level · 1. Principles of readable stylised effects · 2. Instances and ParticleEmitter · 3. Beam, Trail, Attachment · 4. Highlight · 5. Meshes and textures (Blender) · 6. Timing and ability anatomy · 7. Hit-stop, shake, FOV · 8. Screen effects and number popups · 9. Tween or spring · 10. Replication · 11. Pooling, budgets, quality scaling · 12. Reduced motion and flash safety · 13. Juice ladder by frame cost · 14. Generic tells and fixes · 15. Level-up table · 16. Critique rubric · Review gate · Sources
+Start here by level · Fast routes · 1. Principles of readable stylised effects · 2. Instances and ParticleEmitter · 3. Beam, Trail, Attachment · 4. Highlight · 5. Meshes and textures (Blender) · 6. Timing and ability anatomy · 7. Hit-stop, shake, FOV · 8. Screen effects and number popups · 9. Tween or spring · 10. Replication · 11. Pooling, budgets, quality scaling · 12. Reduced motion and flash safety · 13. Juice ladder by frame cost · 14. Generic tells and fixes · 15. Level-up table · 16. Critique rubric · Review gate · Sources
 
 ## Start here by level
 
@@ -15,6 +15,19 @@ Start here by level · 1. Principles of readable stylised effects · 2. Instance
 | Beginner | (1) Every effect runs in a LocalScript; the server only sends "what happened". (2) Emitters stay `Enabled = false`; fire them with `:Emit(n)`. (3) Set `LightInfluence = 0` on every emitter. (4) Build the effect in white first: one flash, one shape, a few sparks, a sound; add colour last (§1). (5) Add a shake slider and honour Reduce Motion before shipping any shake | Flipbooks, mesh VFX, governors, hit-stop budgets |
 | Intermediate | Write each effect as a layer table (§6) with primary, secondary and tertiary roles (§1). Paint your own greyscale textures (§5). Pool effect roots. One dark layer under every bright stack. Play the caster's effect on input and skip the echo. Tie effects to animation markers, not timers | Per-client particle governors, catch-up hit-stop |
 | Expert | Keep a style guide and a 0–10 importance sheet per ability and per viewer (§1). Budget per cast, per caster window and per client; never cull gameplay information. Catch-up hit-stop, FOV-normalised shake. Score every effect with §16 on a hot phone with 8 casters at one spot | — |
+
+## Fast routes
+
+For the commonest tasks read only these sections, in this order (§N = the section numbered N in that file; "top" = the lines above its first numbered section). Sheets are `assets/reference/NN-*.png`, opened with the Read tool; library rows are in `visual-library/`.
+
+| Task | Read exactly | Look at |
+|---|---|---|
+| Make one effect from a recipe | `vfx-recipes.md` top, Conventions, your recipe, Review gate; this file §2 (and §3 if it uses a beam or trail), §6, §10, §16 (about 250 lines) | Sheets 11, 12; `vfx.md`: the "Start here" rows of the section for your effect |
+| Make a hit feel heavier | This file §6, §7; `game-craft.md` §1, §1.3; `vfx-recipes.md` top, Conventions, recipe 3 (recipe 4 for a ground slam); `audio-sfx-music.md` §5 up to its code block (about 330 lines) | Sheets 10, 21; `vfx.md` rows 25, 30, 16 |
+| Fix effects that look cheap | This file §1, §5, §6, §14, §15, §16; `vfx-recipes.md` Conventions and the recipe for the effect (about 250 lines) | Sheets 12, 11; `vfx.md` rows 1, 8–9, 16 and 52–55; `vfx-learning.md` row 5 |
+| Add sound to an action | `audio-sfx-music.md` top, §2 (skip if the bus graph exists), §3, §5, §6, §13 (about 235 lines, 175 without §2) | Sheet 10 (sound on the heavy-hit timeline); `audio-and-sound.md` rows 1, 13, 17, 32–33 |
+| Build a UI or reward sound set | `audio-sfx-music.md` top, §9, §5 "Variation", §6, §14, §3, §11, §2 (skip if the bus graph exists); `ui-motion-and-feedback.md` §5; `vfx-recipes.md` recipe 16 (about 255 lines, 200 without §2) | Sheet 08; `audio-and-sound.md` rows 30, 33, 44 |
+| Cut effect cost on phones | This file §11, §13, §2, §4, §8; `performance.md` "Frame budgets and device targets", "VFX, animation and audio budgets"; `audio-sfx-music.md` §10; the Budget line of each recipe you use (about 260 lines) | Sheet 11 (low-tier pictures); `vfx.md` row 51; `vfx-learning.md` rows 18, 26 |
 
 ## 1. Principles of readable stylised effects
 

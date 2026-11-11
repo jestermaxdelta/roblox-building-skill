@@ -11,11 +11,13 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## A. Towns, villages and streets
 
+Start here: 1, 6, 11.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 1 | [Map Design and Scene Building: before and after](https://devforum.roblox.com/t/709866), Ahlvie, 2020 · `DF/4X/e/6/8/e68db8b0e88fe9346c996bf879a7138a758ad9d5.png` | image | One town twice. Left: flat ground, houses dropped on a plane, even light. Right: stepped heights, a framed street, foliage masses, warm lamps. The buildings barely changed; the composition did | viewed |
-| 2 | Same thread, gatehouse · `DF/4X/a/6/e/a6e1a39cc674364c0026a1d214d6764bb78b079a.jpeg` | image | A threshold: dark gate frame, bright town through the arch, cart and pines as secondary shapes at the edges, path leading in | viewed |
-| 3 | Same thread, lantern path · `DF/4X/c/9/e/c9eb37436e6604c3f1b46d6e937ddca925a6b7d9.jpeg` | image | Lantern posts repeat along the path as a leading line to the lit house; ground haze turns the far posts into clean dark shapes | viewed |
+| 1 | [Map Design and Scene Building: before and after](https://devforum.roblox.com/t/709866), Ahlvie, 2020 · `DF/4X/e/6/8/e68db8b0e88fe9346c996bf879a7138a758ad9d5.png` (PNG, 3.2 MB) | image | One town twice. Left: flat ground, houses dropped on a plane, even light. Right: stepped heights, a framed street, foliage masses, warm lamps. The buildings barely changed; the composition did | viewed |
+| 2 | Same thread, gatehouse · `DF/4X/a/6/e/a6e1a39cc674364c0026a1d214d6764bb78b079a.jpeg` (JPEG, 1.2 MB) | image | A threshold: dark gate frame, bright town through the arch, cart and pines as secondary shapes at the edges, path leading in | viewed |
+| 3 | Same thread, lantern path · `DF/4X/c/9/e/c9eb37436e6604c3f1b46d6e937ddca925a6b7d9.jpeg` (JPEG, 1.1 MB) | image | Lantern posts repeat along the path as a leading line to the lit house; ground haze turns the far posts into clean dark shapes | viewed |
 | 4 | Same thread, prop group · `DF/4X/f/6/f/f6fa4cd43b1e65a73c63c763009d10685ea58498.jpeg` | image | One story group against a wall: two crates, a lantern on top, a rock, a fern; one tall, two medium, several small, with grass hiding the seam | viewed |
 | 5 | Same thread, text | tutorial | Order of work: stylisation, layout, sculpting, scene building, lighting, details. Placeholder blocks at true scale before any asset; a small unified palette with rare vivid accents. It uses Roblox Terrain, which needs the owner's approval here | read |
 | 6 | [Medieval Market](https://80.lv/articles/medieval-market-a-detailed-guide-on-stylized-environment-art-in-unreal-engine), Kristina Nakić, 2025 · `LV/d0/6851556c5af06.jpg` | breakdown | One hero (the church tower) on the centre axis; bunting and both roof rows converge on it; stalls dress the edges and the middle stays clear; warm roofs against one blue sky | viewed |
@@ -29,6 +31,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## B. Lobbies and hubs
 
+Start here: 14, 23, 24.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 14 | [New Lobby Graphics (PROPHECY)](https://devforum.roblox.com/t/3682295), nowflybird, 2025 · `DF/5X/3/1/2/d/312d0fa904ef48fcdd64e2338fb1bec8beb6cb15.jpeg` | image | A lobby with its own look: two hues only (blue rock, gold blocks), nested triangular portal as the focal point, cyan lights as waymarkers, ropes as leading lines. PBR rock: a small team takes the composition | viewed |
@@ -37,13 +41,15 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 17 | [I need some feedback on this lobby map](https://devforum.roblox.com/t/4068529), CaydenIs3D, 2025 · `DF/5X/9/2/f/b/92fbbc95bf7087822f60ec0cb93f46ad1338fee4.jpeg` | image | Weak: a slab floating in the default sky, pixel-font signs, grey spikes as backdrop. Sign, shop and ground share no rule; reviewers call it small and dull | viewed |
 | 18 | [Feedback on my game's lobby](https://devforum.roblox.com/t/3644614), LumoseerGaming, 2025 · `DF/5X/1/1/a/2/11a26e692dee29762d97fb4e342e2ed08d08f162.jpeg` | image | Weak: cube trees and flat grey ground beside one detailed timber house: two detail levels in one view | viewed |
 | 19 | [How would you rate my Simulator Lobby](https://devforum.roblox.com/t/1891111), TweetyBuilds, 2022 · `DF/4X/4/a/4/4a45f9bc6fa247eac1f0946e2bdef181d45ad39f.jpeg` | image | Weak: pure cyan, blue and yellow at full saturation; reviewers say the "random colors" do not fit. A phone capture, which is how players see it | viewed |
-| 20 | [Luxurious Resort on Tropical Island](https://devforum.roblox.com/t/293803), nineteen85, 2019 · `DF/5X/2/2/f/4/22f49c4c148b92b946c9c0b2922f06700a606cd9.png` | image | Mixed: a two-hue world (sand, cyan) with palms and umbrellas as the only accents and arches repeating around the pool. Bloom is far past safe range: sky and floor burn out | viewed |
-| 21 | Same thread, aerial · `DF/5X/f/c/3/3/fc33bcdb110ddd84ba4bb8c1f91d5a8ab8bf0d9b.png` | image | Dome repetition and a symmetric plan make a large hub readable from above; hedge maze and pools mark districts | viewed |
-| 22 | Same thread, palm path · `DF/5X/3/a/6/5/3a655b898debe43f00c635e4562d977dfb7f23ec.jpeg` | image | Trunks as a foreground frame, one saturated umbrella at the end of the path as the pull | viewed |
+| 20 | [Luxurious Resort on Tropical Island](https://devforum.roblox.com/t/293803), nineteen85, 2019 · `DF/5X/2/2/f/4/22f49c4c148b92b946c9c0b2922f06700a606cd9.png` (PNG, 1.4 MB) | image | Mixed: a two-hue world (sand, cyan) with palms and umbrellas as the only accents and arches repeating around the pool. Bloom is far past safe range: sky and floor burn out | viewed |
+| 21 | Same thread, aerial · `DF/5X/f/c/3/3/fc33bcdb110ddd84ba4bb8c1f91d5a8ab8bf0d9b.png` (PNG, 2.2 MB) | image | Dome repetition and a symmetric plan make a large hub readable from above; hedge maze and pools mark districts | viewed |
+| 22 | Same thread, palm path · `DF/5X/3/a/6/5/3a655b898debe43f00c635e4562d977dfb7f23ec.jpeg` (JPEG, 1.7 MB) | image | Trunks as a foreground frame, one saturated umbrella at the end of the path as the pull | viewed |
 | 23 | [Beyond the Dark: building architecture](https://create.roblox.com/docs/resources/beyond-the-dark/building-architecture), Roblox · `DOCS/resources/beyond-the-dark/building-architecture/Architecture-Overview.jpeg` | image | A dark hub lit by its content: a black-hole landmark through the roof, teal, magenta and amber signs marking districts, a white centrepiece below | viewed |
 | 24 | Same page, greybox · `DOCS/resources/beyond-the-dark/building-architecture/Architecture_Example_1.jpeg` | image | Greybox with emissive colour blocks standing in for districts: the lighting and wayfinding plan is tested before any art exists | viewed |
 
 ## C. Biomes, nature and landmarks
+
+Start here: 25, 28, 29.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -64,6 +70,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## D. Interiors
 
+Start here: 39, 41, 44.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 39 | [Modular Approach to Stylized Environments](https://80.lv/articles/001agt-002mrs-crafting-a-low-poly-model-kit), Rodrigo Gonçalves, 2019 · `LV/a1/5d28760750e79.jpg` | breakdown | A two-room cutaway from the front, three-quarter and top: a warm lamp pool marks each seating group, red armchairs and a green fridge are the only saturated objects, the floor material changes at the room boundary | viewed |
@@ -78,6 +86,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## E. Obby, arena and track layouts
 
+Start here: 48, 52, 53.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 48 | [Starter Kit 3D Platformer](https://github.com/KenneyNL/Starter-Kit-3D-Platformer), Kenney, 2026 commit; code MIT, models CC0 · `https://raw.githubusercontent.com/KenneyNL/Starter-Kit-3D-Platformer/main/screenshots/screenshot.png` | repo | Obby readability: each platform has a dark top and a thick bright rim, so the landing edge is the highest-contrast line on screen; the pastel sky stays below the platforms in saturation | viewed |
@@ -89,9 +99,11 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## F. Process: boards, thumbnails and kits
 
+Start here: 54, 56, 57.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 54 | [Develop polished assets](https://create.roblox.com/docs/tutorials/curriculums/environmental-art/develop-polished-assets), Roblox · `DOCS/tutorials/environmental-art-curriculum/Section2/Art-Style.png` | image | The whole art-style board for a sci-fi arena is five real-world photos (stepped concrete, basalt columns, perforated metal, moss, ferns): shapes and materials taken from the world, not from other games | viewed |
+| 54 | [Develop polished assets](https://create.roblox.com/docs/tutorials/curriculums/environmental-art/develop-polished-assets), Roblox · `DOCS/tutorials/environmental-art-curriculum/Section2/Art-Style.png` (PNG, 3.6 MB) | image | The whole art-style board for a sci-fi arena is five real-world photos (stepped concrete, basalt columns, perforated metal, moss, ferns): shapes and materials taken from the world, not from other games | viewed |
 | 55 | Same page, kit · `DOCS/tutorials/environmental-art-curriculum/Section2/DesigningModularKits-ModularKit.jpg` | image | The laser-tag kit: wall, corner, door, ramp-top and trim pieces in two colours (white trim, yellow field) | viewed |
 | 56 | [The Drunk Lake Inn](https://80.lv/articles/the-drunk-lake-inn-stylized-environment-breakdown), Ivan Blinov, 2020 · `LV/69/5efc6629e35d7.png` | breakdown | A board in sections (Scene, Props, Light, "Reference with colours palette") with notes written over the concept; the palette was read by pixelating the concept | viewed |
 | 57 | [Working on Lighting and Composition for a Night Scene](https://80.lv/articles/working-on-lighting-and-composition-for-a-night-scene), Stephen A. Falk, 2020 · `LV/b2/5e959e735df3d.jpg` | breakdown | Eight pencil thumbnails of one scene before any blockout: composition is chosen on paper | viewed |

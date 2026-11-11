@@ -14,6 +14,8 @@ Terms: a **stud** is Roblox's length unit (0.28 m); the **silhouette** is the fi
 
 Contents: The numbers · Shape and silhouette · Proportion and exaggeration · Edges and shading · Spending triangles · Colour and value · Faceted and voxel styles · Recipes and budgets (with the rarity ladder) · Concept to model · Quality rubric · First kit walkthrough and first creature · Level-up · Review gate · Sources
 
+Routes: **one prop to the bar** → The numbers, Shape and silhouette, Proportion, Edges and shading, Spending triangles, Colour and value, the class row of Recipes and budgets, Concept to model, Quality rubric (about 270 lines). **First kit** → the first table of The numbers, Edges and shading, Recipes and budgets, Quality rubric, First kit walkthrough (about 200 lines). **Reviewing someone else's asset** → Concept to model (critique order), Quality rubric, Level-up, and `art-direction-and-quality-bar.md` §8 "Several artists, one look". The style the numbers serve comes from `art-direction-and-quality-bar.md` §4 and §6. Look at `visual-library/models-props-characters.md` rows 1–3 and 8, one weak row (16 or 25) and one too-realistic row (17).
+
 ## The numbers that drive every decision
 
 On-screen size, with the default 70° vertical field of view `[official]`: `pixels = size × screenHeight / (1.40 × distance)`. Use 720 px as the phone render height `[lihfolk]` (phones often render below native resolution; exact scaling is undocumented).
@@ -367,7 +369,7 @@ Which pet a player has equipped is server state (an attribute or a profile field
 | The chest or exit goes unnoticed by players | Scenery and interactables sit in one value band | Reserve the lightest band or a saturation spike |
 | Dead grey shadows, chalky highlights | Ramps mixed toward black and white | Hue-shifted ramps |
 | Rocks look like noise blobs | Facets too small and all one size | Size facets in pixels; big planes plus a few small edge facets |
-| Library drifts over months | Rules are adjectives; no golden assets | Numbers in the bible, 3–5 golden assets, side-by-side review |
+| Library drifts over months, or each artist's work is recognisable | Rules are adjectives; no golden assets; nobody reviews across artists | Numbers in the bible, the three golden samples, the several-artists system in `art-direction-and-quality-bar.md` §8 |
 | The same notes come back every round | Detail critiqued before silhouette | Fixed critique order; stop at the first failing level |
 | Scripted assets subtly lopsided or with floating bits | Placement by eye | Half-plus-mirror, centring by maths, seating and floating-shell gates |
 

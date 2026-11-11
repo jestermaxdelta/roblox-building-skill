@@ -22,6 +22,19 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/` (`figma` = `ui-design-figma.md`, `recipes` = `ui-screen-recipes.md`, `input` = `ui-input-crossplatform.md`, `motion` = `ui-motion-and-feedback.md`); library files are in `${CLAUDE_PLUGIN_ROOT}/references/visual-library/`; sheets are `${CLAUDE_PLUGIN_ROOT}/assets/reference/NN-*.png`. §N is the section numbered N. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Look at | Lines |
+|---|---|---|---|
+| Redesign one screen | figma §Fast routes, §3, §4, §6, §9, §10 · recipes §1, §3, the screen's own section · input §UI architecture (from the `DisplayOrder` band plan to the presenter note) · motion §2, §8 | Sheets 03/04, 05, 09 · `ui-screens.md`, that screen's section (shops #1, #4, #10) · `ui-components-and-style.md` §1 #1–3 against #8 | ~350 |
+| New HUD | figma §1–4, §6 · recipes §1, §2, §4 · input §Containers, §Mobile layout · motion §2 | Sheets 01, 02, 19 · `ui-hud.md` #1–28, "Start here" rows first | ~330 |
+| Fix phone layout | figma §2, §4, §11 · input §Containers, §Text, §Mobile layout, §Level-up, the audit scan · recipes §1, §4 | Sheets 01, 19, 06 · `ui-hud.md` #4, #18, #20, #36 | ~270 |
+| Motion and feedback | figma §3 "States" · motion §1–5, §7, §8, §Level-up · input, the presenter and its note | Sheets 05, 08 · `ui-components-and-style.md` #33, #38, #39 · `ui-screens.md` #67, #68, #72 | ~270 |
+| Figma to Roblox | figma §3, §4, §7, §9, §11–15 · input §Containers | Sheets 06, 05 · `ui-components-and-style.md` #27–31, #47, #51 | ~310 |
+| Critique a UI | figma §1, §3, §4, §8, §9, §Level-up · input, the pass criteria and §Level-up · recipes and motion §Level-up | Sheets 02, 09, 07 · the "weak examples" section of each `ui-*` library file | ~250 |
+
 ## What to read
 
 | When | Open |
@@ -34,7 +47,7 @@ On a live game, change it safely: note the baseline number, put the change behin
 | Reference images: HUDs by genre | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/ui-hud.md` |
 | Reference images: shop, inventory, menus, rewards and other screens | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/ui-screens.md` |
 | Reference images and tools: buttons, icons, type, colour, panels, motion, kits | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/ui-components-and-style.md` |
-| Bundled sheets: HUD anatomy, densities, shop, inventory, buttons, type, colour, rewards, template vs designed, thumb reach (01–09, 19) | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/reference-sheets.md` |
+| Bundled sheets: HUD anatomy, densities, shop, inventory, buttons, type, colour, rewards, template vs designed, thumb reach, icon sizes (01–09, 19, 20) | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/reference-sheets.md` |
 
 ## Reading the references
 
