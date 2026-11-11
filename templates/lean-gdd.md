@@ -13,7 +13,7 @@ Write this after the one-pager is approved and before the vertical slice. Keep e
 - Verbs the player has (list each with the input on keyboard, gamepad and touch).
 - Core loop diagram (micro → meso → session → meta) with the timing of each.
 - Difficulty and flow: sawtooth pacing plan, hint ladder (what the game does at 10 s, 30 s, 60 s of no progress), failure handling.
-- Feel targets: response times, juice tiers per action (see references/game-craft.md).
+- Feel targets: response times, juice tiers per action (see references/game-craft.md §1; effects in references/vfx-and-juice.md, sound in references/audio-sfx-music.md).
 
 ## 3. Systems
 
@@ -33,7 +33,7 @@ For each system: purpose, inputs, outputs, rules, numbers, server/client split, 
 
 - World: zones or stages, unlock order, the modular kit each needs.
 - Asset list by class (clutter, small prop, medium prop, building module, hero, NPC, vehicle) with triangle budgets.
-- NPCs and AI behaviour (models from references/game-craft.md).
+- NPCs and AI behaviour (models from references/game-craft.md §5).
 - Audio plan: soundbed, spot ambiences, music tracks, SFX count.
 - Look and feel: link to the style bible (references/art-direction-and-quality-bar.md §6); UI screens to build (references/ui-screen-recipes.md) and the effects the loop needs (references/vfx-recipes.md), each with its rubric pass mark.
 

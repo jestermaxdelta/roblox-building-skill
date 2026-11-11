@@ -50,7 +50,7 @@ Dashboard genre settings `[official]` `[VS]`: set genre and optional subgenre in
 | Party and minigame collections | `genres/party-minigames.md` | Intermission → rule card → 1–3 min minigame → results → next | Long-standing; show-tied spikes fade | Party & casual › Minigame |
 | Physics sandbox and ragdoll | `genres/physics-sandbox.md` | Grab or launch → fling → be flung → invent games | Forming wave (21–45K); gap in progression hybrids | Simulation › Physics Sim |
 
-Each genre file uses the same headings: Start here by level · Snapshot · Core loop with timings · First 5 minutes · Progression and economy shape · Monetisation set that fits · Retention and social hooks · UI patterns · Systems to build, in order · Technical hot spots · The one-new-verb angle · Common failure modes · Level-up checklist for a live game · Review gate · Sources.
+Each genre file uses the same headings: Start here by level · Snapshot · Core loop with timings · First 5 minutes · Progression and economy shape · Monetisation set that fits · Retention and social hooks · UI patterns · Systems to build, in order · Technical hot spots · The one-new-verb angle · Common failure modes · Level-up checklist for a live game · Review gate · Sources. They hold genre specifics only: tutorial craft is in `tutorial-and-onboarding.md` (its §10 has a row per genre), screen recipes in `ui-screen-recipes.md`, effect recipes in `vfx-recipes.md`, the look in `art-direction-and-quality-bar.md`, intros in `cutscenes-and-cinematics.md`.
 
 ## Cross-genre rules
 
@@ -70,7 +70,7 @@ Monetisation:
 - No stat power sold in competitive modes. Where the market does it anyway, the genre file marks a "Conflict" and gives the house answer.
 - Any roll bought with Robux or with Robux-bought currency is a paid random item: every outcome and numeric odds before purchase, boosted odds shown live, `PolicyService` flags enforced, direct-sale fallback `[official]` `[VS]`. Odds are shown as percentages summing to exactly 100%; a "1 in N" label may accompany but not replace them. Generate the display from the code that rolls: hand-typed labels drift from real odds `[lihfolk]`.
 - Before removing or weakening anything a player paid for, give notice and equal value; removal without notice is listed under fraud in Roblox's standards `[lihfolk]` `[VS]`.
-- Rewarded-video benchmarks by genre `[official]` `[VS]`: obby opt-in 15–25% at frequency 3 (best 30%+ at 4+); tycoon, RPG and sports 15%+ at 3+; incremental sim 13%+ at 2.8; survival 13%+ at 2.5+; shooter 10%+ at 3+.
+- Rewarded-video benchmarks by genre `[official]` `[VS]`: obby opt-in 15–25% at frequency 3 (best 30%+ at 4+); tycoon, RPG and sports 15%+ at 3+; incremental sim 13%+ at 2.8; survival 13%+ at 2.5+; shooter 10%+ at 3+. Rewards are fixed, never random. The playbooks' loss-aversion placements ("Streak Saver", "Rematch Rescue") are allowed only as quiet ad or earned-token buttons after the threat has passed, never as Robux products: `genres/survival-crafting.md` §Monetisation has the rule.
 
 Engineering:
 - The server computes every number that matters; remotes carry intent, never amounts or damage.

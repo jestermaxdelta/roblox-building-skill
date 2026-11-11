@@ -153,7 +153,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Intent** | What a remote should carry: "I want to buy X", never "give me 100 coins" | networking-and-security.md |
 | **Jest Roblox** | Test framework for Luau; the default for new in-engine tests | engineering-architecture.md |
 | **Journey** | Analytics for a branching path (pick a class, then a starter): stages with alternative nodes, where a funnel is one straight line `[VS]` | tutorial-and-onboarding.md |
-| **Juice** | Feedback that makes an action feel good: sound, flash, shake, particles, squash | game-craft.md |
+| **Juice** | Feedback that makes an action feel good: sound, flash, shake, particles, squash | game-craft.md §1, vfx-and-juice.md |
 | **Key / fill / rim** | The main light, the light that softens its shadows, and the edge light from behind that separates a subject from the background | lighting-and-atmosphere.md |
 | **Kit** | A set of modular Blender pieces built on one grid that snap together | art-pipeline-blender.md |
 | **Knit** | An older Luau framework. Not used for new projects here `[house]` | engineering-architecture.md |
@@ -190,7 +190,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Native codegen** | Compiling a hot script to machine code (`--!native`). Only after measuring | performance.md |
 | **Network ownership** | Which machine simulates a part's physics: the server or one client | physics-and-vehicles.md |
 | **Normal map** | Texture that fakes small surface detail through lighting | art-pipeline-blender.md |
-| **NPC** | Non-player character | game-craft.md |
+| **NPC** | Non-player character | game-craft.md §5 |
 | **Obby** | Obstacle course game | genres/obby-tower.md |
 | **Offline income** | Earnings granted for time away; capped and stated `[house]` | economy-and-progression.md |
 | **Open Cloud** | Roblox's web APIs: publish places, upload assets, read and write data, run Luau | engineering-architecture.md |

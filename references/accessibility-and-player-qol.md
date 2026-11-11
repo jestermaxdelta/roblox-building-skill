@@ -7,7 +7,7 @@ What makes a Roblox game comfortable to play for people with different eyes, ear
 | Level | Do first | Ignore for now |
 |---|---|---|
 | Beginner | (1) Music and SFX sliders with every sound in a `SoundGroup`. (2) Never colour alone: add an icon, word or shape to every colour signal. (3) Body text ≥ 16 px on a phone, fixed `TextSize`, no `TextScaled` for content. (4) Every rejected action says why and what to do next. (5) A lock on valuable items and a confirm on anything irreversible | Remapping UI, touch layout editor, palette modes, server lists |
-| Intermediate | One settings schema shared by client and server, saving overrides only; one comfort gate (shake, flashes, hit-stop) that follows `ReducedMotionEnabled`; hold/toggle on every sustained action; graphics preset with a real VFX density scale; captions for sounds that change what a player does; AFK, rejoin and join-friend handled deliberately | Per-assist leaderboards, Oklab palette audit in CI |
+| Intermediate | One settings schema shared by client and server, saving overrides only; one comfort resolver (shake, screen effects, flashes, hit-stop; §10) that follows `ReducedMotionEnabled`; hold/toggle on every sustained action; graphics preset with a real VFX density scale; captions for sounds that change what a player does; AFK, rejoin and join-friend handled deliberately | Per-assist leaderboards, Oklab palette audit in CI |
 | Expert | Numeric palette audit under simulated protan/deutan/tritan vision; flash gate shared by all players' effects; assists as server-authoritative per-player dials with fair leaderboards; automated text-fit audit at `Largest` × max UI scale × longest language; measured assist adoption and quit rate per obstacle | — |
 
 ## Contents
@@ -101,8 +101,8 @@ Why players feel sick `[lihfolk]`: the eyes report motion the inner ear does not
 
 Implementation:
 
-- One **comfort module** answers "how much motion?" for every system. Effective reduced motion = the game override (`follow`, `on`, `off`) resolved against `GuiService.ReducedMotionEnabled`; fire a signal on change so long-running loops stop mid-session. Reading the setting only at effect start is the most common bug `[lihfolk]`.
-- Apply the shake scale once, at the point where all camera offsets get added up; scaling inside each effect lets a new effect forget it `[lihfolk]`.
+- One **comfort module** answers "how much motion?" for every system (keys, defaults and the resolver sketch are in §10; other guides point there). Effective reduced motion = the game override (`follow`, `on`, `off`) resolved against `GuiService.ReducedMotionEnabled`; fire a signal on change so long-running loops stop mid-session. Reading the setting only at effect start is the most common bug `[lihfolk]`.
+- Apply the shake scale once, at the point where all camera offsets get added up; scaling inside each effect lets a new effect forget it `[lihfolk]`. The slider runs 0–100% and defaults to 100%, so the per-hit values in `vfx-and-juice.md` §7 must already be comfortable at the default (§1: the default game must pass).
 - FOV slider 60–100, default 70 (`Camera.FieldOfView` clamps 1–120 `[official]`). One owner writes the property; sprint, zoom and ultimates add named offsets to the player's base. Symptom of a missing owner: FOV resets after the first sprint.
 - Flashes are a **separate toggle** from reduced motion: some players want one and not the other (also requested on the DevForum `[community]`).
 - **Flash gate.** WCAG 2.3.1: nothing flashes more than three times in any one-second period (unless the flash is below the general and red flash thresholds). Roblox does not enforce it. Flashes come from many systems and many players at once, so route every large-area brightness change (impact frames, lightning, rarity strobes, other players' ultimates) through one limiter, and never use saturated red full-screen flashes `[lihfolk]`.
@@ -233,10 +233,14 @@ export type Spec =
 local Schema: { [string]: Spec } = {
 	musicVolume = { kind = "number", min = 0, max = 1, default = 0.6 },
 	fov = { kind = "number", min = 60, max = 100, default = 70 },
-	shakeScale = { kind = "number", min = 0, max = 1, default = 1 },
 	uiScale = { kind = "number", min = 0.8, max = 1.3, default = 1 },
-	flashes = { kind = "bool", default = true },
-	reducedMotion = { kind = "choice", options = { "follow", "on", "off" }, default = "follow" },
+	-- Comfort keys: this block is the single owner; vfx-and-juice.md, game-craft.md and cutscenes-and-cinematics.md read it.
+	shakeScale = { kind = "number", min = 0, max = 1, default = 1 }, -- 100%: the per-hit values are tuned so the default is comfortable
+	screenEffects = { kind = "number", min = 0, max = 1, default = 1 }, -- tint, blur and vignette strength; 0 removes them
+	flashes = { kind = "bool", default = true }, -- impact frames and full-screen flashes; on still passes the flash gate
+	hitStop = { kind = "bool", default = true },
+	damageNumbers = { kind = "choice", options = { "all", "mine", "off" }, default = "all" },
+	reducedMotion = { kind = "choice", options = { "follow", "on", "off" }, default = "follow" }, -- follow = GuiService.ReducedMotionEnabled
 	sprintMode = { kind = "choice", options = { "hold", "toggle", "always" }, default = "hold" },
 }
 
@@ -258,11 +262,43 @@ local function sanitize(raw: unknown): { [string]: any }
 end
 ```
 
+Comfort resolver: the one function every camera, VFX and cutscene system asks, so no effect reads settings by itself. Its outputs are the reduced-motion column of the §5 table.
+
+```lua
+--!strict
+-- Unexecuted sketch (client). `settings` = schema defaults merged with the player's overrides.
+local GuiService = game:GetService("GuiService")
+export type Comfort = {
+	reduced: boolean, shake: number, kick: number, fovScale: number,
+	screenEffects: number, flashes: boolean, hitStop: boolean,
+}
+
+local function resolve(settings: { [string]: any }): Comfort
+	local reduced: boolean
+	if settings.reducedMotion == "follow" then
+		reduced = GuiService.ReducedMotionEnabled
+	else
+		reduced = settings.reducedMotion == "on"
+	end
+	return {
+		reduced = reduced, -- cutscenes hold final framings and cut; UI snaps or fades; head bob, landing dip and drift are off
+		shake = if reduced then 0 else settings.shakeScale, -- multiplies the summed shake offset once; roll is never produced
+		kick = if reduced then 0.25 else 1, -- directional kick: the confirmation that survives
+		fovScale = if reduced then 0.5 else 1, -- FOV offsets are halved, not removed: they carry information
+		screenEffects = settings.screenEffects, -- under `reduced`, draw only steady vignettes, no pulses
+		flashes = settings.flashes and not reduced, -- false: steady edge vignette plus a directional indicator instead
+		hitStop = settings.hitStop and not reduced, -- false: keep the sound and the spark
+	}
+end
+-- Recompute on every settings change and on GuiService:GetPropertyChangedSignal("ReducedMotionEnabled"),
+-- then fire one Changed signal so running loops (shake, drift, looping tweens) stop mid-session.
+```
+
 - Apply instantly on the client; debounce and send once when the menu closes; ride the profile's normal autosave. Never write a DataStore per slider tick.
 - Fetch settings **before** revealing the HUD (a `RemoteFunction` the client invokes avoids the race where the server fires before the listener exists), or the UI flashes default size then jumps `[lihfolk]`.
 - **Device buckets:** audio, comfort and palette follow the account; graphics preset and touch layout are stored per bucket (`touch`, `desktop`, `gamepad`) chosen from `UserInputService.PreferredInput` (`Touch`, `KeyboardAndMouse`, `Gamepad`) when the session starts, or a phone inherits the PC's High preset `[lihfolk]`.
 - Reset per section; "reset all" confirms; each control marks its default. Settings are reachable from the first second, including during the tutorial, with a gamepad, at maximum UI scale and `Largest` text.
-- Menu contents, in the order players look for them: **Audio** (Music, SFX, UI or Speech sliders; mute music) · **Graphics** (Auto / Low / Medium / High, VFX density, hide other players' effects) · **Camera** (FOV, shake 0–100%) · **Comfort** (reduced motion follow/on/off, flashes, damage numbers, hit-stop) · **Interface** (UI size, compact or focus HUD, palette, captions, tooltips, ping display) · **Controls** (hold/toggle, auto-sprint, keybinds, touch layout) · **Social** (ignore trades, duels or invites; hide others' pets) · **Assists**.
+- Menu contents, in the order players look for them: **Audio** (Music, SFX, UI or Speech sliders; mute music) · **Graphics** (Auto / Low / Medium / High, VFX density, hide other players' effects) · **Camera** (FOV, shake 0–100%) · **Comfort** (reduced motion follow/on/off, screen-effects intensity, flashes, hit-stop, damage numbers) · **Interface** (UI size, compact or focus HUD, palette, captions, tooltips, ping display) · **Controls** (hold/toggle, auto-sprint, keybinds, touch layout) · **Social** (ignore trades, duels or invites; hide others' pets) · **Assists**.
 
 ## 11. QoL catalogue
 
@@ -377,6 +413,7 @@ Re-rank for the audience: phone-heavy games move presets, compact HUD and the to
 - [ ] Camera never rolls in gameplay (grep the shake and dash modules for a non-zero third `CFrame.Angles` argument); one FOV owner; shake scaled at the sum point; flash gate holds ≤ 2 large flashes per second with several players' effects.
 - [ ] Sustained actions have hold/toggle; no mash, long-hold or chord without an alternative; key labels from `GetStringForKeyCode`.
 - [ ] Settings: one schema, server-sanitised, overrides only, device buckets, reachable in the first second with every input.
+- [ ] Shake, screen effects, flashes, hit-stop and cutscene motion all read the §10 comfort resolver (no system reads the settings or `ReducedMotionEnabled` itself); with reduced motion on, a hit still shows a marker or vignette and no camera rotation.
 - [ ] Assists are server-side, locked in combat, flagged on leaderboards, never sold and never a condition for the best rewards.
 - [ ] Locks enforced on the server in every destructive path; tiered confirmations; no extra confirm before Robux prompts.
 - [ ] Save indicator and purchase states reflect server results; every rejection has a message.

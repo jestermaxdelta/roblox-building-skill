@@ -144,7 +144,7 @@ Values per hit (how much trauma to add, when, and for whom) are owned by `vfx-an
 --!strict
 -- Unexecuted sketch. Client module. Trauma-based camera shake that never accumulates and never rolls.
 local RunService = game:GetService("RunService")
-local Shake = { userScale = 1 } -- 0..1 from the settings module; 0 under reduced motion
+local Shake = { userScale = 1 } -- set from the comfort resolver's `shake` output (accessibility-and-player-qol.md §10), never from the raw setting
 local trauma, DECAY, FREQ = 0, 1.2, 12 -- 12 Hz stays under 0.4 x frame rate at 30 FPS (vfx-and-juice.md §7)
 local MAX_ANGLE, MAX_OFFSET = math.rad(2), 0.5 -- radians of pitch/yaw and studs at trauma 1
 local applied = CFrame.identity

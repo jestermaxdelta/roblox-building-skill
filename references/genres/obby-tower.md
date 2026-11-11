@@ -17,7 +17,7 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 - Market position (vault, 2026-11-07): **evergreen leader, cooling wave**. Tower of Hell 36K CCU. +1 Speed Keyboard Escape 33K from a 4.04M peak (down 61% Aug → Sep 2026); obby share of top-10 CCU went from 4.2% to 0% in October. Remixes did better than straight obbies: Escape Tsunami For Brainrots about 5M peak, Swing Obby for Brainrots 87K peak.
 - Third-party trackers describe the genre as in gradual decline since mid-2024 `[community]`. It remains the cheapest genre to ship, so the tail is very long.
 - Audience: the youngest and broadest; also a skilled niche (tower and difficulty-chart communities).
-- Session shape: short attempts, natural stop points at each failure. Obbies should not be judged against simulator day-1 clocks, and Roblox publishes no genre-specific retention benchmark `[community]`. One tracker reports D1 25–35% for obbies with traffic; one developer of a themed obby reported D1 6.36% and D7 0.79% `[community]`. Use your own Creator Analytics benchmark.
+- Session shape: short attempts, natural stop points at each failure. Obbies should not be judged against simulator day-1 clocks, and Roblox publishes no genre-specific retention benchmark `[community]`. One tracker reports D1 25–35% for obbies with traffic (no sample or method stated; a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks); one developer of a themed obby reported D1 6.36% and D7 0.79% `[community]`. Use your own Creator Analytics benchmark.
 - Official starting point: the Platformer template (double jump, dash, roll, long jump, moving and one-way platforms, coin pickups, an example tower) `[official]`.
 
 ## Core loop with timings

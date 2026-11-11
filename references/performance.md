@@ -177,10 +177,13 @@ Scripts run in parallel only under an `Actor`; scripts in one Actor run serially
 
 ## VFX, animation and audio budgets
 
-- Particles: rate ≤ 400/s per emitter (100/s mobile), lifetime ≤ 20 s, flipbooks deactivate on low memory and cap at 30 fps, `LightEmission = 1` is additive, runtime property changes are costly (use `Emit(n)` bursts and `Enabled`). House budget: 6–10 ambient emitters in view at Rate ≤ 20, bursts of 5–30, one shared 512² or 1024² VFX atlas. Particles, beams and trails are 2D effects, not "visible objects"; 3D VFX meshes are still Blender models; VFX hosts are invisible helpers or `_Att` attachments.
-- Replicate effects as one small event; each client builds the effect from pooled templates and culls beyond about 200 studs. Never create VFX or tween world objects on the server. Reduce effects when `GuiService.ReducedMotionEnabled` is true.
-- Animation priorities, high to low: Action4, Action3, Action2, Action, Movement, Idle, Core. Animators must be created on the server; animations on a player's own character replicate from the client; NPC animations replicate only when played on the server, so ambient NPCs animate locally per client and only synchronised moments (boss attacks) play on the server. `LoadAnimation` always creates a new track; cache tracks. Remove unused KeyframeSequences before shipping. Blender animation goes through FBX (one track per file, Add Leaf Bones off, bones scale 1 rotation 0, root at origin, ≤ 4 influences per vertex).
-- Audio `[VS]`: legacy `Sound` plus the newer `AudioPlayer`/`AudioEmitter`/`AudioListener`/`AudioDeviceOutput` with Wires and inline effects; prefer the new API for 3D and mixing. Import limits: mp3/ogg/wav/flac, under 20 MB and 7 minutes, ≤ 48 kHz. Upload quota conflict: the audio page says 2,000 per 30 days verified (100 unverified); the Open Cloud page says 100 verified (10 unverified); plan around the stricter numbers. Mix: one 2D soundbed plus 3D spot ambiences; layered loops of different lengths; cap concurrent one-shots (about 16) and pool; play UI sounds on the client; sounds on streamed-out parts stop; expose Music, SFX and Ambience sliders.
+Craft and full rules live in vfx-and-juice.md, animation-and-rigs.md and audio-sfx-music.md. The performance facts:
+
+- Particles `[official]`: at most 400/s per emitter (100/s on mobile), lifetime capped at 20 s, flipbooks capped at 30 fps; property writes at runtime are costly, so use `Emit(n)` bursts and `Enabled`. House budget: 6–10 ambient emitters in view at Rate ≤ 20, bursts of 5–30. VFX hosts are invisible helpers or `_Att` attachments; 3D VFX meshes are still Blender models.
+- Replicate an effect as one small event; each client builds it from pooled templates and culls beyond about 200 studs. Never create VFX or tween world objects on the server.
+- Do not scale effects from `UserGameSettings.SavedQualityLevel`: the docs say it fights the engine's automatic scaling `[official]`, and staff plan to deprecate it (vfx-and-juice.md). Use your own setting plus measured frame time (procedure E).
+- Animation: `LoadAnimation` always creates a new track, so cache tracks per Animator; ambient NPCs animate on each client and only synchronised moments play on the server; remove Animation Editor data from rigs before shipping (it replicates on every clone `[official]`). Clips come from Blender as FBX or GLB; the Clip Editor importer (released 2026-03-31) reads every clip in one file `[VS]`. Export settings: animation-and-rigs.md.
+- Audio: cap concurrent one-shots (about 16 `[house]`) and pool them; do not load every sound at join; play UI sounds on the client; sounds on streamed-out parts stop. `Sound/stepInstances` in the MicroProfiler is the cost of active sounds.
 
 ## Loading and join
 
@@ -203,10 +206,10 @@ Hardware test matrix: one 2–4 GB Android phone, one mid-range phone, a tablet,
 
 ## Mobile crashes and memory
 
-- Roblox cannot use all of a device's RAM; the OS and background apps take their share `[official]`. No official per-device megabyte limit was found. Working target: whole-app client memory under 1.3 GB for 2 GB phones `[community: staff article]`.
-- Out-of-memory is one of the most common crash causes on low-end devices `[official: staff analytics post]`. The OS low-memory killer ending the app counts as a crash; low FPS does not (Android reclassification PSA dated November 4, year inferred as 2025 from thread order `[community]`), so compare crash rates only inside one period.
+- Roblox cannot use all of a device's RAM; the OS and background apps take their share `[official]`. No official per-device megabyte limit was found. Working target: whole-app client memory under 1.3 GB for 2 GB phones `[community: staff article, read]`.
+- Out-of-memory is one of the most common crash causes on low-end devices `[official: staff analytics post]`. A session the OS ends for any reason (the low-memory killer, and on some devices a swipe-to-close) counts as a crash; low FPS does not `[official: staff replies, read]`. Android crash telemetry was reclassified on 4 November 2025 and reported rates fell without any real change, so never compare a rate across that date.
 - Read three charts together: client crash rate (dashed line = noisy, use crash count), unexpected out-of-memory exits, and client memory usage percentage (an Android line near 100% means most Android devices are at risk) `[official]`.
-- Reality check `[community]`: developers report cutting memory to about 1.2 GB and raising FPS with no visible drop in Android crash rate (one reported a steady 10–15%). Judge a fix by out-of-memory exits and memory-% for the 2–4 GB class, and decide deliberately whether sub-2 GB devices are supported.
+- Reality check `[community: one studio's report, October 2024, before the reclassification]`: average Android memory cut to 1.21 GB with no visible drop in a steady 10–15% Android crash rate (iOS about 2%). Judge a fix by out-of-memory exits and memory-% for the 2–4 GB class, and decide deliberately whether sub-2 GB devices are supported.
 - Usual causes, most common first `[house, from the docs' problem lists]`: unique texture pixels; streaming off or too many Persistent models; the same mesh or image uploaded under several ids; all audio loaded at once; instances cloned and never destroyed; leaked connections and per-player tables; huge `PreloadAsync` lists; streaming-in bursts after a teleport `[community bug report]`.
 - Server side: an out-of-memory snapshot from a server that died minutes after start means a start-up spike; one from an old server means a leak. Filter by place version to find the update that introduced it `[official]`.
 
@@ -214,8 +217,8 @@ Hardware test matrix: one 2–4 GB Android phone, one mid-range phone, a tablet,
 
 Order matters: live data, then one device, then static scans, then fixes by return on effort.
 
-1. **Live data (10 min).** Performance and Crashes dashboards (charts need at least 100 daily active users; use the P90 filter, not only averages): note the worst OS and the worst metric (crash rate, memory-%, client FPS, server FPS, memory by server age). No access or too few users: start at step 2.
-2. **Reproduce on a 2–4 GB Android phone.** Stopwatch the join. Walk to the busiest scene. Record F9 Memory (PlaceMemory labels), Shift+F2 draw calls and triangles, Shift+F5 FPS, and a 2-minute MicroProfiler dump. Keep playing 10–15 minutes for thermal drop.
+1. **Live data (10 min).** Performance and Crashes dashboards (charts need at least 100 daily active users; switch "Filter By" from average to the percentile that shows the worst devices: P10 for frame rates, P90 for memory and CPU time): note the worst OS and the worst metric (crash rate, memory-%, client FPS, server FPS, memory by server age). No access or too few users: start at step 2.
+2. **Reproduce on a 2–4 GB Android phone.** Stopwatch the join. Walk to the busiest scene. Record F9 Memory (PlaceMemory labels), draw calls and triangles (Shift+F2), FPS (Shift+F5), and MicroProfiler captures from the phone's web view at the worst moments (30–90 frames each). Keep playing 10–15 minutes for thermal drop.
 3. **Classify** with the tag table above: memory, client CPU, GPU (red bars), server CPU, network or load time. Fix the worst class only, following the matching procedure (A–E) in the next section.
 4. **Static scan** in Studio Edit mode with sketches A and B (command bar, or Studio MCP `execute_luau` with `datamodel_type = Edit`). Both are read-only.
 5. **Fix in ROI order** `[house]`: (1) streaming on, radius tuned, Persistent audit; (2) texture sizes and duplicate uploads; (3) anchor static parts, Box or Hull collision, `CanTouch` and `CastShadow` off on clutter; (4) partial transparency, particle rates, shadowed lights; (5) shared MeshIds and SurfaceAppearances; (6) per-frame loops to events, server tweens to clients, remote rates; (7) ReplicatedStorage diet and preload list; (8) leaks (respawn 20 times, memory returns to baseline); (9) SLIM, then Parallel Luau or `--!native` for measured hot spots.
@@ -257,7 +260,7 @@ print("ReplicatedStorage", #game:GetService("ReplicatedStorage"):GetDescendants(
 print("streaming", workspace.StreamingEnabled, workspace.StreamingMinRadius, workspace.StreamingTargetRadius)
 ```
 
-Sketch B, texture inventory and oversized images (unexecuted sketch; `EditableImage` loading works only for images the creator owns and is memory-budgeted `[VS]`):
+Sketch B, texture inventory and oversized images (unexecuted sketch). `CreateEditableImageAsync` loads only images owned by the game's creator or made in the game, returns `nil` when the editable-memory budget is used up, and an `EditableImage` is at most 1024², so a larger source cannot be told from a 1024² one `[official][VS]`:
 
 ```lua
 --!strict
@@ -296,13 +299,13 @@ The duplicate-MeshId sketch is under Rendering. For Precise collision, the Explo
 | Crashes rise after an update | Memory regression: new assets in ReplicatedStorage, duplicate uploads | Compare F9 labels before and after; filter the dashboards by place version; revert or dedupe |
 | FPS falls after 10 minutes | Thermal throttling from sustained GPU or CPU load | Cut overdraw, shadowed lights and per-frame Luau; cap particle rates |
 | Red MicroProfiler bars on phones | Fill rate: partial transparency, large particles, Glass | Transparency 0 or 1, cutout foliage, smaller and fewer particles |
-| Draw calls over 1,000 | Duplicate MeshIds, unique SurfaceAppearances, many Decals | Duplicate-MeshId sketch; share appearances; SLIM for static models |
+| Draw calls over 1,000 | Duplicate MeshIds, unique SurfaceAppearances, many Decals, no large occluders | Duplicate-MeshId sketch; share appearances; SLIM for static models; Scene Analysis triangle view to see which pass |
 | `stepContacts` or `worldStep` high | Unanchored clutter, Precise collision, `CanTouch` everywhere | Sketch A; anchor, Box or Hull, `CanTouch` off |
 | Server FPS below 60 with few players | Server tweens, per-frame loops over all players or NPCs, Humanoid NPCs | Move visuals to clients; event-driven code; AnimationController NPCs; Parallel Luau when "cores used" is low |
 | Server memory climbs with server age | Leaked connections or per-player tables; instances never destroyed | Out-of-memory snapshot treemap; Luau heap snapshot diff; Trove per lifetime |
 | Join over 15 s on phones | Heavy ReplicatedStorage or ReplicatedFirst, streaming off, long preload list | Print Join Size Breakdown; move maps to ServerStorage; preload only what the first screen shows |
 | Pop-in or falling through the floor after teleport | No `RequestStreamAroundAsync`; interactive models not Atomic | Request the area first; Atomic on doors, shops and vehicles |
-| Data ping far above network ping | Replication queue backlog: too many remotes or moving assemblies | Procedure C: budget per category, interest tiers, batching; anchor props; the staff article suggests 40–60 moving assemblies as a ceiling `[community]` |
+| Data ping far above network ping | Replication queue backlog: too many remotes or moving assemblies | Procedure C: budget per category, interest tiers, batching; anchor props; the staff article suggests 40–60 moving assemblies as a ceiling `[community]`. The MicroProfiler's network capture shows traffic per frame |
 
 ## Measured investigation by problem class
 
@@ -314,18 +317,18 @@ Record this before touching code and again after each change. Report format: sym
 |---|---|---|---|
 | Frame time, typical and worst (ms) | MicroProfiler in the busiest scene on the target phone | | |
 | Client memory at the heaviest point (MB) and top three labels | F9 > Memory | | |
-| Server heartbeat and script time at a full server | F9 > Server Jobs, or the dashboard | | |
+| Server heartbeat and script time at a full server | F9 > Server Jobs > Heartbeat > Steps Per Sec, or the dashboard | | |
 | Join to playable (s) | Stopwatch, three runs | | |
-| Receive rate per player (kbps) and data ping minus network ping | Shift+F3, Performance Stats | | |
+| Receive rate per player (kbps) and data ping minus network ping | Client: Shift+F3 (data ping) and Performance Stats (network ping); `Stats.DataReceiveKbps`. Server average: F9 > Server Stats | | |
 
 **A. Compute (frame time).**
 
 1. Reproduce with production-like load on the device class your players use. Two Studio clients are not a 30-player server.
-2. Capture 30–90 frames (Ctrl+P pauses). For the server use the Developer Console's server MicroProfiler recording.
-3. Switch to Timers mode and sort by total time and by call count. A label that costs 0.05 ms and runs 2,000 times a frame is invisible in the timeline and at the top of Timers `[lihfolk]`.
+2. Capture 30–90 frames (Ctrl+P pauses; on a phone use the web view). For the server use F9 > MicroProfiler > Server (60 frames at most), or the Script Profiler when you already know scripts are the cost.
+3. Open Modes > Timers and read total time and call count per label. A label that costs 0.05 ms and runs 2,000 times a frame is invisible in the timeline and at the top of Timers `[lihfolk]`.
 4. Name the family (scripts, physics, render, network, UI) and use the tag table above.
 5. Wrap suspects in `debug.profilebegin("ConstantName")` and `debug.profileend()`: constant names, balanced, never across a yield.
-6. Compare with the budget, change one thing, capture the same route again.
+6. Compare with the budget, change one thing, capture the same route again. Drop the old and new dumps into the web view together for a diff flame graph `[official]`.
 
 Conflict: LihFolk splits a 60 FPS phone frame as rendering 8–10 ms, engine simulation 2–3 ms, your client scripts 2 ms, headroom 2–3 ms, and server scripts under about 5 ms per heartbeat at full player count. The house table above allows client Luau 3–4 ms. Both are estimates; treat 2 ms as the target and 3–4 ms as the ceiling.
 
@@ -348,6 +351,7 @@ local TAGS = { Enum.DeveloperMemoryTag.LuaHeap, Enum.DeveloperMemoryTag.Instance
 	Enum.DeveloperMemoryTag.GraphicsTexture, Enum.DeveloperMemoryTag.GraphicsMeshParts, Enum.DeveloperMemoryTag.Sounds, Enum.DeveloperMemoryTag.Gui }
 local first: { [Enum.DeveloperMemoryTag]: number } = {}
 local startedAt = os.clock()
+assert(Stats.MemoryTrackingEnabled, "per-tag memory is unavailable in this session") -- otherwise every read is 0
 while true do
 	local hours = (os.clock() - startedAt) / 3600
 	for _, tag in TAGS do
@@ -369,47 +373,46 @@ end
 6. Measure by toggling one system and reading the receive rate; or count calls and approximate bytes per remote name inside the `Net` module to rank the top talkers; check the join payload with Print Join Size Breakdown. Record kbps per player with eight Studio clients in each release note.
 7. Stop when data ping matches network ping. A system under about 10 kbps per player rarely repays packing work `[lihfolk]`.
 
-Conflict: the staff article's "about 50 KB/s per client" is used above as a guideline; LihFolk reports its authors could not find documentation for it and treats it as folklore. There is no documented per-client cap: use your own budget and the data-ping gap as the test.
+Conflict: the staff article says "aim for under 50 KB/s network receive" per client (about 400 kbps) and 40–60 moving assemblies; LihFolk could find no documentation for the figure, treats it as folklore and budgets about 30 kbps. There is no documented per-client cap: use your own budget and the data-ping gap as the test.
 
 **D. Place size and instance count** `[lihfolk, measured in its reference project]`. Count instances per top-level folder with replicated containers listed separately (sketch A). Keep backups, archives and import sources out of the place: export `.rbxm` files and rely on Version History. At about 1.07 million instances their project had Studio down to about 15 FPS on about 18 GB, with cloud saves timing out; its 600k-instance ReplicatedStorage hurt phone memory as much as join time. Split scripts long before about 200,000 characters (a cap they measured; undocumented `[VS]`). Delete only what is proven unreferenced, never on a name search alone.
 
-**E. Mobile tiers** `[lihfolk]`. Offer an in-game graphics preset (performance, balanced, quality) that switches live and pre-selects by device. Every effect has a low tier, effects on other players are reduced first, ambient effects sleep with distance. Gameplay information (telegraphs, hit areas, timers) is identical on every tier. Each release: a 15-minute fixed route on a real phone (spawn, heaviest area, one full encounter, every major menu, one zone change), recording FPS, peak memory and crashes.
+**E. Mobile tiers** `[lihfolk]`. Offer an in-game graphics preset (performance, balanced, quality) that switches live. Choose the starting preset from measured frame time in the first seconds of play, and let a frame-time governor lower detail when the phone heats up (sketch in vfx-and-juice.md); do not read `SavedQualityLevel` (see VFX above). Every effect has a low tier, effects on other players are reduced first, ambient effects sleep with distance. Gameplay information (telegraphs, hit areas, timers) is identical on every tier. Each release: a 15-minute fixed route on a real phone (spawn, heaviest area, one full encounter, every major menu, one zone change), recording FPS, peak memory and crashes.
 
 Not adopted from LihFolk: its per-asset content budgets (for example up to 140 beams and 30 emitters for one sword swing, 44 and 10 on low). They are specific to its project and exceed the mobile VFX budget in this file.
 
 ## Review gate
 
 - [ ] Low-end Android holds ≥ 30 FPS in the busiest scene; mid-range about 60; no spikes over about 50 ms in a 2-minute capture.
-- [ ] Server heartbeat about 60 Hz with a full server; memory flat over a 1-hour soak and under 50% of the limit.
+- [ ] Server heartbeat about 60 Hz with a full server; memory flat over a 1-hour soak and under 50% of 6.25 GiB + 100 MiB × peak players.
 - [ ] Draw calls < 1,000 and triangles < 1 M in the worst view; Scene Analysis has no surprise categories.
 - [ ] Hot loops labelled with `debug.profilebegin`; `--!native` only where measured.
 - [ ] Streaming on with the settings above; works at `StreamingTargetRadius = 64`; interactive models Atomic; `RequestStreamAroundAsync` before teleports.
 - [ ] All static geometry anchored; every visible object collides; no unapproved Precise fidelity; collision groups registered once.
 - [ ] No server tweens or server-created VFX; particle rates within mobile caps; concurrent sounds capped.
 - [ ] Join-to-playable ≤ 10–15 s on low-end Android; loading screen has Skip and no forced minimum.
-- [ ] Performance Dashboard alerts for crash rate, heartbeat and memory; re-profile after every content update.
+- [ ] Alerts set (Creator Hub > Configurations > Alerts) for client crash rate, server frame rate and server memory; re-profile after every content update.
 - [ ] `LightingStyle` and `PrioritizeLightingQuality` chosen deliberately and captured on the low-end phone; nothing relies on the deprecated `Technology` property.
 - [ ] Live game: audit steps 1–6 run, with before and after numbers for the worst metric recorded in the audit report.
 - [ ] Every fix has a row in the report (symptom, before, cause, fix, after, guard); nothing was changed without a measurement pointing at it.
 - [ ] Memory slope measured after warm-up (MB per hour) on client and server; the repetition loop kept as a regression test.
 - [ ] Per-player bandwidth recorded for this release; broadcasts are interest-filtered; unreliable batches under 900 bytes.
-- [ ] Graphics tiers exist and gameplay information is identical on all of them.
+- [ ] Graphics tiers exist, gameplay information is identical on all of them, and nothing reads `SavedQualityLevel`.
 
 Grep `references/knowledge-base.md` for `## 5.1` through `## 5.6`, `## 5.9`, `## 5.12` and `## 4.9`.
 
 ## Sources
 
-Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
+Accessed 2026-11-11. `Roblox/creator-docs` at commit 7cbffff (2026-11-10).
 
-- https://github.com/Roblox/creator-docs: `content/en-us/performance-optimization/{identify,improve,design,test-on-hardware}.md`, `production/analytics/{performance,crashes}.md`, `studio/optimization/memory-usage.md`, `workspace/streaming/{slim,frustum}.md`, `parts/{textures-decals,meshes}.md`, `luau/native-code-gen.md`, `cloud-services/extended-services.md`, `reference/engine/classes/{Lighting,AssetService,EditableImage}.yaml` (read)
-- https://devforum.roblox.com/t/real-world-building-and-scripting-optimization-for-roblox/3127146 (search summary; staff article: 1.3 GB, 500 draws / 500k triangles, 50 KB/s)
-- https://devforum.roblox.com/t/analytics-optimize-low-end-android-crash-rates-server-memory-and-cpu-performance/3145364 (search summary)
-- https://devforum.roblox.com/t/psa-mobile-client-crash-reclassification-in-creator-hub/4053071 (search summary)
-- https://devforum.roblox.com/t/android-crash-rates/3227626 (search summary; crash rate unchanged after optimisation)
-- https://devforum.roblox.com/t/streaming-enabled-can-run-over-memory-management-to-crash-client/3305729 (search summary)
-- https://devforum.roblox.com/t/occlusion-culling-now-live-in-roblox-client/3300953 and https://devforum.roblox.com/t/studio-beta-introducing-occlusion-culling/3250604 (search summary)
-- https://devforum.roblox.com/t/let-there-be-unified-light-unified-lighting-is-fully-live/3401512 (search summary)
-- https://devforum.roblox.com/t/analytics-diagnose-server-crashes-with-server-memory-snapshots/4525675 (search summary)
+- https://github.com/Roblox/creator-docs: `content/en-us/performance-optimization/{identify,improve,design,test-on-hardware,monitor,scene-analysis}.md`, `performance-optimization/microprofiler/{index,modes,tag-table}.md`, `production/analytics/{performance,crashes,alerts}.md`, `studio/optimization/{memory-usage,scriptprofiler}.md`, `studio/network-simulator.md`, `workspace/streaming/{index,techniques,slim,frustum}.md`, `workspace/collisions.md`, `physics/{sleep-system,adaptive-timestepping}.md`, `parts/{textures-decals,meshes}.md`, `art/modeling/specifications.md`, `effects/particle-emitters.md`, `luau/native-code-gen.md`, `scripting/multithreading.md`, `cloud-services/extended-services.md`, `reference/engine/classes/{Workspace,Lighting,Highlight,AssetService,EditableImage,Stats,TriangleMeshPart,PhysicsService}.yaml`, `reference/engine/enums/DeveloperMemoryTag.yaml`, `reference/engine/libraries/debug.yaml` (read)
+- https://devforum.roblox.com/t/3127146 (read; Roblox engineer's optimisation article, 2024-08-20: 1.3 GB, 500 draws and 500k triangles, 50 KB/s, 40–60 moving assemblies)
+- https://devforum.roblox.com/t/3300953 (read; occlusion culling live, 2024-12-10, with updates to 2025-06-23: platforms, limits, measured gain)
+- https://devforum.roblox.com/t/3401512 (read; unified lighting fully live, 2025-01-21: `Technology` mapping)
+- https://devforum.roblox.com/t/4053071 (read; Android crash reclassification, 2025-11-07, and staff replies on what counts as a crash)
+- https://devforum.roblox.com/t/3227626 (read; one studio's Android crash rates, 2024-10-25)
+- https://devforum.roblox.com/t/3145364 (read, first post; low-end Android crash insight, 2024-09-03)
+- https://devforum.roblox.com/t/3305729 (read, first post; bug report: streaming-in bursts exhausting memory)
+- https://devforum.roblox.com/t/4525675 (read, first post; server memory snapshots, 2026-03-17)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-performance-audit/SKILL.md`, `LihFolk Vault V2/12 Performance Testing and Debugging/{Hunting Memory Leaks Step by Step, Network Bandwidth Budgets and Measuring Them, Mobile and Low-End Optimization, MicroProfiler Guide}.md`, `03 Architecture and Networking/Interest Management and Per-Player Replication.md` (read)
-- `Roblox/creator-docs` `reference/engine/enums/DeveloperMemoryTag.yaml`, `reference/engine/libraries/debug.yaml`, `reference/engine/classes/Stats.yaml` (read)
-- No evidence found: an official per-device client memory crash limit; a controlled community before/after study of join time or mobile FPS.
+- Not verified: an official per-device client memory crash limit (none found); the Highlight cost of about 1 ms GPU on mobile and the sleep-related debug colours (carried from the knowledge base); a controlled before/after study of join time or mobile FPS.

@@ -16,7 +16,7 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 
 - Market position (vault, 2026-11-07): **one durable leader, thin middle**. RIVALS 217K CCU (#7 on the platform): 1v1–5v5 duels, first to 5 rounds, ranked and contracts, money from cosmetics and keys. Duels were a main cluster on the owner's first feed (MVSD 10K). The vault lists RIVALS among durable games: skill play, real depth, weekly updates.
 - Roblox's own genre table calls action "less popular on Roblox than elsewhere" (example: Arsenal) `[official]`; the audience exists but concentrates in a few polished games.
-- One tracker reports D1 22–30% for shooters with traffic `[community]`.
+- One tracker reports D1 22–30% for shooters with traffic `[community]` (no sample or method stated; a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks: never set a target from it).
 - Audience: older, competitive, PC-heavy but increasingly mobile and console; sessions are chains of short matches.
 - Platform shift `[official]` `[VS]`: Roblox now ships a server authority model (`Workspace.AuthorityMode`), documented for "FPS, racing, sports, and combat", with client prediction and rollback. Full release for all games was announced on 9 July 2026 ("Server Authority is now available for all creators"); it is enabled in Workspace properties and switches on next-generation replication, the Input Action System, deferred signals, fixed simulation and streaming with it.
 - Official starting points `[official]`: the Laser Tag template (blaster system with damage, ammo capacity, recoil and spread attributes; a round system; an arena), the FPS System template, and the Weapons Kit (projectile-based, over-the-shoulder; Limited Use License).

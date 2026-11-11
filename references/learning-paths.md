@@ -125,7 +125,7 @@ One verb (run and jump to collect), one progression axis (coins buy jump height 
 | Upgrades | Two pads. The client sends "buy jump"; the server checks the price, subtracts, raises `Humanoid.JumpHeight` | networking-and-security.md |
 | Saving | ProfileStore with coins and upgrade levels. Copy the module from its official repository into a ModuleScript and read it; do not insert it from the Toolbox | data-and-purchases.md |
 | HUD | Coin counter and two buttons, sized with Scale not Offset, checked in the Device Simulator on an entry-level phone | ui-input-crossplatform.md |
-| Feel | A sound and a small pop when a coin is collected. It changes how fun the loop reads | game-craft.md |
+| Feel | A sound and a small pop when a coin is collected. It changes how fun the loop reads | game-craft.md §1 (feedback tiers), audio-sfx-music.md |
 
 ```lua
 --!strict
@@ -285,7 +285,7 @@ Pick by the constraint the numbers show, not by interest.
 | Track | Techniques | Measure | Open |
 |---|---|---|---|
 | LiveOps cadence | Fixed update day; content shipped dark behind Configs; event calendar; update notes in game | Returning-player lift per update; D7 and D30 by cohort | liveops-quests-retention.md |
-| Experiments | Configs plus Experiments; one variable; pre-registered success metric; early-harm watch; before/after cohorts when DAU is too low to split | Effect with interval, not a screenshot | analytics-and-discovery.md, core-loop-tuning.md §6 |
+| Experiments | Configs plus Experiments; one variable; pre-registered success metric; early-harm watch; before/after cohorts when DAU is too low to split | Effect with interval, not a screenshot | analytics-and-discovery.md, core-loop-tuning.md §7 |
 | Performance at scale | Per place-version client and server dashboards; device-class memory; streaming and SLIM tuning; captures from real low-end phones | Crash rate, P10 FPS, server heartbeat, join time | performance.md |
 | Team and pipeline | Dev, staging and live universes; CI-only production publishes; ownership map; decision rights; release owner; incident runbook with kill switches | Lead time per change; rollbacks per month | engineering-architecture.md, studio-workflow.md, `team-business-legal.md` |
 | Economy management | Faucet and sink telemetry; inflation index; announced rebalances with compensation; dupe and trade audits | Sink ratio, currency per DAU, price of anchor items | economy-and-progression.md |

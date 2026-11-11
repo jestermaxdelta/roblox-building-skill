@@ -89,7 +89,7 @@ Rules for the list: every shot has one purpose; size changes by at least two ste
 - **Extreme close-ups of faces expose the model.** Low-polygon heads and missing lip-sync look worst at the tightest size (Schnitzer). Use them for props, hands and eyes on creature rigs built for it.
 - **The line (180-degree rule).** Draw a line through two subjects, or along a subject's direction of travel. Keep every camera on one side of it and screen direction stays consistent: the boss always faces left, the player always right. Cross it only with a visible camera move or a neutral shot on the line (StudioBinder).
 - **Lead room and headroom.** Leave more space in front of where a subject looks or moves than behind it; keep eyes near the upper third; do not centre everything.
-- **Aspect ratios.** Vertical FOV is fixed, so width changes by device: at FOV 70 the horizontal view is about 86° on 4:3, 102° on 16:9 and 114° on 20:9 `[house]`. Compose inside the centre 4:3 area and treat the sides as bonus. Check every shot on the Studio device emulator at a small phone and a tablet.
+- **Aspect ratios.** Vertical FOV is held constant (`Camera.FieldOfViewMode` defaults to `Vertical` `[official]`), so width changes by device: from `2 × atan(tan(FOV / 2) × aspect)`, FOV 70 gives a horizontal view of about 86° on a 4:3 tablet, 102° on 16:9 and 113° on a 19.5:9 phone (computed). Compose inside the centre 4:3 area and treat the sides as bonus. Check every shot on the Studio device emulator at a small phone and a tablet.
 - **Motivated movement.** The camera moves because something moved, was revealed or changed (a push-in as the roar builds, a tilt up to show height). A move with no reason is the "flying 3D camera" look Schnitzer warns about. A still frame is a valid shot.
 - **Entering from play.** The player can be anywhere when the scene starts. Hide the pop by making the first shot very different from the gameplay camera (opposite angle, close-up or high wide), by cutting in on a detail whose position you control, or by leading in from neutral scenery and letting the subject enter (Schnitzer).
 
@@ -124,7 +124,7 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 
 ## 6. Staging actors
 
-- **Actors are local.** Clone on the client and animate with a client `Animator`: nothing replicates, nobody else is disturbed (`animation-and-rigs.md` §7, §10). A player character has `Archivable = false`; set it true around `Clone()` or the clone is nil `[official]`. For another avatar use `Players:CreateHumanoidModelFromDescriptionAsync`, which yields, so build it during preload.
+- **Actors are local.** Clone on the client and animate with a client `Animator`: nothing replicates, nobody else is disturbed (`animation-and-rigs.md` §7, §10). `Clone()` returns nil for an instance whose `Archivable` is false `[official]`, and player characters spawn that way `[community]`: set it true around the call and back afterwards. For another avatar use `Players:CreateHumanoidModelFromDescriptionAsync`, which yields, so build it during preload.
 - **Hide what should not be in frame, locally.** Set `LocalTransparencyModifier` on the real character and on strangers standing on the stage, and put them back on exit. Never move or anchor other players for your shot.
 - **Server-owned NPCs.** The server puts the boss in an `Intro` state (no attacks, no damage taken) and each client plays the performance on its own copy of the animation. The state has a fixed server duration; no client reports that it is "done".
 - **Marks.** Actors start from named `Attachment` marks authored with the set in Blender, not from wherever gameplay left them. Store camera keys relative to an anchor (the arena origin, or the HumanoidRootPart for ability cameras) and multiply at play time, the "reference part" trick from Moon Animator workflows `[community]`.
@@ -167,7 +167,7 @@ Cutscene data may sit on every client. A player who forces a scene to play early
 - **Repeats.** Full on first view; from the second view play the short version or nothing (`accessibility-and-player-qol.md` §11). Store "seen" in the profile the server already saves `[community]`.
 - **Pause.** A personal scene may pause when the Roblox menu opens: freeze the clock, `AdjustSpeed(0)` on tracks, pause the audio. Synced scenes never pause; they run on the server clock.
 - **Subtitles.** Rules and the display-time formula are in `accessibility-and-player-qol.md` §6. Cutscene additions from Hamilton's subtitle guide: on by default and switchable before the first line plays; two lines at most; one second minimum on screen; about 2–2.5 s per line for adults and 3–3.5 s per line for under-13s (BBC figures he cites), so pace Roblox scenes for children; leave a quarter-second gap between subtitles; split a line rather than reveal the twist early; name the speaker when it is not obvious; outline or plate behind the text, never a drop shadow alone.
-- **Letterbox.** Bars say "controls are off", so never show them while the player can act. Height per bar = `max(0, (H − W ÷ 2.39) ÷ 2)`: 12.8% of height on 16:9, about 3.5% on a 20:9 phone, 22% on a 4:3 tablet, so cap at 10% `[house]`. Use a `ScreenGui` with `ScreenInsets = None` so bars reach the edges `[official]`; slide in over 0.3 s. Subtitles may sit on the lower bar if they stay at subtitle size.
+- **Letterbox.** Bars say "controls are off", so never show them while the player can act. Height per bar = `max(0, (H − W ÷ 2.39) ÷ 2)`: 12.8% of height on 16:9, about 4.7% on a 19.5:9 phone, 22% on a 4:3 tablet, so cap at 10% `[house]`. Use a `ScreenGui` with `ScreenInsets = None` so bars reach the edges `[official]`; slide in over 0.3 s. Subtitles may sit on the lower bar if they stay at subtitle size.
 - **Reduced motion.** Ask the comfort module (`accessibility-and-player-qol.md` §5): hold each shot at its final framing and cut between shots, cross-fade through black for big changes, no shake, no drift, no FOV animation. Read the setting when the scene starts and on change.
 
 ## 9. Dialogue presentation
@@ -197,7 +197,7 @@ The legacy `Dialog` and `DialogChoice` instances still exist `[official]` but gi
 ## 11. Audio
 
 - The cutscene takes the top slot of the music priority stack and gives it back on exit; the gameplay track pauses and resumes rather than restarting (`audio-sfx-music.md` §8).
-- Put the stinger on the cut or the reveal frame, not on the scene start. Sound may lead the picture by 2–4 frames; it should never trail it `[house]`.
+- Put the stinger on the cut or the reveal frame, not on the scene start. Impacts sync as in `audio-sfx-music.md` §5: 0–30 ms after the picture, never before it. Only a music or ambience change may lead a cut, by 2–4 frames (a J-cut) `[house]`.
 - Duck music and ambience 6–12 dB under speech and mute gameplay loops for the scene (`audio-sfx-music.md` §6).
 - On skip, fade scene audio over 0.2 s; a hard stop clicks. State cues still restore the music stack.
 - Voiced or beat-matched scenes read time from the audio (`TimePosition`), the approach behind `SyncToAudio` in Roblox's EventSequencer `[official]`; otherwise picture drifts from sound after any hitch.
@@ -240,7 +240,8 @@ Everything is a function of time, so the same data plays, seeks for late joiners
 
 ```lua
 --!strict
--- Unexecuted sketch. Client ModuleScript. Camera only; cues go to the game's own sound, VFX and subtitle systems.
+-- Unexecuted sketch. Client ModuleScript required from StarterPlayerScripts, never from the character or a
+-- ResetOnSpawn gui: the restore must outlive the character. Camera only; cues go to the game's own systems.
 -- One exit: every way out calls finish(), which runs each restore in reverse order.
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
@@ -255,6 +256,8 @@ export type Handle = { stop: (reason: string) -> (), canSkip: () -> boolean }
 
 local BIND = "CutsceneRunner"
 local player = Players.LocalPlayer
+-- Resolved once at require time (this yields), so play() never yields between taking the camera and arming the exits.
+local controls = (require :: any)(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule")):GetControls()
 local active: Handle? = nil
 
 local function spline(a: Vector3, b: Vector3, c: Vector3, d: Vector3, u: number): Vector3 -- Catmull-Rom from b to c
@@ -278,64 +281,36 @@ local function sample(shot: Shot, alpha: number): Key
 end
 
 local function play(tl: Timeline, onCue: (id: string, skipped: boolean) -> ()): Handle
-	if active then active.stop("replaced") end
+	if active then active.stop("replaced") end -- the old scene restores fully before this one reads the camera
 	local camera = workspace.CurrentCamera :: Camera
 	local undo: { () -> () } = {}
 	local clock, cueIndex, shotIndex, finished = 0, 1, 1, false
 	local reduced = GuiService.ReducedMotionEnabled -- ask the game's comfort module instead if it has one
+	local handle: Handle
 
 	local function finish(reason: string)
 		if finished then return end
 		finished = true
-		RunService:UnbindFromRenderStep(BIND)
+		RunService:UnbindFromRenderStep(BIND) -- no error if nothing is bound
+		for i = #undo, 1, -1 do pcall(undo[i]) end -- restore first; one failing restore cannot block the rest
+		if active == handle then active = nil end -- before the cues, in case one of them starts the next scene
 		for i = cueIndex, #tl.cues do -- the world must end in the same state on every path
-			if tl.cues[i].state then pcall(onCue, tl.cues[i].id, true) end
+			if tl.cues[i].state then task.spawn(onCue, tl.cues[i].id, true) end -- spawned: a cue may yield or throw
 		end
-		for i = #undo, 1, -1 do pcall(undo[i]) end -- one failing restore cannot block the rest
-		active = nil
-		-- log `reason` (finished, skipped, died, respawn, replaced, error, watchdog) as an analytics event
+		-- log `reason` (finished, skipped, died, respawn, teleport, replaced, error, watchdog) as an analytics event
 	end
-
-	local prevType, prevFov = camera.CameraType, camera.FieldOfView
-	camera.CameraType = Enum.CameraType.Scriptable
-	table.insert(undo, function()
-		camera.CameraType = prevType
-		camera.FieldOfView = prevFov -- through the FOV owner module if the game has one
-		local character = player.Character
-		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if humanoid then camera.CameraSubject = humanoid end
-	end)
-
-	local playerModule = (require :: any)(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
-	local controls = playerModule:GetControls()
-	controls:Disable()
-	table.insert(undo, function() controls:Enable() end)
-
-	for _, flag in { "HudHidden", "LightingLocked" } do -- attributes set by a client stay local; controllers read them
-		player:SetAttribute(flag, true)
-		table.insert(undo, function() player:SetAttribute(flag, nil) end)
-	end
-
-	local character = player.Character
-	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if humanoid then
-		local died = humanoid.Died:Connect(function() finish("died") end)
-		table.insert(undo, function() died:Disconnect() end)
-	end
-	local removing = player.CharacterRemoving:Connect(function() finish("respawn") end)
-	table.insert(undo, function() removing:Disconnect() end)
-	task.delay(tl.length + 2, finish, "watchdog") -- render steps can stall; this timer does not
 
 	local function step(dt: number)
 		clock += math.min(dt, 0.1) -- voiced scenes: read the clock from the audio's TimePosition instead
-		while cueIndex <= #tl.cues and tl.cues[cueIndex].t <= clock do
+		while not finished and cueIndex <= #tl.cues and tl.cues[cueIndex].t <= clock do
 			local cue = tl.cues[cueIndex]
 			cueIndex += 1
 			task.spawn(onCue, cue.id, false)
 		end
+		if finished then return end -- a cue stopped the scene: never write the camera after the restore
 		while shotIndex < #tl.shots and tl.shots[shotIndex + 1].t <= clock do shotIndex += 1 end
 		local shot = tl.shots[shotIndex]
-		local alpha = math.clamp((clock - shot.t) / shot.length, 0, 1)
+		local alpha = if shot.length > 0 then math.clamp((clock - shot.t) / shot.length, 0, 1) else 1
 		local eased = if reduced then 1 else TweenService:GetValue(alpha, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
 		local key = sample(shot, eased)
 		camera.CFrame = CFrame.lookAt(key.pos, key.look)
@@ -343,22 +318,54 @@ local function play(tl: Timeline, onCue: (id: string, skipped: boolean) -> ()): 
 		camera.FieldOfView = key.fov
 		if clock >= tl.length then finish("finished") end
 	end
-	RunService:BindToRenderStep(BIND, Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-		if not pcall(step, dt) then finish("error") end
-	end)
 
-	local handle: Handle = {
-		stop = finish,
+	local function setup()
+		local prevType, prevFov = camera.CameraType, camera.FieldOfView
+		camera.CameraType = Enum.CameraType.Scriptable
+		table.insert(undo, function()
+			camera.CameraType = prevType
+			camera.FieldOfView = prevFov -- through the FOV owner module if the game has one
+			local character = player.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if humanoid then camera.CameraSubject = humanoid end
+		end)
+		controls:Disable()
+		table.insert(undo, function() controls:Enable() end)
+		for _, flag in { "HudHidden", "LightingLocked" } do -- attributes set by a client stay local; controllers read them
+			player:SetAttribute(flag, true)
+			table.insert(undo, function() player:SetAttribute(flag, nil) end)
+		end
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local connections: { RBXScriptConnection } = {
+			player.CharacterRemoving:Connect(function() finish("respawn") end),
+			player.OnTeleport:Connect(function(state: Enum.TeleportState)
+				if state == Enum.TeleportState.Started then finish("teleport") end
+			end),
+		}
+		if humanoid then table.insert(connections, humanoid.Died:Connect(function() finish("died") end)) end
+		table.insert(undo, function()
+			for _, connection in connections do connection:Disconnect() end
+		end)
+		task.delay(tl.length + 2, finish, "watchdog") -- render steps can stall; this timer does not
+		RunService:BindToRenderStep(BIND, Enum.RenderPriority.Camera.Value + 1, function(dt: number)
+			if not pcall(step, dt) then finish("error") end
+		end)
+	end
+
+	handle = {
+		stop = finish, -- the skip button calls handle.stop("skipped") when canSkip() is true
 		canSkip = function() return not finished and clock >= tl.skipAfter end,
 	}
 	active = handle
+	if not pcall(setup) then finish("error") end -- a failure half-way through setup still restores what was taken
 	return handle
 end
 
 return { play = play }
 ```
 
-Left out on purpose: the readiness gate (§12), anchor transform, pause, seeking to a start offset for synced scenes (start `clock` at `now − start` and fire only `state` cues before it), fades, and shake (add it last, through the comfort gate). Test every exit: reset the character mid-scene, leave the trigger zone, call `play` twice, throw an error from a cue.
+What reaches `finish`: scene end, skip, death, character removal, teleport start, a second `play`, an error in setup or in the camera step, and the watchdog. An error inside a cue is isolated by `task.spawn` and the scene carries on. When the local player leaves the game the client is gone, so there is nothing to restore; other players leaving cannot break a scene because actors are local clones (§6). Left out on purpose: the readiness gate (§12), anchor transform, pause, seeking to a start offset for synced scenes (start `clock` at `now − start` and fire only `state` cues before it), fades, and shake (add it last, through the comfort gate). Test every exit by hand: reset the character mid-scene, call `play` twice, call `play` from a state cue, stop the scene from inside a cue, give a shot no keys, teleport mid-scene.
 
 ## 15. First-session intros that do not cost the first 30 seconds
 
@@ -449,7 +456,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 - [ ] Every cutscene has a one-sentence purpose, a §2 budget row, and a reason play could not do the job.
 - [ ] No non-interactive time before the first input in the first session; no intro for returning players.
 - [ ] A shot list exists before keying; neighbouring shots differ by two sizes or 30°; the line is respected.
-- [ ] Lens chosen per shot; no face close-ups at FOV 70; composition checked at 4:3 and 20:9.
+- [ ] Lens chosen per shot; no face close-ups at FOV 70; composition checked at 4:3 and 19.5:9.
 - [ ] Camera paths are splines with one ease per shot, time-based, inside the comfort limits, with a reduced-motion variant.
 - [ ] One runner owns the camera; finished, skipped, died, respawn, replaced, error, watchdog and teleport all restore camera, controls, HUD, lighting and audio (tested by hand).
 - [ ] State changes and rewards happen on the server before the scene; skipping and disconnecting lose nothing; late joiners get the end state.

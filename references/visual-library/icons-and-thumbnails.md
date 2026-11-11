@@ -172,3 +172,4 @@ Across 62 live icons, about 155 live thumbnails and about 55 forum and docs imag
 - Roblox creator docs text and example images: CC BY 4.0, https://github.com/Roblox/creator-docs.
 - LihFolk Vault V2: CC BY 4.0. Android developer documentation and the Blender manual: see each site's licence (not verified here).
 - YouTube rows were checked through oEmbed only (title and channel); none was watched.
+- Link re-check, 2026-11-11: every page link (65), every listed image path (30) and both thumbnail endpoints responded, and all 34 place links still resolve to the universe id printed beside them. github.com pages cannot be opened from the review environment; both repositories were confirmed by `git clone`.

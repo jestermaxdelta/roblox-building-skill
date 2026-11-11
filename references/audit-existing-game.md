@@ -138,7 +138,7 @@ Walk top to bottom; stop at the first row that is true and make it the sprint go
 | T3 | Bounce < 60 s high | Slow join, crash, or the tile promises something the first minute does not show | Join-time and thumbnail-honesty fix | performance.md §loading, icons-thumbnails-and-store-page.md §2 (the promise), analytics-and-discovery.md §What clickbait costs |
 | T3b | Bounce 61–180 s high, or the first-session curve has a cliff at one minute mark | FTUE: no reward, confusion, wall of UI | Fix the earliest funnel step that loses twice its neighbours | tutorial-and-onboarding.md §14 (repair procedure) and §9 (reading the funnel), design-foundations.md §7.2 |
 | T4 | D1 below benchmark median | Core loop, FTUE or performance `[official]` | Loop and first-10-minutes pass; not new content | core-loop-tuning.md §4–6, tutorial-and-onboarding.md §2, genres/<genre>.md |
-| T4b | D1 fine, session time or D1 playtime low | No mid-session goal or depth | Goal ladder, meso loop, co-play | economy-and-progression.md, game-craft.md |
+| T4b | D1 fine, session time or D1 playtime low | No mid-session goal or depth | Goal ladder, meso loop, co-play | economy-and-progression.md, design-foundations.md §3 (nested loops) and §7.3 (goal clarity) |
 | T4c | Social or round-based game, CCU under about 50, players spread over many servers or stuck on "waiting for players" | Empty-server problem: the game is not dead, it only looks dead `[lihfolk]` | Lower max players for the start place (about 8–12 for co-op and social), fill servers fully, make the loop work with 1–3 players or bots, merge mode places into one, show cross-server activity (global feed, shared event) | community-moderation-safety.md, data-and-purchases.md §messaging, growth-and-marketing.md §11 |
 | T5 | D1 fine, D7 or D2–7 play days low | Progression wall or empty mid-game `[official]` | Find the stall level; re-curve | economy-and-progression.md |
 | T5b | D7 fine, D30 or D8–28 play days low | No endgame, social system or update cadence `[official]` | Weekly day, events, collections, trading or guilds | liveops-quests-retention.md |
@@ -362,7 +362,7 @@ In Claude Code, reviewers are fresh subagents (or a new session) that receive on
 |---|---|
 | Not sure which file covers a finding; a standing rule or never-do; the phase a rebuild restarts from | `references/INDEX.md`; `references/decision-rules.md`; `references/workflow-phases.md` |
 | Slow or confusing first minutes; tutorial players skip, stall or fail | `references/tutorial-and-onboarding.md` (§14 repair procedure, §13 rubric, §15 symptoms), `references/design-foundations.md` §7, `references/visual-library/tutorials-and-onboarding.md` |
-| Loop is dull, no decision, short sessions | `references/core-loop-tuning.md` §4–6, `references/game-craft.md`, `references/genres/<genre>.md`, `references/genre-playbooks.md` |
+| Loop is dull, no decision, short sessions | `references/core-loop-tuning.md` §4–6, `references/game-craft.md` §1 (a verb that feels late or dead), `references/genres/<genre>.md`, `references/genre-playbooks.md` |
 | Wall, inflation, dead currency | `references/economy-and-progression.md`, `templates/economy-balance-sheet.md` |
 | No reason to return, no cadence | `references/liveops-quests-retention.md` |
 | Low conversion, invasive or non-compliant offers | `references/monetization-and-policy.md`, `templates/monetization-product-plan.md` |

@@ -22,7 +22,7 @@ Write one page before building anything. Fields and their tests:
 | Core loop | Verb → feedback → reward → repeat | Is the core a single strong verb? |
 | Twist | What is mechanically new | Would one screenshot look different from competitors? |
 | Audience | Primary, secondary, and who it is NOT for | Names a Quantic Foundry cluster |
-| Platform and session | Devices; target session length | Fits Roblox sessions (median about 6.6 min; analytics-and-discovery.md §Benchmarks) |
+| Platform and session | Devices; target session length | Fits Roblox sessions (median 6.6 min in GameAnalytics 2025, 9.8 min for large titles in its 2026 report; analytics-and-discovery.md §Benchmarks) |
 | Comp set | 3 comparable games, what you take and where you differ | Honest comps |
 | Nested loops | 30 s, 5 min, session, meta | A reason to stop and a reason to return |
 | Iceberg | Validation evidence from context to external proof | Intuition counts least |

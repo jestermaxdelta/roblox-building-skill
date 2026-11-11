@@ -18,7 +18,7 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 - About 25% of the owner's second feed was management/tycoon tiles. Third-party trackers call the idle-tycoon tail "extremely saturated" `[community]`; "Sell a Million ___" copycats sit at 3–116 CCU and most "Run a ___" games under 100 (vault).
 - Audience: young and casual, low skill floor, plays in short bursts and returns for offline income.
 - Session shape (vault): 15.2 min (My Small Business), 15.6 (Sushi), 20.7 (LINE UP!), 21.3 (Run A Farm!), 26.7 (Sari-Sari Store); decorating-led Pocket Landlord only 7.9 min. Target 19+ min.
-- Servers: 6–8 players, one plot each (LINE UP! runs 50). D1 for tycoons with traffic is reported at 20–28% by one tracker; the GameAnalytics median for 19–24 min sessions is 11.5% `[VS]`. Compare against your own Creator Analytics benchmark.
+- Servers: 6–8 players, one plot each (LINE UP! runs 50). One tracker reports D1 of 20–28% for tycoons with traffic, with no sample or method (a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks); the GameAnalytics 2025 median for games with 19–24 min sessions is 11.5% `[VS]`. Compare against your own Creator Analytics benchmark.
 
 ## Core loop with timings
 
