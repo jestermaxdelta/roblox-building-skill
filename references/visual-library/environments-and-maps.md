@@ -3,7 +3,8 @@
 What this is: 81 checked references for stylised and low-poly environments that suit Roblox: towns, lobbies and hubs, biomes, interiors, obby and arena layouts, the boards, thumbnails and kits behind them, and captures of the top genres (tycoon, simulator, obby, horror, roleplay, fishing, survival) with their default looks marked. The rules they support live in `references/art-direction-and-quality-bar.md` (slop tells, reference boards, review tests) and `references/level-design-worldbuilding.md` (layout, composition, kits).
 
 How to use this file:
-- Pick the kind of space you are building, open three rows (include one marked Weak or Mixed), and write down one decision from each (focal point, palette, value split, kit size) before blocking out. Shrink each image to 320 px wide first: what survives is the lesson.
+- Pick the kind of space you are building, open three rows (include one marked Weak or Mixed), and write down one decision from each (focal point, palette, value split, kit size) before blocking out. Shrink each image to 320 px wide first: what survives is the lesson. Each section opens with a "Start here" line naming its three strongest rows.
+- Making a game in a crowded genre: open its default marker in §G first. That is the look to move away from (`art-direction-and-quality-bar.md` §4), not the target.
 - Evidence: `viewed` = the image was downloaded and looked at; `read` = the page or thread was read; `oembed` = the video exists with that title and creator and was not watched; `search` = seen in search results only, not opened.
 - These are references to study, not assets to copy: every third-party image and model stays its owner's, and house rule 1 means everything shipped is our own Blender work. Open-licence rows give the licence so a kit can be opened and measured, never imported.
 

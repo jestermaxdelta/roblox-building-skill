@@ -22,6 +22,20 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/` (`AD` = `art-direction-and-quality-bar.md`, `LA` = `lighting-and-atmosphere.md`, `LD` = `level-design-worldbuilding.md`, `BM` = `blender-modeling-craft.md`, `AP` = `art-pipeline-blender.md`, `AR` = `animation-and-rigs.md`); library files (`env` = `environments-and-maps.md`, `light` = `lighting-and-mood.md`, `models` = `models-props-characters.md`) are in `${CLAUDE_PLUGIN_ROOT}/references/visual-library/`; sheets are `${CLAUDE_PLUGIN_ROOT}/assets/reference/NN-*.png`. §N is the section numbered N; any other name is the opening words of a heading. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Look at |
+|---|---|---|
+| Give a new game its look | AD §Fast routes, §1, §3–§6, §8 steps 1–2 · LA §2, §12 | Sheets 18, 16 · env #63–81 (this genre), #1, #54 |
+| Make a generic-looking live game distinct | AD §1, §2, §4, §8, §10, §11 · LA §12, §14 | Sheets 18, 16 · env #63, #70, #72, #75, #76, #1, #13, #16 · light #1–2, #6 |
+| Keep several artists consistent | AD §3, §4 tiers, §6, §8, §10 · BM Edges, Colour, Concept, Rubric · AP Texturing, Naming, Acceptance | Sheet 18 · models #1, #8, #10–11 · env #44 |
+| Fix an empty or confusing map | LD Start here, §1, §4–§8, §16, §17, the polish checklist · LA §2, §3 | Sheet 17 · env #1–4, #6, #13–19, #23–24 |
+| Fix flat lighting | LA Start here, §1–§6, §8, §9, §11–§14 | Sheet 16 · light #1–3, #6, #10, #16 |
+
+AD §4 holds the genre-default look and three or four named alternative directions each for tycoon, simulator, obby, horror and roleplay: the chosen direction must differ from the genre default on at least two axes. Lighting presets in LA §12 are starting rows that require a stated deviation, never answers.
+
 ## What to read
 
 | When | Open |

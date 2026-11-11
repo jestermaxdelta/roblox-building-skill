@@ -31,7 +31,7 @@ One row per job. Find the row, open that file, and read only the section you nee
 
 | Job | Open |
 |---|---|
-| Art direction: the tells of a generic or AI-made game and the fix for each, reference board, style bible (§6), quality bar by tier, art review procedure, rescue passes for a live game | `references/art-direction-and-quality-bar.md` |
+| Art direction: choosing a look that differs from the genre default (named directions for tycoon, simulator, obby, horror, roleplay), the style bible, the tells of a generic or AI-made game and the fix for each, keeping several artists consistent, art review rubric, six-week plan for a live game | `references/art-direction-and-quality-bar.md` |
 | UI look: visual hierarchy (three reads), grid, colour, type and icon systems, native-first construction recipes for buttons, panels and cards, generic-UI tells, critique rubric, redesign procedure, Figma and Figma MCP hand-off, theme module | `references/ui-design-figma.md` |
 | Screen-by-screen build recipes with phone sizes: HUD layouts by genre, shop, inventory, settings, codes, daily rewards, rebirth, notifications, loading | `references/ui-screen-recipes.md` |
 | UI motion: motion tokens, button feedback, reward sequences, tween or spring, reduced-motion replacements | `references/ui-motion-and-feedback.md` |

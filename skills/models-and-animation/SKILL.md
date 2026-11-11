@@ -22,6 +22,20 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/` (`AD` = `art-direction-and-quality-bar.md`, `LA` = `lighting-and-atmosphere.md`, `LD` = `level-design-worldbuilding.md`, `BM` = `blender-modeling-craft.md`, `AP` = `art-pipeline-blender.md`, `AR` = `animation-and-rigs.md`); library files (`env` = `environments-and-maps.md`, `light` = `lighting-and-mood.md`, `models` = `models-props-characters.md`) are in `${CLAUDE_PLUGIN_ROOT}/references/visual-library/`; sheets are `${CLAUDE_PLUGIN_ROOT}/assets/reference/NN-*.png`. §N is the section numbered N; any other name is the opening words of a heading. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Look at |
+|---|---|---|
+| Model one prop to the bar | BM The numbers through Recipes, Concept, Rubric · AP Acceptance | models #1–3, #8, #16, #17, #25 |
+| Build a first kit | BM The numbers, Edges, Recipes, Rubric, First kit walkthrough · LD §8–§9 · AP Naming, Modular kits, Acceptance | Sheet 17 · env #7, #11, #29, #44, #55 |
+| Export to Roblox, or an import went wrong (size, pivot, collision) | AP Pipeline overview, Units, Mesh specifications, Naming, Collision authoring, Upload routes, Import traps, Level-up, Review gate · `scripts/README.md` | none needed |
+| Keep several artists consistent | AD §6, §8 · BM Edges, Colour, Rubric · AP Texturing, Naming, Acceptance | Sheet 18 · models #1, #8, #10–11 |
+| Make an attack, hit reaction or walk feel good | AR §4, §5, §6, Review gate | Sheet 21 · `animation.md`, "Start here" rows |
+| Animation is stiff, broken or not replicating | AR §12 first, then the section it points to (§5 playback, §7 replication, §3 pipeline), Review gate | Sheet 21 |
+| Rig and animate from Blender | AR §1, §2, §3, Review gate · AP Upload routes | `animation.md` tool rows |
+
 ## What to read
 
 | When | Open |

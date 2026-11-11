@@ -14,13 +14,15 @@ Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10) or Roblox sta
 
 ## Fast routes
 
+Five common jobs: read only these sections, then look at the listed images. "Library" is `visual-library/cutscenes-and-cameras.md`; sheet N is `assets/reference/N-*.png`.
+
 | Task | Read exactly | Look at |
 |---|---|---|
-| First cutscene for a beginner | ROUTE1 | LOOK1 |
-| Boss or reveal intro | ROUTE2 | LOOK2 |
-| Fix a robotic camera | ROUTE3 | LOOK3 |
-| Dialogue scene with subtitles | ROUTE4 | LOOK4 |
-| Trailer capture | ROUTE5 | LOOK5 |
+| First cutscene for a beginner | §1, §2, §8, §14 "First cutscene"; for a first-join intro also `tutorial-and-onboarding.md` §2 (about 160 lines) | Sheet 14; library rows 61, 63 and 65 |
+| Boss or reveal intro | §1–§8; `cutscenes-and-cinematics-runner.md` "The module", "How it moves the camera" and "Exits" (about 325 lines) | Sheets 13 and 14; library rows 67–71 and 27 |
+| Fix a robotic camera | §4, §5, §17, §19; runner file from "The module" to the end of `covered`, and "How it moves the camera" (about 165 lines) | Sheet 14; library rows 28 and 33–35 |
+| Dialogue scene with subtitles | §4, §6, §7, §8, §9, §11; `accessibility-and-player-qol.md` §6 (about 120 lines); add the runner module when the camera cuts between speakers (about 275) | Sheet 13; library rows 37–41 |
+| Trailer capture | §3, §4, §5, §16; `icons-thumbnails-and-store-page.md` §9; `growth-and-marketing.md` §4 (about 150 lines); add the runner module for repeatable takes (about 300) | Sheet 13; library rows 2–5, 9–11, 43–47 (videos, not watched) and 49–51 |
 
 ## Contents
 
@@ -76,7 +78,7 @@ Order of work, cheapest first (Schnitzer's previsualisation order, cut down for 
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | 0.0 | 2.5 | Wide | Low, eye at 2 studs | Slow push-in, 6 studs | 50 | Gate splits, light pours out | `GateOpen` (state), rumble, music duck | Where we are; something is coming |
 | 2 | 2.5 | 2.0 | Medium | Low, 15° off axis | Static, slight drift | 40 | Boss steps through, turns head to camera | `Step` markers, dust | Who it is, how big |
-| 3 | 4.5 | 2.0 | Close | Eye level | 0.5 s push, then hold | 35 | Roar | Stinger on the cut, shake 0.3, title card | Threat; hand over to the fight |
+| 3 | 4.5 | 2.0 | Close | Eye level | 0.5 s push, then hold | 35 | Roar | Stinger on the cut, one heavy-tier shake (`vfx-and-juice.md` §7), title card | Threat; hand over to the fight |
 
 Rules for the list: every shot has one purpose; size changes by at least two steps between neighbouring shots of the same subject (wide to medium to close, not medium to slightly tighter medium); camera angle changes by 30° or more between shots of the same subject or it reads as a jump cut (the 30-degree rule); nobody walks from A to B on screen unless the walk is the suspense ("shoeleather", Schnitzer). Save animation effort the way film does (Schnitzer): frame out feet on moving characters, show one character at a time, and put actions that are hard to animate off screen with a sound and a reaction shot.
 
@@ -111,7 +113,7 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 |---|---|
 | One curve through all keys | Catmull-Rom spline (passes through its points; a Bezier is only shaped by them) `[community]`. A shot with two keys is a line; add a third key to give it an arc |
 | Move by distance, not by spline parameter | Equal steps of the parameter bunch where keys are close and stretch where they are far, so the camera lurches at every key. Sample the curve into a length table once per shot and look up the point at each distance (§14 runner; sheet 14) |
-| One speed profile per shot, never per waypoint | Ramp up, hold a constant speed, ramp down (a trapezoid), applied to distance along the whole curve. `TweenService:GetValue(alpha, Quad, InOut)` `[official]` is the same ramps with no hold: fine for a single two-key move. No Back, Bounce or Elastic on a camera |
+| One speed profile per shot, never per waypoint | Ramp up, hold a constant speed, ramp down (a trapezoid), applied to distance along the whole curve. `TweenService:GetValue(alpha, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)` `[official]` is the same ramps with no hold: fine for a single two-key move. No Back, Bounce or Elastic on a camera |
 | Aim, do not slerp | Keep a second curve for the look-at point, evaluated at the same key parameter as the position, and build `CFrame.lookAt(position, look)` each frame. Each key's framing is hit exactly, the subject stays framed and roll never creeps in |
 | Give the camera weight | Real cameras on dollies ramp up and settle, so ease both ends (Schnitzer). House numbers: ramps of 0.3 s or more at each end, the settle longer than the start |
 | Drive it per frame | One function of time evaluated in `BindToRenderStep` at `Enum.RenderPriority.Camera.Value + 1` `[official]`, so it can be sought, paused and skipped. Use time, never frame counts: a `for` loop over 60 exported frames with `task.wait()` runs at half speed on a 30 FPS phone |
@@ -262,7 +264,8 @@ for _, name in { "Cam1", "Cam2", "Cam3" } do
 end
 if not (h and h:IsA("Humanoid") and target and target:IsA("BasePart") and #marks >= 2) then return end
 local humanoid, lookAt = h :: Humanoid, target :: BasePart
-if sound then game:GetService("ContentProvider"):PreloadAsync({ sound }) end
+local waited = 0 -- give the sound up to 1.5 s more to load, then play the scene anyway
+while sound and not sound.IsLoaded and waited < 1.5 do waited += task.wait() end
 -- 2. One smooth curve through the marks, cut into short straight steps so the camera can move by distance.
 local path, dist = { marks[1] }, { 0 }
 for i = 1, #marks - 1 do
@@ -333,7 +336,7 @@ end
 if not pcall(start) then finish() end
 ```
 
-Test each, and after each check you can walk, the camera follows you and the HUD is back: watch to the end; press Skip as soon as it shows; reset mid-scene (Esc, Reset); delete `Cam2` (the scene must simply not play); a phone in the device emulator (Skip clear of the notch); Reduce Motion on (the camera holds the end framing). It plays on every join, which suits testing; for first join only, the server saves a "seen" flag in the profile it already keeps (§8) and the script skips when it is set. Change the four numbers at the top and where the marks sit; nothing else needs editing.
+Test each, and after each check you can walk, the camera follows you and the HUD is back: watch to the end; press Skip as soon as it shows; reset mid-scene (Esc, Reset); rename `IntroCamera` (the scene must simply not play); a phone in the device emulator (Skip clear of the notch); Reduce Motion on (the camera holds the end framing). It plays on every join, which suits testing; for first join only, the server saves a "seen" flag in the profile it already keeps (§8) and the script skips when it is set. Change the four numbers at the top and where the marks sit; nothing else needs editing. Left for later: hold-to-skip on keyboard and gamepad (§8), letterbox, subtitles.
 
 ### Timeline runner
 
@@ -379,14 +382,12 @@ Two deliverables with different rules. The **game-page gameplay video** (autopla
 | Subject dead centre in every shot, looking out of frame | Thirds, lead room, eyes on the upper third |
 | Characters flip sides between shots | Stay on one side of the line (§4) |
 | Cut between two nearly identical framings | Change size by two steps and angle by 30° |
-| Close-up of a blocky face delivering a speech | Medium shot, body acting, subtitles |
+| Close-up of a blocky face delivering a speech | Medium shot, body acting, subtitles; close-ups only on faces textured to carry the emotion (library row 71) |
 | Characters walk the whole distance | Cut the shoeleather: leave frame, cut, arrive |
 | Scene starts with a pop from wherever the player stood | Contrasting first shot, cut-in or lead-in (§4) |
 | Sound starts late, music cuts dead | Stinger on the cut; fades; priority stack (§11) |
 | Unskippable, plays every time, on every server join | Skip per the §8 rule; seen flag; short version |
 | Bars, big title text and lens flare on a 3 s reveal | Remove decoration until the shot reads without it |
-| Whole server watches one player's trigger | Client-only; server sends state to the affected players (§7) |
-| HUD gone, camera stuck or FOV changed afterwards | One runner, one exit, watchdog (§14) |
 | Idle actors stand in default pose, mouths shut while "talking" | Author an idle and a gesture per line; avoid mouth-dependent framing (§6) |
 
 ## 18. Critique rubric
@@ -443,7 +444,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 
 Accessed 2026-11-11. "(read)" = opened and read; "(viewed)" = image looked at; "(oembed)" = video existence and author verified, not watched; "(search summary)" = seen only as web search result text.
 
-- Roblox/creator-docs at commit 7cbffff (read): `workspace/camera/index.md`, `workspace/camera/free-camera.md`, `production/publishing/thumbnails.md`, `resources/modules/event-sequencer.md`, `resources/the-mystery-of-duvall-drive/{main-design-requirements,foundational-gameplay-systems}.md`, `animation/capture.md`, `input/input-action-system.md`, `workspace/streaming/{index,techniques}.md`, `ui/animation.md`; reference pages `Camera` (and the `FieldOfViewMode`, `CameraType` enums), `CaptureService`, `VideoCapture`, `Capture`, `ScreenshotHud`, `ContentProvider`, `Player`, `GuiService`, `RunService`, `TweenService`, `TextChatService`, `ScreenGui`, `FaceControls`, `Dialog`, `Instance`, `Players`, `Workspace`, `AnimationTrack`.
+- Roblox/creator-docs at commit 7cbffff (read): `workspace/camera/index.md`, `workspace/camera/free-camera.md`, `production/publishing/thumbnails.md`, `resources/modules/event-sequencer.md`, `resources/the-mystery-of-duvall-drive/{main-design-requirements,foundational-gameplay-systems}.md`, `animation/capture.md`, `input/input-action-system.md`, `workspace/streaming/{index,techniques}.md`, `ui/animation.md`; reference pages `Camera` (and the `FieldOfViewMode`, `CameraType`, `RenderPriority` enums), `CaptureService`, `VideoCapture`, `Capture`, `ScreenshotHud`, `ContentProvider`, `Player`, `GuiService`, `RunService`, `TweenService`, `TextChatService`, `ScreenGui` (`ScreenInsets`), `FaceControls`, `Dialog`, `Instance`, `Players`, `Workspace` (`StreamingMinRadius`), `Model` (`ModelStreamingMode`), `Sound` (`IsLoaded`; global when not under a part), `VRService`, `AnimationTrack`. The §14 script and the runner file were re-checked against these pages on 2026-11-11 in a later mirror; the runner's own sources are in `cutscenes-and-cinematics-runner.md`.
 - Roblox staff posts (read): https://devforum.roblox.com/t/full-release-enhanced-freecam-capabilities/4848482 (2026-09); https://devforum.roblox.com/t/gameplay-videos-on-home-help-your-games-get-discovered/4842601 (2026-08); https://devforum.roblox.com/t/tips-for-capturing-high-quality-screenshots-and-videos-in-studio/2723897 (2024-02); https://devforum.roblox.com/t/creator-roadmap-2026-fall-update/4880208 (2026-09); https://devforum.roblox.com/t/turn-screenshots-into-teleporting-paintings/4974220 (2026-11).
 - DevForum tutorials and resources (read): camera animations with Moon Animator https://devforum.roblox.com/t/camera-animations-for-cutscenes-and-gameplay/1181691; CutsceneService https://devforum.roblox.com/t/cutsceneservice-smooth-cutscenes-using-b%C3%A9zier-curves/718571 and https://github.com/Vaschex/CutsceneService (cloned; MIT); CineCam https://devforum.roblox.com/t/4713811; Cutscene Cinematics https://devforum.roblox.com/t/4369035 (panel viewed); Smooth Cutscenes https://devforum.roblox.com/t/1893802; Moon2Cutscene https://devforum.roblox.com/t/3001411; Catmull-Rom module https://devforum.roblox.com/t/1568205; Moon `AttachToPart` export fix https://devforum.roblox.com/t/3113931; Camera Replication Focus https://devforum.roblox.com/t/2653957; Apex Animator https://devforum.roblox.com/t/4918289; Dialogue Kit V2 https://devforum.roblox.com/t/3106134 (viewed); high-quality screenshots https://devforum.roblox.com/t/taking-high-quality-screenshots/330052; horror guide https://devforum.roblox.com/t/guide-to-making-better-horror-experiences/2212571.
 - DevForum support and feedback threads (read): synced cutscenes and marker cues https://devforum.roblox.com/t/how-to-make-synced-cutscenes/2668540; client or server https://devforum.roblox.com/t/should-cutscenes-be-managed-on-the-client/570514 and https://devforum.roblox.com/t/what-is-the-right-way-to-handle-cutscenes/3258546; everyone sees one cutscene https://devforum.roblox.com/t/3651449; camera stuck https://devforum.roblox.com/t/909434 and https://devforum.roblox.com/t/1671591; cutscene organisation https://devforum.roblox.com/t/1770927; retention and loading screens https://devforum.roblox.com/t/4557364; video upload fee https://devforum.roblox.com/t/4912625; Moon Animator pricing https://devforum.roblox.com/t/2181571; character `Archivable` default https://devforum.roblox.com/t/630401 (one reply).
