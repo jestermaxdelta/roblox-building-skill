@@ -325,6 +325,13 @@ Detail in `references/growth-and-marketing.md`.
 - [ ] Ad and share-link joins tagged through LaunchData; cohort value computed per unique user, not per play.
 - [ ] Server size fits current CCU; the loop works with one to three players.
 
+## Review gate
+
+- [ ] Every ticked item has its evidence written beside it (number, screenshot name, file and line); none was ticked on "mostly".
+- [ ] Every rubric score quoted was produced with the owning guide open, by someone other than the maker, and the lowest row is named.
+- [ ] The house-rule scan output is pasted for every place, including its "creator check skipped" or "unreadable" lines.
+- [ ] A number here that differs from its owning guide was treated as stale: the guide wins, and the difference was reported.
+
 ## Sources
 
 This file restates gates defined in the topic references; evidence and source lists live there. Gates 0–5 came from knowledge-base sections 1.12.3, 3.8, 3.10, 4.11 and 5.13; Gate A and the growth gate from `references/audit-existing-game.md` and `references/growth-and-marketing.md`. Rubric pointers and platform facts re-checked on 2026-11-11 (creator docs mirror, commit 7cbffff of 2026-11-10; `MarketplaceService:GetProductInfoAsync` signature read in the engine reference).

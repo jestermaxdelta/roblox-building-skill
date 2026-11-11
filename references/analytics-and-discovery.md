@@ -230,7 +230,7 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 
 ## Launch checklist (discovery and analytics)
 
-- [ ] Five custom thumbnails, icon tested at 150 px, title with status tag, description hook under 160 characters, genre set.
+- [ ] Five custom thumbnails and the icon passed the gates and rubric in `icons-thumbnails-and-store-page.md` §15 (tile test at 32, 64 and 150 px); name inside the first 23 characters of the title; first description sentence summarises the game; genre set.
 - [ ] Onboarding funnel, shop funnel, offer funnel and economy events live in a published test place first.
 - [ ] Configs for every tunable; Experiments planned for the two riskiest numbers.
 - [ ] Bounce under 60 s measured on a low-end phone before launch.
