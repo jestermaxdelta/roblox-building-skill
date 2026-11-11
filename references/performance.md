@@ -110,7 +110,7 @@ Transparency: use 0 or 1; values between sort and overdraw (the classic mobile r
 
 Shadows and lights: shadows are off below graphics level 4, so gameplay must read without them. `CastShadow = false` on small props, distant geometry, fast movers, VFX hosts and every invisible helper. `Light.Shadows = false` by default; small `Range` and `Angle`; a PointLight in an Attachment is the cheap bulb. Under Realistic lighting, interiors need walls at least 1 stud thick (the tutorial uses 2.5-stud blockers) or light leaks.
 
-LOD `[VS]`: `MeshPart.RenderFidelity` Automatic (full under 250 studs, medium 250–500, lowest beyond), Performance for foliage and clutter, Precise for hero close-ups only. SLIM (`Model.LevelOfDetail = SLIM`, `Workspace.EnableSLIMAvatars`) builds cloud-generated composite LODs that stay visible when the model streams out. It needs streaming, a place saved to Roblox and Team Create; it works only for static models with no Humanoid and no runtime changes; keep each model's extents around 64 studs and separate co-planar faces by 0.01 studs; where a platform lacks SLIM the model falls back to no LOD `[official]`. Convert legacy `StreamingMesh` models to SLIM.
+LOD `[VS]`: `MeshPart.RenderFidelity` Automatic (full under 250 studs, medium 250–500, lowest beyond), Performance for foliage and clutter, Precise for hero close-ups only. With `Workspace.MeshStreamingAndImprovedLods = Enabled` (opt-in since 2026-04-27) `RenderFidelity` is ignored: the engine streams cloud-generated LODs by screen importance inside a mesh memory budget, and Roblox plans to make that the default and remove both properties `[official: staff post, read]`. Capture the low-end phone with it on and off before choosing (detail and bug reports: art-pipeline-blender.md). SLIM (`Model.LevelOfDetail = SLIM`, `Workspace.EnableSLIMAvatars`) builds cloud-generated composite LODs that stay visible when the model streams out. It needs streaming, a place saved to Roblox and Team Create; it works only for static models with no Humanoid and no runtime changes; keep each model's extents around 64 studs and separate co-planar faces by 0.01 studs; where a platform lacks SLIM the model falls back to no LOD `[official]`. Convert legacy `StreamingMesh` models to SLIM.
 
 Other costs: skinned meshes in a model without a Humanoid rebuild FastClusters every move; Highlights cost about 1 ms GPU on mobile for the first one, toggle `Enabled` rather than create and destroy; many SurfaceGuis and BillboardGuis are expensive, especially in VR; built-in materials and MaterialVariants share engine textures.
 
@@ -131,7 +131,8 @@ Checked against the docs mirror on 2026-11-10. Re-check before relying on any ro
 | Feature | Status | What it means for you |
 |---|---|---|
 | Occlusion culling | On for every game and platform, no setting (Windows 2024-12, all platforms 2025-01-27, terrain 2025-06-23) `[official: announcement, read]`. Not culled: avatars, lights, VFX, UI, shadows and shadow casters. Highly detailed meshes and parts that are small on screen do not act as occluders, and the engine may draw a hidden object when checking would cost more | Large simple shells (one wall mesh, terrain, building exteriors) hide what is behind them; a wall of many small parts does not. It saves draw calls, not Luau: scripts for hidden objects still run, so gate them by distance or tag. Staff measured about 33% lower P10 Android frame time in one dense event game; open arenas gain little |
-| Texture streaming | Automatic `[official]`: baseline quality first, then raised by free memory, distance and screen size. Covers MeshPart, SurfaceAppearance, Texture, Decal, MaterialVariant, Beam, ParticleEmitter and base materials | Texture budgets still apply: UI images are not covered, and unique pixel count is still the memory cost. The docs prefer separate textures to atlases unless the atlas sits on parts that batch: asking for one sharp tile streams the whole atlas at that size |
+| Texture streaming and 4K | Automatic `[official]`: baseline quality first, then raised by free memory, distance and screen size. Covers MeshPart, SurfaceAppearance, Texture, Decal, MaterialVariant, Beam, ParticleEmitter and base materials. Textures up to 4096² render on these streamed 3D surfaces only (since 2026-01-30); staff confirm 4K and full texture streaming are off on iOS devices under about 3.5 GB `[official: staff posts, read]` | The target 3 GB phone never shows 4K, so the house cap stays 1024², mostly ≤ 512². UI images are not covered, and unique pixel count is still the memory cost. The docs prefer separate textures to atlases unless the atlas sits on parts that batch: asking for one sharp tile streams the whole atlas at that size |
+| Mesh streaming and cloud LODs | `Workspace.MeshStreamingAndImprovedLods`: Default, Enabled, Disabled; opt-in phase `[official: staff post, read]` | When enabled it replaces `RenderFidelity` (see LOD under Rendering) and caps mesh memory, which helps low-end phones; test for meshes stuck at a low LOD |
 | Unified lighting | `Lighting.Technology` is deprecated; use `LightingStyle` (Soft or Realistic) plus `PrioritizeLightingQuality` `[official]`. Old mapping `[official: announcement 2025-01-21, read]`: Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off | Mobile-first default is Soft. `PrioritizeLightingQuality = false` keeps view distance and drops shading first as quality scales down. Ship Realistic only if a low-end capture still holds 30 FPS |
 | SLIM model and avatar LOD | Documented (see LOD above); needs streaming, a cloud-saved place and Team Create | First LOD lever for static kit models and crowds |
 | Frustum streaming | `Player.FrustumStreaming` (server-set): Default (= Disabled), Disabled, Automatic, Enabled. Adds the camera's view volume to the streaming radius, never replaces it; costs memory and ignores occlusion; the engine switches it off on clients whose draw distance has dropped to the target radius `[official]` | Only for scopes, racing and free cameras |
@@ -260,7 +261,7 @@ print("ReplicatedStorage", #game:GetService("ReplicatedStorage"):GetDescendants(
 print("streaming", workspace.StreamingEnabled, workspace.StreamingMinRadius, workspace.StreamingTargetRadius)
 ```
 
-Sketch B, texture inventory and oversized images (unexecuted sketch). `CreateEditableImageAsync` loads only images owned by the game's creator or made in the game, returns `nil` when the editable-memory budget is used up, and an `EditableImage` is at most 1024², so a larger source cannot be told from a 1024² one `[official][VS]`:
+Sketch B, texture inventory and oversized images (unexecuted sketch). `CreateEditableImageAsync` loads only images owned by the game's creator or made in the game, returns `nil` when the editable-memory budget is used up, and an `EditableImage` is at most 1024², so a larger source (up to 4096² is accepted for 3D surfaces) may fail to load or cannot be told from a 1024² one `[official][VS]`:
 
 ```lua
 --!strict
@@ -332,36 +333,11 @@ Record this before touching code and again after each change. Report format: sym
 
 Conflict: LihFolk splits a 60 FPS phone frame as rendering 8–10 ms, engine simulation 2–3 ms, your client scripts 2 ms, headroom 2–3 ms, and server scripts under about 5 ms per heartbeat at full player count. The house table above allows client Luau 3–4 ms. Both are estimates; treat 2 ms as the target and 3–4 ms as the ceiling.
 
-**B. Memory leak (hunt by slope, not by snapshot)** `[lihfolk]`.
+**B. Memory leak (hunt by slope, not by snapshot)** `[lihfolk]`. The full procedure, the leak shapes and a slope sampler are in debugging-and-testing.md ("Memory-leak hunting"). The performance view of it:
 
 1. Check it is a leak. Memory rises for the first 5–10 minutes (modules, pools, streamed assets), and server memory never shrinks when players leave. Neither is a leak.
-2. Keep the workload fixed, let it warm up, then take three or more samples and express growth as MB per hour or KB per repetition. Time to failure = (ceiling − current) ÷ slope. 60 MB per hour from 1.1 GB kills a 2 GB phone within one long session; the same slope on a 1.5 GiB server takes about 42 hours to reach 4 GiB. Client leaks are usually the urgent ones.
-3. Find the label that grows: F9 > Memory, or the sampler below. `debug.setmemorycategory("Name")` in large scripts makes the script-memory view readable.
-4. Amplify the leak by repeating the suspect action 100 times in a script (respawning, crossing a zone border, opening and closing a menu, equipping and unequipping).
-5. Bisect: disable half the systems, rerun, keep the half where the slope remains.
-6. Take Luau heap snapshot A after warm-up, run the loop 100 times, wait 10 s idle, take snapshot B. A count that grew by exactly 100, or a multiple, is the leak; growth of 3 or 7 is noise.
-7. Usual holders: a connection per character to a long-lived signal; per-player tables never cleared; a loop spawned per object that never ends; caches keyed by user input with no cap; animation tracks loaded per use; tag handlers with no removal path; menus cloned on every open.
-8. Keep the loop as a regression test. Never hide a leak with a periodic "clear everything".
-
-```lua
---!strict
--- Unexecuted sketch: memory slope per label, once a minute. Start it after warm-up on a test server or client.
-local Stats = game:GetService("Stats")
-local TAGS = { Enum.DeveloperMemoryTag.LuaHeap, Enum.DeveloperMemoryTag.Instances, Enum.DeveloperMemoryTag.Signals,
-	Enum.DeveloperMemoryTag.GraphicsTexture, Enum.DeveloperMemoryTag.GraphicsMeshParts, Enum.DeveloperMemoryTag.Sounds, Enum.DeveloperMemoryTag.Gui }
-local first: { [Enum.DeveloperMemoryTag]: number } = {}
-local startedAt = os.clock()
-assert(Stats.MemoryTrackingEnabled, "per-tag memory is unavailable in this session") -- otherwise every read is 0
-while true do
-	local hours = (os.clock() - startedAt) / 3600
-	for _, tag in TAGS do
-		local mb = Stats:GetMemoryUsageMbForTag(tag)
-		if first[tag] == nil then first[tag] = mb
-		else print(tag.Name, string.format("%.1f MB, %+.1f MB/h", mb, (mb - first[tag]) / hours)) end
-	end
-	task.wait(60)
-end
-```
+2. Keep the workload fixed, warm up, take three or more samples and express growth as MB per hour or KB per repetition. Time to failure = (ceiling − current) ÷ slope: 60 MB per hour from 1.1 GB reaches the 1.3 GB ceiling of a 2 GB phone in about 3 hours; the same slope on a server at 1.5 GiB takes about 42 hours to reach 4 GiB. Client leaks are usually the urgent ones.
+3. Find the label that grows (F9 > Memory, or `Stats:GetMemoryUsageMbForTag`), amplify it with a 100× repetition loop, diff two Luau heap snapshots, fix, and keep the loop as a regression test. Never hide a leak with a periodic "clear everything".
 
 **C. Network (bandwidth and data ping).**
 

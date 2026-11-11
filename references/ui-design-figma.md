@@ -80,7 +80,7 @@ Numbers are px at `Phone-S`; all `[house]` unless tagged. Critique threads retur
 ## 3. Colour system built from the game's art direction
 
 1. **Sample the world.** Take three gameplay screenshots: the brightest zone, the darkest, the most saturated. Note the dominant hue and the value range. UI neutrals must sit outside the world's value band: a bright saturated world wants dark neutral panels (lightness 15–25%) or white panels with a dark outline; a dark world wants light ink on plates of 60–75% opacity. Official guidance for HUD over 3D: neutral black and white for almost everything, colour only for key information `[official]`.
-2. **Pull the outline colour, two accents and the surface tint from the Blender style bible** (`art-pipeline-blender.md`) so UI and world read as one product; keep the icon shape language distinct from world props so UI never looks like scenery `[official]`.
+2. **Pull the outline colour, two accents and the surface tint from the style bible** (`art-direction-and-quality-bar.md` §6, which holds the measurable rules and the UI tie-in) so UI and world read as one product; keep the icon shape language distinct from world props so UI never looks like scenery `[official]`.
 3. **Assign roles, not colours.** 60% of any screen is neutral surface, about 30% structure (headers, tabs, plates), at most 10% accent.
 
 | Role | Use | Derived values per role |

@@ -170,7 +170,7 @@ Rojo when the filesystem is the source of truth (git, CI, AI agents, non-script 
 - Data code runs against the store's mock (`PlayerStore.Mock:StartSessionAsync(key)`), which never touches DataStores.
 - Multi-client tests: `StudioTestService` (`ExecuteMultiplayerTestAsync` with 1–8 clients, `AddPlayers`; plugin security) and `UserInputService:CreateVirtualInput()` (check the result for `nil`) `[official]`.
 - Leak audit: respawn 20 times and rejoin repeatedly; memory and connection counts return to baseline.
-- What to test, cheapest first `[lihfolk, adapted]`: pure logic and migrations against fixture saves (data-and-purchases.md); remote handlers with the fuzz corpus and race test (networking-and-security.md); time-based features (daily rewards, boosts, cooldowns) through an injectable clock instead of `os.time()` calls scattered in code; streaming bugs by forcing stream-out (`StreamingTargetRadius = 64`); long sessions with a soak loop (performance.md, procedure B). Harness design and worked examples: debugging-and-testing.md.
+- What to test, cheapest first `[lihfolk, adapted]`: pure logic and migrations against fixture saves (data-and-purchases.md); remote handlers with the fuzz corpus and race test (networking-and-security.md); time-based features (daily rewards, boosts, cooldowns) through an injectable clock instead of `os.time()` calls scattered in code; streaming bugs by forcing stream-out (`StreamingTargetRadius = 64`); long sessions with a soak loop (debugging-and-testing.md, "Memory-leak hunting"). Harness design and worked examples: debugging-and-testing.md.
 
 ## CI/CD with Open Cloud `[VS]`
 
