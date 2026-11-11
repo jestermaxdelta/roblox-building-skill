@@ -22,7 +22,7 @@ Tags: `[official]` Roblox docs or staff posts; `[community]` forum threads, and 
 - `[official]` Worked case (Plant sample game): 70.48% of new players never planted the first seed. The fix that worked was an icon above the pots, not a longer tutorial.
 - `[community]` The one controlled study found (Andersen et al., CHI 2012; 8 tutorial designs, 3 games, over 45,000 players): tutorials helped only the complex, unconventional game (+29% play time, +75% levels) and did nothing in the two simple ones; in-context instructions beat a manual in the complex game (+40% levels, +16% time); **blocking the player until they obey improved nothing in any game**; in one simple game only 31% of players ever opened a help button, and offering it cut progress 12% and play time 15%.
 - `[community]` Nielsen Norman Group's child usability studies (125 children aged 3–12, three rounds) saw children skip lengthy explanations, including on Roblox; the youngest do not read, 6–8s read tentatively, 9–12s scan; children try every option on screen and cannot tell promotions from content.
-- `[community]` Roblox developers' own numbers (single cases, self-reported): a forced teleport to a solo tutorial place "caused a massive drop in session time and D1 retention", and moving the teaching into the main game as contextual tips recovered session time; a second developer tried a separate tutorial place and went back for the same reason; a third had 75% tutorial completion and still lost most finishers within five more minutes. Two more single cases from search summaries of Reddit posts: D1 6% → 15% after a 5-step tutorial became 3 (§15), and early exits 45% → 18% after the spawn got one clear first action (core-loop-tuning.md §6).
+- `[community]` Roblox developers' own numbers (single cases, self-reported): a forced teleport to a solo tutorial place "caused a massive drop in session time and D1 retention", and moving the teaching into the main game as contextual tips recovered session time; a second developer tried a separate tutorial place and went back, believing the teleport cost players; a third had 75% tutorial completion and still lost most finishers within five more minutes. Two more single cases from search summaries of Reddit posts: D1 6% → 15% after a 5-step tutorial became 3 (§15), and early exits 45% → 18% after the spawn got one clear first action (core-loop-tuning.md §6).
 - Not found: a published Roblox A/B of forced against contextual teaching, or measured effects of a skip button. Reading: shorten, show, and teach in context; more tutorial does not rescue a loop that is not fun (core-loop-tuning.md §4).
 
 ## 1. Goals and metrics
@@ -41,7 +41,7 @@ Onboarding is finished when the player has run the loop once without help, can s
 | D1 by source | Next-day return, Home Recommendations cohort | Retention | Your own P50, then P90 |
 | Loop statable | "What are you doing and why?" at minute 2 | Playtest | 4 of 5 testers |
 
-Some loss is not yours to fix: one survival game lost 16% of ad-sourced joiners before a single tap on a dimmed screen with one flashing slot `[community]`. Judge a step against its neighbours, against itself last week, and by source.
+No funnel starts from 100% reachable players: one survival game that was running ads lost 16% of joiners before the first tap (its cue was weak too: library row 31), and developers report ad-sourced joins that leave within seconds whatever the game shows `[community]`. Judge a step against its neighbours, against itself last week, and by source.
 
 ## 2. First-minute script format
 
@@ -145,13 +145,12 @@ local Guidance = {}
 
 local function source(character: Model?): Attachment?
 	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
-	local found = if root then root:FindFirstChild("GuideSource") else nil
-	if root and found == nil then
-		found = Instance.new("Attachment")
-		found.Name = "GuideSource"
-		found.Parent = root
+	if root == nil then
+		return nil
 	end
-	return found :: Attachment?
+	local attachment = (root:FindFirstChild("GuideSource") or Instance.new("Attachment")) :: Attachment
+	attachment.Name, attachment.Parent = "GuideSource", root
+	return attachment
 end
 
 function Guidance.point(position: Vector3?) -- nil clears; call when the hint timer fires and on step change
@@ -159,16 +158,16 @@ function Guidance.point(position: Vector3?) -- nil clears; call when the hint ti
 end
 
 RunService.RenderStepped:Connect(function()
-	local from = source(player.Character)
-	if target == nil or from == nil then
+	local from, to = source(player.Character), target
+	if to == nil or from == nil then
 		beam.Enabled, edgeArrow.Visible = false, false
 		return
 	end
-	goal.WorldPosition = target
+	goal.WorldPosition = to
 	beam.Attachment0, beam.Attachment1 = from, goal
 	beam.TextureSpeed = if GuiService.ReducedMotionEnabled then 0 else 1
-	beam.Enabled = (target - from.WorldPosition).Magnitude > 10
-	local point, onScreen = camera:WorldToViewportPoint(target)
+	beam.Enabled = (to - from.WorldPosition).Magnitude > 10
+	local point, onScreen = camera:WorldToViewportPoint(to)
 	edgeArrow.Visible = not onScreen
 	if not onScreen then
 		local centre = camera.ViewportSize / 2

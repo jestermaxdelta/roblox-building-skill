@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>19 Thumb reach on phone and tablet</title><link rel="stylesheet" href="sheet.css">
+<style>.key{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--ink2);margin-top:8px}.key span{display:flex;align-items:center;gap:6px}.key i{width:16px;height:12px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.2)}</style></head><body>
+<div class="sheet">
+  <div class="card"><h3>Two devices at the same physical scale (1 mm = 2 px here), held in two hands with thumbs on the stick and the jump button</h3>
+    <div id="dev"></div>
+    <div class="key"><span><i style="background:#8FD3A8"></i>easy: thumb rests here</span><span><i style="background:#F3D58A"></i>stretch: reachable, slower</span><span><i style="background:#E6E1D5"></i>needs a grip shift: read-only content</span><span><i style="background:none;border:1.5px dashed #1A1F2B"></i>reserved by the stick and jump button</span><span><i style="background:#DD4F27;border-radius:50%;width:12px"></i>the same button, 40% from the top</span></div></div>
+  <div class="g3 mt">
+    <div class="card"><h3>What the picture says</h3><div class="note">A button 40% from the top is within easy reach on a phone and far outside any reach on a tablet. <b>Place frequent actions relative to the jump button</b> (for example 20 px to its left, 0.8 × its size), never by screen percentage.</div></div>
+    <div class="card"><h3>Where things go</h3><div class="note"><b>Easy:</b> the primary action and one or two frequent buttons, outside the reserved zones. <b>Stretch:</b> the menu column, tracker toggle. <b>Out of reach:</b> status only: objective, timer, currencies, toasts.</div></div>
+    <div class="card"><h3>Limits of this sheet</h3><div class="note">Reach radii are illustrative (about 45 and 70 mm from the grip), not measured Roblox data. The emulator does not show real thumbs: check on the real 3 GB Android phone and one tablet, with chat open.</div></div>
+  </div>
+  <div class="row mt">
+    <div class="card grow"><h3>Detecting the layout</h3><div class="note">Phones report short sides of about <span class="v">360–430 px</span> in landscape, the smallest tablets about <span class="v">600</span>. A workable phone test: touch input with a short side under about <span class="v">520 px</span>. Use <b>PreferredInput</b>, not TouchEnabled, to decide whether touch controls show.</div></div>
+    <div class="card grow"><h3>Reserved zones</h3><div class="note">The dynamic thumbstick covers about <span class="v">20–25%</span> of the left side; a button beside it gets opened by accident. The default jump button is about <span class="v">70 px</span> on small screens and about 120 px on large ones: read it at runtime. The right half is also the camera-drag area.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el, T = Sheet.txt, k = 2;
+function device(x, y, wmm, hmm, name, sub) {
+  const w = wmm * k, h = hmm * k, id = name.replace(/\W/g, '');
+  const grips = [[x + 6 * k, y + h + 4 * k], [x + w - 6 * k, y + h + 4 * k]];
+  let s = `<clipPath id="c${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10"/></clipPath><rect x="${x - 5}" y="${y - 5}" width="${w + 10}" height="${h + 10}" rx="14" fill="#1A1F2B"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#E6E1D5"/><g clip-path="url(#c${id})">`;
+  grips.forEach(g => s += `<circle cx="${g[0]}" cy="${g[1]}" r="${70 * k}" fill="#F3D58A"/>`);
+  grips.forEach(g => s += `<circle cx="${g[0]}" cy="${g[1]}" r="${45 * k}" fill="#8FD3A8"/>`);
+  // reserved zones: stick (bottom-left, about 22% of width) and jump
+  const zw = Math.min(w * 0.22, 46 * k), zh = Math.min(h * 0.42, 34 * k);
+  s += `<rect x="${x + 4}" y="${y + h - zh - 4}" width="${zw}" height="${zh}" rx="6" fill="rgba(26,31,43,.12)" stroke="#1A1F2B" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${x + 4 + zw / 2}" cy="${y + h - zh / 2 - 4}" r="${9 * k}" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
+  s += `<rect x="${x + w - 30 * k - 4}" y="${y + h - 30 * k - 4}" width="${30 * k}" height="${30 * k}" rx="6" fill="rgba(26,31,43,.12)" stroke="#1A1F2B" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${x + w - 15 * k - 4}" cy="${y + h - 15 * k - 4}" r="${7.5 * k}" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
+  // top-centre status
+  s += `<rect x="${x + w / 2 - 22 * k}" y="${y + 6 * k}" width="${44 * k}" height="${6 * k}" rx="${3 * k}" fill="#788294"/>`;
+  // the 40% button near the right edge
+  const bx = x + w - 12 * k, by = y + h * 0.4;
+  s += `<circle cx="${bx}" cy="${by}" r="${5 * k}" fill="#DD4F27" stroke="#1A1F2B" stroke-width="1.5"/></g>`;
+  const dist = Math.hypot(bx - grips[1][0], by - grips[1][1]) / k;
+  s += `<path d="M${grips[1][0]} ${y + h}L${bx} ${by + 5 * k}" stroke="#1A1F2B" stroke-width="1.2" stroke-dasharray="3 3"/>`;
+  s += T(x, y - 12, name, { fill: '#1A1F2B', 'font-weight': 700, 'font-size': 12 }) + T(x + w, y - 12, sub, { 'text-anchor': 'end' });
+  s += T(bx - 7 * k, by + 4, `${Math.round(dist)} mm from the grip`, { 'text-anchor': 'end', fill: '#1A1F2B', 'font-weight': 650 });
+  return s;
+}
+const W = 716, H = 356;
+document.getElementById('dev').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${device(8, 206, 141, 65, 'Phone, 6.1 inch', '141 × 65 mm')}${device(8 + 282 + 34, 28, 191, 143, 'Tablet, 9.4 inch, 4:3', '191 × 143 mm')}
+  ${T(8, 60, 'status top-centre: read-only on both', {})}<path d="M150 66C200 86 300 60 440 44" fill="none" stroke="#788294" stroke-width="1.2" stroke-dasharray="3 3"/><path d="M118 66L140 214" fill="none" stroke="#788294" stroke-width="1.2" stroke-dasharray="3 3"/></svg>`;
+Sheet.frame({ n: '19', cat: 'UI · mobile', title: 'Thumb reach on phone and tablet', sub: 'Why percentage placement fails: the same layout on two devices drawn at real size, with the area each thumb can reach from a two-handed grip.',
+  supports: ['ui-input-crossplatform.md §Mobile layout (thumb reach, reserved zones)', 'ui-design-figma.md §Frames and scale'], sources: 'ui-input-crossplatform.md, ui-design-figma.md; reach radii illustrative' });
+</script></body></html>

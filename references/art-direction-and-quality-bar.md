@@ -138,7 +138,7 @@ A style is what the team can make two hundred times at the same quality. Sable's
 - **Capacity check** `[house]`: assets needed × hours per asset at rubric score 8 ≤ art hours before launch. If not, cut asset count or drop a style tier; never drop the score.
 - **Limitation as style.** Pick two or three hard limits and enforce them everywhere (a 12-colour zone palette, no textures, one bevel width, no outlines, one material idea such as "everything is folded paper" `[community: Lucas]`). Constraints kept everywhere beat detail.
 - **Less detail, better read.** At gameplay distance small detail reads as noise `[community: Koepp]`; areas of low detail are what make the detailed focal point draw the eye `[community: Barrett]`.
-- **Do not raise the detail level mid-production.** A team that used extra time to add painted folds, edge highlights and AO to new assets found them clashing with the earlier flat ones `[community: Fishing Cactus via Game Developer]`. Version the bible; migrate whole families or not at all (§10).
+- **Do not raise the detail level mid-production.** A team that used extra time to add painted folds, edge highlights and AO to new assets found them clashing with the earlier flat ones `[community: Epistory team via Game Developer]`. Version the bible; migrate whole families or not at all (§10).
 - **Free distinctiveness**: a proportion rule, a palette, a motif, a lighting key, one material idea. None costs triangles.
 
 ## 5. Reference board
@@ -320,7 +320,7 @@ Accessed 2026-11-11. DevForum threads read through the Discourse JSON API.
 - https://github.com/Roblox/creator-docs (read, commit ccc2b01): `tutorials/curriculums/environmental-art/develop-polished-assets.md` (art style as "main source of truth", mood board), `resources/the-mystery-of-duvall-drive/construct-the-house.md`; class references for the APIs named in §2
 - https://www.gamedeveloper.com/art/how-devs-can-spot-ai-generated-3d-models (read; Bryant Francis reporting Liz Edwards, 2024-11-05)
 - https://www.gamedeveloper.com/gdc2022/how-shedworks-refined-the-art-of-sable-in-pursuit-of-readability (read; 2022-03-25)
-- https://www.gamedeveloper.com/design/when-extra-budget-increases-your-visual-quality (read; Fishing Cactus on Epistory, 2016-03-07)
+- https://www.gamedeveloper.com/design/when-extra-budget-increases-your-visual-quality (read; Urbain Bruno on Epistory, 2016-03-07)
 - https://www.gamedeveloper.com/art/deep-dive-cultivating-the-soft-art-of-shumi-come-home (read; 2022-07-28)
 - Mitchell, Francke, Eng, "Illustrative Rendering in Team Fortress 2", NPAR 2007, https://steamcdn-a.akamaihd.net/apps/valve/2007/NPAR07_IllustrativeRenderingInTeamFortress2.pdf (read: sections 3–4)
 - 80.lv breakdowns (read; images viewed, listed in the three library files): Stanley Barrett, Emek Can Özben, Rodrigo Gonçalves, Benjamin Lucas, Tobias Koepp, Ivan Blinov, Georg Klein, Sasha Bernert, Angelo Tsiflas, Vitaliy Novart

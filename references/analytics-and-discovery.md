@@ -174,8 +174,7 @@ How it behaves `[official]`:
 Thumbnails and metadata:
 
 - Custom 16:9 thumbnails at 1920×1080 under 3 MB are required for Home. Up to 10 thumbnails; keep 2–5 active so personalization can pick (average +8.5%, up to +50%). Video thumbnails: 3 uploads per month, authentic gameplay only, not shown on console or VR.
-- Icon 512×512; check readability at 150 px. Shift+P gives a free camera for captures.
-- Market rules: show the first minute of play, one focal point, at most 5 elements, a big number, a visible climb in one frame, readable at 150 px, genre colour coding, a face, fill all 5 slots. Title pattern is a status tag plus a verb phrase (for example `[UPD 🔫] Realistic Ragdoll Playground 🩸`). Copy the format, not the art.
+- Craft (icon, composition, colour, text, Blender renders, video, the upload procedure and the review rubric) is owned by `icons-thumbnails-and-store-page.md`; the owner's thumbnail rules 1–13 are in `market-scan-2026-11.md`. Title pattern in brief: a short status tag plus a verb phrase, with the name inside the first 23 characters.
 - Description hook in the first 160 characters. (Roblox labels this guidance experimental, for select creators and aimed at external search engines; the general rule is a first sentence that summarises the game, plus relevant keywords.)
 - Name and description rules `[official]`: keep the name consistent (frequent renames break search for the old name); no repeated or irrelevant keywords ("may result in demotion"); one or two well-placed emoji at most. A beta Promotional Text field holds a short secondary line `[VS]`.
 
@@ -196,13 +195,7 @@ Thumbnail and icon testing `[official][VS]`:
 | Flat | Up | Better | Keep in the pool; it attracts the right players |
 | Down | Any | Any | Retire unless it wins a segment |
 
-Thumbnail review before upload (rubric shape adapted from `[lihfolk]`, criteria reconciled with market-scan rules 1–13). Inputs: the full-size image, the same image at 320×180 and 160×90, a greyscale copy, the icon, and two or three raw in-game screenshots of what it shows.
-
-- Gates, pass or fail; a fail means do not upload: **truthful** (every character, item, place, number and UI element exists in the game, in the game's own art style; cannot be judged without the raw screenshots) and **policy-safe** (no links, handles or QR codes, no Robux, discount or giveaway claim, fits the maturity label, nobody else's characters or branding).
-- Ten criteria, each 0, 0.5 or 1: one clear focal subject (about a third to half of the frame) · reads at 320×180 and the subject still reads at 160×90 · subject separates from the background in greyscale · genre obvious in one second · a face with the right emotion or an action in progress · text discipline (none, or a few large outlined words or one big number) · nothing essential in the bottom 15–20% or corners · shares hero, palette or logo with the icon · stands out in a row of competitor tiles while keeping genre cues · clutter controlled.
-- 8.5+ upload as a challenger; 7–8 fix the lowest criterion first; 5–6.5 re-shoot (camera distance, lighting, subject); under 5 new concept.
-
-Conflict: LihFolk's rubric wants three elements or fewer and no arrows, stickers or emoji, with text optional; the vault's feed coding found giant numbers, before→after climbs and tagged titles common among current simulator hits and allows up to five elements. Use the vault rules for number-driven genres (simulator, +1, tycoon) and the stricter LihFolk bar for horror, RPG and other mood-led genres, and let the personalisation data decide.
+Thumbnail review before upload: the gates (truthful, policy-safe, made not generated), the ten-criterion rubric with its 8.5 upload bar, and the LihFolk-versus-vault conflict on element count now live in `icons-thumbnails-and-store-page.md` §15. Its §13 adds store-page test rounds; since 1 July 2025 a new test that includes the current winner keeps most traffic on it `[official]`.
 
 What clickbait costs:
 
@@ -272,7 +265,7 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 - [ ] Alerts exist for crash rate, out-of-memory exits and server frame rate; Performance checked by place version after each publish.
 - [ ] No PTR comparison across 12 Oct 2026; signal lag (24 h) and impression lag (days) respected before judging.
 - [ ] Any test has a written hypothesis, one variable, a guardrail metric and a sample size the traffic can reach; it ran its full duration.
-- [ ] New thumbnails passed the truthful and policy gates and scored 8.5+ on the review rubric before upload.
+- [ ] New thumbnails passed the gates and scored 8.5+ on the rubric in `icons-thumbnails-and-store-page.md` §15 before upload.
 - [ ] `[VS]` facts re-checked at create.roblox.com/docs.
 
 ## Sources
@@ -288,6 +281,7 @@ Accessed 2026-11-10. Creator docs read from the `Roblox/creator-docs` GitHub mir
 - https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
 - https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 (search summary)
 - https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)
+- https://devforum.roblox.com/t/thumbnail-personalization-now-remembers-your-existing-winning-thumbnails/3793665 (read, 2026-11-11)
 - https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/improvements-to-game-search-ranking/673608 (search summaries)
 - Vault: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read)
 - GameAnalytics 2026 Roblox report percentiles: https://www.gameanalytics.com/reports/2026-roblox-report and https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summaries; percentile figures as recorded in `references/liveops-quests-retention.md`)

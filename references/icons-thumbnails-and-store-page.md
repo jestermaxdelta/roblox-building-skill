@@ -20,7 +20,7 @@ Contents: 1 Three images, three jobs · 2 The promise · 3 Composition recipes �
 
 | Asset | Job | Where it shows | Spec |
 |---|---|---|---|
-| Icon (1:1) | Recognition: "that game again". One shape and one colour pair the player learns | Continue, Favorites, Search, Charts, friends' activity | Square, 512×512 or larger; shown down to 150×150; one icon per locale; auto-generated on first publish (replace it) |
+| Icon (1:1) | Recognition: "that game again". One shape and one colour pair the player learns | Continue, Favorites, Search, Charts | Square, 512×512 or larger; shown down to 150×150; one icon per locale; auto-generated on first publish (replace it) |
 | Thumbnails (16:9) | The promise: "this is what you do in the first minute". One promise per image | Home RFY tile (slot 1, or the personalised pick), the detail-page gallery, Sponsored tiles | 1920×1080; `.jpg .gif .png .tga .bmp`; other ratios are stretched, not cropped; up to 10 images or videos on the page; 2–5 active on Home, each under 3 MB; alt text per image |
 | Gameplay video | Proof: "it really looks and moves like this" | First item on the detail page; autoplays inside the RFY tile | 3 uploads a month and rejections count; not shown on Xbox, PlayStation or VR; docs state no length or file-size limit |
 | Title, description | Search match and the second line of the promise | Under every tile, the detail page, search | §10 |
@@ -69,7 +69,7 @@ Rules that hold across recipes:
 - **Diagonal action**: tilt the line from weapon to target, rod to fish or avatar to prize 15–30° off horizontal; level horizons are for calm genres. Blade Ball, Fish It and Volleyball Legends are built on one diagonal each `[house]` viewed.
 - **Depth in three layers**: a dark or blurred foreground edge, the lit subject, a simpler and lower-contrast background. If the background is as sharp and saturated as the hero, blur it or drop its contrast.
 - **Faces**: a face reads only when it is about 8–10% of frame height or more `[lihfolk]`; choose shock, fear, joy or effort, never the default smile (rule 7). Evidence is mixed outside Roblox: one analysis of about 300,000 YouTube videos found faces perform about the same as no face on average and vary by niche (search summary). Treat "add a face" as a hypothesis for §13, not a law.
-- **Safe area**: nothing essential in the bottom 20% or within 5% of a corner. An established brand can break this (DOORS puts its wordmark at the bottom edge); a new game cannot.
+- **Safe area**: nothing essential in the bottom 20% or within 5% of a corner. An established brand can break this (DOORS puts its wordmark in the bottom fifth of one slot); a new game cannot.
 - **Five slots, five promises** (rule 8): ladder, odds, versus, rare item, gag for a simulator; place, activity, friends, home, event for roleplay. Staff: near-identical thumbnails give personalisation nothing to tell apart `[official]`.
 
 ## 4. Colour and value on the Home grid
@@ -106,7 +106,7 @@ What survived when the 62 chart icons were reduced (`[house]` viewed):
 - **The survivors share three things**: three or fewer value masses, a subject filling 60% or more, a flat or two-tone ground.
 - **Text**: 35 of 62 icons had none, 22 carried the game's wordmark, 5 carried a hook ("+1", "GROW OFFLINE"). A wordmark is brand, and only worth its space once players know the name. A new game spends the icon on the subject.
 - **One subject, cropped for tension**: let it break the frame; face or focal point upper-middle; nothing vital in the corners (rounded on every surface viewed).
-- **No rounded corners, drop shadow or badge baked in**: the platform masks the tile. Google Play's icon spec forbids ranking and deal text or graphics on icons and applies its own corners and shadow `[official]` (Android docs); a baked "UPDATE!" ribbon also goes stale the day after.
+- **No rounded corners, drop shadow or badge baked in**: the platform masks the tile. Google Play's icon spec forbids ranking and deal text or graphics on icons and applies its own corners and shadow (Android developer docs, read); a baked "UPDATE!" ribbon also goes stale the day after.
 - **Colour identity**: pick the hue pair once and keep it through every refresh; change the prop, not the palette (§14).
 - **Icon and thumbnails share anchors**: same hero, same two colours, same wordmark shape, so the Home tile and the Continue icon read as one game.
 
@@ -154,7 +154,7 @@ Pass marks: at 32 px a stranger names the subject; at 64 px they name the genre;
 - A number must be reachable and in the game's own unit (rule 3, rule 11). Abbreviate: "$93.5M/s" survives a phone tile; "$13,957,801,357" does not.
 - Text is not translated. Automatic image translation (beta, 9 Nov 2026) covers in-game images only, "not icons and thumbnails" `[official][VS]`; the 2024 icon-translation experiment drew developer complaints about wrong translations `[community]`. Keep one text-free thumbnail active for every market, and upload per-locale icons only where a market earns it.
 - Set type in Figma on its own layer over the exported render, with the same display font as the in-game UI (`ui-design-figma.md` tokens). Never set type in Blender `[lihfolk]`.
-- **Brand system**: fix three things across the set and let the scene vary. Seen working: a fixed frame (Brookhaven), a fixed sign (Berry Avenue), a wordmark locked to one corner (Adopt Me, Driving Empire, Dandy's World), one recurring flat-colour character (RIVALS). Build it once as a Figma component; each new thumbnail is a new render dropped under the same layers.
+- **Brand system**: fix three things across the set and let the scene vary. Seen working: a fixed frame (Brookhaven), a fixed sign (Berry Avenue), a wordmark locked to one corner (Adopt Me) or always in a corner (Driving Empire, Dandy's World), one recurring flat-colour character (RIVALS). Build it once as a Figma component; each new thumbnail is a new render dropped under the same layers.
 - Established games lead with a logo and mood because the name is the hook; new format games lead with colour, a number and the climb because the mechanic is the hook (vault).
 
 ## 7. Character renders in Blender
@@ -197,7 +197,7 @@ A large area light behind the figure "cranked up" is the single most repeated ti
 
 **Outline.** Three options, in order of cost:
 
-1. Sticker outline in the compositor: Alpha → Dilate/Erode (Distance, +8 to +12 px at 4K) → fill white or the darkest scene colour → Alpha Over beneath the render. This is the white edge on most simulator tiles.
+1. Sticker outline in the compositor: Alpha → Dilate/Erode (Distance, +8 to +12 px at 4K) → fill white or the darkest scene colour → Alpha Over beneath the render. This is the sticker edge seen on many simulator tiles.
 2. Inverted hull in 3D: Solidify modifier with flipped normals and a backface-culled dark emission material. Holds up when the outline must follow inner overlaps.
 3. A rim light alone, for realistic or horror styles where a graphic line would not match the game.
 
@@ -229,9 +229,9 @@ Budget: route A is about half a day for five images once the PhotoStudio place e
 - Allowed: real, current footage of the core loop; varied camera angles; minor brightness and contrast; curated non-linear clips; in-game UI text; the game's logo; Roblox-catalogue music without lyrics.
 - Rejected: cinematic trailers and dramatised gameplay; graphics better than a player gets; real-life footage; voice-over, narration, voice chat or lyrics; promotional or subjective text ("50% off", "Free UGC!").
 - Structure for a tile that autoplays muted and small: the core verb inside the first 3 seconds, no logo card first, 3–5 shots of real play, 20–30 s total as a loop `[lihfolk]`. One of the cited teams chose clips that showed the pacing change from stealth to action, which a still could not.
-- The HUD stays on if it helps reading the loop; both staff examples show it. Hide other players' names (`growth-and-marketing.md` §4 capture rules).
+- The HUD stays on if it helps reading the loop; the Superstar Baseball example keeps it on. Hide other players' names (`growth-and-marketing.md` §4 capture rules).
 - Spend the three monthly uploads last: cut the clip, show it off-platform or to testers, then upload. Capture settings and clip structure for social video are in `growth-and-marketing.md` §4.
-- A video is also the strongest answer to distrust of polished stills: players in the staff thread asked for more videos precisely because many front-page thumbnails no longer look like the game `[community]`.
+- A video is also the strongest answer to distrust of polished stills: developers in the staff thread asked for more videos precisely because many front-page thumbnails no longer look like the game `[community]`.
 
 ## 10. Title and description (brief)
 

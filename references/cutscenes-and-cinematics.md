@@ -129,6 +129,7 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 - **Server-owned NPCs.** The server puts the boss in an `Intro` state (no attacks, no damage taken) and each client plays the performance on its own copy of the animation. The state has a fixed server duration; no client reports that it is "done".
 - **Marks.** Actors start from named `Attachment` marks authored with the set in Blender, not from wherever gameplay left them. Store camera keys relative to an anchor (the arena origin, or the HumanoidRootPart for ability cameras) and multiply at play time, the "reference part" trick from Moon Animator workflows `[community]`.
 - **Clip markers are cues.** Sound and VFX hang on `GetMarkerReachedSignal` markers (`animation-and-rigs.md` §6); hand-timed `task.wait` chains drift `[community]`. Use the same cue names in clips and timelines. When the camera lives in the clip (Cam bone), the clip is the clock; otherwise the timeline is.
+- **Body-locked cameras** (first person, takedowns). Blender cameras do not import: animate a `Cam` bone or part in the actor rig (`animation-and-rigs.md` §10) and, in the render step after camera priority, copy its world CFrame (`Bone.TransformedWorldCFrame` for a bone) to the Scriptable camera `[community]`. Orient the bone in Blender so its −Z axis is the view direction, and carry FOV as marker parameters `[house]`. The restore rules in §7 apply unchanged.
 - **Eyelines.** Actors look at each other or at a point just off the lens; straight into the lens only when addressing the player. Use the procedural head look-at from `animation-and-rigs.md` §9 for a live target.
 - **Lip-sync status `[VS]`.** The engine has no automatic lip-sync. `FaceControls` on animatable heads can be keyed, and Studio's Face Capture records up to 60 s from a webcam (beta) `[official]`; the Fall 2026 roadmap lists FACS upgrades and root motion for mid-2027 `[official]`. Third-party animator plugins advertise lip-sync keying `[community]` (not tested). House position: on blocky avatars use body acting, a jaw or head beat per phrase, and subtitles; do not build a scene that depends on mouths.
 - **Geometry.** Every prop and set piece in frame is Blender-authored and solid (house rules 1 and 2). Camera path points are data in a module, not parts left in `Workspace`: stray parts are primitive builds, and streaming can remove them.
@@ -371,32 +372,21 @@ Left out on purpose: the readiness gate (§12), anchor transform, pause, seeking
 | Deferred story beat | Up to 8 s, skippable | After `FirstReward` (30–60 s in), when the player has a reason to care |
 | First boss or first chest reveal | 2–6 s | The first cinematic the player sees is a reward they caused |
 
-Measure it: log time from `Spawned` to `FirstAction` as an `FtueBeat` (`core-loop-tuning.md` §2) and compare variants in an experiment. Returning players never see an intro.
+Measure it: log time from `Spawned` to `FirstAction` as an `FtueBeat` (`core-loop-tuning.md` §2) and compare variants in an experiment. Returning players never see an intro. The first-minute script and step funnel are owned by `tutorial-and-onboarding.md`.
 
 ## 16. In-engine trailers and marketing capture
 
-Two different deliverables. Do not mix them up.
+Two deliverables with different rules. The **game-page gameplay video** (autoplays in Recommended For You) is owned by `icons-thumbnails-and-store-page.md` §9: policy list, measured lifts, structure. The part that matters here: varied and "cinematic" camera angles are allowed as long as they show real gameplay, and free camera is the tool the docs name, but Roblox staff advise against cinematic trailers and dramatised gameplay in that slot `[official]` `[VS]`. So directed camera work goes into the **off-platform trailer** (YouTube, TikTok, Discord, event pages; channels and hooks in `growth-and-marketing.md` §4), which is still made only from real captures.
 
-| | On-platform gameplay video | Off-platform trailer |
-|---|---|---|
-| Where | Game page; autoplays in Recommended For You on Home since mid-2026 `[official]` `[VS]` | YouTube, TikTok, Discord, event pages (`growth-and-marketing.md` §4) |
-| Job | Show the core loop honestly in the first seconds | Hook, mood, promise |
-| Style | Roblox's own advice: avoid cinematic trailers, dramatised gameplay, promotional text, voice-over and lyrics `[official]` | Cinematic welcome, still real captures (house rule on AI art and accuracy) |
-| Evidence | Two named games saw +30% and +41% Recommended For You plays in Roblox's June 2026 test, reported as directional `[official]` | None platform-side |
+**Shot list for a 20–30 s trailer** `[house]`: 8–12 shots of 1.5–3 s. One establishing wide; three or four core-loop shots from the real gameplay camera with HUD; two hero shots (low angle, FOV 30–45, slow push); one multiplayer shot with team accounts; one payoff; end card of 1.5–2 s with the exact game name. Each shot has one idea, and either the subject moves or the camera does. Cut on action: leave a shot while the motion is still going and enter the next with it under way.
 
-What the video-thumbnail policy allows `[official]` `[VS]`: varied and cinematic camera angles that show real gameplay (free camera is named as the tool); minor post such as brightness or contrast; a logo overlay; curated, non-linear highlight sequences; in-game UI text; catalogue music without lyrics. What gets a rejection, each one counting against the 3 uploads per month: mechanics or UI not in the game, graphics enhanced beyond what players see, real-life footage, narration or voice chat or lyrics, advertising claims such as "50% off". Consoles and VR do not show video thumbnails.
+**Capture** (still-image route and quality settings are in `icons-thumbnails-and-store-page.md` §8; capture-place rules in `growth-and-marketing.md` §4):
 
-**Shot list for a 20–30 s trailer** `[house]` (clip structure and hooks are in `growth-and-marketing.md` §4): 8–12 shots of 1.5–3 s. One establishing wide; three or four core-loop shots from the real gameplay camera with HUD; two hero shots (low angle, FOV 30–45, slow push); one multiplayer shot with team accounts; one payoff; end card of 1.5–2 s with the exact game name. Each shot has one idea, and either the subject moves or the camera does.
-
-**Capture** (complements the capture-place checklist in `growth-and-marketing.md` §4):
-
-- Free camera: Left Shift + P in a Studio playtest, or in the live client for the owner and editors `[official]`. With the Input Action System scripts enabled it adds roll, FOV, per-control speed and stiffness (low stiffness eases the motion), a player lock, UI and leaderboard toggles and its own post-processing menu `[official]` `[VS]`. Keep that post menu off for footage going to the game page: "minor" is the policy word.
-- Quality: Graphics Mode manual at maximum in the client; in Studio, Editor Quality Level 21 and Mesh Detail Level 00; pick the capture resolution in the device emulator (Roblox staff tips `[official]`).
-- Recording: OBS at constant bitrate of 20,000 kbps or more, MP4, 60 FPS, canvas up to 3840×2160 (same staff post). Record landscape, crop later.
-- Stills: tear the viewport out to full screen for resolution and lower FOV to 50–60 `[community]`.
-- Repeatable takes: fly hero shots with the §14 runner on saved timelines, so the same move can be re-shot after an art change. This is the main reason to keep camera paths as data.
-- `CaptureService` is for players, not trailers: `StartVideoCaptureAsync` records at most 30 s with voices muted and lets the player save or share; screenshots can exclude UI `[official]`. Use it for a photo mode or a "save this moment" prompt after a boss kill, opt-in and never as a gate.
-- Uploading video to play inside the game costs Robux per file according to a 2026 forum report `[community]` `[VS]`; in-engine scenes are free, restyle with the game and match what players see.
+- **Free camera upgrades (2026).** Left Shift + P works in a Studio playtest and, for the owner and editors, in the live client `[official]`. With `Workspace.PlayerScriptsUseInputActionSystem` enabled it adds roll, per-control speed and stiffness, a player lock that tracks a chosen player, Screen GUI and leaderboard toggles, and its own post-processing menu `[official]` `[VS]`. Low stiffness is the built-in ease: set it before recording moving shots. Leave the post menu off for anything going to the game page, where only minor adjustments pass.
+- **Video recording.** OBS at constant bitrate of 20,000 kbps or more, MP4, 60 FPS, canvas up to 3840×2160; name files by project, shot type and shot name (Roblox staff tips `[official]`). Record landscape and crop later.
+- **Repeatable takes.** Fly hero shots with the §14 runner on saved timelines so the same move can be re-shot after an art change. Hand-flown free camera is for discovery; the keeper is data.
+- **`CaptureService` is for players, not trailers.** `StartVideoCaptureAsync` records at most 30 s with voices muted and hands the player a clip to save or share; screenshots can leave out UI `[official]`. Use it for a photo mode or a "save this moment" prompt after a boss kill: opt-in, never a gate, never a reward condition.
+- **Pre-rendered video inside the game** costs Robux per upload according to a 2026 forum report `[community]` `[VS]`, cannot restyle with the game and does not show the player's own avatar. In-engine scenes are the default.
 
 ## 17. The amateur cutscene: tells and fixes
 
@@ -452,7 +442,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 | World stays tinted or dark afterwards | Scene edited zone lighting in place; two writers | Lighting lock; own effect instances destroyed on exit (§10) |
 | Music restarts or doubles after a scene | Scene stopped tracks directly | Priority stack push and pop (§11) |
 | Players killed while watching | Client-claimed protection or none | Server-started bounded protection in PvE; no control-taking scenes in PvP |
-| Game-page video rejected | Narration, lyrics, ad text or enhanced visuals | Re-cut to the §16 policy list; three uploads per month |
+| Game-page video rejected | A cinematic trailer, narration, lyrics, ad text or enhanced visuals in the gameplay-video slot | Re-cut as plain gameplay (`icons-thumbnails-and-store-page.md` §9); keep the trailer off-platform |
 
 ## Review gate
 
@@ -467,7 +457,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 - [ ] Skip control from 1.5 s on every device; repeat views shortened; subtitles on by default at child reading pace.
 - [ ] Stage preloaded and streamed before the trigger; readiness gate falls through to the end state.
 - [ ] Scene lighting and post are separate instances removed on exit; music uses the priority stack.
-- [ ] Game-page video follows the allowed list; off-platform trailers use real captures, team accounts and licensed music.
+- [ ] Cinematic trailers stay off-platform and use real captures, team accounts and licensed music; the game-page video passes `icons-thumbnails-and-store-page.md` §9.
 
 ## Sources
 

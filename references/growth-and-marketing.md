@@ -23,7 +23,7 @@ Traffic multiplies whatever the game already does to a new player. Buy or borrow
 | Onboarding funnel, economy and offer events live | Required | Otherwise the spend teaches nothing |
 | First-play bounce and D1 | At or above the dashboard benchmark median; fallback D1 > 11% (market-scan-2026-11.md) | Roblox: improve retention and engagement before acquiring `[official]` |
 | Like ratio | ≥ 85% | A sponsored tile pays to display the rating (market-scan rule 13); ad-running games sit at a 79% median vs 92% for others (vault sample) |
-| Tile matches the first minute | Thumbnail rules 1–13 pass | Mismatched metadata reduces exposure `[official]` |
+| Tile matches the first minute | Thumbnail rules 1–13 pass; rubric in `icons-thumbnails-and-store-page.md` §15 scores 8.5+ | Mismatched metadata reduces exposure `[official]` |
 | Stability | Crash rate under 2–3%, join ≤ 15 s on low-end Android | A spike magnifies crashes |
 | Value of a new player known | 30-day revenue per new user by source, from the Acquisition new-users funnel | Sets the cost-per-play ceiling |
 | Kids/Select status known | Trial (16+ only) or eligible | Decides audience and channel |
@@ -238,7 +238,7 @@ In-game features that generate clips (build these into the game, they are free m
 | Experience notifications | Opted-in 13+ users, one per user per day, personal and actionable |
 | Promotional text (beta) | Short secondary line in publish settings; use for the live update, never for giveaways |
 | Title tag | `[UPD]`, `[2X EVENT]` rotated with real events (market-scan rule 9 and 12); do not rename the base title, it breaks search for the old name `[official]` |
-| Thumbnails | New set with each major update, 2–5 active, left alone until the next update `[official]` |
+| Thumbnails | New set with each major update, 2–5 active including the current winner, left alone until the next update `[official]`; refresh patterns and the making-of in `icons-thumbnails-and-store-page.md` §14 and §8 |
 
 Timing (vault, snapshot 2026-11-07): launch or update on or just before Saturday; best windows 15 Dec–5 Jan, 10–30 Jun, Halloween for themed games; avoid late Aug–Sep. A new game needs lead time to clear the 250-play gate before a seasonal window (for example ship around 10 Dec for the holiday peak). Announce the fixed weekly update day and keep it.
 
