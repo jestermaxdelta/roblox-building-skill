@@ -20,7 +20,15 @@ Market data (trending genres, discovery, thumbnails) comes from the owner's Robl
 
 ## Community knowledge
 
-Points tagged `[community]` come from developer forums, Reddit, videos and blogs, found through web search on 2026-11-10. They are heuristics from working developers, not guarantees. Each reference file lists its URLs under `## Sources` and marks whether the page was read directly or seen only as a search summary.
+Points tagged `[community]` come from the Roblox DevForum, RealtimeVFX, developer blogs, talks and videos. In the first research pass (2026-11-10) these were seen only as search summaries; in the second pass (2026-11-11) the DevForum, RealtimeVFX and the Roblox docs site were read directly, and a full review re-checked the guides against them. Each guide's `## Sources` section says, source by source, whether it was read, viewed or seen only as a search summary. Reddit could not be read directly in either pass. Community practice is a heuristic from working developers, not a guarantee.
+
+## The visual reference library
+
+`references/visual-library/` links to other people's work: screenshots of shipped games, DevForum posts and their images, artists' breakdowns, tutorials and videos. None of it is included in this repository. It belongs to its authors and publishers and is listed for study, with a note on what to look at, never for copying. Entries marked `viewed` were looked at by the curator before being listed; videos were verified to exist but not watched. If you are the author of a linked work and want it removed from the list, open an issue.
+
+## The bundled reference sheets
+
+The 22 images in `assets/reference/` are original diagrams drawn for this skill (sources in `assets/reference/src/`). They contain no third-party artwork. Roblox documentation images were considered for bundling and left out, because the documentation's CC BY 4.0 statement names its text and not its images.
 
 ## Trademarks
 
