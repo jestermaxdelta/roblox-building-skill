@@ -32,7 +32,8 @@ function slash(on, sc = 1) {
   const cx = 150, cy = 112; let s = E('rect', { width: W, height: H, fill: BG }) + E('rect', { y: 150, width: W, height: 50, fill: GR });
   if (on.light) s += `<ellipse cx="250" cy="156" rx="86" ry="15" fill="#FF8A3D" opacity=".16"/><ellipse cx="250" cy="156" rx="52" ry="9" fill="#FFB86B" opacity=".22"/>`;
   if (on.ctx) s += fig(118, 152, 62) + `<path d="M132 118L206 78" stroke="#8792A8" stroke-width="5" stroke-linecap="round"/>` + fig(292, 152, 62, '#4A3A52');
-  if (on.ter) s += `<path d="${cres(cx, cy, 78, -78, -20, 5)}" fill="#C9D4E8" opacity=".35"/>` + [[236, 150, 13], [256, 146, 10], [274, 151, 8]].map(d => `<circle cx="${d[0]}" cy="${d[1]}" r="${d[2]}" fill="#8792A8" opacity=".3"/>`).join('');
+  if (on.ter) s += `<path d="${cres(cx, cy, 78, -78, -20, 5)}" fill="#C9D4E8" opacity=".45"/>`;
+  if (on.sec) s += [[236, 150, 13], [256, 146, 10], [274, 151, 8]].map(d => `<circle cx="${d[0]}" cy="${d[1]}" r="${d[2]}" fill="#8792A8" opacity=".3"/>`).join('');
   if (on.pri) s += `<path d="${cres(cx, cy, 104, -62, 44, 30)}" fill="#6B1220"/><path d="${cres(cx, cy, 100, -56, 40, 20)}" fill="#FF7A2E"/><path d="${cres(cx, cy, 99, -44, 32, 5)}" fill="#FFF6DD"/>`;
   if (on.sec) s += star4(262, 112, 26) + star4(262, 112, 12, '#FFE7A8') + [[280, 96, -30, 16], [288, 114, 8, 20], [282, 132, 34, 15], [298, 100, -18, 11], [300, 128, 24, 12], [272, 142, 52, 10], [306, 113, 4, 9]].map(d => spark(...d)).join('');
   if (on.cam) s += `<rect x="20" y="16" width="${W - 40}" height="${H - 32}" rx="6" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="6 5" opacity=".9"/><rect x="34" y="10" width="${W - 40}" height="${H - 32}" rx="6" fill="none" stroke="#6FBF97" stroke-width="2.5"/><path d="M200 100h44m-12-8l12 8-12 8" fill="none" stroke="#6FBF97" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -43,29 +44,30 @@ function boom(on, sc = 1) {
   const blob = (r, n, k, f, rot = 0) => { let d = ''; for (let i = 0; i < n * 2; i++) { const a = (i * 180 / n + rot), rr = i % 2 ? r * k : r; const p = P(cx, cy, rr, a); d += (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); } return `<path d="${d}Z" fill="${f}" stroke="${f}" stroke-width="10" stroke-linejoin="round"/>`; };
   if (on.light) s += `<ellipse cx="180" cy="160" rx="150" ry="22" fill="#FF8A3D" opacity=".16"/><ellipse cx="180" cy="160" rx="96" ry="13" fill="#FFB86B" opacity=".22"/>`;
   if (on.ter) s += [[118, 52, 24], [150, 34, 28], [196, 30, 30], [236, 46, 24], [258, 70, 16], [100, 78, 15]].map(d => `<circle cx="${d[0]}" cy="${d[1]}" r="${d[2]}" fill="#4A4350"/>`).join('') + [[92, 40], [270, 34], [286, 92], [74, 100], [220, 12], [140, 10]].map(d => `<circle cx="${d[0]}" cy="${d[1]}" r="2.2" fill="#FFB86B"/>`).join('') + `<ellipse cx="180" cy="164" rx="46" ry="7" fill="#0F1422" opacity=".8"/>`;
-  if (on.sec) s += `<ellipse cx="180" cy="160" rx="128" ry="19" fill="none" stroke="#FFE7A8" stroke-width="5"/><ellipse cx="180" cy="160" rx="112" ry="16" fill="none" stroke="#FF7A2E" stroke-width="2" opacity=".8"/>` + [[70, 70, 200, 12], [290, 60, -20, 13], [84, 128, 160, 10], [282, 124, 20, 11], [128, 22, 250, 9], [244, 18, -60, 10]].map(d => `<path d="M-6 -5L7 0L-4 6Z" fill="#2A1A1A" stroke="#FF7A2E" stroke-width="1.5" transform="translate(${d[0]},${d[1]}) rotate(${d[2]}) scale(${d[3] / 9})"/>`).join('');
+  if (on.rim) s += `<ellipse cx="180" cy="160" rx="128" ry="19" fill="none" stroke="#FFE7A8" stroke-width="5"/><ellipse cx="180" cy="160" rx="112" ry="16" fill="none" stroke="#FF7A2E" stroke-width="2" opacity=".8"/>`;
+  if (on.sec) s += [[70, 70, 200, 12], [290, 60, -20, 13], [84, 128, 160, 10], [282, 124, 20, 11], [128, 22, 250, 9], [244, 18, -60, 10]].map(d => `<path d="M-6 -5L7 0L-4 6Z" fill="#2A1A1A" stroke="#FF7A2E" stroke-width="1.5" transform="translate(${d[0]},${d[1]}) rotate(${d[2]}) scale(${d[3] / 9})"/>`).join('');
   if (on.pri) s += blob(58, 9, 0.74, '#7A1B12', 8) + blob(46, 9, 0.72, '#FF6A1A', 20) + blob(31, 8, 0.7, '#FFC83D', 0) + blob(14, 6, 0.75, '#FFFBEA', 10);
   if (on.cam) s += `<rect x="20" y="16" width="${W - 40}" height="${H - 32}" rx="6" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="6 5" opacity=".9"/><rect x="28" y="22" width="${W - 40}" height="${H - 32}" rx="6" fill="none" stroke="#6FBF97" stroke-width="2.5" transform="rotate(-2 180 100)"/><rect x="14" y="12" width="${W - 40}" height="${H - 32}" rx="6" fill="none" stroke="#6FBF97" stroke-width="1.5" opacity=".6" transform="rotate(1.5 180 100)"/>`;
   if (on.ctx) s += fig(54, 156, 44) + fig(316, 156, 44, '#4A3A52');
   return `<svg width="${W * sc}" height="${H * sc}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
 }
-const all = { ctx: 1, pri: 1, sec: 1, ter: 1, light: 1 };
+const all = { ctx: 1, pri: 1, sec: 1, ter: 1, rim: 1, light: 1 };
 document.getElementById('c1').innerHTML = slash(all); document.getElementById('c2').innerHTML = boom(all);
 const rows = fn => (defs) => defs.map(d => `<div class="lay">${fn(d[0], 0.36)}<div class="tx"><div class="role">${d[1]}</div>${d[2]}</div></div>`).join('');
 document.getElementById('l1').innerHTML = rows(slash)([
-  [{ pri: 1 }, 'Primary · the shape that reads · 200–400 ms', '<b>Crescent ribbon mesh</b> (Blender, 120–200°, swollen head, tapered tips) or a FaceCamera <b>Beam</b>. Scales and fades; reaches about 80% of size by 35% of life.'],
-  [{ sec: 1 }, 'Secondary · 16–50 ms flash, 300–800 ms sparks', '<b>Hot flash</b> at the contact point, one frame after contact, about 0.6 × the body, ZOffset +. <b>Sparks</b> :Emit(5–30) along the swing, not a radial sphere.'],
-  [{ ter: 1 }, 'Tertiary · 600–2,000 ms, very low brightness', '<b>Trail</b> on the blade, enabled only for the cut (arcs under about 120°; Clear() before enabling). Dust and haze at LightEmission 0.'],
+  [{ pri: 1 }, 'Primary · carries the gameplay · 200–400 ms', '<b>The blade arc</b>: a crescent ribbon mesh (Blender, 120–200°) or a FaceCamera Beam, matching the hit volume exactly. White-hot thin core, element body, saturated dark behind.'],
+  [{ ter: 1 }, 'Secondary · theme · only while the blade cuts', '<b>Trail</b> and motif. Enabled only for the cut (TrailOn and TrailOff markers; arcs under about 120°; Clear() before enabling).'],
+  [{ sec: 1 }, 'Tertiary · flash 16–50 ms, sparks 300–800 ms', '<b>Hot flash</b> at the contact point, about 0.6 × the body. <b>Sparks</b> :Emit(5–30) along the swing, not a radial sphere. Dust and haze at LightEmission 0, very low brightness.'],
   [{ light: 1 }, 'Light · follows the body', 'One <b>PointLight</b> in an Attachment, Shadows = false. Particles never light the world, even at LightEmission 1.'],
   [{ cam: 1, ctx: 1 }, 'Camera · after the stop', 'Light hit: nothing. Medium and up: hit-stop 50–89 ms, then one <b>kick</b> away from the impact, eased back over 100–180 ms. Attacker\'s client only.'],
 ]);
 document.getElementById('l2').innerHTML = rows(boom)([
-  [{ pri: 1 }, 'Primary · the shape that reads · 200–400 ms', '<b>Fireball</b> from 3–4 nested flame shells (Blender): dark shell, element body, hot inner, white core. Preceded by a flash of 33–50 ms.'],
-  [{ sec: 1 }, 'Secondary · 300–800 ms', '<b>Shock ring</b>: flat ring mesh, or two semicircle Beams for a constant line width. <b>Shards</b> and debris fly outward and fall.'],
-  [{ ter: 1 }, 'Tertiary · 600–2,000 ms, ground up to 2.2 s', '<b>Smoke</b> at LightEmission 0 (dense matter is never additive), embers, scorch mark. Nothing outlives its cause.'],
+  [{ rim: 1 }, 'Primary · carries the gameplay', '<b>The blast rim</b>: a flat ring mesh, or two semicircle Beams for a constant line width, drawn at the real damage radius. It is what players dodge.'],
+  [{ pri: 1 }, 'Secondary · theme · 200–400 ms', '<b>Fireball</b> from 3–4 nested flame shells (Blender): dark shell, element body, hot inner, white core. The hit frame lasts up to about 100 ms.'],
+  [{ sec: 1, ter: 1 }, 'Tertiary · 300–2,000 ms, ground up to 2.2 s', '<b>Shards</b>, embers, <b>smoke</b> at LightEmission 0 (dense matter is never additive), scorch mark. They outlast the glow; nothing outlives its cause.'],
   [{ light: 1 }, 'Light · follows the body', 'One <b>PointLight</b>, Shadows = false, brightness tied to the fireball\'s life. One light per effect.'],
-  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', '<b>Trauma</b> 0.25 (heavy) to 0.60 (ultimate); shake = trauma², rotation not translation. Others\' explosions: trauma × 0.3, falling off from 30 to 150 studs.'],
+  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', '<b>Trauma</b> 0.25 (heavy) to 0.60 (ultimate), starting when the hit-stop releases. Others\' explosions: trauma × 0.3, falling off from 30 to 150 studs.'],
 ]);
-Sheet.frame({ n: '11', cat: 'VFX', title: 'VFX layer anatomy: slash and explosion', sub: 'Each effect is a stack of five layers with different jobs and lifetimes. Top: the composite. Below: each layer alone, with the instance that draws it.',
-  supports: ['vfx-and-juice.md §1 Pick the right instance, §5 Meshes and textures, §6 Ability anatomy, §7 Camera'], sources: 'vfx-and-juice.md ([lihfolk], [official], [house] as tagged there)' });
+Sheet.frame({ n: '11', cat: 'VFX', title: 'VFX layer anatomy: slash and explosion', sub: 'Primary carries the gameplay, secondary the theme, tertiary the sparks and linger; then light and camera. Top: the composite. Below: each layer alone.',
+  supports: ['vfx-and-juice.md §1 Principles (primary, secondary, tertiary), §2 Instances, §5 Meshes and textures, §6 Timing and ability anatomy, §7 Hit-stop and shake', 'vfx-recipes.md (build sheets per effect)'], sources: 'vfx-and-juice.md (read 2026-11-11)' });
 </script></body></html>

@@ -15,16 +15,16 @@
   <div class="pairs" id="pairs"></div>
   <div class="card mt"><h3>Value first: one white-and-grey texture set, coloured at runtime through palette roles (example values)</h3>
     <div class="pal" id="pal"></div>
-    <div class="note mt6">Right-hand block: the same roles in greyscale. Each row keeps the order hot &gt; glow &gt; main &gt; dark, so the effect reads with colour removed. White appears only as a thin core; one accent hue at most; hit colours that do not read as blood.</div></div>
+    <div class="note mt6">Right-hand block: the same roles in greyscale. Each ramp runs dark → body → hot, so the effect reads with colour removed. White appears only as a thin core; one accent hue at most; hit colours that do not read as blood.</div></div>
   <div class="row mt">
     <div class="card" style="flex:0 0 470px"><h3>Test in the darkest and the brightest zone of the map</h3><div class="zt" id="zt"></div>
-      <div class="note mt6">An additive-only effect tuned in a cave disappears at noon: additive layers can only add light. The dark backing layer is what keeps a shape on a bright floor.</div></div>
+      <div class="note mt6">Additive layers vanish on snow, sand and sky: they can only add light. A glow needs a shadow: an alpha-blended body with a darker shape behind it reads on any ground. Test on the lightest and the darkest floor in the game.</div></div>
     <div class="card grow"><h3>Shape rules</h3><div class="legend one">
-      <div class="li"><div><b>One primary shape</b> a player could draw from memory: crescent, ring, bolt, pillar, dome.</div></div>
+      <div class="li"><div><b>Block in first</b> with plain white and grey shapes: no colour, flipbook or glow. If the block-in has no punch, polish will not add it.</div></div>
       <div class="li"><div><b>Direction is information:</b> sparks follow the swing; rings expand from the cause.</div></div>
-      <div class="li"><div><b>Repeats differ:</b> later copies of a layer are shorter and changed, never identical.</div></div>
-      <div class="li"><div><b>Grandeur</b> comes from escalating a few layers and cutting others, not from adding everything.</div></div>
-      <div class="li"><div><b>Check the character's silhouette</b> at game distance after each addition.</div></div></div></div>
+      <div class="li"><div><b>Shape is meaning:</b> sharp and spiky reads as threat, round and soft as friendly. Draw irregular: uneven angles and lengths.</div></div>
+      <div class="li"><div><b>Less is a budget:</b> one ground piece, one body, one core, one accent hue.</div></div>
+      <div class="li"><div><b>Phone size:</b> any feature under about 6 px is gone: thicken lines, drop tiny sparks, enlarge the primary shape.</div></div></div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
@@ -47,7 +47,7 @@ const pairs = [
 ];
 document.getElementById('pairs').innerHTML = pairs.map(p => `<div class="pair"><h2>${p[0]}</h2><div class="two">${p[1]}${p[2]}</div><div class="cap2"><span><span class="chip good">reads</span></span><span><span class="chip bad">noise</span></span></div><p>${p[3]}</p></div>`).join('');
 const roles = ['hot', 'glow', 'main', 'dark', 'spark', 'debris'];
-const pal = [['Fire', 'teardrops, shells', '#FFF6DD', '#FFC83D', '#FF6A1A', '#6B1220', '#FFD98A', '#3A2420'], ['Ice', 'shards, facets', '#FFFFFF', '#BFEFFF', '#55B8F0', '#12305E', '#E6FAFF', '#7FA6C4'], ['Lightning', 'crossed ribbons', '#FFFFFF', '#FFF29A', '#8FD0FF', '#1B1F5C', '#FFF9D1', '#3A3F6B'], ['Nature', 'leaves, rings', '#F4FFD6', '#C6F26B', '#4FB83A', '#0F3D2A', '#E3FF9C', '#5A4630'], ['Water', 'arcs, droplets', '#FFFFFF', '#B8F0FF', '#2F9BE0', '#0C2A5A', '#DDF7FF', '#6F93B5'], ['Arcane', 'rings, discs', '#FFFFFF', '#E7C6FF', '#A05BF0', '#2A0F52', '#F3E1FF', '#4A3A66']];
+const pal = [['Fire', 'smoke, sparks, embers', '#FFF6DD', '#FFC83D', '#FF6A1A', '#6B1220', '#FFD98A', '#3A2420'], ['Ice', 'shards, mist, sparkles', '#FFFFFF', '#BFEFFF', '#55B8F0', '#12305E', '#E6FAFF', '#7FA6C4'], ['Lightning', 'forks, sparks', '#FFFFFF', '#FFF29A', '#8FD0FF', '#1B1F5C', '#FFF9D1', '#3A3F6B'], ['Nature', 'leaves, petals, motes', '#F4FFD6', '#C6F26B', '#4FB83A', '#0F3D2A', '#E3FF9C', '#5A4630'], ['Water', 'waves, foam, droplets', '#FFFFFF', '#B8F0FF', '#2F9BE0', '#0C2A5A', '#DDF7FF', '#6F93B5'], ['Arcane', 'runes, rings', '#FFFFFF', '#E7C6FF', '#A05BF0', '#2A0F52', '#F3E1FF', '#4A3A66']];
 let ph = `<span></span><span></span>` + roles.map(r => `<span class="h">${r}</span>`).join('') + `<span></span>` + roles.map(r => `<span></span>`).join('');
 pal.forEach(p => { ph += `<span><b>${p[0]}</b><br><span style="font-size:10.5px;color:var(--ink2)">${p[1]}</span></span><span></span>` + p.slice(2).map(c => `<i style="background:${c}"></i>`).join('') + `<span></span>` + p.slice(2).map(c => `<i style="background:${Sheet.grey(c)}"></i>`).join(''); });
 document.getElementById('pal').innerHTML = ph;
@@ -55,5 +55,5 @@ const addOnly = (o) => `<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FFD9A0
 const zw = 104, zh = 82, cave = '#141A28', noon = '#E9DFC6';
 document.getElementById('zt').innerHTML = [[tile(`<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FF7A2E"/><path d="${cres(24, 50, 62, -36, 32, 4)}" fill="#FFF6DD"/>`, cave, zw, zh), 'Additive only, cave: fine'], [tile(addOnly(0.75), noon, zw, zh), 'Additive only, noon: gone'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), cave, zw, zh), 'Stacked, cave: reads'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), noon, zw, zh), 'Stacked, noon: reads']].map(z => `<div>${z[0]}${z[1]}</div>`).join('');
 Sheet.frame({ n: '12', cat: 'VFX', title: 'VFX shape and value language', sub: 'Readable silhouettes versus noise, and palettes built value-first so one texture set serves every element.',
-  supports: ['vfx-and-juice.md §2 (value rules), §5 (kit pieces, texture authoring), §6 (readability budget)'], sources: 'vfx-and-juice.md ([lihfolk] value rules); palette values are examples' });
+  supports: ['vfx-and-juice.md §1 Principles of readable stylised effects (shape, value before hue, colour script by element)', 'vfx-and-juice.md §5 Meshes and textures (palette roles)'], sources: 'vfx-and-juice.md (read 2026-11-11); palette values are examples' });
 </script></body></html>
