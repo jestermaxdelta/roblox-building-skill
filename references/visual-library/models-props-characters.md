@@ -11,6 +11,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## A. Props and prop families
 
+Start here: 1, 2, 4.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 1 | [Low Poly pack showcase](https://devforum.roblox.com/t/2871344), CaptainFishOfficial, 2024 · `DF/5X/8/0/0/5/8005b9fbad1b1574967bebc0c27c257b2e9cdda9.jpeg` | image | Four pieces in a grey matcap: one chamfer width on post, tree, pine and rock makes them a family before any colour exists; the pine is five stacked cones | viewed |
@@ -27,12 +29,16 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## B. Weapons and tools
 
+Start here: 13, then 12 (only two rows).
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 12 | [Stylized PBR Weapons](https://80.lv/articles/stylized-pbr-weapons-workflow-for-creating-props), Sasha Bernert, 2020 · `LV/ca/5f2a7f25c69c9.png` | breakdown | A board split by purpose: handgun, shotgun, mechanism, design, sculpting, wood, metal, painting. Each cluster answers one question | viewed |
 | 13 | Same article, stages · `LV/92/5f2a7eee98c2b.png` | image | Base low, high and final low of a pistol: grip wraps and straps are oversized and the barrel is a chunky box, so it reads in third person | viewed |
 
 ## C. Buildings
+
+Start here: 14, then the kit rows in 15.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -41,14 +47,18 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## D. Vehicles
 
+Start here: 18 (on target), 16 (weak), 17 (too realistic): the board triple.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 16 | [Low poly car feedback](https://devforum.roblox.com/t/1367537), Hj_yuh, 2021 · `DF/4X/b/8/b/b8bb7d95698fd93c00444af157d2f1bf8bd127b5.png` | image | Weak: real-world proportions in untextured grey: narrow body, wheels too small, no bevels. Replies ask for bigger wheels and more width | viewed |
+| 16 | [Low poly car feedback](https://devforum.roblox.com/t/1367537), Hj_yuh, 2021 · `DF/4X/b/8/b/b8bb7d95698fd93c00444af157d2f1bf8bd127b5.png` (PNG, 1.1 MB) | image | Weak: real-world proportions in untextured grey: narrow body, wheels too small, no bevels. Replies ask for bigger wheels and more width | viewed |
 | 17 | [Żuk van](https://sketchfab.com/models/bb4OJb5V4L0hgYjM3vtGvPB7ZMt), Lionsharp Studios, 2013, CC BY | image | The "too realistic" marker for a vehicle board: true proportions, rust and dirt maps, thin trim; 11,771 faces | viewed |
 | 18 | Row 49 in `environments-and-maps.md` (Kenney Starter Kit Racing) | image | The on-target marker: a pickup whose wheels are about a third of its height, cab and bed as two boxes, one body colour | viewed |
 | 19 | [Kenney Car Kit](https://kenney.nl/assets/car-kit), Kenney, CC0 per site | gallery | A vehicle family in one style: compare wheel diameter to body height and count the body colours across the set. Not re-checked: the site refused the link check (403) on 2026-11-11 and the previews were never viewed | search |
 
 ## E. Creatures and pets
+
+Start here: 23, 24, 20; then 25 as the template to avoid.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -63,6 +73,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## F. Characters
 
+Start here: 28, 32, 30.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 28 | [The Noble Craftsman](https://sketchfab.com/models/0e8ff87ffaa24731b2474badebca870d), olmopotums, 2016, CC BY | image | 6,976 faces. Huge shoulders and forearms over small legs; one knot motif repeated on pauldron, bracer and belt plate; the hot blade is the only emissive | viewed |
@@ -74,13 +86,15 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## G. Generated examples: what to recognise and avoid
 
+Start here: 35, 37, 39.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 34 | [How devs can spot AI-generated 3D models](https://www.gamedeveloper.com/art/how-devs-can-spot-ai-generated-3d-models), Liz Edwards via Game Developer, 2024 · `GD/blt6f48f805f7088739/672a305b2ab52d8d1fad8023/lizedwardsgenai1.png` | breakdown | Weak: a generated penguin: the highlight is baked into the colour and projection seams run along the flipper | viewed |
 | 35 | Same article · `GD/blt1f2c08eab39dc7b0/672a30cca811990d372933bb/lizedwardsgenai2.png` | image | Weak: an even, dense automatic quad mesh and a shredded automatic unwrap, on a shape a hand-made model does in a few hundred triangles | viewed |
 | 36 | Same article · `GD/blt82541604f276027a/672a32995a53584c9c72e7c3/lizedwardsgenai3.png` | image | Weak: a cabinet whose detail is a projected picture (doors that are not doors), no roughness variation, a very dense mesh | viewed |
 | 37 | [Quality Mode for Texture Generation](https://devforum.roblox.com/t/4938282), Roblox, 2026 · `DF/5X/4/a/6/2/4a62c3c178c2b53d3138289daeca21c96f0d5b81.jpeg` | image | Weak: generated PBR on a helmet, chest, axe and shield: every surface equally busy, wear spread evenly, gloss unrelated between neighbours. The grey inset shows the forms were fine; texture noise is what makes it generic | viewed |
-| 38 | [Prompt-to-Avatar](https://devforum.roblox.com/t/4964945), Roblox, 2026 · `DF/5X/5/f/d/3/5fd3fbeef39d86db6a7a2eacc76ddf610c4a07c2.png` | image | Weak: a generated firefighter: photo-like fabric detail on soft, undecided forms and a face replies call uncanny. No shape decision anywhere | viewed |
+| 38 | [Prompt-to-Avatar](https://devforum.roblox.com/t/4964945), Roblox, 2026 · `DF/5X/5/f/d/3/5fd3fbeef39d86db6a7a2eacc76ddf610c4a07c2.png` (PNG, 1.6 MB) | image | Weak: a generated firefighter: photo-like fabric detail on soft, undecided forms and a face replies call uncanny. No shape decision anywhere | viewed |
 | 39 | [Scene Generation](https://devforum.roblox.com/t/4966611), Roblox, 2026 · `DF/5X/7/f/b/f/7fbf6e5127a4de3502dd3c3342932f32894f99fc.jpeg` | image | Weak as a target: the announcement's skatepark picture has a pattern on every surface, warm light everywhere and no hierarchy. Roblox frames the tool as prototyping, which is the only use the house rules allow | viewed |
 
 ## Patterns seen
@@ -107,7 +121,7 @@ Accessed 2026-11-11. All images are third-party and are linked, not stored.
 - Sketchfab models found through the public search API (`downloadable`, sorted by likes); licences as stated per row (CC BY or CC BY-NC). Listed to look at; never to be imported into a game.
 - 80.lv articles and images: copyright the named artists and 80 Level.
 - Game Developer article (Informa): images are Liz Edwards's posts as reproduced there.
-- Link check, 2026-11-11: every URL and image path answered (GitHub through `git ls-remote`, Sketchfab through its model API, which also confirmed each face count and licence) except kenney.nl (403, row 19).
+- Link check, 2026-11-11: every URL and image path answered (sizes above 1 MB are marked; none is animated) (GitHub through `git ls-remote`, Sketchfab through its model API, which also confirmed each face count and licence) except kenney.nl (403, row 19).
 - Valve paper: read as text; its figures were not extracted.
 - GitHub: KayKit packs CC0 (`LICENSE.txt` checked). Their README previews are title banners, so the packs are marked `read`, not `viewed`. Kenney's asset pages were reachable but their previews were not extracted (`search`).
 - Rejected after viewing: a 2D character concept (not a model), a realistic sci-fi character render, material-graph and grading-panel screenshots, pack title banners.

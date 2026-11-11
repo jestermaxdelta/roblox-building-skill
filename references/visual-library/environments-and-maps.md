@@ -1,13 +1,13 @@
 # Environments and maps reference library
 
-What this is: 62 checked references for stylised and low-poly environments that suit Roblox: towns, lobbies and hubs, biomes, interiors, obby and arena layouts, plus the boards, thumbnails and kits behind them. The rules they support live in `references/art-direction-and-quality-bar.md` (slop tells, reference boards, review tests) and `references/level-design-worldbuilding.md` (layout, composition, kits).
+What this is: 81 checked references for stylised and low-poly environments that suit Roblox: towns, lobbies and hubs, biomes, interiors, obby and arena layouts, the boards, thumbnails and kits behind them, and captures of the top genres (tycoon, simulator, obby, horror, roleplay, fishing, survival) with their default looks marked. The rules they support live in `references/art-direction-and-quality-bar.md` (slop tells, reference boards, review tests) and `references/level-design-worldbuilding.md` (layout, composition, kits).
 
 How to use this file:
 - Pick the kind of space you are building, open three rows (include one marked Weak or Mixed), and write down one decision from each (focal point, palette, value split, kit size) before blocking out. Shrink each image to 320 px wide first: what survives is the lesson.
 - Evidence: `viewed` = the image was downloaded and looked at; `read` = the page or thread was read; `oembed` = the video exists with that title and creator and was not watched; `search` = seen in search results only, not opened.
 - These are references to study, not assets to copy: every third-party image and model stays its owner's, and house rule 1 means everything shipped is our own Blender work. Open-licence rows give the licence so a kit can be opened and measured, never imported.
 
-Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original`, `LV` = `https://cdn.80.lv/api/upload/content`, `DOCS` = `https://prod.docsiteassets.roblox.com/assets`. `t/<id>` = `https://devforum.roblox.com/t/<id>`. Sketchfab rows link the model page; its preview is at `https://api.sketchfab.com/v3/models/<uid>` under `thumbnails`.
+Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original`, `LV` = `https://cdn.80.lv/api/upload/content`, `DOCS` = `https://prod.docsiteassets.roblox.com/assets`. `t/<id>` = `https://devforum.roblox.com/t/<id>`. `RBX <id>` = a Roblox image asset (official game thumbnail): request `https://thumbnails.roblox.com/v1/assets?assetIds=<id>&size=768x432&format=Png` and open the `imageUrl` it returns (that URL expires; the id does not, but developers replace thumbnails). Sketchfab rows link the model page; its preview is at `https://api.sketchfab.com/v3/models/<uid>` under `thumbnails`.
 
 ## A. Towns, villages and streets
 
@@ -113,6 +113,34 @@ Start here: 54, 56, 57.
 | 61 | [The Art of Firewatch (GDC 2015)](https://www.youtube.com/watch?v=ZYnS3kKTcGg), Campo Santo Productions | video | Not watched here. Listed for one question: how a landscape is carried by a few flat colour bands per time of day instead of surface detail | oembed |
 | 62 | [Crafting a Tiny Open World: A Short Hike Postmortem](https://www.youtube.com/watch?v=ZW8gWgpptI8), GDC | video | Not watched here. Listed for scope: what one developer chose to build, and to leave out, in a small stylised open world | oembed |
 
+## G. Genre captures: tycoon, simulator, obby, horror, roleplay
+
+Start here: 66, 73, 79; for one genre, open its default marker first (tycoon 63, simulator 70, obby 72, horror 76, roleplay 75), then the rows that broke from it.
+
+The top genres in `market-scan-2026-11.md`, viewed 2026-11-11. Official thumbnails (`RBX`) are promotional renders built from the game's own assets: take palette, assets and lighting from them, not composition. "Default marker" rows show what the genre converges on; `art-direction-and-quality-bar.md` §4 builds its default rows from them, and hex values quoted here were sampled from the images.
+
+| # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
+|---|---|---|---|---|
+| 63 | [Creator Spotlight: Ultraw's tycoons](https://devforum.roblox.com/t/3840933), Roblox, 2025 · `DF/5X/6/b/b/c/6bbcf85bfd172e81a9ebdccc71d6604bb89654d4.png` (PNG, 2.6 MB) | image | Default marker, four tycoon generations in one image: a walled flat slab with path strips and Part machines; a dome on bare orange ground; identical lots in a row along a road; real-world brick and white render at noon. The plot-as-slab and the lot row are the tycoon default | viewed |
+| 64 | [Restaurant Tycoon 3](https://www.roblox.com/games/119048529960596), Ultraw, official thumbnail · `RBX 107621000669324` | image | Default marker for build-your-own tycoons: a brick-and-timber bistro at dusk, four warm lamps, pines, picket fence. Photo materials at real scale under a golden key, which is what the genre's tiles already show | viewed |
+| 65 | [Retail Tycoon 2](https://www.roblox.com/games/5865858426), official in-game screenshot · `RBX 7105520921` | image | A tycoon interior from the build camera: dark floor as the lowest value, white walls, orange shelving as the one structure colour, produce as the saturated layer, a green placement highlight | viewed |
+| 66 | [Run A Farm!](https://www.roblox.com/games/79496881832552), official thumbnail · `RBX 93209235075406` | image | Both plot states in one frame: a lone red coop on bare dirt, then the finished farm (crop rows, barn, stalls, fenced paths). What the empty plot must promise; chunky low-poly, red accents on tan and sage | viewed |
+| 67 | [LINE UP! Metro Tycoon](https://www.roblox.com/games/76792629643884), official thumbnail · `RBX 131098589865928` | image | Management as a toy diagram: a transit map in five line colours on white, stations as dots. A flat graphic direction carrying a cozy-management hit | viewed |
+| 68 | Same post as 63, garden · `DF/5X/5/4/9/7/5497cde9fe1c61b0d05cd09202c83a539477a3b3.jpeg` | image | A pastel garden inside the tycoon map: faceted grey rocks, round peach and lilac canopies, fairy lights, a cyan pond. A non-realistic corner beside row 64's realism | viewed |
+| 69 | [Creator Spotlight: HDFrisk and The Gang](https://devforum.roblox.com/t/3419750), Roblox, 2025 · `DF/5X/b/4/2/a/b42a8dce07da5b2469e129c1d0ef49727c0bd676.jpeg` | image | Simulator default, in game: a training room with a deep red floor, faceted slate rocks, a volcano centrepiece, saturated pets in front, a floating counter | viewed |
+| 70 | [Steal a Brainrot](https://www.roblox.com/games/109983668079237), official thumbnail · `RBX 126549264012376` | image | Default marker for steal-a: a stacked red box base with a name board, flat green grass, pale sky, voxel collectables; red #D85846, green #3BD776, sky #CFF7E4, all above value 80 | viewed |
+| 71 | [Grow a Garden](https://www.roblox.com/games/126884695634066), official thumbnail · `RBX 140220498115065` | image | A plot as rows on a studded surface: brown strips, chunky fence posts, voxel fruit, green #71F96A at value 98. Retro studs as a choice, now a default of its own | viewed |
+| 72 | [Tower of Hell](https://www.roblox.com/games/1962086868), official thumbnail · `RBX 133636978559560` | image | Default marker for obby: looking up the tower, each section one saturated hue family (orange, green, pink) on grey, so players know where they are | viewed |
+| 73 | [Creator Spotlight: xJa_ys on Bayside High](https://devforum.roblox.com/t/3579254), Roblox, 2025 · `DF/5X/7/8/3/4/78345a226c687420911895e0e48a68945ceaebdd.jpeg` | image | Roleplay made on purpose: real school architecture made friendlier, white and lavender-grey with blue trims, chunky palms, the school sign as landmark; the text explains blending recognisable architecture with colour | viewed |
+| 74 | Same post, rival school · `DF/5X/5/9/c/e/59ce0073cb8bae0d8835e2e1808e0167f59a6a76.jpeg` | image | The same kit recoloured red and white: a family reused by palette swap; parking lines and plaza kept as negative space | viewed |
+| 75 | [Brookhaven RP](https://www.roblox.com/games/4924922222), official thumbnail · `RBX 85300103585150` | image | Default marker for roleplay: white suburban mansion (#D8D8D8), grey asphalt, lawn #869B7C, palms, noon | viewed |
+| 76 | [DOORS](https://www.roblox.com/games/6516141723), official thumbnail · `RBX 136890620187326` | image | Default marker for horror, done well: a hotel lounge in warm dark wood (value 9–55, saturation 45–68: brown, not black), fireplace and chandelier as the only sources | viewed |
+| 77 | [DONT SPLASH](https://www.roblox.com/games/119958473240233), official thumbnail · `RBX 105851805811061` | image | Bright liminal horror: cream tile walls at value 93, saturated cyan water, fluorescent tubes, stepping tiles as the path. The threat lives in a well-lit room | viewed |
+| 78 | [Creator Spotlight: Qwelver on Dandy's World](https://devforum.roblox.com/t/3639226), Roblox, 2025 · `DF/5X/a/c/0/4/ac048acdfb7af3e8c0f1e723bc8132e774ee01c4.jpeg` | image | Toon cast in a dark building: a museum hall near black (value 3–35), three floor spots on a skeleton as the focal point, cool ceiling strips; the post's character sheets are saturated flat toons | viewed |
+| 79 | [Creator Spotlight: The Inn](https://devforum.roblox.com/t/3659603), Roblox, 2025 · `DF/5X/b/7/1/1/b711ca481e5b9874314ab9ddaaedc593e98076ec.jpeg` | image | One-hue horror: a symmetric inn corridor all in deep reds (value 7–76), floor lanterns and one ceiling lamp, the far door as the destination | viewed |
+| 80 | [Creator Spotlight: 99 Nights in the Forest](https://devforum.roblox.com/t/4036940), Roblox, 2025 · `DF/5X/9/a/6/9/9a69c85ac3dc64c96c415cd7c14ed5ea551d592d.jpeg` and `DF/5X/4/b/2/8/4b28d0a217ee0d8f56d646619ecb2d5ca3a7f491.jpeg` | image | Survival-horror default: a grey manor in grey-green fog with blocky trees and graves (saturation under 50); then night, one warm window and pumpkins on dark ground | viewed |
+| 81 | [Creator Spotlight: WoozyNate on Fisch](https://devforum.roblox.com/t/3269481), Roblox, 2024 · `DF/5X/5/8/1/5/58153a27b43fc07b5f453693849a16487209bc2d.jpeg` | image | A fishing island as one zone: faceted red and green trees, a lighthouse landmark, piers as the ways out, blue-grey sea haze as the boundary | viewed |
+
 ## Patterns seen
 
 - **Composition, not asset quality, separated the strong scenes.** Row 1 is the clearest case: the same buildings read as amateur on a flat plane and as finished once heights step, a street is framed and light picks a focal point.
@@ -123,6 +151,7 @@ Start here: 54, 56, 57.
 - **Kits are small.** Three trees, three rocks and six buildings made a town (29); about ten timber pieces made a market (7); one atlas held an interior (40).
 - **Good boards mix the real world with the target style and are labelled** (9, 47, 54, 56, 58).
 - **Process artefacts recur in good work**: paper thumbnails (57), named proxy kits (42), greybox with colour blocks (24), family line-ups (44).
+- **Each genre has a visible default** (§G): tycoon lots on a road or a walled slab (63), simulator primaries above value 80 (70), obby one hue per section (72), horror brown-dark or grey fog (76, 80), roleplay white suburb at noon (75). The rows that stand out moved shape, material or light, not only palette (67, 77, 78, 79).
 
 ## What the weak examples had in common
 
@@ -137,11 +166,13 @@ Start here: 54, 56, 57.
 
 Accessed 2026-11-11. All images are third-party and are linked, not stored.
 
+- Official Creator Spotlight posts (Discourse JSON API; images resolved from short URLs to the upload host): 3840933, 3419750, 3579254, 3639226, 3659603, 4036940, 3269481 (images viewed, post text read, 2026-11-11).
+- Official game thumbnails: listed with Roblox's omni-search API, fetched through `thumbnails.roblox.com` (games multiget, then assets by id) and viewed 2026-11-11, for rows 64–67, 70–72 and 75–77.
 - DevForum threads (Discourse JSON API; images from the forum's upload host): 709866, 3788097, 3682295, 3643516, 683143, 4068529, 3644614, 1891111, 293803, 1046975, 235354, 1497479, 1124673, 330237, 187515 (viewed or read as marked); 277853, 2746055, 1246963 (opening posts read on 2026-11-11). Posts remain their authors' under the forum's terms.
 - Roblox Creator Docs images (`Roblox/creator-docs`): environmental-art curriculum, Beyond the Dark, The Mystery of Duvall Drive. © Roblox; the repository's CC BY 4.0 statement names prose, not images (`assets/reference/ATTRIBUTION.md`), so they are linked only.
 - 80.lv articles and their images: copyright the named artists and 80 Level; study only.
 - Sketchfab models: licences as stated per row (CC BY). They are listed to look at, and must not be downloaded into a game (house rule 1).
 - GitHub kits: KenneyNL starter kits (code MIT, models CC0, README checked), KayKit packs (CC0, `LICENSE.txt` checked). Study only. One KayKit image host request was refused (403), so only one contents image was viewed.
 - YouTube rows verified by oEmbed (title and channel); the videos were not watched.
-- Link check, 2026-11-11: every URL and image path in the tables answered (DevForum through the JSON API, GitHub through `git ls-remote`, Sketchfab through its model API, YouTube through oEmbed). A section of ArtStation portfolios and gallery feeds was removed: ArtStation is not reachable from here and none of it had been opened.
+- Link check, 2026-11-11: every URL and image path in the tables answered (sizes above 1 MB are marked; none is animated) (DevForum through the JSON API, GitHub through `git ls-remote`, Sketchfab through its model API, YouTube through oEmbed). A section of ArtStation portfolios and gallery feeds was removed: ArtStation is not reachable from here and none of it had been opened.
 - Rejected after viewing: tutorial screenshots of Studio and Blender panels, a meme logo, material-graph screenshots, a realistic character render and one reference board whose sources could not be told from generated images.

@@ -1,69 +1,118 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>10 VFX timing chart</title><link rel="stylesheet" href="sheet.css">
-<style>table.spec td{white-space:nowrap}.key{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink2);margin-top:4px}.key span{display:flex;align-items:center;gap:5px}.key i{width:14px;height:10px;border-radius:2.5px;display:inline-block}</style></head><body>
+<style>table.spec td{white-space:nowrap}.key{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ink2);margin-top:4px}.key span{display:flex;align-items:center;gap:5px}.key i{width:14px;height:10px;border-radius:2.5px;display:inline-block}</style></head><body>
 <div class="sheet">
-  <div class="card"><h3>Whole effect, contact at 0 ms (bars span the guide's range; the solid part is the minimum)</h3><div id="main"></div>
+  <div class="card"><h3>Heavy melee hit, every layer to scale (vfx-recipes.md recipe 3; contact = 0 ms)</h3><div id="recipe"></div>
     <div class="key" id="key"></div></div>
   <div class="row mt">
-    <div class="card" style="flex:0 0 440px"><h3>Zoom: the first 250 ms after contact, heavy hit</h3><div id="zoom"></div></div>
-    <div class="col grow">
-      <div class="card"><h3>One strength value per hit</h3><table class="spec">
-        <tr><th>Tier</th><th>Strength</th><th>Stop</th><th>Trauma</th><th>Kick</th></tr>
-        <tr><td><b>Light</b></td><td>0.30</td><td>none</td><td>0</td><td>none</td></tr>
-        <tr><td><b>Medium</b></td><td>0.45</td><td>50 ms</td><td>0.12</td><td>0.25%</td></tr>
-        <tr><td><b>Heavy</b></td><td>0.80</td><td>66 ms</td><td>0.25</td><td>0.5%</td></tr>
-        <tr><td><b>Finisher</b></td><td>1.00</td><td>75 ms</td><td>0.35</td><td>0.8%</td></tr>
-        <tr><td><b>Ultimate</b></td><td>1.30</td><td>89 ms</td><td>0.60</td><td>1.2%</td></tr></table>
-        <div class="note mt6">Stop = 0.03 + 0.045 × strength (s). Kick is % of screen height.</div></div>
-    </div>
+    <div class="card" style="flex:0 0 404px"><h3>Shake after the stop releases: peak angle per tier</h3><div id="shake"></div>
+      <div class="note mt6">Shake = trauma² × 2°, decaying 2.5 trauma per second. Right axis: pixels on <b>Phone-S</b> (360 px tall) at FOV 70. Smooth noise swings to about 0.6–0.75 of these peaks.</div></div>
+    <div class="card grow"><h3>One strength value per hit</h3><table class="spec">
+        <tr><th>Tier</th><th>Stop</th><th>Trauma</th><th>Peak</th><th>Kick</th></tr>
+        <tr><td><b>Light</b> 0.30</td><td>none</td><td>0</td><td>none</td><td>none</td></tr>
+        <tr><td><b>Medium</b> 0.45</td><td>50 ms</td><td>0.50</td><td>0.5°, 2 px</td><td>0.2°</td></tr>
+        <tr><td><b>Heavy</b> 0.80</td><td>66 ms</td><td>0.75</td><td>1.1°, 5 px</td><td>0.4°</td></tr>
+        <tr><td><b>Finisher</b> 1.00</td><td>75 ms</td><td>0.85</td><td>1.45°, 6.5 px</td><td>0.64°</td></tr>
+        <tr><td><b>Ultimate</b> 1.30</td><td>89 ms</td><td>1.00</td><td>2.0°, 9 px</td><td>0.96°</td></tr></table>
+        <div class="note mt6">Number after the tier = strength. Stop = 0.03 + 0.045 × strength (s); a stop that must be felt needs ≥ 66 ms. Kick = 0.25 / 0.5 / 0.8 / 1.2% of screen height, eased back over 100–180 ms. No roll, ever.</div></div>
   </div>
-  <div class="g3 mt">
-    <div class="card"><h3>Frame maths</h3><div class="note">50 ms is 3 frames at 60 FPS but 1–2 at 30 FPS. A stop that must be felt needs <span class="v">≥ 66 ms</span>; cap any stop at 200 ms; at most 140 ms of stop per rolling 0.6 s.</div></div>
-    <div class="card"><h3>Sound against picture</h3><div class="note"><span class="v">0–30 ms</span> late fuses with the picture. 20 ms early is noticed. <span class="v">80+ ms</span> late reads as lag. Trim reactive sounds to an onset under about 5 ms.</div></div>
-    <div class="card"><h3>When it feels long, cut</h3><div class="note">Each phase is shorter than expected. Cap whole effects near <span class="v">1.4 s</span>, ground pieces <span class="v">2.2 s</span>, and keep linger at very low brightness.</div></div>
-  </div>
+  <div class="card mt"><h3>The same phases for three tiers and a telegraph (bars span the guide's range; solid = minimum)</h3><div id="main"></div>
+    <div class="key" id="key2"></div></div>
 </div>
 <script src="sheet.js"></script>
 <script>
 const E = Sheet.el, T = Sheet.txt;
-const C = { ant: '#E3A21A', flash: '#1A1F2B', stop: '#C4372F', body: '#DD4F27', sec: '#2D6CDF', lin: '#9AA5B5', tele: '#7B57D1', cam: '#1B8553' };
-// main chart
-const W = 716, x0 = 84, w = 624, t0 = -1500, t1 = 2300, X = t => x0 + (t - t0) / (t1 - t0) * w;
-const tiers = [
-  { name: 'Light hit', sub: 'strength 0.30', rows: [['ant', -200, -65, -65, 0, 'wind-up 65–200 ms'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 0–4, 300–800'], ['cam', 0, 0, 0, 0, 'no hit-stop, no shake']] },
-  { name: 'Medium hit', sub: 'strength 0.45', rows: [['ant', -350, -200, -200, 0, 'wind-up between light and heavy'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 6–12, ground ring 300–800'], ['lin', 0, 600, 600, 1400, 'linger 600–2,000, whole effect capped near 1.4 s'], ['cam', 0, 50, 50, 230, 'stop 50 ms, then shake + kick back in 100–180']] },
-  { name: 'Heavy hit', sub: 'strength 0.80', rows: [['ant', -700, -500, -500, 0, 'wind-up, hit lands 0.5–0.7 s after input'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 20–40, debris, ground 300–800'], ['lin', 0, 600, 600, 2000, 'linger 600–2,000; ground pieces capped at 2.2 s'], ['cam', 0, 66, 66, 246, 'stop 66 ms, then shake + kick']] },
-  { name: 'Enemy telegraph', sub: 'circle r = 10 studs', rows: [['tele', -1400, -1100, -1100, -900, 'comfortable 1.1–1.4 s'], ['tele2', -900, 0, 0, 0, 'minimum 0.9 s = 250 ms reaction + 10 studs ÷ 16 studs/s'], ['body', 0, 220, 220, 220, 'fill pops white on the damage frame, fades in about 220 ms']] },
-];
-const RH = 17; let y = 22, g = '';
-const totalRows = tiers.reduce((a, t) => a + t.rows.length, 0), HH = 22 + totalRows * RH + tiers.length * 10 + 24;
-for (let t = -1500; t <= 2000; t += 500) g += E('line', { x1: X(t), x2: X(t), y1: 14, y2: HH - 22, stroke: t === 0 ? '#1A1F2B' : '#ECE8DD', 'stroke-width': t === 0 ? 1.5 : 1 }) + T(X(t), HH - 8, (t > 0 ? '+' : '') + t, { 'text-anchor': 'middle' });
-g += T(X(0), 10, 'contact', { 'text-anchor': 'middle', 'font-weight': 700, fill: '#1A1F2B' }) + T(X(2300), HH - 8, 'ms', { 'text-anchor': 'end' });
-tiers.forEach((tr, ti) => {
-  g += T(0, y + 12, tr.name, { fill: '#1A1F2B', 'font-weight': 700, 'font-size': 11.5 }) + T(0, y + 26, tr.sub, {});
-  tr.rows.forEach(r => {
-    const col = C[r[0] === 'tele2' ? 'tele' : r[0]], solidA = Math.min(r[1], r[2]), solidB = Math.max(r[1], r[2]);
-    const a = r[0] === 'ant' || r[0] === 'tele' ? [r[1], r[2]] : [r[3], r[4]]; // soft (range) part
-    const s = r[0] === 'ant' || r[0] === 'tele' ? [r[3], r[4]] : [r[1], r[2]]; // solid part
-    if (a[1] > a[0]) g += E('rect', { x: X(a[0]), y: y + 2, width: X(a[1]) - X(a[0]), height: 10, rx: 2.5, fill: col, opacity: 0.35 });
-    if (s[1] > s[0]) g += E('rect', { x: X(s[0]), y: y + 2, width: X(s[1]) - X(s[0]), height: 10, rx: 2.5, fill: col });
-    const end = Math.max(a[1], s[1], 0), start = Math.min(a[0] < a[1] ? a[0] : 9e9, s[0] < s[1] ? s[0] : 9e9);
-    if (r[0] === 'ant' || r[0] === 'tele' || r[0] === 'tele2') g += T(X(0) + 6, y + 11, r[5], {});
-    else if (r[0] === 'lin') g += T(X(0) - 6, y + 11, r[5], { 'text-anchor': 'end' });
-    else g += T(X(end) + 6, y + 11, r[5], {});
-    y += RH;
+const C = { ant: '#E3A21A', snd: '#465062', flash: '#1A1F2B', stop: '#C4372F', body: '#DD4F27', sec: '#2D6CDF', lin: '#9AA5B5', tele: '#7B57D1', cam: '#1B8553', light: '#C99A12' };
+// ---- recipe 3 timeline, to scale ----
+{
+  const W = 716, x0 = 112, w = 598, t0 = -500, t1 = 1000, X = t => x0 + (t - t0) / (t1 - t0) * w;
+  const rows = [
+    ['Wind-up sound', 'snd', [[-450, -40]], 'r', 'peak lands at −40'],
+    ['Glint', 'ant', [[-300, -230], [-120, -50]], 'r', 'two markers'],
+    ['Trail', 'sec', [[-100, 80]], 'r', 'TrailOn → TrailOff only'],
+    ['Crescent', 'body', [[-100, 220]], 'r', 'primary: drawn at the hit test'],
+    ['Impact sound', 'snd', [[0, 60, 1], [60, 300, 0.6], [300, 550, 0.3]], 'r', 'transient, body, tail'],
+    ['Hit-stop', 'stop', [[0, 66, 1], [66, 132, 0.4]], 'r', '0.12× for 66 ms, then 1.88×'],
+    ['Impact frame', 'flash', [[0, 45]], 'r', 'optional, 45 ms'],
+    ['Contact flash', 'flash', [[16, 66]], 'r', 'white star, 50 ms'],
+    ['Dark star', 'flash', [[16, 86, 0.55]], 'r', 'dark shape in front'],
+    ['Light', 'light', [[0, 100]], 'r', 'PointLight 3 → 0'],
+    ['Target flash', 'body', [[0, 120, 0.55]], 'r', 'Highlight 0.35 → 1'],
+    ['Sparks', 'sec', [[0, 450]], 'r', '20 along the swing'],
+    ['Dark puff', 'lin', [[0, 400]], 'r', '3, behind the flash'],
+    ['Dust skirt', 'lin', [[30, 700, 0.6]], 'r', '6 at the target\'s feet'],
+    ['Kick', 'cam', [[66, 216]], 'r', '0.4°, eased back'],
+    ['Shake', 'cam', [[66, 366, 0.6]], 'r', 'trauma 0.75: 1.1° peak'],
+    ['Embers', 'lin', [[200, 900, 0.45]], 'l', '4 slow sparks'],
+  ];
+  const RH = 15.5, top = 22, H = top + rows.length * RH + 26;
+  let g = E('rect', { x: X(0), y: top - 4, width: X(100) - X(0), height: rows.length * RH + 4, fill: '#FCE9B8' });
+  g += T(X(50), top - 8, 'bright ≈ 100 ms of 1,350', { 'text-anchor': 'middle', 'font-weight': 650, fill: '#8A6A10', 'font-size': 10 });
+  for (let t = -500; t <= 1000; t += 250) g += E('line', { x1: X(t), x2: X(t), y1: top - 4, y2: H - 22, stroke: t === 0 ? '#1A1F2B' : '#ECE8DD', 'stroke-width': t === 0 ? 1.5 : 1 }) + T(X(t), H - 8, (t > 0 ? '+' : '') + t + (t === 1000 ? ' ms' : ''), { 'text-anchor': t === 1000 ? 'end' : 'middle' });
+  g += T(X(-500), top - 8, 'input ≈ −600', { 'font-size': 10 });
+  rows.forEach((r, i) => {
+    const y = top + i * RH, col = C[r[1]];
+    g += T(x0 - 8, y + 9, r[0], { 'text-anchor': 'end', fill: '#1A1F2B', 'font-weight': 600, 'font-size': 10.5 });
+    r[2].forEach(b => g += E('rect', { x: X(b[0]), y: y + 1, width: Math.max(2.5, X(b[1]) - X(b[0])), height: 9, rx: 2, fill: col, opacity: b[2] === undefined ? 1 : b[2] }));
+    const s = r[2][0][0], e = r[2][r[2].length - 1][1];
+    g += r[3] === 'r' ? T(X(e) + 5, y + 9, r[4], { 'font-size': 10 }) : T(X(s) - 5, y + 9, r[4], { 'text-anchor': 'end', 'font-size': 10 });
   });
-  y += 10;
-  if (ti < tiers.length - 1) g += E('line', { x1: 0, x2: W, y1: y - 6, y2: y - 6, stroke: '#D9D4C7' });
-});
-document.getElementById('main').innerHTML = `<svg width="${W}" height="${HH}" viewBox="0 0 ${W} ${HH}">${g}</svg>`;
-document.getElementById('key').innerHTML = [['ant', 'Anticipation (wind-up)'], ['tele', 'Telegraph'], ['body', 'Impact body'], ['sec', 'Follow-through: sparks, shards, ground'], ['lin', 'Dissipation: haze, embers'], ['cam', 'Camera: stop, shake, kick']].map(k => `<span><i style="background:${C[k[0]]}"></i>${k[1]}</span>`).join('');
-// zoom chart
-const ZW = 416, zx = 84, zw = 322, Z = t => zx + t / 250 * zw;
-const zr = [['Contact', [[0, 2, '#1A1F2B']], ''], ['Sound', [[0, 30, '#465062']], '0–30 ms late fuses'], ['Hot flash', [[16, 66, C.flash]], '16–50 ms at 0.6 × body size; whole hit frame up to about 100 ms'], ['Hit-stop', [[0, 66, C.stop]], '66 ms: animation at 0.12×, then 1.88× to catch up'], ['Shake', [[66, 250, C.cam]], 'starts when the stop releases'], ['Kick back', [[66, 216, '#6FBF97']], 'set in one frame, eased back over 100–180 ms'], ['Body', [[0, 250, C.body]], 'already growing: 80% of size by 35% of life']];
-let z = ''; const ZR = 29, ZH = zr.length * ZR + 26;
-[0, 50, 100, 150, 200, 250].forEach(t => z += E('line', { x1: Z(t), x2: Z(t), y1: 2, y2: ZH - 22, stroke: '#ECE8DD' }) + T(Z(t), ZH - 8, t + (t === 250 ? ' ms' : ''), { 'text-anchor': t === 250 ? 'end' : 'middle' }));
-zr.forEach((r, i) => { z += T(zx - 8, 15 + i * ZR, r[0], { 'text-anchor': 'end', fill: '#1A1F2B', 'font-weight': 600 }); r[1].forEach(b => z += E('rect', { x: Z(b[0]), y: 4 + i * ZR, width: Math.max(2.5, Z(b[1]) - Z(b[0])), height: 8, rx: 2, fill: b[2] })); z += T(zx + 2, 22.5 + i * ZR, r[2], { 'font-size': 10 }); });
-document.getElementById('zoom').innerHTML = `<svg width="${ZW}" height="${ZH}" viewBox="0 0 ${ZW} ${ZH}">${z}</svg>`;
-Sheet.frame({ n: '10', cat: 'VFX', title: 'VFX timing chart', sub: 'Anticipation, impact, follow-through and dissipation on a millisecond axis for light, medium and heavy hits, with an enemy telegraph for comparison.',
-  supports: ['vfx-and-juice.md §1 Principles (timing), §6 Timing in milliseconds and ability anatomy, §7 Hit-stop, camera shake and FOV kicks', 'game-craft.md §1 (tier table)'], sources: 'vfx-and-juice.md (read 2026-11-11)' });
+  document.getElementById('recipe').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+  document.getElementById('key').innerHTML = [['ant', 'Anticipation'], ['snd', 'Sound'], ['body', 'Primary and target'], ['flash', 'Flash layers'], ['light', 'Light'], ['sec', 'Trail and sparks'], ['lin', 'Smoke, dust, embers'], ['stop', 'Hit-stop'], ['cam', 'Camera']].map(k => `<span><i style="background:${C[k[0]]}"></i>${k[1]}</span>`).join('');
+}
+// ---- shake envelopes ----
+{
+  const W = 380, x0 = 34, w = 300, y0 = 12, h = 150, tMax = 450, dMax = 2.2;
+  const X = t => x0 + t / tMax * w, Y = d => y0 + h - d / dMax * h;
+  const px = d => 360 * Math.tan(d * Math.PI / 180) / (2 * Math.tan(35 * Math.PI / 180));
+  let g = E('rect', { x: x0, y: Y(0.223), width: w, height: Y(0) - Y(0.223), fill: '#ECE8DD' }) + T(X(450) - 4, Y(0.223) + 10, 'under 1 px: invisible', { 'text-anchor': 'end', 'font-size': 10, fill: '#788294' });
+  [0, 0.5, 1, 1.5, 2].forEach(d => { g += E('line', { x1: x0, x2: x0 + w, y1: Y(d), y2: Y(d), stroke: d === 0 ? '#1A1F2B' : '#ECE8DD' }) + T(x0 - 5, Y(d) + 3.5, d + '°', { 'text-anchor': 'end', 'font-size': 10 }) + T(x0 + w + 5, Y(d) + 3.5, (d ? px(d).toFixed(1) : '0') + ' px', { 'font-size': 10 }); });
+  g += E('line', { x1: x0, x2: x0 + w, y1: Y(2), y2: Y(2), stroke: '#C4372F', 'stroke-dasharray': '4 3' });
+  [0, 100, 200, 300, 400].forEach(t => g += T(X(t), y0 + h + 13, t + (t === 400 ? ' ms' : ''), { 'text-anchor': 'middle', 'font-size': 10 }));
+  const tiers = [['Ultimate', 1.0, '#C4372F'], ['Finisher', 0.85, '#DD4F27'], ['Heavy', 0.75, '#1B8553'], ['Medium', 0.5, '#2D6CDF'], ['old heavy 0.25', 0.25, '#9AA5B5']];
+  tiers.forEach(tr => {
+    const T0 = tr[1], end = T0 / 2.5 * 1000; let d = '';
+    for (let i = 0; i <= 60; i++) { const t = end * i / 60, v = 2 * Math.pow(Math.max(0, T0 - 2.5 * t / 1000), 2); d += (i ? 'L' : 'M') + X(t).toFixed(1) + ' ' + Y(v).toFixed(1); }
+    g += E('path', { d, fill: 'none', stroke: tr[2], 'stroke-width': 2, 'stroke-dasharray': T0 === 0.25 ? '4 3' : undefined });
+  });
+  const lab = { 1: 'Ultimate: 2.0°, 9 px', 0.85: 'Finisher: 1.45°, 6.5 px', 0.75: 'Heavy: 1.1°, 5 px', 0.5: 'Medium: 0.5°, 2.2 px', 0.25: 'Old heavy 0.25: 0.125°, 0.6 px' };
+  let ly = Y(1.8);
+  tiers.forEach(tr => { g += E('line', { x1: X(190), x2: X(212), y1: ly - 3.5, y2: ly - 3.5, stroke: tr[2], 'stroke-width': 2, 'stroke-dasharray': tr[1] === 0.25 ? '4 3' : undefined }) + T(X(218), ly, lab[tr[1]], { 'font-size': 10 }); ly += 13; });
+  g += T(X(130), Y(2) - 4, 'comfort cap 2°', { 'font-size': 10, fill: '#C4372F' });
+  document.getElementById('shake').innerHTML = `<svg width="${W}" height="${y0 + h + 18}" viewBox="0 0 ${W} ${y0 + h + 18}">${g}</svg>`;
+}
+// ---- generic tier chart ----
+{
+  const W = 716, x0 = 84, w = 624, t0 = -1500, t1 = 2300, X = t => x0 + (t - t0) / (t1 - t0) * w;
+  const tiers = [
+    { name: 'Light hit', sub: 'strength 0.30', rows: [['ant', -200, -65, -65, 0, 'wind-up 65–200 ms'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 0–4, 300–800; no stop, no shake']] },
+    { name: 'Medium hit', sub: 'strength 0.45', rows: [['ant', -350, -200, -200, 0, 'wind-up between light and heavy'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 6–12, ground ring 300–800'], ['cam', 0, 50, 50, 250, 'stop 50 ms, then kick and shake']] },
+    { name: 'Heavy hit', sub: 'strength 0.80', rows: [['ant', -700, -500, -500, 0, 'wind-up, hit lands 0.5–0.7 s after input'], ['body', 0, 200, 200, 400, 'body 200–400'], ['sec', 0, 300, 300, 800, 'sparks 20–40, debris, ground 300–800'], ['lin', 0, 600, 600, 2000, 'linger 600–2,000; ground pieces capped at 2.2 s'], ['cam', 0, 66, 66, 366, 'stop 66 ms, then kick and shake']] },
+    { name: 'Enemy telegraph', sub: 'circle r = 10 studs', rows: [['tele', -1400, -1100, -1100, -900, 'comfortable 1.1–1.4 s'], ['tele2', -900, 0, 0, 0, 'minimum 0.9 s = 250 ms reaction + 10 studs ÷ 16 studs/s'], ['body', 0, 220, 220, 220, 'fill pops white on the damage frame, fades in about 220 ms']] },
+  ];
+  const RH = 17; let y = 22, g = '';
+  const totalRows = tiers.reduce((a, t) => a + t.rows.length, 0), HH = 22 + totalRows * RH + tiers.length * 10 + 24;
+  for (let t = -1500; t <= 2000; t += 500) g += E('line', { x1: X(t), x2: X(t), y1: 14, y2: HH - 22, stroke: t === 0 ? '#1A1F2B' : '#ECE8DD', 'stroke-width': t === 0 ? 1.5 : 1 }) + T(X(t), HH - 8, (t > 0 ? '+' : '') + t, { 'text-anchor': 'middle' });
+  g += T(X(0), 10, 'contact', { 'text-anchor': 'middle', 'font-weight': 700, fill: '#1A1F2B' }) + T(X(2300), HH - 8, 'ms', { 'text-anchor': 'end' });
+  tiers.forEach((tr, ti) => {
+    g += T(0, y + 12, tr.name, { fill: '#1A1F2B', 'font-weight': 700, 'font-size': 11.5 }) + T(0, y + 26, tr.sub, {});
+    tr.rows.forEach(r => {
+      const col = C[r[0] === 'tele2' ? 'tele' : r[0]];
+      const a = r[0] === 'ant' || r[0] === 'tele' ? [r[1], r[2]] : [r[3], r[4]];
+      const s = r[0] === 'ant' || r[0] === 'tele' ? [r[3], r[4]] : [r[1], r[2]];
+      if (a[1] > a[0]) g += E('rect', { x: X(a[0]), y: y + 2, width: X(a[1]) - X(a[0]), height: 10, rx: 2.5, fill: col, opacity: 0.35 });
+      if (s[1] > s[0]) g += E('rect', { x: X(s[0]), y: y + 2, width: X(s[1]) - X(s[0]), height: 10, rx: 2.5, fill: col });
+      const end = Math.max(a[1], s[1], 0);
+      if (r[0] === 'ant' || r[0] === 'tele' || r[0] === 'tele2') g += T(X(0) + 6, y + 11, r[5], {});
+      else if (r[0] === 'lin') g += T(X(0) - 6, y + 11, r[5], { 'text-anchor': 'end' });
+      else g += T(X(end) + 6, y + 11, r[5], {});
+      y += RH;
+    });
+    y += 10;
+    if (ti < tiers.length - 1) g += E('line', { x1: 0, x2: W, y1: y - 6, y2: y - 6, stroke: '#D9D4C7' });
+  });
+  document.getElementById('main').innerHTML = `<svg width="${W}" height="${HH}" viewBox="0 0 ${W} ${HH}">${g}</svg>`;
+  document.getElementById('key2').innerHTML = [['ant', 'Anticipation'], ['tele', 'Telegraph'], ['body', 'Impact body'], ['sec', 'Follow-through'], ['lin', 'Dissipation'], ['cam', 'Camera: stop, kick, shake']].map(k => `<span><i style="background:${C[k[0]]}"></i>${k[1]}</span>`).join('');
+}
+Sheet.frame({ n: '10', cat: 'VFX', title: 'VFX timing chart', sub: 'A heavy melee hit drawn layer by layer on one millisecond axis, what each shake tier looks like on a phone, and the phases of light, medium and heavy hits beside an enemy telegraph.',
+  supports: ['vfx-recipes.md recipe 3 Heavy melee hit', 'vfx-and-juice.md §6 Timing, §7 Hit-stop, shake and kicks', 'game-craft.md §1.3 Shake module'], sources: 'vfx-recipes.md, vfx-and-juice.md (2026-11-11)' });
 </script></body></html>

@@ -76,7 +76,7 @@ Genre beats only. Script format, teaching patterns, guidance devices and funnel 
 
 ## UI patterns
 
-Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, melee slash, heavy impact, dash, shield, aura.
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, melee slash, heavy melee hit (recipe 3, the complete worked example), dash, shield, aura.
 
 - HUD: health, ultimate bar, 4 ability buttons with cooldown sweeps, block and dash, kill feed, streak counter. Nothing else during a fight.
 - Mobile: abilities in the right-thumb arc, M1 as the largest button, auto-face or soft lock toward the nearest target, optional auto-block off by default.

@@ -1,67 +1,114 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>18 Style bible one-pager</title><link rel="stylesheet" href="sheet.css">
 <style>
-.page{background:#fff;border:1.5px solid var(--ink);border-radius:10px;padding:14px 16px}
-.ph{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:10px}
-.ph b{font-size:17px;font-weight:800}.ph span{font-size:11px;color:var(--ink2)}
-.f{border-top:1px solid var(--soft);padding:7px 0}.f:first-child{border-top:0;padding-top:0}
-.f h3{margin-bottom:3px;color:var(--accent)}
-.f p{font-size:11px;color:var(--ink2);line-height:1.38}.f p b{color:var(--ink)}
-.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 18px}
-.sws{display:flex;gap:3px;flex-wrap:wrap}.sws i{width:26px;height:22px;border-radius:4px;border:1px solid rgba(0,0,0,.25);display:block}
-.blank{display:inline-block;border-bottom:1.5px solid var(--accent);font-weight:700;color:var(--ink);padding:0 2px}
+.brief{display:flex;gap:14px;align-items:center}
+.brief p{font-size:11px;color:var(--ink2);line-height:1.4}.brief p b{color:var(--ink)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.bib{background:#fff;border:1.5px solid var(--ink);border-radius:9px;padding:10px 10px 6px}
+.bib.blank{border-style:dashed}
+.bh{border-bottom:2px solid var(--ink);padding-bottom:5px;margin-bottom:6px}
+.bh .tg{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:4px;padding:1px 6px;margin-bottom:3px}
+.bib.blank .bh .tg{background:var(--ink3)}
+.bh b{display:block;font-size:14px;font-weight:800;line-height:1.2}
+.f{border-top:1px solid var(--soft);padding:5px 0}.bh + .f{border-top:0;padding-top:0}
+.f h3{margin-bottom:2px;color:var(--accent)}
+.f p{font-size:11px;color:var(--ink2);line-height:1.36}.f p b{color:var(--ink)}
+.sws{display:flex;gap:3px}.sws i{width:33px;height:18px;border-radius:3px;border:1px solid rgba(0,0,0,.25);display:block}
+.sws.g i{height:12px}
+.bl{display:inline-block;min-width:34px;border-bottom:1.5px solid var(--accent);font-weight:700;color:var(--ink);padding:0 2px}
+.ph{border:1.5px dashed var(--ink3);border-radius:6px;height:96px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 14px;font-size:11px;color:var(--ink3)}
+.ax{font-size:11px;color:var(--ink2);line-height:1.5}.ax .y{color:var(--good);font-weight:700}.ax .n{color:var(--ink3)}
+.stamp{margin-top:12px;border:2px solid var(--bad);border-radius:8px;background:#FBEAE7;padding:8px 12px;display:flex;gap:12px;align-items:center}
+.stamp b{font-size:14px;font-weight:800;color:var(--bad);white-space:nowrap}.stamp span{font-size:11px;color:var(--ink2)}
 </style></head><body>
 <div class="sheet">
-  <div class="page">
-    <div class="ph"><b>Tidewater Market: style bible v3</b><span>2026-11-11 · owner: art lead · example filled from the template</span></div>
-    <div class="cols">
-      <div>
-        <div class="f"><h3>Fantasy in one line</h3><p><b>Run a stall in a floating harbour market.</b><br>Mood words: <span class="blank">warm</span> <span class="blank">chunky</span> <span class="blank">breezy</span><br>Three decisions: <span class="blank">chunky-rounded</span> shapes, a <span class="blank">teal and sand</span> palette with one mustard accent, the <span class="blank">rope-knot</span> motif.</p></div>
-        <div class="f"><h3>Golden sample</h3><div id="stall"></div><p><b>Fishmonger stall.</b> Every new asset is held next to it in Studio, under the game's lighting.</p></div>
-        <div class="f"><h3>Shape language</h3><div id="shape"></div><p><b>Chunky-rounded.</b> Primary : secondary : detail = <b>60 : 30 : 10</b>. One primary mass, 2–4 secondary shapes that break the outline, detail only in the hand band.</p></div>
-      </div>
-      <div>
-        <div class="f"><h3>Palette (hex)</h3><p style="margin-bottom:3px">Base 10</p><div class="sws" id="base"></div><p style="margin:5px 0 3px">Accents 2: only on things players can use</p><div class="sws" id="acc"></div></div>
-        <div class="f"><h3>Value rule</h3><div id="val"></div><p>Ground mid-dark (V 35–60), walls one band away, interactables brightest and most saturated. Checked in greyscale.</p></div>
-        <div class="f"><h3>Proportions against the R15 dummy</h3><p>Door <span class="blank">5 × 8</span> studs · counter <span class="blank">3</span> · step rise <span class="blank">1</span> · handle thickness ≥ <span class="blank">0.3</span><br>Handles and lamps × 1.5–2.5, window frames and trims × 2–4.</p></div>
-        <div class="f"><h3>Bevel width by viewing band</h3><div id="bev"></div><p>Seen from 15 studs <span class="blank">0.08</span> · seen from 40 studs <span class="blank">0.2</span>. Weighted normals always; outer corners only.</p></div>
-      </div>
-      <div>
-        <div class="f"><h3>Grid and pivots</h3><p>Architecture <span class="blank">8</span> studs · props <span class="blank">4</span> studs. Kit pivots at the front-lower corner; floor props bottom-centre.</p></div>
-        <div class="f"><h3>Texturing method</h3><p><b>Palette atlas</b> (one 256² ColorMap) for props, stalls and NPCs. Flat colour for large architecture. Unique bakes: <span class="blank">2</span> assets, ≤ 1024².</p></div>
-        <div class="f"><h3>Material response</h3><p>Roughness 0.6–0.9 (painted wood, canvas). Metalness 0 or 1. Emissive only on <span class="blank">lanterns and pickups</span>.</p></div>
-        <div class="f"><h3>Wear and story</h3><p>Light edge wear on wood; no grime. Sails and awnings are never dirty.</p></div>
-        <div class="f"><h3>Lighting preset</h3><div id="lit"></div><p>LightingStyle <span class="blank">Realistic</span> · ClockTime <span class="blank">17.6</span> · Brightness <span class="blank">2.2</span><br>Atmosphere D/O/H/G <span class="blank">0.35 / 0.2 / 1.5 / 0.4</span></p></div>
-        <div class="f"><h3>Smallest readable detail</h3><p><span class="blank">0.25</span> studs at 40 studs. Anything smaller is deleted or enlarged.</p></div>
-        <div class="f"><h3>Banned</h3><p>Unlisted colours · unbevelled boxes · baked text · one-off textures · neon as decoration.</p></div>
-      </div>
-    </div>
-    <div class="f" style="border-top:2px solid var(--ink);margin-top:4px;padding-bottom:0"><p><b>Sign-off:</b> every asset passes the acceptance checklist under this lighting, on a phone, scored 8 or more of 10 by someone who did not build it.</p></div>
+  <div class="card brief">
+    <div style="flex:0 0 206px"><h3>Genre default (env rows 63–64)</h3><div class="sws" id="def"></div><div class="note" style="margin-top:3px">grass · brick · concrete · sky · golden key</div></div>
+    <p><b>Brief for both examples:</b> run a stall in a harbour fish market; tycoon, ages 9–15, mostly phones; the team is three artists for six weeks. <b>What the line-up already shows:</b> lots on a road or a walled slab, photo brick and grass, noon in play and golden hour in the art, player colour on everything. Each example below differs from that on four axes or more; both were tested the same way (art-direction §4).</p>
   </div>
+  <div class="cols3">
+    <div class="bib blank">
+      <div class="bh"><span class="tg">Blank template</span><b>&lt;Game&gt; style bible v&lt;N&gt;</b><div class="note">date · one named owner</div></div>
+      <div class="f"><h3>Three decisions</h3><p><span class="bl">&nbsp;</span> shapes, a <span class="bl">&nbsp;</span> palette, the <span class="bl">&nbsp;</span> motif. A competitor could not sign it.</p></div>
+      <div class="f"><h3>Golden sample</h3><div class="ph">An in-game phone capture of your own finished hero asset goes here, never a drawing from this sheet</div></div>
+      <div class="f"><h3>Palette and value</h3><div class="sws" id="pb"></div><div class="sws g" id="pbg" style="margin-top:2px"></div><p style="margin-top:3px">Base 8–12, accents 2 on usable things only. Ground V <span class="bl">35–60</span>; structures one band away; interactables lightest or a saturation spike.</p></div>
+      <div class="f"><h3>Shape and edge</h3><p>Dominant <span class="bl">&nbsp;</span>, accent <span class="bl">&nbsp;</span>; 60 : 30 : 10. Bevel <span class="bl">&nbsp;</span> studs at 15, <span class="bl">&nbsp;</span> at 40; segments <span class="bl">&nbsp;</span>.</p></div>
+      <div class="f"><h3>Materials</h3><p>Closed list of 6–10: <span class="bl">&nbsp;</span>. Metalness 0 or 1. Emissive only on <span class="bl">&nbsp;</span>.</p></div>
+      <div class="f"><h3>Light</h3><p>Start row <span class="bl">&nbsp;</span> (lighting §12). Changed: <span class="bl">&nbsp;</span> and <span class="bl">&nbsp;</span>. White cube 1.5–2.5.</p></div>
+      <div class="f"><h3>Motif</h3><p><span class="bl">&nbsp;</span> on a model trim, a UI corner, the icon and one effect.</p></div>
+      <div class="f"><h3>Banned</h3><p>Unlisted colours, pure primaries, baked text, one-off textures, plus <span class="bl">&nbsp;</span>.</p></div>
+      <div class="f"><h3>Differs from the default on</h3><p><span class="bl">&nbsp;</span> and <span class="bl">&nbsp;</span>: two axes or more, one of them shape, edge, material or light.</p></div>
+      <div class="f"><h3>Sign-off</h3><p>Rubric 8+ from a non-author, beside the golden sample, under this light, on a phone. Full template: art-direction §6.</p></div>
+    </div>
+    <div class="bib">
+      <div class="bh"><span class="tg">Example A</span><b>Lantern night market</b><div class="note">one possible answer, never to ship as is</div></div>
+      <div class="f"><h3>Three decisions</h3><p><b>Tall, narrow stalls</b> with sagging canvas, an <b>indigo night</b> palette where only goods and lanterns are warm, the <b>paper-lantern</b> motif.</p></div>
+      <div class="f"><h3>Golden sample</h3><div id="sa"></div></div>
+      <div class="f"><h3>Palette and value</h3><div class="sws" id="pa"></div><div class="sws g" id="pag" style="margin-top:2px"></div><p style="margin-top:3px">World V 25–45 (teal ground 40); paper V 96 glows on buyables only.</p></div>
+      <div class="f"><h3>Shape and edge</h3><div id="ea"></div><p>Tall, narrow, awnings sag 0.3 studs. Soft bevel 0.1–0.2 studs, 2 segments.</p></div>
+      <div class="f"><h3>Materials</h3><p>Canvas, lacquered wood, paper, rope. Emissive only on lanterns and buyables.</p></div>
+      <div class="f"><h3>Light</h3><p>Roleplay-night row (lighting §12) at ClockTime 20, exposure +0.3, one shadowed lamp per stall; Realistic.</p></div>
+      <div class="f"><h3>Motif</h3><div class="row" style="align-items:center;gap:8px"><div id="ma"></div><p>Lantern on stall corners, UI frames, the buy burst and the icon.</p></div></div>
+      <div class="f"><h3>Banned</h3><p>White light, noon, glow on decoration, brick.</p></div>
+      <div class="f"><h3>Differs from the default on</h3><p class="ax"><span class="y">light</span> · <span class="y">value key</span> · <span class="y">material</span> · <span class="y">motif</span> · <span class="n">shape: partly</span></p></div>
+      <div class="f"><h3>Trade-off</h3><p>Dim phones need the value floor held. 2–3 artists with one lighting owner. Stands out among noon tiles.</p></div>
+    </div>
+    <div class="bib">
+      <div class="bh"><span class="tg">Example B</span><b>Tin-toy harbour</b><div class="note">one possible answer, never to ship as is</div></div>
+      <div class="f"><h3>Three decisions</h3><p><b>Pressed-tin</b> shapes with rolled rims and rivets, a <b>cream and enamel</b> palette with brass only on what you can buy, the <b>wind-up key</b> motif.</p></div>
+      <div class="f"><h3>Golden sample</h3><div id="sb"></div></div>
+      <div class="f"><h3>Palette and value</h3><div class="sws" id="pbb"></div><div class="sws g" id="pbbg" style="margin-top:2px"></div><p style="margin-top:3px">Felt ground V 43; toys V 55–95; navy only in gaps.</p></div>
+      <div class="f"><h3>Shape and edge</h3><div id="eb"></div><p>Rounded rectangles, rims, rivets. Round bevel 4–6% of size, 2 segments.</p></div>
+      <div class="f"><h3>Materials</h3><p>Painted tin (roughness 0.4), brass (metalness 1), felt. Emissive on nothing.</p></div>
+      <div class="f"><h3>Light</h3><p>Simulator row (lighting §12) at Brightness 1.8, sun 45°, fill raised to key : fill 1.5; Soft.</p></div>
+      <div class="f"><h3>Motif</h3><div class="row" style="align-items:center;gap:8px"><div id="mb"></div><p>Key on machines, UI corners, the buy effect (the key turns).</p></div></div>
+      <div class="f"><h3>Banned</h3><p>Wood grain, photo textures, sharp edges, glow.</p></div>
+      <div class="f"><h3>Differs from the default on</h3><p class="ax"><span class="y">shape</span> · <span class="y">edge</span> · <span class="y">material</span> · <span class="y">light</span> · <span class="y">motif</span></p></div>
+      <div class="f"><h3>Trade-off</h3><p>Reads young. Cheapest: flat colour and one atlas. 1–2 generalists can hold it.</p></div>
+    </div>
+  </div>
+  <div class="stamp"><b>Examples of the range, never to be shipped as is.</b><span>Copying A or B makes the next game converge on it. Run the intake, write your genre's default row, test two directions as hero assets, then fill the blank from your own golden sample with hexes measured from it.</span></div>
   <div class="g3 mt">
-    <div class="card"><h3>How to use this sheet</h3><div class="note">It is a filled example of the template in art-direction-and-quality-bar.md §6, not a house style. Replace every underlined value. Write the bible from a finished golden sample, not from intentions.</div></div>
-    <div class="card"><h3>Why one page</h3><div class="note">Constraints applied everywhere beat detail. A page fits beside the viewport, so two artists (or two agents) build one world instead of two.</div></div>
-    <div class="card"><h3>Where the numbers come from</h3><div class="note">Bevels and smallest detail from the viewing-distance tables; door, counter and step from the avatar metrics; lighting from the golden-hour preset.</div></div>
+    <div class="card"><h3>How to use this sheet</h3><div class="note">Read A and B for how far apart two answers to one brief can be: different light, value key, material and motif, same rigour. The blank is what you fill. The genre table in art-direction §4 holds more directions.</div></div>
+    <div class="card"><h3>Why one page</h3><div class="note">Every line is a number or a side-by-side a reviewer can check. A page fits beside the viewport, so three artists (or three agents) build one world instead of three.</div></div>
+    <div class="card"><h3>Where the numbers come from</h3><div class="note">Bevels from the viewing-distance tables; value bands from the craft guide; light from the lighting guide's rows with the deviation step; defaults sampled from env rows 63–64.</div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
 <script>
-const E = Sheet.el, T = Sheet.txt;
-const base = ['#2F4858', '#3E6F7A', '#6FA3A0', '#A9CBB7', '#E9DFC6', '#C9A77A', '#9A6B45', '#6B4A36', '#D9584A', '#F4F1EA'], acc = ['#F2B63C', '#5FD0E8'];
-document.getElementById('base').innerHTML = base.map(c => `<i style="background:${c}"></i>`).join(''); document.getElementById('acc').innerHTML = acc.map(c => `<i style="background:${c};width:40px"></i>`).join('');
-// golden sample: stall
-const stall = (mono) => { const c = mono ? Array(9).fill('#1A1F2B') : ['#9A6B45', '#D9584A', '#F4F1EA', '#6B4A36', '#C9A77A', '#F2B63C', '#6FA3A0', '#3E6F7A', '#E9DFC6']; const st = mono ? '' : 'stroke="#1A1F2B" stroke-width="2" stroke-linejoin="round"';
-  return `<rect x="26" y="34" width="8" height="62" rx="2" fill="${c[3]}" ${st}/><rect x="126" y="34" width="8" height="62" rx="2" fill="${c[3]}" ${st}/>
-  <path d="M10 40L26 10H134L150 40Z" fill="${c[1]}" ${st}/>${mono ? '' : `<path d="M44 10L34 40h22l6 -30zM86 10l-4 30h22l-2 -30zM118 10l10 30h22l-16 -30z" fill="${c[2]}"/>`}<path d="M10 40q10 12 23.300 0q11.700 12 23.300 0q11.700 12 23.400 0q11.700 12 23.400 0q11.700 12 23.300 0q11.700 12 23.300 0" fill="${c[1]}" ${st}/>
-  <rect x="18" y="62" width="124" height="14" rx="4" fill="${c[4]}" ${st}/><rect x="24" y="76" width="112" height="22" rx="3" fill="${c[0]}" ${st}/>
-  <rect x="60" y="48" width="30" height="15" rx="3" fill="${c[6]}" ${st}/><rect x="98" y="50" width="22" height="13" rx="3" fill="${c[7]}" ${st}/>
-  <circle cx="40" cy="52" r="9" fill="${c[5]}" ${st}/><rect x="37" y="38" width="6" height="6" rx="1.500" fill="${c[3]}" ${st}/>`.replace(/\.(\d)00/g, '.$1'); };
-document.getElementById('stall').innerHTML = `<svg width="216" height="104" viewBox="0 0 216 104"><rect width="216" height="104" rx="6" fill="#DCEBE6"/><rect y="92" width="216" height="12" fill="#6FA3A0"/><g transform="translate(28,0)">${stall(false)}</g></svg>`;
-document.getElementById('shape').innerHTML = `<svg width="216" height="74" viewBox="0 0 216 74"><g transform="translate(-4,-14) scale(.84)">${stall(true)}</g>
-  <g transform="translate(126,0)"><rect x="0" y="6" width="54" height="52" rx="12" fill="#1A1F2B"/><rect x="58" y="26" width="26" height="32" rx="8" fill="#788294"/><rect x="60" y="6" width="12" height="14" rx="4" fill="#DD4F27"/>${T(27, 70, '60', { 'text-anchor': 'middle', 'font-weight': 700, fill: '#1A1F2B' })}${T(72, 70, '30 · 10', { 'text-anchor': 'middle', 'font-weight': 700, fill: '#1A1F2B' })}</g></svg>`;
-const bands = [['ground', '#3E6F7A'], ['walls', '#C9A77A'], ['props', '#D9584A'], ['interact', '#F2B63C']];
-document.getElementById('val').innerHTML = `<svg width="216" height="50" viewBox="0 0 216 50">` + bands.map((b, i) => `<rect x="${i * 54}" y="0" width="52" height="16" rx="3" fill="${b[1]}"/><rect x="${i * 54}" y="18" width="52" height="16" rx="3" fill="${Sheet.grey(b[1])}"/>${T(i * 54 + 26, 46, b[0], { 'text-anchor': 'middle' })}`).join('') + `</svg>`;
-document.getElementById('bev').innerHTML = `<svg width="216" height="56" viewBox="0 0 216 56"><path d="M8 38V6H60" fill="none" stroke="#1A1F2B" stroke-width="3"/>${T(8, 52, 'sharp: no lit strip', {})}<path d="M120 38V14L128 6H172" fill="none" stroke="#1A1F2B" stroke-width="3"/><path d="M120 14L128 6" stroke="#F2B63C" stroke-width="5" stroke-linecap="round"/>${T(120, 52, 'bevel: a lit strip', {})}</svg>`;
-document.getElementById('lit').innerHTML = `<svg width="216" height="26" viewBox="0 0 216 26">` + [['key', '#FFBE78'], ['fill', '#82645A'], ['bounce', '#3C2850'], ['air', '#FFC8A0']].map((b, i) => `<rect x="${i * 54}" y="0" width="52" height="12" rx="3" fill="${b[1]}"/>${T(i * 54 + 26, 23, b[0], { 'text-anchor': 'middle' })}`).join('') + `</svg>`;
-Sheet.frame({ n: '18', cat: 'Art direction', title: 'Style-bible one-pager, filled in', sub: 'The one-page template from the art-direction guide with an example game written into every blank: palette, shapes, bevels, materials and the lighting key.',
-  supports: ['art-direction-and-quality-bar.md §6 Style bible', 'blender-modeling-craft.md §Shape language, §Edges and shading, §Colour and value', 'lighting-and-atmosphere.md §12 Presets'], sources: 'art-direction-and-quality-bar.md, blender-modeling-craft.md, lighting-and-atmosphere.md' });
+const T = Sheet.txt;
+const sw = (id, cols, w) => { document.getElementById(id).innerHTML = cols.map(c => `<i style="background:${c}${w ? ';width:' + w + 'px' : ''}"></i>`).join(''); };
+const swg = (id, cols, w) => sw(id, cols.map(Sheet.grey), w);
+sw('def', ['#7F8967', '#845B50', '#C7C4BF', '#81AFBA', '#FFBE78'], 38);
+sw('pb', Array(6).fill('#FFFFFF')); swg('pbg', Array(6).fill('#FFFFFF'));
+const A = ['#1E2A44', '#2F5E66', '#6B4A36', '#A8322D', '#F6E7C1'], B = ['#3F6E5A', '#EFE6D2', '#C8473A', '#2F5D8C', '#22303F', '#C9A04A'];
+sw('pa', A, 40); swg('pag', A, 40); sw('pbb', B); swg('pbbg', B);
+// Example A: night stall
+const stallA = (mono) => { const c = mono ? Array(6).fill('#1A1F2B') : A; const st = mono ? '' : 'stroke="#0E1422" stroke-width="1.5" stroke-linejoin="round"';
+  const glow = (x, y, r) => mono ? '' : `<circle cx="${x}" cy="${y}" r="${r * 2}" fill="#F6E7C1" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="#F6E7C1" stroke="#A8322D" stroke-width="1.5"/>`;
+  return `<rect x="70" y="26" width="7" height="62" fill="${c[3]}" ${st}/><rect x="139" y="26" width="7" height="62" fill="${c[3]}" ${st}/>
+  <path d="M60 30Q108 44 156 30L148 16H68Z" fill="${c[1]}" ${st}/><path d="M60 30Q84 37 108 37" fill="none" stroke="${mono ? '#1A1F2B' : '#0E1422'}" stroke-width="1"/>
+  <rect x="64" y="62" width="88" height="9" rx="2" fill="${c[2]}" ${st}/><rect x="70" y="71" width="76" height="17" fill="${c[0]}" ${st}/>
+  ${mono ? '<rect x="80" y="54" width="56" height="8" fill="#1A1F2B"/>' : `<path d="M82 60q8-7 16 0q-8 5-16 0zM104 60q8-7 16 0q-8 5-16 0zM122 59h12v3h-12z" fill="#F6E7C1"/>`}
+  ${glow(108, 44, 6)}`; };
+document.getElementById('sa').innerHTML = `<svg width="216" height="96" viewBox="0 0 216 96"><rect width="216" height="96" rx="6" fill="#1E2A44"/><rect y="86" width="216" height="10" fill="#2F5E66"/>
+  <path d="M0 10Q54 26 108 14T216 12" fill="none" stroke="#6B4A36" stroke-width="1.5"/>${[[18, 15], [52, 20], [164, 13], [198, 11]].map(([x, y]) => `<circle cx="${x}" cy="${y + 5}" r="9" fill="#F6E7C1" opacity=".2"/><circle cx="${x}" cy="${y + 5}" r="4" fill="#F6E7C1"/>`).join('')}
+  <g transform="translate(0,2)">${stallA(false)}</g></svg>`;
+document.getElementById('ea').innerHTML = `<svg width="216" height="46" viewBox="0 0 216 46"><g transform="translate(-30,-4) scale(.5)">${stallA(true)}</g>
+  <path d="M100 40V16Q100 8 108 8H140" fill="none" stroke="#1A1F2B" stroke-width="3"/><path d="M100 16Q100 8 108 8" fill="none" stroke="#C9A04A" stroke-width="4" stroke-linecap="round"/>${T(146, 26, 'soft, 0.1–0.2', {})}</svg>`;
+document.getElementById('ma').innerHTML = `<svg width="30" height="36" viewBox="0 0 30 36"><rect x="11" y="1" width="8" height="4" fill="#A8322D"/><ellipse cx="15" cy="18" rx="11" ry="13" fill="#F6E7C1" stroke="#A8322D" stroke-width="1.5"/><path d="M8 12h14M6 18h18M8 24h14" stroke="#C9A04A" stroke-width="1"/><rect x="11" y="31" width="8" height="4" fill="#A8322D"/></svg>`;
+// Example B: tin-toy stall
+const stallB = (mono) => { const k = mono ? '#1A1F2B' : null; const f = (c) => k || c; const st = mono ? '' : 'stroke="#22303F" stroke-width="2" stroke-linejoin="round"';
+  return `<rect x="64" y="34" width="9" height="20" rx="4.5" fill="${f('#2F5D8C')}" ${st}/><rect x="143" y="34" width="9" height="20" rx="4.5" fill="${f('#2F5D8C')}" ${st}/>
+  <path d="M60 22h96a8 8 0 0 1 8 8v6H52v-6a8 8 0 0 1 8-8z" fill="${f('#C8473A')}" ${st}/>${mono ? '' : [64, 84, 104, 124, 144].map(x => `<circle cx="${x + 6}" cy="36" r="5" fill="#EFE6D2" stroke="#22303F" stroke-width="1.5"/>`).join('')}
+  <rect x="56" y="50" width="104" height="30" rx="11" fill="${f('#EFE6D2')}" ${st}/><rect x="56" y="58" width="104" height="8" fill="${f('#C8473A')}"/>
+  ${mono ? '' : [66, 86, 130, 150].map(x => `<circle cx="${x}" cy="74" r="2" fill="#22303F"/>`).join('')}
+  <rect x="52" y="78" width="112" height="10" rx="5" fill="${f('#2F5D8C')}" ${st}/>
+  <circle cx="108" cy="47" r="6" fill="${f('#C9A04A')}" ${st}/>
+  <rect x="160" y="60" width="9" height="4" fill="${f('#C9A04A')}"/><ellipse cx="174" cy="55" rx="5" ry="7" fill="none" stroke="${f('#C9A04A')}" stroke-width="3.5"/><ellipse cx="174" cy="69" rx="5" ry="7" fill="none" stroke="${f('#C9A04A')}" stroke-width="3.5"/>`; };
+document.getElementById('sb').innerHTML = `<svg width="216" height="96" viewBox="0 0 216 96"><rect width="216" height="96" rx="6" fill="#E9E4D8"/><rect y="86" width="216" height="10" fill="#3F6E5A"/><ellipse cx="108" cy="88" rx="64" ry="4" fill="#22303F" opacity=".25"/><g transform="translate(0,0)">${stallB(false)}</g></svg>`;
+document.getElementById('eb').innerHTML = `<svg width="216" height="46" viewBox="0 0 216 46"><g transform="translate(-26,-6) scale(.5)">${stallB(true)}</g>
+  <path d="M100 40V22Q100 8 114 8H140" fill="none" stroke="#1A1F2B" stroke-width="3"/><path d="M100 22Q100 8 114 8" fill="none" stroke="#C9A04A" stroke-width="5" stroke-linecap="round"/>${T(146, 26, 'round, 4–6%', {})}</svg>`;
+document.getElementById('mb').innerHTML = `<svg width="30" height="36" viewBox="0 0 30 36"><rect x="13" y="20" width="4" height="14" fill="#C9A04A" stroke="#22303F" stroke-width="1"/><ellipse cx="9" cy="11" rx="6" ry="8" fill="none" stroke="#C9A04A" stroke-width="4"/><ellipse cx="21" cy="11" rx="6" ry="8" fill="none" stroke="#C9A04A" stroke-width="4"/><circle cx="15" cy="20" r="3" fill="#C9A04A" stroke="#22303F" stroke-width="1"/></svg>`;
+Sheet.frame({ n: '18', cat: 'Art direction', title: 'Style-bible one-pager: the blank and two opposite answers', sub: 'One brief filled twice, in two directions that each leave the genre default on four axes or more, beside the blank page you fill from your own golden sample.',
+  supports: ['art-direction-and-quality-bar.md §4 Choosing the direction, §6 Style bible', 'blender-modeling-craft.md §Edges and shading, §Colour and value', 'lighting-and-atmosphere.md §12 with the deviation step'], sources: 'art-direction-and-quality-bar.md §4 and §6, lighting-and-atmosphere.md, env rows 63–64' });
 </script></body></html>

@@ -13,9 +13,9 @@
 </style></head><body>
 <div class="sheet">
   <div class="pairs" id="pairs"></div>
-  <div class="card mt"><h3>Value first: one white-and-grey texture set, coloured at runtime through palette roles (example values)</h3>
+  <div class="card mt"><h3>Value first: one white-and-grey texture set, coloured at runtime through palette roles (example values; hex in vfx-recipes.md Conventions)</h3>
     <div class="pal" id="pal"></div>
-    <div class="note mt6">Right-hand block: the same roles in greyscale. Each ramp runs dark → body → hot, so the effect reads with colour removed. White appears only as a thin core; one accent hue at most; hit colours that do not read as blood.</div></div>
+    <div class="note mt6">Right-hand block: the same roles in greyscale. Each ramp runs dark → body → hot, so the effect reads with colour removed (bands: core 95–100%, hot 80–95%, body 50–80%, dark 10–25%). White appears only as a thin core; one accent hue at most; hit colours that do not read as blood.</div></div>
   <div class="row mt">
     <div class="card" style="flex:0 0 470px"><h3>Test in the darkest and the brightest zone of the map</h3><div class="zt" id="zt"></div>
       <div class="note mt6">Additive layers vanish on snow, sand and sky: they can only add light. A glow needs a shadow: an alpha-blended body with a darker shape behind it reads on any ground. Test on the lightest and the darkest floor in the game.</div></div>
@@ -46,8 +46,8 @@ const pairs = [
   ['Value stack', tile(stack('#6B1220', '#FF7A2E', '#FFF6DD')), tile(blobAdd), 'Thin white core, element body, saturated dark behind. Every layer additive sums to a white blob with no shape.'],
 ];
 document.getElementById('pairs').innerHTML = pairs.map(p => `<div class="pair"><h2>${p[0]}</h2><div class="two">${p[1]}${p[2]}</div><div class="cap2"><span><span class="chip good">reads</span></span><span><span class="chip bad">noise</span></span></div><p>${p[3]}</p></div>`).join('');
-const roles = ['hot', 'glow', 'main', 'dark', 'spark', 'debris'];
-const pal = [['Fire', 'smoke, sparks, embers', '#FFF6DD', '#FFC83D', '#FF6A1A', '#6B1220', '#FFD98A', '#3A2420'], ['Ice', 'shards, mist, sparkles', '#FFFFFF', '#BFEFFF', '#55B8F0', '#12305E', '#E6FAFF', '#7FA6C4'], ['Lightning', 'forks, sparks', '#FFFFFF', '#FFF29A', '#8FD0FF', '#1B1F5C', '#FFF9D1', '#3A3F6B'], ['Nature', 'leaves, petals, motes', '#F4FFD6', '#C6F26B', '#4FB83A', '#0F3D2A', '#E3FF9C', '#5A4630'], ['Water', 'waves, foam, droplets', '#FFFFFF', '#B8F0FF', '#2F9BE0', '#0C2A5A', '#DDF7FF', '#6F93B5'], ['Arcane', 'runes, rings', '#FFFFFF', '#E7C6FF', '#A05BF0', '#2A0F52', '#F3E1FF', '#4A3A66']];
+const roles = ['core', 'hot', 'body', 'dark', 'spark', 'debris'];
+const pal = [['Steel', 'weapon hits', '#FFFFFF', '#E6F6FF', '#6FB7FF', '#141A33', '#FFB347', '#5A6478'], ['Fire', 'smoke, sparks, embers', '#FFF6DD', '#FFC83D', '#FF6A1A', '#6B1220', '#FFD98A', '#3A2420'], ['Ice', 'shards, mist, sparkles', '#FFFFFF', '#BFEFFF', '#55B8F0', '#12305E', '#E6FAFF', '#7FA6C4'], ['Lightning', 'forks, sparks', '#FFFFFF', '#FFF29A', '#8FD0FF', '#1B1F5C', '#FFF9D1', '#3A3F6B'], ['Nature', 'leaves, petals, motes', '#F4FFD6', '#C6F26B', '#4FB83A', '#0F3D2A', '#E3FF9C', '#5A4630'], ['Water', 'waves, foam, droplets', '#FFFFFF', '#B8F0FF', '#2F9BE0', '#0C2A5A', '#DDF7FF', '#6F93B5'], ['Arcane', 'runes, rings', '#FFFFFF', '#E7C6FF', '#A05BF0', '#2A0F52', '#F3E1FF', '#4A3A66'], ['Gold', 'coins, level-up', '#FFFDF2', '#FFE58A', '#F2B632', '#5A3A0A', '#FFF3B0', '#8A6A2A'], ['Earth', 'slams, rock, dust', '#FFF4DC', '#E8C98A', '#A8743A', '#3A2414', '#FFE0A0', '#6B4A2E']];
 let ph = `<span></span><span></span>` + roles.map(r => `<span class="h">${r}</span>`).join('') + `<span></span>` + roles.map(r => `<span></span>`).join('');
 pal.forEach(p => { ph += `<span><b>${p[0]}</b><br><span style="font-size:10.5px;color:var(--ink2)">${p[1]}</span></span><span></span>` + p.slice(2).map(c => `<i style="background:${c}"></i>`).join('') + `<span></span>` + p.slice(2).map(c => `<i style="background:${Sheet.grey(c)}"></i>`).join(''); });
 document.getElementById('pal').innerHTML = ph;
@@ -55,5 +55,5 @@ const addOnly = (o) => `<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FFD9A0
 const zw = 104, zh = 82, cave = '#141A28', noon = '#E9DFC6';
 document.getElementById('zt').innerHTML = [[tile(`<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FF7A2E"/><path d="${cres(24, 50, 62, -36, 32, 4)}" fill="#FFF6DD"/>`, cave, zw, zh), 'Additive only, cave: fine'], [tile(addOnly(0.75), noon, zw, zh), 'Additive only, noon: gone'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), cave, zw, zh), 'Stacked, cave: reads'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), noon, zw, zh), 'Stacked, noon: reads']].map(z => `<div>${z[0]}${z[1]}</div>`).join('');
 Sheet.frame({ n: '12', cat: 'VFX', title: 'VFX shape and value language', sub: 'Readable silhouettes versus noise, and palettes built value-first so one texture set serves every element.',
-  supports: ['vfx-and-juice.md §1 Principles of readable stylised effects (shape, value before hue, colour script by element)', 'vfx-and-juice.md §5 Meshes and textures (palette roles)'], sources: 'vfx-and-juice.md (read 2026-11-11); palette values are examples' });
+  supports: ['vfx-and-juice.md §1 Principles of readable stylised effects (shape, value before hue, colour script by element)', 'vfx-and-juice.md §5 Meshes and textures (palette roles)', 'vfx-recipes.md Conventions (palette table)'], sources: 'vfx-and-juice.md (read 2026-11-11); palette values are examples' });
 </script></body></html>

@@ -142,7 +142,7 @@ Claude runs the matching checklist and fixes problems in order of impact.
 | 🎨 **Art direction** | How to give a game its own look, and the exact things that make a game look generic or AI-made, with the fix for each |
 | 🖼️ **UI and Figma** | Design systems, screen recipes (HUD, shop, inventory, settings), animation, phone layouts |
 | 🧊 **Blender art** | Modelling well, exporting to Roblox, collision, textures, rigs and animation |
-| ✨ **Feel** | Visual effects (with 21 build recipes), sound, music, camera, lighting, level design |
+| ✨ **Feel** | Visual effects (with 22 build recipes), sound, music, camera, lighting, level design |
 | 🎬 **Cutscenes and tutorials** | Short skippable cinematics with smooth cameras; tutorials that teach by playing |
 | 🧭 **Icons and thumbnails** | What earns clicks honestly, tested at the sizes players really see |
 | 🧱 **Game systems** | 24 ready designs: inventory, shop, pets, quests, combat, rounds, trading, leaderboards... |

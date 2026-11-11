@@ -38,7 +38,7 @@ One row per job. Find the row, open that file, and read only the section you nee
 | UI engine rules: containers, insets and sizing, UI architecture and performance, text filtering, thumb zones and pass lines, input mapping, gamepad focus, console, VR, audit scan | `references/ui-input-crossplatform.md` |
 | Accessibility and comfort: colour, text size, motion and flashes, the comfort resolver and settings schema (§10), captions, remapping, assists, quality-of-life catalogue | `references/accessibility-and-player-qol.md` |
 | VFX principles: shape, value, timing, particles, beams, trails, effect meshes, hit-stop and camera shake numbers (§7), client-only replication, pooling, budgets and quality scaling, flash safety | `references/vfx-and-juice.md` |
-| 21 effect build recipes, layer by layer (slash, impact, projectile, explosion, aura, heal, reward burst and more) | `references/vfx-recipes.md` |
+| 22 effect build recipes, layer by layer (slash, impact, projectile, explosion, aura, heal, reward burst and more) | `references/vfx-recipes.md` |
 | Game feel: feedback tiers, input budget and buffer windows, gameplay camera and shake module, level metrics and soft-locks, NPC AI, procgen, save design | `references/game-craft.md` |
 | Cutscenes: when one earns its place, length budgets, shot design, camera paths, client-only architecture, skip and subtitles, timeline runner, trailer capture | `references/cutscenes-and-cinematics.md` |
 | Audio: the two audio systems, licensing and upload limits, SFX design, mixing numbers, spatial audio, music, UI sound sets, memory, starter sound lists | `references/audio-sfx-music.md` |

@@ -24,7 +24,7 @@ Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10) or Roblox sta
 
 ## Contents
 
-1 Earn the cutscene · 2 Length budgets · 3 Storyboard to shot list · 4 Shot vocabulary for avatars · 5 Paths, easing, comfort · 6 Staging actors · 7 Client-only architecture · 8 Skip, pause, subtitles, reduced motion · 9 Dialogue presentation · 10 Lighting and post · 11 Audio · 12 Performance and streaming · 13 Authoring tools and data format · 14 Timeline runner sketch · 15 First-session intros · 16 Trailers and capture · 17 Amateur tells · 18 Critique rubric · 19 Level-up table · Review gate · Sources
+1 Earn the cutscene · 2 Length budgets · 3 Storyboard to shot list · 4 Shot vocabulary for avatars · 5 Paths, easing, comfort · 6 Staging actors · 7 Client-only architecture · 8 Skip, pause, subtitles, reduced motion · 9 Dialogue presentation · 10 Lighting and post · 11 Audio · 12 Performance and streaming · 13 Authoring tools and data format · 14 First-cutscene script and timeline runner · 15 First-session intros · 16 Trailers and capture · 17 Amateur tells · 18 Critique rubric · 19 Level-up table · Review gate · Sources
 
 ## 1. When a cutscene earns its place
 
@@ -233,145 +233,115 @@ The legacy `Dialog` and `DialogChoice` instances still exist `[official]` but gi
 | EventSequencer | Concerts, live events, multi-scene shows synced across servers; seek and late join; inline mode for existing places | Heavy for a 4 s reveal; scenes are folders with client and server schemas | Roblox module `[official]` |
 | Data-driven timeline (below) | Everything else: reveals, intros, endings, capture paths | You write the runner once | House default |
 
-Roblox ships no track-based sequencer; its own showcase team typed keyframes into a script-driven `EventManager` (interpolants, scripts, audio, camera shakes per event) and said they would have liked a track UI `[official]`. The house format follows the same idea. Its core is the `Timeline` type at the top of the §14 runner: `length` and `skipAfter` in seconds; `shots[]` of `{ t, length, keys[], easeIn?, easeOut? }`, where a new entry is a cut and `keys[]` are `{ pos, look, fov }` (one key is a static shot, two a move, three or more a spline; one speed profile per shot); `cues[]` of `{ t, id, state? }` sorted by time, each `id` looked up in one cue table (sound, VFX, subtitle, actor clip, title card), with `state = true` on cues that must also run on skip. Add when the scene needs them: `anchor` (the mark all positions are relative to), `subtitles[]` of `{ t, key, speaker? }` (localisation keys; display time from the caption formula), `actors[]` of `{ name, rig, mark, clip }` (local clones built during preload) and `short` (the repeat-view timeline).
+Roblox ships no track-based sequencer; its own showcase team typed keyframes into a script-driven `EventManager` (interpolants, scripts, audio, camera shakes per event) and said they would have liked a track UI `[official]`. The house format follows the same idea. Its core is the `Timeline` type of the §14 runner (code in `cutscenes-and-cinematics-runner.md`): `length` and `skipAfter` in seconds; `shots[]` of `{ t, length, keys[], easeIn?, easeOut? }`, where a new entry is a cut and `keys[]` are `{ pos, look, fov }` (one key is a static shot, two a move, three or more a spline; one speed profile per shot); `cues[]` of `{ t, id, state? }` sorted by time, each `id` looked up in one cue table (sound, VFX, subtitle, actor clip, title card), with `state = true` on cues that must also run on skip. Add when the scene needs them: `anchor` (the mark all positions are relative to), `subtitles[]` of `{ t, key, speaker? }` (localisation keys; display time from the caption formula), `actors[]` of `{ name, rig, mark, clip }` (local clones built during preload) and `short` (the repeat-view timeline).
 
 Everything is a function of time, so the same data plays, seeks for late joiners, skips to the end, renders the reduced-motion variant and replays identically for trailer capture.
 
-## 14. Timeline runner sketch
+## 14. First-cutscene script and timeline runner
+
+### First cutscene (beginners start here)
+
+One shot for a first scripted camera: it waits until the marks are there, fades in from black, glides through two or three marks at a steady speed with eased ends, plays one sound, offers Skip at 2 s (§8), and gives back camera, controls and HUD on every exit. Set-up: in `Workspace` make a Model named `IntroCamera` with `ModelStreamingMode` set to `Atomic` (its parts then arrive together `[official]`). Inside it: Parts `Cam1`, `Cam2` and optionally `Cam3` along the path, and `LookAt` where the camera aims, each with Anchored on, CanCollide, CanTouch and CanQuery off and Transparency 1; plus one `Sound` placed directly in the model, not in a part, so it plays at full volume `[official]`. Keep the marks within 64 studs of the spawn (the default `StreamingMinRadius` `[official]`) and 1.5 studs from any surface.
 
 ```lua
 --!strict
--- Unexecuted sketch. Client ModuleScript required from StarterPlayerScripts, never from the character or a
--- ResetOnSpawn gui: the restore must outlive the character. Camera only; cues go to the game's own systems.
--- One exit: every way out calls finish(), which runs each restore in reverse order.
-local GuiService = game:GetService("GuiService")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
-
-export type Key = { pos: Vector3, look: Vector3, fov: number }
-export type Shot = { t: number, length: number, keys: { Key } } -- a new shot is a cut
-export type Cue = { t: number, id: string, state: boolean? } -- state cues also fire on skip
-export type Timeline = { length: number, skipAfter: number, shots: { Shot }, cues: { Cue } }
-export type Handle = { stop: (reason: string) -> (), canSkip: () -> boolean }
-
-local BIND = "CutsceneRunner"
+-- FirstCutscene: a LocalScript in StarterPlayerScripts. Unexecuted: play it, then run every test listed below.
+local Players, RunService, TweenService = game:GetService("Players"), game:GetService("RunService"), game:GetService("TweenService")
+local MOVE, EASE, SKIP_AFTER, SOUND_AT = 4, 0.8, 2, 1.5 -- seconds: travel, speed-up and slow-down, skip (§8), sound
 local player = Players.LocalPlayer
--- Resolved once at require time (this yields), so play() never yields between taking the camera and arming the exits.
+if not game:IsLoaded() then game.Loaded:Wait() end
+if game:GetService("VRService").VREnabled then return end -- never take the camera in VR (§7)
+local character = player.Character or player.CharacterAdded:Wait()
+local model = workspace:WaitForChild("IntroCamera", 1.5) -- 1. Ready check (§12): missing after 1.5 s means no scene
+local h, target = character:WaitForChild("Humanoid", 1.5), model and model:FindFirstChild("LookAt")
+local sound = model and model:FindFirstChildOfClass("Sound")
+local marks: { Vector3 } = {}
+for _, name in { "Cam1", "Cam2", "Cam3" } do
+	local mark = model and model:FindFirstChild(name)
+	if mark and mark:IsA("BasePart") then table.insert(marks, mark.Position) end
+end
+if not (h and h:IsA("Humanoid") and target and target:IsA("BasePart") and #marks >= 2) then return end
+local humanoid, lookAt = h :: Humanoid, target :: BasePart
+if sound then game:GetService("ContentProvider"):PreloadAsync({ sound }) end
+-- 2. One smooth curve through the marks, cut into short straight steps so the camera can move by distance.
+local path, dist = { marks[1] }, { 0 }
+for i = 1, #marks - 1 do
+	local a, b, c, d = marks[math.max(i - 1, 1)], marks[i], marks[i + 1], marks[math.min(i + 2, #marks)]
+	for k = 1, 20 do
+		local u = k / 20
+		local p = (b * 2 + (c - a) * u + (a * 2 - b * 5 + c * 4 - d) * u * u + (b * 3 - a - c * 3 + d) * u * u * u) * 0.5
+		table.insert(dist, dist[#dist] + (p - path[#path]).Magnitude)
+		table.insert(path, p)
+	end
+end
+local function cameraAt(t: number): Vector3 -- speed ramps up for EASE s, holds steady, ramps down for EASE s
+	t = math.clamp(t, 0, MOVE)
+	local top = 1 / (MOVE - EASE) -- share of the path covered per second at full speed
+	local share = if t < EASE then top * t * t / (2 * EASE) elseif t > MOVE - EASE then 1 - top * (MOVE - t) ^ 2 / (2 * EASE) else top * (t - EASE / 2)
+	local goal, i = share * dist[#dist], 2
+	while i < #dist and dist[i] < goal do i += 1 end
+	return path[i - 1]:Lerp(path[i], math.clamp((goal - dist[i - 1]) / math.max(dist[i] - dist[i - 1], 1e-6), 0, 1))
+end
+-- 3. A black cover that reaches the screen edges, and a Skip button that stays inside the safe area.
+local cover, skip = Instance.new("Frame"), Instance.new("TextButton")
+cover.Size, cover.BackgroundColor3, cover.BorderSizePixel = UDim2.fromScale(1, 1), Color3.new(0, 0, 0), 0
+skip.AnchorPoint, skip.Position, skip.Size = Vector2.new(1, 1), UDim2.new(1, -16, 1, -16), UDim2.fromOffset(120, 52)
+skip.Text, skip.TextSize, skip.Visible = "Skip", 24, false
+local guis = { Instance.new("ScreenGui"), Instance.new("ScreenGui") }
+guis[1].ScreenInsets, cover.Parent, skip.Parent = Enum.ScreenInsets.None, guis[1], guis[2]
+-- 4. One way out: finished, skipped, died, respawned, an error and the safety timer all call finish().
+local camera, playerGui = workspace.CurrentCamera, player:WaitForChild("PlayerGui")
 local controls = (require :: any)(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule")):GetControls()
-local active: Handle? = nil
-
-local function spline(a: Vector3, b: Vector3, c: Vector3, d: Vector3, u: number): Vector3 -- Catmull-Rom from b to c
-	local u2, u3 = u * u, u * u * u
-	return (b * 2 + (c - a) * u + (a * 2 - b * 5 + c * 4 - d) * u2 + (b * 3 - a - c * 3 + d) * u3) * 0.5
+local oldType, oldFov, clock, played, done = camera.CameraType, camera.FieldOfView, 0, false, false
+local hidden: { ScreenGui }, connections: { RBXScriptConnection } = {}, {}
+local function finish()
+	if done then return end
+	done = true
+	RunService:UnbindFromRenderStep("FirstCutscene")
+	for _, connection in connections do connection:Disconnect() end
+	camera.CameraType, camera.FieldOfView, camera.CameraSubject = oldType, oldFov, humanoid
+	controls:Enable()
+	for _, gui in hidden do gui.Enabled = true end
+	skip.Visible, cover.BackgroundTransparency = false, 0 -- black for a moment hides the camera snapping back
+	local fade = TweenService:Create(cover, TweenInfo.new(0.3), { BackgroundTransparency = 1 }) -- fade back in (§7)
+	fade.Completed:Once(function() for _, gui in guis do gui:Destroy() end end)
+	fade:Play()
 end
-
-local function sample(shot: Shot, alpha: number): Key
-	local keys = shot.keys
-	local n = #keys
-	if n == 1 then return keys[1] end
-	local x = alpha * (n - 1)
-	local i = math.min(math.floor(x) + 1, n - 1)
-	local u = x - (i - 1)
-	local a, b, c, d = keys[math.max(i - 1, 1)], keys[i], keys[i + 1], keys[math.min(i + 2, n)]
-	return {
-		pos = spline(a.pos, b.pos, c.pos, d.pos, u),
-		look = spline(a.look, b.look, c.look, d.look, u),
-		fov = b.fov + (c.fov - b.fov) * u,
-	}
+local function step(dt: number) -- runs every frame and never waits
+	clock += math.min(dt, 0.1)
+	skip.Visible = clock >= SKIP_AFTER
+	if sound and not played and clock >= SOUND_AT then played = true; sound:Play() end
+	local position = cameraAt(if game:GetService("GuiService").ReducedMotionEnabled then MOVE else clock) -- less motion: hold the end
+	camera.CFrame, camera.Focus = CFrame.lookAt(position, lookAt.Position), CFrame.new(lookAt.Position)
+	if clock >= MOVE + 0.5 then finish() end -- the last framing holds for 0.5 s
 end
-
-local function play(tl: Timeline, onCue: (id: string, skipped: boolean) -> ()): Handle
-	if active then active.stop("replaced") end -- the old scene restores fully before this one reads the camera
-	local camera = workspace.CurrentCamera :: Camera
-	local undo: { () -> () } = {}
-	local clock, cueIndex, shotIndex, finished = 0, 1, 1, false
-	local reduced = GuiService.ReducedMotionEnabled -- ask the game's comfort module instead if it has one
-	local handle: Handle
-
-	local function finish(reason: string)
-		if finished then return end
-		finished = true
-		RunService:UnbindFromRenderStep(BIND) -- no error if nothing is bound
-		for i = #undo, 1, -1 do pcall(undo[i]) end -- restore first; one failing restore cannot block the rest
-		if active == handle then active = nil end -- before the cues, in case one of them starts the next scene
-		for i = cueIndex, #tl.cues do -- the world must end in the same state on every path
-			if tl.cues[i].state then task.spawn(onCue, tl.cues[i].id, true) end -- spawned: a cue may yield or throw
-		end
-		-- log `reason` (finished, skipped, died, respawn, teleport, replaced, error, watchdog) as an analytics event
+local function start()
+	camera.CameraType = Enum.CameraType.Scriptable
+	controls:Disable()
+	for _, gui in playerGui:GetChildren() do -- the game's own HUD; finish() turns it back on
+		if gui:IsA("ScreenGui") and gui.Enabled then gui.Enabled = false; table.insert(hidden, gui) end
 	end
-
-	local function step(dt: number)
-		clock += math.min(dt, 0.1) -- voiced scenes: read the clock from the audio's TimePosition instead
-		while not finished and cueIndex <= #tl.cues and tl.cues[cueIndex].t <= clock do
-			local cue = tl.cues[cueIndex]
-			cueIndex += 1
-			task.spawn(onCue, cue.id, false)
-		end
-		if finished then return end -- a cue stopped the scene: never write the camera after the restore
-		while shotIndex < #tl.shots and tl.shots[shotIndex + 1].t <= clock do shotIndex += 1 end
-		local shot = tl.shots[shotIndex]
-		local alpha = if shot.length > 0 then math.clamp((clock - shot.t) / shot.length, 0, 1) else 1
-		local eased = if reduced then 1 else TweenService:GetValue(alpha, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-		local key = sample(shot, eased)
-		camera.CFrame = CFrame.lookAt(key.pos, key.look)
-		camera.Focus = CFrame.new(key.look)
-		camera.FieldOfView = key.fov
-		if clock >= tl.length then finish("finished") end
-	end
-
-	local function setup()
-		local prevType, prevFov = camera.CameraType, camera.FieldOfView
-		camera.CameraType = Enum.CameraType.Scriptable
-		table.insert(undo, function()
-			camera.CameraType = prevType
-			camera.FieldOfView = prevFov -- through the FOV owner module if the game has one
-			local character = player.Character
-			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-			if humanoid then camera.CameraSubject = humanoid end
-		end)
-		controls:Disable()
-		table.insert(undo, function() controls:Enable() end)
-		for _, flag in { "HudHidden", "LightingLocked" } do -- attributes set by a client stay local; controllers read them
-			player:SetAttribute(flag, true)
-			table.insert(undo, function() player:SetAttribute(flag, nil) end)
-		end
-		local character = player.Character
-		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		local connections: { RBXScriptConnection } = {
-			player.CharacterRemoving:Connect(function() finish("respawn") end),
-			player.OnTeleport:Connect(function(state: Enum.TeleportState)
-				if state == Enum.TeleportState.Started then finish("teleport") end
-			end),
-		}
-		if humanoid then table.insert(connections, humanoid.Died:Connect(function() finish("died") end)) end
-		table.insert(undo, function()
-			for _, connection in connections do connection:Disconnect() end
-		end)
-		task.delay(tl.length + 2, finish, "watchdog") -- render steps can stall; this timer does not
-		RunService:BindToRenderStep(BIND, Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-			local ok, err = pcall(step, dt)
-			if not ok then warn("cutscene step failed:", err); finish("error") end
-		end)
-	end
-
-	handle = {
-		stop = finish, -- the skip button calls handle.stop("skipped") when canSkip() is true
-		canSkip = function() return not finished and clock >= tl.skipAfter end,
-	}
-	active = handle
-	if not pcall(setup) then finish("error") end -- a failure half-way through setup still restores what was taken
-	return handle
+	for _, gui in guis do gui.Parent = playerGui end
+	TweenService:Create(cover, TweenInfo.new(0.6), { BackgroundTransparency = 1 }):Play() -- fade in from black
+	connections = { humanoid.Died:Connect(finish), player.CharacterRemoving:Connect(finish), skip.Activated:Connect(finish) }
+	task.delay(MOVE + 3, finish) -- safety net: control always comes back
+	RunService:BindToRenderStep("FirstCutscene", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
+		local ok, err = pcall(step, dt)
+		if not ok then warn("FirstCutscene:", err); finish() end
+	end)
 end
-
-return { play = play }
+if not pcall(start) then finish() end
 ```
 
-What reaches `finish`: scene end, skip, death, character removal, teleport start, a second `play`, an error in setup or in the camera step, and the watchdog. An error inside a cue is isolated by `task.spawn` and the scene carries on. When the local player leaves the game the client is gone, so there is nothing to restore; other players leaving cannot break a scene because actors are local clones (§6). Left out on purpose: the readiness gate (§12), anchor transform, pause, seeking to a start offset for synced scenes (start `clock` at `now − start` and fire only `state` cues before it), fades, and shake (add it last, through the comfort gate). Test every exit by hand: reset the character mid-scene, call `play` twice, call `play` from a state cue, stop the scene from inside a cue, give a shot no keys, teleport mid-scene.
+Test each, and after each check you can walk, the camera follows you and the HUD is back: watch to the end; press Skip as soon as it shows; reset mid-scene (Esc, Reset); delete `Cam2` (the scene must simply not play); a phone in the device emulator (Skip clear of the notch); Reduce Motion on (the camera holds the end framing). It plays on every join, which suits testing; for first join only, the server saves a "seen" flag in the profile it already keeps (§8) and the script skips when it is set. Change the four numbers at the top and where the marks sit; nothing else needs editing.
+
+### Timeline runner
+
+For scenes with several shots, cuts and cues, use the full client module in `cutscenes-and-cinematics-runner.md` (about 150 lines, `--!strict`, unexecuted, with a hand check and the exit tests). It plays a §13 timeline. Before it takes the camera it builds a length table for each shot (32 samples per key-to-key segment), so the camera moves by distance along a Catmull-Rom curve; speed follows one ramp–hold–ramp profile per shot (`easeIn` 0.4 s and `easeOut` 0.6 s by default); the aim follows its own curve through the keys' look points; cues fire by time on spawned threads, and `state` cues also fire on skip. Finished, skipped, died, respawn, teleport, replaced, error and watchdog all go through one `finish` that undoes everything in reverse order. Left out on purpose: the readiness gate (§12), anchor transform, pause, seeking for synced scenes, fades and shake.
 
 ## 15. First-session intros that do not cost the first 30 seconds
 
-`tutorial-and-onboarding.md` §2 sets the arrival beat at 0–5 s with no menu, no play button and no cutscene, and its case study (§12) disabled a 27 s intro `[lihfolk]`. Community post-mortems of weak day-one retention keep pointing at the seconds before control, long loading screens first `[community]`. So the rule is zero non-interactive seconds before the first input. Ways to still arrive with style:
+The first-join rule is owned by `tutorial-and-onboarding.md` §2: no intro by default, and one exception for genres where mood is the product (horror, story-led), with its ceiling and how to measure it. Evidence behind it: the same guide's case study (§12) disabled a 27 s intro `[lihfolk]`, and community post-mortems of weak day-one retention keep pointing at the seconds before control, long loading screens first `[community]`. Ways to arrive with style:
 
 | Technique | Cost to the player | How |
 |---|---|---|
@@ -380,6 +350,7 @@ What reaches `finish`: scene end, skip, death, character removal, teleport start
 | Title sting over play | 0 s | Logo and three-note sting fade over live gameplay for 1.5 s; no popup rules broken, nothing to dismiss |
 | Deferred story beat | Up to 8 s, skippable | After `FirstReward` (30–60 s in), when the player has a reason to care |
 | First boss or first chest reveal | 2–6 s | The first cinematic the player sees is a reward they caused |
+| Mood intro (horror, story-led only) | Inside the tutorial guide's ceiling | One shot that ends in the player's own framing so control returns without a jump: the §14 first-cutscene script, with a slam, blackout or cut to black hiding the hand-over |
 
 Measure it: log time from `Spawned` to `FirstAction` as an `FtueBeat` (`tutorial-and-onboarding.md` §2, instrumented in its §9) and compare variants in an experiment. Returning players never see an intro. The first-minute script and step funnel are owned by `tutorial-and-onboarding.md`.
 
@@ -402,8 +373,7 @@ Two deliverables with different rules. The **game-page gameplay video** (autopla
 
 | Tell | Fix |
 |---|---|
-| Camera glides in straight lines and pauses at every waypoint | One spline per shot, one ease per shot (§5) |
-| Linear easing | Sine or Quad InOut; ramps of 0.3 s or more |
+| Camera glides in straight lines, at linear speed, or pauses at every waypoint | One spline per shot, travelled by distance, with ramps of 0.3 s or more at its two ends only (§5) |
 | Camera never stops moving, flies through walls, orbits for no reason | Motivate each move or hold the frame; keep 1.5 studs from geometry; cut instead of travelling |
 | Everything at FOV 70 | Pick a lens per shot from §4 |
 | Subject dead centre in every shot, looking out of frame | Thirds, lead room, eyes on the upper third |
@@ -413,7 +383,7 @@ Two deliverables with different rules. The **game-page gameplay video** (autopla
 | Characters walk the whole distance | Cut the shoeleather: leave frame, cut, arrive |
 | Scene starts with a pop from wherever the player stood | Contrasting first shot, cut-in or lead-in (§4) |
 | Sound starts late, music cuts dead | Stinger on the cut; fades; priority stack (§11) |
-| Unskippable, plays every time, on every server join | Skip after 1.5 s; seen flag; short version (§8) |
+| Unskippable, plays every time, on every server join | Skip per the §8 rule; seen flag; short version |
 | Bars, big title text and lens flare on a 3 s reveal | Remove decoration until the shot reads without it |
 | Whole server watches one player's trigger | Client-only; server sends state to the affected players (§7) |
 | HUD gone, camera stuck or FOV changed afterwards | One runner, one exit, watchdog (§14) |
@@ -428,7 +398,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 | 1 | Earns its place | One-sentence purpose; play could not deliver it |
 | 2 | Within budget | Length inside the §2 row; shots of 1.2 s or more |
 | 3 | Leaves cleanly | All eight exit paths restore camera, controls, HUD, lighting and audio |
-| 4 | Skippable and fair | Skip from 1.5 s; same end state and rewards; repeat views shortened |
+| 4 | Skippable and fair | Skip per the §8 rule; same end state and rewards; repeat views shortened |
 | 5 | Reads on a phone, muted | Story clear on a small screen with sound off; subtitles on |
 | 6 | Shots are chosen | Size, angle and lens differ with purpose; line respected; lead room |
 | 7 | Motion has weight | Eased, splined, motivated; inside the §5 comfort limits; reduced-motion variant |
@@ -440,7 +410,7 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 
 | Symptom in a live game | Likely cause | Fix |
 |---|---|---|
-| New players leave before the first input | Intro scene or loading screen in the first 30 s | §15: zero non-interactive seconds; defer the story beat |
+| New players leave before the first input | Intro scene or loading screen in the first 30 s | §15: no intro, or the mood exception inside its ceiling; defer the story beat |
 | Skip rate above about 70% on first view `[house]` | Too long, or it plays before the player cares | Halve it; move it after a reward; make it a glance |
 | Camera stuck, floating, or wrong FOV after a scene | A missing exit path (death, error, replaced) or two scripts writing the camera | One runner with reverse-order restore and a watchdog; one FOV owner |
 | HUD or touch controls missing after respawn | Disabled ScreenGuis were rebuilt; restore held stale references | One HUD gate attribute; restore on `CharacterRemoving` |
@@ -457,14 +427,14 @@ Score each line 0 (absent), 1 (partly) or 2 (clearly); ship at 16 of 20 or more 
 ## Review gate
 
 - [ ] Every cutscene has a one-sentence purpose, a §2 budget row, and a reason play could not do the job.
-- [ ] No non-interactive time before the first input in the first session; no intro for returning players.
+- [ ] Any first-join intro meets the rule in `tutorial-and-onboarding.md` §2; returning players never see one.
 - [ ] A shot list exists before keying; neighbouring shots differ by two sizes or 30°; the line is respected.
 - [ ] Lens chosen per shot; no face close-ups at FOV 70; composition checked at 4:3 and 19.5:9.
-- [ ] Camera paths are splines with one ease per shot, time-based, inside the comfort limits, with a reduced-motion variant.
+- [ ] Camera paths are splines travelled by distance with one ramp–hold–ramp per shot, time-based, inside the comfort limits, with a reduced-motion variant.
 - [ ] One runner owns the camera; finished, skipped, died, respawn, replaced, error, watchdog and teleport all restore camera, controls, HUD, lighting and audio (tested by hand).
 - [ ] State changes and rewards happen on the server before the scene; skipping and disconnecting lose nothing; late joiners get the end state.
 - [ ] No other player is frozen, moved or shown the scene unless they are part of the moment; protection is server-started and time-boxed.
-- [ ] Skip control from 1.5 s on every device; repeat views shortened; subtitles on by default at child reading pace.
+- [ ] Skip control follows the §8 rule on every device; repeat views shortened; subtitles on by default at child reading pace.
 - [ ] Stage preloaded and streamed before the trigger; readiness gate falls through to the end state.
 - [ ] Scene lighting and post are separate instances removed on exit; music uses the priority stack.
 - [ ] Cinematic trailers stay off-platform and use real captures, team accounts and music owned or licensed for off-platform use (not Creator Store tracks); the game-page video passes `icons-thumbnails-and-store-page.md` §9.

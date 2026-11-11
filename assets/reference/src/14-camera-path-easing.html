@@ -16,9 +16,9 @@
       <div class="note mt6">Dots at equal steps of the spline parameter bunch where waypoints are close and spread where they are far, so the camera lurches. Sample the curve into a length table and move by <b>distance travelled</b> instead.</div></div>
     <div class="card grow"><h3>Rules from the guide</h3><div class="legend one">
       <div class="li"><div><b>One curve through all keys:</b> a Catmull-Rom spline passes through its points.</div></div>
-      <div class="li"><div><b>One ease per shot, never per waypoint:</b> TweenService:GetValue(alpha, style, direction). Sine or Quad InOut; no Back, Bounce or Elastic on a camera.</div></div>
+      <div class="li"><div><b>One speed profile per shot, never per waypoint:</b> ramp up, hold, ramp down, over distance along the whole curve. No Back, Bounce or Elastic on a camera.</div></div>
       <div class="li"><div><b>Give the camera weight:</b> ease <span class="v">0.3 s or more</span> at each end, the settle longer than the start; constant speed between.</div></div>
-      <div class="li"><div><b>Aim, do not slerp:</b> a second curve for the look-at point and CFrame.lookAt each frame.</div></div>
+      <div class="li"><div><b>Aim, do not slerp:</b> a second curve for the look-at point, at the same key parameter, and CFrame.lookAt each frame.</div></div>
       <div class="li"><div><b>Drive it per frame</b> from time in BindToRenderStep, so it can seek, pause and skip. Never count frames.</div></div>
       <div class="li"><div><b>Comfort:</b> pans under <span class="v">30°/s</span>; two of translate, rotate, zoom, never all three; to get from A to B, cut.</div></div></div></div>
   </div>
@@ -36,7 +36,7 @@ function chart(pos, vmax, w = 164, h = 112, extra = '') {
   g += T(x0, h - 3, '0', {}) + T(x0 + cw, h - 3, 'time', { 'text-anchor': 'end' }) + extra;
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${g}</svg>`;
 }
-const one = [['Linear', ez.linear, '1.00 ×', 'Full speed on the first frame, dead stop on the last. Fine in the middle of a path, robotic at its ends.'], ['Sine InOut', ez.sineInOut, '1.57 ×', 'Gentle start and stop. With Quad InOut, the guide\'s choice for camera moves.'], ['Quad InOut', ez.quadInOut, '2.00 ×', 'Firmer; also allowed. Speed climbs to a point and falls again.'], ['Quint InOut', ez.quintInOut, '5.00 ×', 'Long creep, then a whip through the middle. Reads as a jolt on a camera.']];
+const one = [['Linear', ez.linear, '1.00 ×', 'Full speed on the first frame, dead stop on the last. Fine in the middle of a path, robotic at its ends.'], ['Sine InOut', ez.sineInOut, '1.57 ×', 'Gentle start and stop, but the speed never holds steady: a single short move only.'], ['Quad InOut', ez.quadInOut, '2.00 ×', 'Straight ramps up and down with no hold: the ramp–hold–ramp below with the hold removed.'], ['Quint InOut', ez.quintInOut, '5.00 ×', 'Long creep, then a whip through the middle. Reads as a jolt on a camera.']];
 document.getElementById('row1').innerHTML = one.map(o => `<div class="ch"><h2>${o[0]}<span>peak ${o[2]}</span></h2>${chart(o[1], 5.2, 164, 128)}<p>${o[3]}</p></div>`).join('');
 // waypoints
 const A = [18, 62], B = [92, 24], C = [206, 54], len = (p, q) => Math.hypot(q[0] - p[0], q[1] - p[1]), l1 = len(A, B), l2 = len(B, C), Ltot = l1 + l2;

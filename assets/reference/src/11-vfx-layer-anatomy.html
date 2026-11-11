@@ -7,17 +7,17 @@
 .lay .tx{font-size:11px;color:var(--ink2);line-height:1.36}
 .lay .tx b{color:var(--ink)}
 .role{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.pics{display:flex;flex-direction:column;gap:6px}.pics svg{display:block;border-radius:6px}.grey svg{filter:grayscale(1)}
 </style></head><body>
 <div class="sheet">
   <div class="row" style="gap:16px">
     <div class="colx"><h2>Melee slash</h2><div class="comp" id="c1"></div><div class="card mt6" id="l1" style="padding:5px 12px"></div></div>
     <div class="colx"><h2>Explosion</h2><div class="comp" id="c2"></div><div class="card mt6" id="l2" style="padding:5px 12px"></div></div>
   </div>
-  <div class="g4 mt">
-    <div class="card"><h3>Value stack</h3><div class="note">Thin white-hot core, element colour as the body, one saturated dark layer behind (blue-black or deep red, never grey).</div></div>
-    <div class="card"><h3>Triangles</h3><div class="note"><span class="v">20–300</span> per mesh piece; a full effect under about <span class="v">1,500</span>. Each layer is its own mesh so it fades alone.</div></div>
-    <div class="card"><h3>Readability</h3><div class="note">One ground piece at a time, at most <span class="v">3</span> large pieces, at most <span class="v">35%</span> of the screen (55% for an ultimate).</div></div>
-    <div class="card"><h3>Low tier</h3><div class="note">Every effect ships a version with <span class="v">2–3 layers</span>: keep primary and flash, drop tertiary first. Frame 1 of any flipbook must read as a still.</div></div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 238px"><h3>Greyscale check</h3><div class="pics" id="grey"></div><div class="note mt6">Colour removed: one bright spot with a dark shape beside it in each. If this does not read, colour will not save it.</div></div>
+    <div class="card" style="flex:0 0 238px"><h3>Low tier: what is left</h3><div class="pics" id="low"></div><div class="note mt6">Primary, flash and a few sparks (bursts × 0.4). Still says "slash, this way" and still shows the blast radius.</div></div>
+    <div class="card grow"><h3>Depth order of the slash (ZOffset)</h3><div id="depth"></div><div class="note mt6">Sorted toward the camera: dark puff behind, flash in front of the body, dark star in front of the flash.</div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
@@ -59,15 +59,32 @@ document.getElementById('l1').innerHTML = rows(slash)([
   [{ ter: 1 }, 'Secondary · theme · only while the blade cuts', '<b>Trail</b> and motif. Enabled only for the cut (TrailOn and TrailOff markers; arcs under about 120°; Clear() before enabling).'],
   [{ sec: 1 }, 'Tertiary · flash 16–50 ms, sparks 300–800 ms', '<b>Hot flash</b> at the contact point, about 0.6 × the body. <b>Sparks</b> :Emit(5–30) along the swing, not a radial sphere. Dust and haze at LightEmission 0, very low brightness.'],
   [{ light: 1 }, 'Light · follows the body', 'One <b>PointLight</b> in an Attachment, Shadows = false. Particles never light the world, even at LightEmission 1.'],
-  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', 'Light hit: nothing. Medium and up: hit-stop 50–89 ms, then one <b>kick</b> away from the impact, eased back over 100–180 ms. Attacker\'s client only.'],
+  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', 'Light hit: nothing. Medium and up: hit-stop 50–89 ms, then one <b>kick</b> away from the impact (0.4° on a heavy hit), eased back over 100–180 ms, and shake. Attacker\'s client only.'],
 ]);
 document.getElementById('l2').innerHTML = rows(boom)([
   [{ rim: 1 }, 'Primary · carries the gameplay', '<b>The blast rim</b>: a flat ring mesh, or two semicircle Beams for a constant line width, drawn at the real damage radius. It is what players dodge.'],
   [{ pri: 1 }, 'Secondary · theme · 200–400 ms', '<b>Fireball</b> from 3–4 nested flame shells (Blender): dark shell, element body, hot inner, white core. The hit frame lasts up to about 100 ms.'],
   [{ sec: 1, ter: 1 }, 'Tertiary · 300–2,000 ms, ground up to 2.2 s', '<b>Shards</b>, embers, <b>smoke</b> at LightEmission 0 (dense matter is never additive), scorch mark. They outlast the glow; nothing outlives its cause.'],
   [{ light: 1 }, 'Light · follows the body', 'One <b>PointLight</b>, Shadows = false, brightness tied to the fireball\'s life. One light per effect.'],
-  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', '<b>Trauma</b> 0.25 (heavy) to 0.60 (ultimate), starting when the hit-stop releases. Others\' explosions: trauma × 0.3, falling off from 30 to 150 studs.'],
+  [{ cam: 1, ctx: 1 }, 'Camera · after the stop', '<b>Trauma</b> 0.75 (heavy: 1.1°, 5 px on a phone) to 1.0 (ultimate: the 2° cap), starting when the hit-stop releases; a ground blast adds up to 0.5 studs of offset. Others\' explosions: trauma × 0.3, falling off from 30 to 150 studs.'],
 ]);
-Sheet.frame({ n: '11', cat: 'VFX', title: 'VFX layer anatomy: slash and explosion', sub: 'Primary carries the gameplay, secondary the theme, tertiary the sparks and linger; then light and camera. Top: the composite. Below: each layer alone.',
+const sm = 0.58;
+document.getElementById('grey').innerHTML = `<div class="grey">${slash(all, sm)}</div><div class="grey">${boom(all, sm)}</div>`;
+document.getElementById('low').innerHTML = slash({ pri: 1, sec: 1, ctx: 1 }, sm) + boom({ rim: 1, pri: 1, ctx: 1 }, sm);
+{
+  const W = 236, H = 250; let g = '';
+  g += `<rect x="4" y="106" width="22" height="18" rx="3" fill="#1A1F2B"/><path d="M26 109l10-5v22l-10-5z" fill="#1A1F2B"/><path d="M36 106L54 82M36 124L54 148" stroke="#ACB4C2" stroke-width="1" stroke-dasharray="3 3"/>`;
+  g += E('line', { x1: 50, x2: 230, y1: 226, y2: 226, stroke: '#788294', 'stroke-width': 1.5 }) + `<path d="M50 226l8-4v8z" fill="#788294"/>`;
+  g += Sheet.txt(140, 242, 'toward camera ← ZOffset → away', { 'text-anchor': 'middle', 'font-size': 10 });
+  const L = [['Dark star', '+1.5', '#141A33'], ['Flash', '+1', '#FFF6DD'], ['Crescent', '0', '#FF6A1A'], ['Sparks', '0', '#FFD98A'], ['Dark puff', '−0.5', '#6B1220']];
+  L.forEach((l, i) => {
+    const x = 54 + i * 35, top = 56, h = 136, up = i % 2 ? 0 : 14;
+    g += `<path d="M${x} ${top}l12 9v${h}l-12 -9z" fill="${l[2]}" stroke="#1A1F2B" stroke-width="1.2"/>`;
+    g += Sheet.txt(x + 6, top - 6 - up, l[0], { 'text-anchor': 'middle', 'font-size': 10, fill: '#1A1F2B', 'font-weight': 650 });
+    g += Sheet.txt(x + 6, top + h + 22, l[1], { 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 650 });
+  });
+  document.getElementById('depth').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+Sheet.frame({ n: '11', cat: 'VFX', title: 'VFX layer anatomy: slash and explosion', sub: 'Primary carries the gameplay, secondary the theme, tertiary the sparks and linger; then light and camera. Top: the composite and each layer alone. Bottom: the value check, the low tier and the depth order as pictures.',
   supports: ['vfx-and-juice.md §1 Principles (primary, secondary, tertiary), §2 Instances, §5 Meshes and textures, §6 Timing and ability anatomy, §7 Hit-stop and shake', 'vfx-recipes.md (build sheets per effect)'], sources: 'vfx-and-juice.md (read 2026-11-11)' });
 </script></body></html>

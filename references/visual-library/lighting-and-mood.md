@@ -11,15 +11,19 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## A. Day
 
+Start here: 2 (with 1, its before), 3, 4.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 1 | [Enhance outdoor environments](https://create.roblox.com/docs/tutorials/use-case-tutorials/lighting/enhance-outdoor-environments), Roblox · `DOCS/tutorials/enhancing-outdoor-environments/Intro-Before.png` | image | Weak on purpose: the starting state. High sun, blue sky, every green equally lit; the campfire is warm but changes nothing around it | viewed |
-| 2 | Same page · `DOCS/tutorials/enhancing-outdoor-environments/Intro-After.png` | image | The same camp with a low sun behind the trees, haze and a warm grade: the path becomes the light shape, trunks become dark frames, the fire now belongs | viewed |
+| 1 | [Enhance outdoor environments](https://create.roblox.com/docs/tutorials/use-case-tutorials/lighting/enhance-outdoor-environments), Roblox · `DOCS/tutorials/enhancing-outdoor-environments/Intro-Before.png` (PNG, 2.2 MB) | image | Weak on purpose: the starting state. High sun, blue sky, every green equally lit; the campfire is warm but changes nothing around it | viewed |
+| 2 | Same page · `DOCS/tutorials/enhancing-outdoor-environments/Intro-After.png` (PNG, 2.0 MB) | image | The same camp with a low sun behind the trees, haze and a warm grade: the path becomes the light shape, trunks become dark frames, the fire now belongs | viewed |
 | 3 | Same page · `DOCS/tutorials/enhancing-outdoor-environments/Bad-Skybox.png` and `…/Good-Skybox.png` | image | A chrome ball under two skies: the sky is the reflection and the ambient colour of everything, so a teal sky tints the whole scene | viewed |
 | 4 | env row 6 (Medieval Market) and env row 28 (beach) | image | Bright day done well: cream walls in the light, cool shadows, nothing black; distance fades to pale flat bands | viewed |
 | 5 | env row 20 (resort pool) | image | Weak: bloom as "quality". Sky and floor burn out and the two-hue palette is lost | viewed |
 
 ## B. Dusk and golden hour
+
+Start here: 6, 7, 8.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -29,6 +33,8 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 9 | env row 30 (Athonite) | image | A dark mass against an orange sky with fog at its base: at dusk the silhouette is the picture | viewed |
 
 ## C. Night
+
+Start here: 10, 13, 11.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -41,16 +47,20 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## D. Interiors and cozy
 
+Start here: 16, 17, 18.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 16 | [Enhance indoor environments](https://create.roblox.com/docs/tutorials/use-case-tutorials/lighting/enhance-indoor-environments), Roblox · `DOCS/tutorials/enhancing-indoor-environments/Sample-Start.jpg` and `…/Sample-Complete.jpg` | image | One shelf under the starting look (dim, blue, the wood unreadable) and after tuning (sun through the window at an angle, warm ambient, candle pools): materials appear only once the light is set | viewed |
-| 17 | [The Mystery of Duvall Drive](https://create.roblox.com/docs/resources/the-mystery-of-duvall-drive/construct-the-house), Roblox · `DOCS/resources/mystery-of-duvall-drive/constructing-the-house/overview.png` | image | A dark library made of pools: fireplace, table lamps, three ceiling spots; a cool ambient keeps the walls visible; the bust in the foreground catches a rim | viewed |
+| 17 | [The Mystery of Duvall Drive](https://create.roblox.com/docs/resources/the-mystery-of-duvall-drive/construct-the-house), Roblox · `DOCS/resources/mystery-of-duvall-drive/constructing-the-house/overview.png` (PNG, 1.3 MB) | image | A dark library made of pools: fireplace, table lamps, three ceiling spots; a cool ambient keeps the walls visible; the bust in the foreground catches a rim | viewed |
 | 18 | [Making a Cozy Stylized Room](https://80.lv/articles/making-a-cozy-stylized-room-in-blender-and-photoshop), Margarita Posledovich, 2022 · `LV/59/6213c37d17de4.jpg` | breakdown | Cozy by palette and density: peach and pink only, the window as a soft blown key with a faint purple fill from the opposite corner, clutter concentrated on desk and shelves, a clear floor, dark plants as a foreground frame | viewed |
 | 19 | [Modular Approach to Stylized Environments](https://80.lv/articles/001agt-002mrs-crafting-a-low-poly-model-kit), Rodrigo Gonçalves, 2019 · `LV/78/5d28761268e42.jpg` | image | The cabin of env row 39 in the editor: about fifteen small point lights, one per lamp, plus area fills. Light sources are props, and each pool marks a place to be | viewed |
 | 20 | [Creating a Stylized Witch Hut Interior](https://80.lv/articles/creating-a-stylized-witch-hut-interior-in-ue4), Angelo Tsiflas, 2020 · `LV/84/5f96a1a027614.jpg` | image | The rig from outside the room: one directional light through the window and a few boxed fills; nothing else | viewed |
 | 21 | env rows 41 and 43 (café, restaurant) | image | Window light as two floor patches in an otherwise calm room; glowing windows as fill behind warm wood | viewed |
 
 ## E. Horror
+
+Start here: 22, 23, 24; for game captures, env rows 76–79 (warm-dark, bright liminal, toon, one hue).
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -60,10 +70,12 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 ## F. Shading style and technique
 
+Start here: 25, 28, 26.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 25 | [How Shedworks refined the art of Sable](https://www.gamedeveloper.com/gdc2022/how-shedworks-refined-the-art-of-sable-in-pursuit-of-readability), Game Developer, 2022 | breakdown | Flat shading loses depth; it was recovered in layers: lighting, distance fog, then line work, with characters casting shadows wherever possible so they sit on the ground | read |
-| 26 | [Cel shade using a normal map](https://devforum.roblox.com/t/4880290), yamashio, 2026 · `DF/5X/9/2/4/a/924a5309dc3c12008f4ecb1c7764fc7ed9df155b.png` | tutorial | A two-tone toon terminator on a character from a hand-drawn normal map under stock Studio lighting `[VS]`: shading style as an authored choice, not a post effect | viewed |
+| 26 | [Cel shade using a normal map](https://devforum.roblox.com/t/4880290), yamashio, 2026 · `DF/5X/9/2/4/a/924a5309dc3c12008f4ecb1c7764fc7ed9df155b.png` (PNG, 2.3 MB) | tutorial | A two-tone toon terminator on a character from a hand-drawn normal map under stock Studio lighting `[VS]`: shading style as an authored choice, not a post effect | viewed |
 | 27 | [Solid Coloring Cookbook](https://devforum.roblox.com/t/2031219), SuperSpaceMan230, 2022, and [Stylized Flat-Color Art](https://devforum.roblox.com/t/1510773), Flumzee, 2021 | tutorial | The unlit flat-colour look by lighting values (ambient near white, brightness 0, shadows off). Both lean on the retired `Technology` setting `[VS]`: read for the idea that removing light makes shape and value carry everything | read |
 | 28 | models row 32 (Team Fortress 2 paper) | breakdown | Shadows go cool, not black; saturation rises at the edge between light and shade; rim light instead of outlines | read |
 
@@ -92,7 +104,7 @@ Accessed 2026-11-11. All images are third-party and are linked, not stored.
 - Roblox Creator Docs images (`Roblox/creator-docs`): outdoor and indoor lighting tutorials, The Mystery of Duvall Drive. © Roblox; the repository's CC BY 4.0 statement names prose, not images, so they are linked only.
 - DevForum threads (Discourse JSON API): 709866, 4727106, 4880290 (images viewed); 2031219, 1510773 (read).
 - 80.lv articles and images: copyright the named artists and 80 Level.
-- Link check, 2026-11-11: every URL and image path answered. Two rows that had only been seen in search results (a 2022 forum lighting video guide and two further 80.lv write-ups) were removed.
+- Link check, 2026-11-11: every URL and image path answered (sizes above 1 MB are marked; none is animated). Two rows that had only been seen in search results (a 2022 forum lighting video guide and two further 80.lv write-ups) were removed.
 - Game Developer article on Sable: read as text.
 - Sketchfab model: CC BY as stated; listed to look at only.
 - Rejected after viewing: baseplate screenshots of lighting panels, colour-grading panel screenshots, a material graph, a sculpt close-up, an editor capture that duplicated row 22, and one mood board whose images could not be told from generated ones.

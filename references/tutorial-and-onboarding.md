@@ -50,7 +50,7 @@ Write the script as beats before building, then build exactly that and time it w
 | Window | Beat | Player does | Game does (words on screen) | Log | Fails when |
 |---|---|---|---|---|---|
 | Before join | Promise | Taps a tile | Tile shows minute one, not the endgame | (PTR) | Tile and first minute differ `[official]` |
-| 0–5 s | Arrive | Nothing | Spawns in a playable area facing the verb target; no menu, play button or cutscene (0 words) | 1 `Spawned` | Control takes over 10 s `[house]` |
+| 0–5 s | Arrive | Nothing | Spawns in a playable area facing the verb target; no menu or play button; no cutscene except the mood intro below (0 words) | 1 `Spawned` | Control takes over 10 s `[house]` |
 | 5–15 s | Call to action | Sees one prompt | One device-matched prompt on the one thing to do; nothing else pulses (≤ 4 words) | — | Two things compete for attention |
 | 15–30 s | First rep | Performs the verb | Same-frame feedback, sound, number; first reward | 2 `FirstAction`, 3 `FirstReward` | No reward by 30 s |
 | 30–60 s | Repeat | 2–3 more reps | Goal bar appears, already part-filled with real progress (verb + count) | `FtueBeat: GoalBarShown` | Player stops and looks around |
@@ -61,7 +61,7 @@ Write the script as beats before building, then build exactly that and time it w
 | 10 min+ and first win | After | Keeps playing | Offers may begin through the offer gate (monetization-and-policy.md); notification opt-in at a warranted moment, 13+ `[VS]` | Offer funnel | Any purchase prompt earlier (house rule) |
 | Session 2 | Welcome back | Returns | What changed, one new thing, the next goal | 7 `Session2Start` | Same state, nothing new |
 
-House default: no forced tutorial. A soft-gated, skippable guided first loop of 3–7 steps at most, timed hints for the minority who stall, contextual tips for everything else.
+House default: no forced tutorial. A soft-gated, skippable guided first loop of 3–7 steps at most, timed hints for the minority who stall, contextual tips for everything else. **First-join intro (the one rule; `cutscenes-and-cinematics.md` points here):** none by default, so control arrives on the first frame. One exception, for genres where mood is the product (horror, story-led adventure): a single scene under 5 s (the vault's ceiling `[lihfolk]`), first join only, that ends by handing control over where the player stands, skippable by that guide's §8 rule, and counted inside the 10 s time-to-control target: time join to control on the target phone with it on, and shorten the intro, never the target, if it goes over `[house]`. The first reward still lands within 30 s of control. Keep it only if `Spawned` → `FirstAction` and first-play bounce hold against a no-intro variant (§9). Every other genre arrives in play, and story waits until after `FirstReward`.
 
 ## 3. Teaching patterns, ranked
 
@@ -397,7 +397,7 @@ By minute five in any genre: three loop closures, a number that went up, one rea
 | Text wall or dialogue chain before play | Children skipped lengthy explanations on Roblox (NN/g); "players generally don't like to read instructions and skip through text prompts" `[official]`; ten minutes of next-screen text, half forgotten (Adams) | §7; one picture sign; teach by the first rep |
 | Unskippable or forced sequence | No gain from blocking in any of three games (Andersen); forum replies to a "players leave during my tutorial" thread: make it optional `[community]` | Soft gate; skip from step 2; adaptive hints |
 | Tutorial in a separate place, solo, by teleport | "Massive drop in session time and D1" on one shooter; a second developer reverted `[community]` | Teach in the main place beside other players; sandbox opt-in |
-| Cutscene before control | A polished 27 s intro sat inside the bounce window and was disabled `[lihfolk]` | Control first; any scene under 5 s and skippable |
+| Cutscene before control | A polished 27 s intro sat inside the bounce window and was disabled `[lihfolk]` | Control first; the only exception is the first-join intro rule in §2 |
 | Tutorial that differs from the real game | A mobile racing teardown: the hand-held start is followed by unexplained progression screens (Luban); "after the tutorial I felt confused on what to do" `[community]` | Real systems, real UI, real numbers; only safety is special; end on a real goal |
 | Offers or social prompts during onboarding | Children cannot tell promotions from content (NN/g); "the immediate popup to favorite the game and invite friends is also incredibly annoying" `[community]` | The pop-up gate in §8 (house rule 3) |
 | Fake choice | A push-button tutorial with no alternative is the dullest start (Luban) `[community]` | A choice offered in the first 3 minutes changes something visible; if the outcome must be safe, narrow the real options (a starter egg with two possible pets) rather than faking the pick |

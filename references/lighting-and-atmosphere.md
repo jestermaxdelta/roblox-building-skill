@@ -6,7 +6,7 @@ What this is: how Roblox lighting works after the unified-lighting change, how t
 
 1 How lighting works today · 2 Key, fill and rim · 3 Colour script and palettes · 4 Mood by time of day · 5 Atmosphere, Sky, Clouds · 6 Post-processing safe ranges · 7 Local lights: budgets and shadow cost · 8 Interior lighting · 9 Emissive materials and fake light · 10 Per-zone transitions (client-side) · 11 Quality-level fallbacks · 12 Presets by genre · 13 Common mistakes · 14 Level-up table · Review gate · Sources
 
-Routes (about 150 lines each): **flat, washed-out or unreadable live game** → §2, §6, §11, §13, §14, then a §12 row with its deviation step. **Light for a new game** → the direction from `art-direction-and-quality-bar.md` §4, then §1 decision rule, §2, §12, §11. **Interior or night** → §4, §7, §8, §9. Look at sheet 16 and the "start here" rows of `visual-library/lighting-and-mood.md`.
+Routes (the core, about 80–140 lines each; the full routes are in `art-direction-and-quality-bar.md` "Fast routes"): **flat, washed-out or unreadable live game** → §2, §6, §11, §13, §14, then a §12 row with its deviation step. **Light for a new game** → the direction from `art-direction-and-quality-bar.md` §4, then §1 decision rule, §2, §12, §11. **Interior or night** → §4, §7, §8, §9. Look at sheet 16 and the "start here" rows of `visual-library/lighting-and-mood.md`.
 
 ## Start here by level
 

@@ -22,12 +22,27 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/` (`juice` = `vfx-and-juice.md`, `recipes` = `vfx-recipes.md`, `audio` = `audio-sfx-music.md`); library files are in `${CLAUDE_PLUGIN_ROOT}/references/visual-library/`; sheets are `${CLAUDE_PLUGIN_ROOT}/assets/reference/NN-*.png`. §N is the section numbered N. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Look at | Lines |
+|---|---|---|---|
+| Build one effect from a recipe | recipes top, §Conventions, the recipe, the gate · juice §2, §3, §6, §10, §16 | Sheets 11, 12 · `vfx.md`, that section's "Start here" rows | ~250 |
+| Make a hit feel heavier | juice §6–7 · `game-craft.md` §1, §1.3 · recipes top, §Conventions, recipe 3 · audio §5 up to the code | Sheets 10, 21 · `vfx.md` #25, #30, #16 | ~330 |
+| Effects look cheap | juice §1, §5, §6, §14–16 · recipes §Conventions and the recipe | Sheets 12, 11 · `vfx.md` #1, #8–9, #16, #52–55 | ~250 |
+| Sound for an action | audio top, §2, §3, §5, §6, §13 | Sheet 10 · `audio-and-sound.md` #1, #13, #17, #32–33 | ~235 |
+| UI and reward sound set | audio §9, §5 "Variation", §6, §14, §3, §11, §2 · `ui-motion-and-feedback.md` §5 · recipe 16 | Sheet 08 · `audio-and-sound.md` #30, #33, #44 | ~255 |
+| Cut effect cost on phones | juice §11, §13, §2, §4, §8 · `performance.md` budgets · audio §10 | Sheet 11 · `vfx.md` #51 · `vfx-learning.md` #18, #26 | ~260 |
+
+No custom textures or sounds yet? The recipes' "build it tonight" path names legitimate stand-ins and what to replace first.
+
 ## What to read
 
 | When | Open |
 |---|---|
 | Principles: shape, value, timing, layers, texture authoring, mesh effects, hit-stop, camera, budgets, generic-VFX tells, rubric | `${CLAUDE_PLUGIN_ROOT}/references/vfx-and-juice.md` |
-| Build recipes for 21 effects with layers, property values and timings | `${CLAUDE_PLUGIN_ROOT}/references/vfx-recipes.md` |
+| Build recipes for 22 effects (heavy melee hit, slash, projectile, explosion and more) with layers, property values, hex colours and timings | `${CLAUDE_PLUGIN_ROOT}/references/vfx-recipes.md` |
 | SFX design, starter sound lists, UI sound sets, mixing, the audio API, licensing | `${CLAUDE_PLUGIN_ROOT}/references/audio-sfx-music.md` |
 | Input responsiveness, camera, reward sequence | `${CLAUDE_PLUGIN_ROOT}/references/game-craft.md` |
 | Syncing effects and sound to animation markers | `${CLAUDE_PLUGIN_ROOT}/references/animation-and-rigs.md` |
@@ -35,7 +50,7 @@ On a live game, change it safely: note the baseline number, put the change behin
 | Reference images and breakdowns of strong effects | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/vfx.md` |
 | Tutorials, tools and texture sources | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/vfx-learning.md` |
 | Sound references and libraries with their licences | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/audio-and-sound.md` |
-| Bundled sheets: timing chart, layer anatomy, shape and value language (10–12) | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/reference-sheets.md` |
+| Bundled sheets: timing chart with shake per tier, layer anatomy, shape and value language, attack frame data (10–12, 21) | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/reference-sheets.md` |
 
 ## Reading the references
 
