@@ -1,6 +1,6 @@
 # Animation and rigs: Blender to Roblox
 
-What this is: the rigging and animation reference for a game whose models all come from Blender (house rule 1): rig choice, Blender rig rules, the clip pipeline, timing charts, playback, markers, replication, NPC scale, procedural layers, bugs and budgets. Open it before the first rig is built, when a clip looks or replicates wrong, or when auditing a live game's `stepAnimation` cost. It extends `references/art-pipeline-blender.md` (static meshes, export scripts, upload) and does not repeat it.
+What this is: the rigging and animation reference for a game whose models all come from Blender (house rule 1): rig choice, Blender rig rules, the clip pipeline, timing charts, playback, markers, replication, NPC scale, procedural layers, bugs and budgets. Open it before the first rig is built, when a clip looks or replicates wrong, or when auditing a live game's `stepAnimation` cost. It extends `references/art-pipeline-blender.md` (static meshes, export scripts, upload) and does not repeat it. Viewed examples, breakdowns, rigs and tools: `references/visual-library/animation.md`.
 
 Tags: `[official]` Roblox docs, `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (measured in one live action game, October 2026, not Roblox-documented), `[house]` house estimate, `[VS]` version-sensitive: re-check at create.roblox.com/docs.
 
@@ -8,15 +8,15 @@ Tags: `[official]` Roblox docs, `[community]` forum practice, `[lihfolk]` adapte
 
 | Level | Do first | Ignore for now |
 |---|---|---|
-| Beginner | 1. Keep players on their R15 avatar and the default `Animate` script; swap clip ids only. 2. Author one clip in Blender on a downloaded R15 rig, export FBX, import in the Clip Editor, publish under the creator that owns the game. 3. Load each clip once with `Animator:LoadAnimation`, set `Priority` before `Play`. 4. Put a `Hit` or `Step` marker in the clip and hang sound and particles on it. 5. Move doors and chests with a client-side tween | Skinned custom rigs, IK, custom locomotion controllers, clip thinning, retargeting |
+| Beginner | 1. Keep players on their R15 avatar and the default `Animate` script; swap clip ids only. 2. Author one clip in Blender on a downloaded R15 rig, export FBX, import in the Clip Editor, publish under the creator that owns the game. 3. Load each clip once with `Animator:LoadAnimation`, set `Priority` before `Play`. 4. Put a `Hit` or `Step` marker in the clip and hang sound and particles on it. 5. Move doors and chests with a client-side tween. 6. Make one attack, one hit reaction and a walk from the section 4 recipes and score them with its rubric | Skinned custom rigs, IK, custom locomotion controllers, clip thinning, retargeting |
 | Intermediate | One written priority convention; upper-body layering; marker times exported to a data table the server reads; clips preloaded on equip; playback rate matched to ground speed; frame charts (section 4) for every attack; NPCs animated per client from attributes | Lua keyframe players, physical joints, graph editor |
 | Expert | Animation LOD that never skips time or events; shared skeleton families and retargeting; procedural layers in `PreSimulation` guarded by `EvaluationThrottled`; `AnimationConstraint` physical simulation; server-authority animation rules; key thinning and instance budgets; the interpolation caveats in section 3 | Nothing: measure with the MicroProfiler |
 
-Terms: a **rig** is parts or mesh vertices joined by animatable joints. A **clip** is one animation asset. A **track** (`AnimationTrack`) is one clip loaded on one `Animator`. A **pose** is one joint's offset from its rest position at one keyframe.
+Terms: a **rig** is parts or mesh vertices joined by animatable joints. A **clip** is one animation asset. A **track** (`AnimationTrack`) is one clip loaded on one `Animator`. A **pose** is one joint's offset from its rest position at one keyframe. The **Clip Editor** is Studio's Animation Editor (Avatar tab), called the Animation Clip Editor in Roblox announcements.
 
 ## Contents
 
-1 Rig types · 2 Blender rig requirements · 3 Blender to Roblox clip pipeline · 4 Craft: 12 principles and frame charts · 5 Playback: priorities, blending, weights, speed · 6 Markers · 7 Replication and ownership · 8 NPC animation at scale · 9 Procedural animation · 10 Tools and weapons, cutscenes, props, UI-in-world · 11 Performance budgets · 12 Level-up table · 13 Conflicts and open questions · Review gate · Sources
+1 Rig types · 2 Blender rig requirements · 3 Blender to Roblox clip pipeline · 4 Craft: rules, recipes (attack, hit reaction, locomotion), posing checks, stiff tells, rubric · 5 Playback: priorities, blending, weights, speed · 6 Markers · 7 Replication and ownership · 8 NPC animation at scale · 9 Procedural animation · 10 Tools and weapons, cutscenes, props, UI-in-world · 11 Performance budgets · 12 Level-up table · 13 Conflicts and open questions · Review gate · Sources
 
 ## 1. Rig types and when to use each
 
@@ -25,7 +25,7 @@ Three joint classes are animated by the engine `[official]`:
 | Joint | Moves | Notes |
 |---|---|---|
 | `Motor6D` | A rigid part relative to its parent part: `Part0.CFrame * C0 * Transform = Part1.CFrame * C1` | The Animator writes `Transform` each frame. Animate through `Transform`, never by editing `C0`/`C1` per frame |
-| `AnimationConstraint` | Same, through two Attachments; can also run force-limited (`IsKinematic = false`) for ragdolls and arm strength | Replaces Motor6D in R15 player characters when `StarterPlayer.AvatarJointUpgrade` is on (default for new experiences) `[VS]`. `IsA("Motor6D")` is false; `C0`, `C1`, `Part0`, `Part1` are read-only aliases |
+| `AnimationConstraint` | Same, through two Attachments; can also run force-limited (`IsKinematic = false`) for ragdolls and arm strength | Replaces Motor6D in R15 player characters under `StarterPlayer.AvatarJointUpgrade`: live since January 2026, `Default` means on since Phase 2 (May 2026), and the opt-out is due to be removed (targeted for the end of 2026) `[official][VS]`. `IsA("Motor6D")` is false; `C0`, `C1`, `Part0`, `Part1` are read-only aliases and writing them errors. Never move `RigAttachment.CFrame`: retargeting depends on it |
 | `Bone` | Vertices of a skinned MeshPart; a Bone is also an Attachment | `Bone.WorldCFrame` is the rest pose; read `TransformedWorldCFrame` for the animated position |
 
 Clips bind by name: a pose named `RightUpperArm` drives the joint whose child part (or Bone) has that name. Keys for names the rig lacks are ignored without a warning `[lihfolk]`, which is why one clip set can drive a family of rigs and why a renamed part silently stops moving.
@@ -33,7 +33,7 @@ Clips bind by name: a pose named `RightUpperArm` drives the joint whose child pa
 | Rig | What it is | Use for | Avoid when |
 |---|---|---|---|
 | R15 (standard) | 15 MeshParts, fixed names, `Root > HumanoidRootNode > LowerTorso > UpperTorso > Head / arms / legs` `[official]` | Player avatars; humanoid NPCs that should reuse avatar clips, emotes, accessories and layered clothing | You need a non-human silhouette |
-| R15 (advanced) | Same plus up to 37 optional joints (spine, clavicles, fingers, toes) `[official][VS]` | Hero NPCs and avatars needing hands and shoulders | Crowd NPCs on a 3 GB phone |
+| R15 (advanced) | Same plus up to 37 optional joints: 15 per hand, Spine, Chest, two clavicles, HeadBase, `LeftToeBase`/`RightToeBase` (2026 names; Pelvis and Toes were renamed) `[official][VS]` | Hero NPCs and avatars needing hands and shoulders | Crowd NPCs on a 3 GB phone |
 | R6 | 6 parts, legacy | Only when the game's identity is R6. `Workspace.AvatarUnificationMode` (the R6-to-R15 adapter) is marked deprecated with "R6 avatars always load as R6 rigs" `[official][VS]` | New games: no layered clothing, no dynamic heads, no IK-ready limbs, a separate clip library |
 | Custom part rig | Separate Blender meshes joined by Motor6Ds | Hard-surface creatures, robots, weapons, doors, vehicles' moving parts. Default for anything rigid `[lihfolk]` | Organic bending is the point |
 | Skinned (bone) rig | One mesh, armature, weights | Organic creatures, tails, wings, cloth, faces | Limbs must collide or be raycast (see below) |
@@ -44,7 +44,7 @@ Decision rules:
 - Controller: `Humanoid` plus `Animator` only when the character needs Humanoid movement, states, accessories or `MoveTo`. Otherwise `AnimationController` plus `Animator`; static NPCs "have no need for the Humanoid class" `[official: performance docs]`. Exception: a moving model of skinned MeshParts without a Humanoid rebuilds FastClusters on every move, and embedding a Humanoid is the documented workaround `[official]`.
 - Part or skin: part rigs are debuggable in Studio, every piece can collide and take attachments, and a mesh swap needs no re-weighting. Skinned rigs look continuous but only the single MeshPart collides, in its rest shape `[official: bones "don't change the physical shape"]`.
 - House rule 2 (everything solid) on rigs: give every character one invisible root collider and, where gameplay needs limb hits, small `_COL` hitbox parts on `RigidConstraint`s to bones or welded to rig parts; set the visual limbs `CanCollide = false`. Never rely on the skinned mesh's own collision for an animated limb.
-- Custom humanoid proportions that should play any R15 clip: import with Rig Type Custom, then use Adaptive Animation (`HumanoidRigDescription`, T-pose tool); `Workspace.Retargeting` (`AnimatorRetargetingMode`) controls whether clips adapt to body proportions `[official][VS]`.
+- Custom humanoid skeletons that should play R15 clips, or whose clips should play on avatars: run the Adaptive Animation tool (Avatar tab) to generate a `HumanoidRigDescription`, plus a `DigitsRigDescription` per hand. Generally available since April 2026; the importer's "Custom Humanoid" rig type was removed in its favour. `Workspace.Retargeting` (`AnimatorRetargetingMode`) controls whether clips adapt to body proportions `[official][VS]`.
 - Player avatars are the one visible model not authored by you. Everything attached to them (weapons, armour, pets) still comes from Blender.
 - Faces `[official][VS]`: avatar heads animate through `FaceControls` (FACS poses, at least 17 base poses for Marketplace bodies). For custom NPCs a few jaw, brow and eye bones inside the 4-influence limit are cheaper than a full FACS head.
 
@@ -92,13 +92,13 @@ Export settings (pin the Blender version; option names drift):
 
 | Setting | FBX | GLB |
 |---|---|---|
-| When | Roblox's documented rig and clip path; avatar bodies, heads, emotes `[official]` | Part rigs and creatures with several Actions; no unit dance `[lihfolk]`, verify per Studio version `[VS]` |
+| When | Roblox's documented rig and clip path; avatar bodies, heads, emotes `[official]` | Part rigs and creatures with several Actions; no unit dance `[lihfolk]`; accepted by the Clip Editor importer since 2026 `[official][VS]` |
 | Scale (fix a 100× error here, never by scaling the import in Studio: parts scale but clip translations keep the old units `[lihfolk]`) | Apply Scalings = FBX Unit Scale, every other scale 1.0 `[official]` | None needed; importer Scale Unit = Stud `[official]` |
 | Axes | Forward = Z Forward, Up = Y Up; importer World Forward = Front, World Up = Top `[official]` | +Y Up on |
 | Leaf bones | Add Leaf Bones off `[official]` | Not applicable |
 | Deform only | Only Deform Bones on | Export Deformation Bones Only on |
 | Baking | Bake Animation on for clips, off for static meshes `[official]`; Simplify 0; Key All Bones on `[lihfolk]` | Always Sample Animations on, step 1; Optimize Animation Size off `[lihfolk]` |
-| Clips per file | One animation track per export `[official]` | Animation mode Actions; Reset Pose Bones Between Actions on `[lihfolk]` |
+| Clips per file | One take per file is the documented avatar-asset route; the 2026 importer also reads several clips from one FBX `[official][VS]` | Animation mode Actions; Reset Pose Bones Between Actions on `[lihfolk]`; each Action imports as its own clip `[official][VS]` |
 | Textures | Path Mode Copy with Embed Textures `[official]` | Packed |
 | Before export | Clear the active Action and reset the pose, or the rest pose becomes a frame of that clip `[lihfolk]` | Same |
 
@@ -107,14 +107,14 @@ Export settings (pin the Blender version; option names drift):
 1. **Rig in Blender.** For player clips download a standard R15 rig from the avatar resources page (or export a dummy from Studio); for NPCs and props Blender is the source of truth.
 2. **Author.** One Action per clip, named as the game references it (`Idle`, `Walk`, `Attack1`), fake user on. Mark gameplay beats with Action pose markers. Check key poses from the gameplay camera angle, not the side view.
 3. **Bake and export** with the table above. For a layered (partial) clip export only the bones it owns: sampled glTF keys every bone, and a still key at high priority pins the whole body `[lihfolk]`.
-4. **Import.** Clip Editor (Avatar tab) > ⋯ > Import > From File on the matching rig in Studio `[official]`; the 2026 clip importer shares the 3D Importer path and adds glTF plus rig scale, rest pose and track selection options `[community][VS]`. Or import model and clips together with the 3D Importer (Rig Type R15 / Custom / No Rig).
-5. **Finish in the Clip Editor.** Set looping and priority, add event markers (Blender markers do not arrive), rename the final keyframe `End` only for clips that replace default character animations `[official]`.
-6. **Publish** to Roblox with Creator = the user or group that owns the game `[official]`. Automation: the Open Cloud Assets API accepts asset type Animation as `.rbxm`/`.rbxmx` (`model/x-rbxm`) `[official][VS]`.
+4. **Import.** Clip Editor (Avatar tab) > ⋯ > Import > From File on the matching rig in Studio `[official]`. The importer released on 31 March 2026 shares the 3D Importer code path, reads FBX and glTF, imports every clip in the file, saves each to `ServerStorage/RBX_ANIMSAVES` under its clip name (Load swaps between them) and asks whether to keep the file's or the rig's rest pose; reimport is not yet supported `[official][VS]`. Or import model and clips together with the 3D Importer (Rig Type R15 / No Rig).
+5. **Finish in the Clip Editor.** Set looping and priority, add event markers (Blender markers do not arrive), rename the final keyframe `End` only for clips that replace default character animations `[official]`. Optimize Keyframes (⋯ menu) thins keys with a preview slider `[official]`.
+6. **Publish** to Roblox with Creator = the user or group that owns the game `[official]`. Automation: the Open Cloud Assets API accepts asset type Animation as `.rbxm`/`.rbxmx` (`model/x-rbxm`) `[official][VS]`. Roblox has announced asset versioning for 2027 (ids load a frozen version unless one is pinned with `&version=n`) and warns that workflows which update animations by publishing new versions will change `[official][VS]`.
 7. **Record** id, length, loop flag, ground speed and marker times in one generated module (`Shared/Config/Animations.luau`). Never hand-type ids in scripts.
 8. **Verify** with a calibration clip (right arm +90° forward, torso +30° yaw left) once per export route `[lihfolk]`, then in a published test place with two clients. Studio alone proves nothing: temporary ids from `AnimationClipProvider:RegisterAnimationClip` and `KeyframeSequenceProvider:RegisterKeyframeSequence` "cannot be used outside of Studio" `[official]`.
-9. **Strip.** Delete saved `KeyframeSequence`/`CurveAnimation` sources and importer saves from the shipped place; a published clip costs no instances.
+9. **Strip.** Delete saved `KeyframeSequence`/`CurveAnimation` sources (`ServerStorage/RBX_ANIMSAVES`, each rig's `AnimSaves`) from the shipped place; a published clip costs no instances.
 
-Community practice `[community]`: forum threads describe the Studio editor and Moon Animator as the lower-friction routes, and report that the long-running Blender rig exporter/animation importer add-on does not support skinned meshes and has broken after Studio updates. The route above uses only Blender's own exporters and Studio's importer, so it has no third-party plugin to break.
+Third-party routes `[community]`: the long-running Blender rig exporter/animation importer (Den_S, 2017) targets Blender 2.80–2.93, ships as a pasted script with no licence text and does not support skinned meshes. Its maintained fork (Cautioned's Blender Animations plugin, GPL-3.0 tool, Blender 4.2 or later recommended) adds live sync to Studio, and the popular free R15 and R6 IK rigs export through it. Moon Animator 2 and newer plugins animate inside Studio. The route above needs none of them, so it has no plugin to break; if you adopt one, pin its version. Studio's prompt-to-animation beta (November 2026) is for blocking and timing tests only: shipped clips are authored `[house]`.
 
 Ownership `[official][VS]`: animations are not covered by the Asset Privacy default switch; a clip loads only for its owner's experiences or where the owner granted the collaborator and the experience permission on the asset's Permissions page. Game grants cannot be revoked. Upload a clip to a personal account and a group game cannot play it until it is shared or re-uploaded.
 
@@ -132,41 +132,100 @@ Data hygiene (matters most when clips are generated, thinned or played by custom
 - **Easing placement.** A pose's easing shapes the segment leaving it. Cubic ease-in on a short, large arc puts about 70% of the motion into the last two of six frames: add a mid key instead.
 - **Dense baked clips** use Linear easing; thin per joint only with a tolerance (0.5–0.75° body joints) and re-check contacts.
 
-## 4. Animation craft: the 12 principles and frame charts
+## 4. Animation craft: rules, recipes, checks, rubric
 
-Game rule first: the player's own action must show motion on the input frame; readability for other players comes from the pose, not from delay. Anticipation is spent on enemies (so players can react) and saved on the player (so input feels instant) `[lihfolk][house]`.
+Frame numbers are at 30 fps (the editor grid; clips store seconds, so playback is frame-rate independent). Viewed references for every rule are in `visual-library/animation.md`; the 12 principles one by one, with game examples, are its rows 1, 2, 17 and 19.
 
-| Principle | In a short game loop |
+**Six rules for short game clips.**
+- **Input frame.** The player's own action shows motion on the frame of the press. Anticipation is spent on enemies (so players can react) and rationed on the player `[lihfolk][house]`; input budgets are in `game-craft.md` §1.2.
+- **Weight lives in the follow-through.** A player attack is fast in, slow out: the settle after contact sells the mass, and a marked cancel frame lets it play in full only when no new input arrives `[community: Cooper, Game Anim]`.
+- **Favour the keys.** With few frames, an in-between sits next to a key pose, not halfway. Add frames before or after a key, never between two keys `[community: Skullgirls GDC talk; Dead Cells]`.
+- **One frame of overshoot.** Go one frame past the final pose, then come back: impact at no cost in length `[community: Skullgirls GDC talk]`.
+- **Motion between poses is an effect.** A rigid rig cannot smear or squash. Carry the strike with a `Trail` between `TrailOn` and `TrailOff` or a Blender slash mesh shown for 2–3 f; "squash" by compressing spine and knees, "stretch" by extending limbs `[community: Dead Cells; Cooper]`.
+- **Heavy is frame count, not playback speed.** Author heavy creatures slow; never play a clip below 1× to fake weight `[lihfolk]`.
+
+**Workflow for any clip** `[community: Bavelly spotlight; Skullgirls talk]`. (1) Reference: film yourself or find footage from side and front, step through it, note the frame of every pose change. (2) Block the key poses with Constant interpolation and judge them as a slideshow from the gameplay camera. (3) Break down in halves, then quarters, then eighths, adding the arc and the lead-and-drag. (4) Offset parts: hips lead chest by 1 f, chest leads arm by 2 f, head and off arm trail 1–2 f `[lihfolk]`. (5) Put the rough clip in the game on the real rig at phone distance before polishing. (6) Polish, add markers, score it with the rubric below.
+
+### Recipe: light attack (22 f, 0.73 s)
+
+| Frames | Pose | Rule |
+|---|---|---|
+| 0 | Idle, or the last pose of the previous attack | Chest or weapon already moves on f1 |
+| 1–4 | Anticipation: coil away from the target, weight on the back foot, weapon clear of the body outline | 2–5 f. In combos, hide wind-up N+1 inside follow-through N `[lihfolk]` |
+| 5–6 | Strike: hips, then chest, then arm; the weapon covers most of its arc here | 1–3 f; `TrailOn` at 5. Add a breakdown key so the blade stays on the arc |
+| 7 | Contact with one frame of overshoot, arm at full extension | `Hit` marker at 0.20–0.27 s |
+| 8–9 | Hold the contact pose | 2–3 f; `TrailOff` |
+| 10–14 | Follow-through: weapon carries on, body settles, head arrives last | Slow out |
+| 15–22 | Recovery to a pose within a small angle of idle | `CancelOpen` at about 70% with a 0.1–0.2 s input buffer `[lihfolk]` |
+
+Variants `[lihfolk]`: **heavy** = wind-up 6–16 f with a held coil, strike 2–4, contact hold 3–4, recovery 10–25 (hit at 0.5–0.7 s, total 1.3–1.8 s; the player chose the delay). **Enemy** = telegraph at least 14 f (0.45 s), boss 15 f (0.5 s), checked as `(Hit − Tele) / speed` for every attack in every phase. PvP moves meant to be reacted to need at least 8 f of startup (reaction time is about 0.25 s). Think in three columns for every move: startup, active, recovery `[community: fighting-game frame data]`. Hit-stop is runtime and never baked (`vfx-and-juice.md` §7).
+
+### Recipe: hit reaction (6–10 f, 0.2–0.33 s)
+
+- f0–1: snap to the flinch extreme with no ease in: chest and head thrown away from the hit by 15–30° `[house]`, hips lagging.
+- f2–3: hold; the head arrives 1–2 f after the chest.
+- f4–9: slow out back toward idle.
+- Make four: front, left, right, heavy (heavy adds a step back, 12–16 f). Key the upper body only so legs keep their gait; play at Action4; skip the flinch while a stun or knock-up owns the body `[lihfolk]`.
+
+### Recipe: locomotion set
+
+Build in this order: Idle, Walk, Run, Jump, Fall, Land; add Climb, Swim and Swim Idle when the game uses them (the set Roblox requires for a Marketplace animation pack `[official]`).
+
+| Clip | 30 fps | Rules |
+|---|---|---|
+| Idle loop | 90–150 f (3–5 s) | Breathing of 1–3°; no dead hold over 9 f; end pose near every attack's start pose; random phase per NPC `[lihfolk]` |
+| Walk (R15) | 12 f per step, 24 f cycle | Four poses per step: contact, down, passing, up, unevenly spaced; mirror for the other foot. Author at its real speed, about 5–6 studs/s `[lihfolk]` |
+| Run (16 studs/s) | 8 f per step, 16 f cycle | Planted foot travels back `WalkSpeed / 30` studs per frame (0.533 at 16); lean the chest, pelvis pitch at most 8° `[lihfolk]` |
+| Sprint (about 26 studs/s) | 6 f per step | A separate clip with a longer stride; do not over-speed the run `[lihfolk]` |
+| Jump, Fall, Land | Launch pose in 1–2 f; airborne 15–16 f; land absorb 3 f, hold 2, recover 8–13 | The Humanoid leaves the ground on the input frame, so a crouch needs a scripted delayed jump. Air time follows from JumpHeight 7.2 and gravity 196.2 `[house]`. Let movement cancel Land |
+
+- Torso and head: counter-twist the chest against the hips each step, bob the root, keep the head steadier than the chest. "The torso and head are static" is the most repeated critique in DevForum feedback threads `[community]`.
+- Loops: the editor does not interpolate from the last key to the first, so copy the first keys to the last frame `[official]`.
+- No foot slide: store each gait's authored ground speed, play at `rate = horizontalSpeed / groundSpeed` clamped to about 0.5–1.7, switch gait at the clamp and at the same phase so legs do not scissor; fade gait to gait 0.15 s, into Jump and Land 0.08 s, into idle variants 0.4 s `[lihfolk]`. An Animation Graph `Blend1D` with Phase Sync does the same without code (section 5).
+- A finished one-shot holds its last pose and fades over about 0.3 s, so end it near the pose that takes over `[lihfolk]`.
+
+### Posing and silhouette checks
+
+- Black-fill test: view each key pose as a flat black shape from the gameplay camera at about 64 px tall (Blender: flat black viewport colour; Studio: a `Highlight` with black fill at 0 transparency). If the action cannot be named, re-pose.
+- Weapon, hands and feet outside the torso outline at anticipation and at contact; one idea per pose.
+- One line of action from the back foot through the spine to the head, and it reverses between anticipation and contact.
+- Centre of mass over the supporting foot; no twinning (mirror-identical arms or legs).
+- Push every key pose to about 1.5× what looks right at the desk: chunky avatars at phone distance flatten it `[house]`.
+- Pose for the camera the player has: behind and above in third person, so swings that travel across the screen read and thrusts toward the screen do not.
+- Each character class has an idle silhouette of its own.
+
+### Stiff-animation tells and fixes
+
+| Tell | Cause | Fix |
+|---|---|---|
+| Every part starts and stops on the same frame | No overlap | Offset hips, chest, arm, head by 1–2 f each |
+| Limbs move, torso and head do not | Only arms and legs keyed | Key LowerTorso and UpperTorso: twist, lean, bob |
+| Even, floating motion | Two distant keys and default easing | Favour the keys; fast in, slow out; hold the contact |
+| Bouncy wobble at the end | Bounce or Elastic easing, or several overshoots | One overshoot frame, then Quad or Cubic out `[community]` |
+| Attack looks weak | No coil, no hold, no overshoot | 2–5 f anticipation, 2–3 f hold, 1 f overshoot, trail on the strike |
+| Hand or blade cuts through the body or travels in a straight line | Missing breakdown | A breakdown key on the far side of the arc |
+| Mirror-image arms | Twinning | Offset one side by 1–2 f and a few degrees |
+| Pop to idle between actions | Clip ends far from the next start pose; zero fade | End near idle; fade 0.1–0.3 s; upper-body layers over locomotion |
+| Hitch once per loop | Last key differs from the first | Copy the first keys to the end |
+| Statue idle | Dead holds, no breathing | Idle rules above; a spring layer on tails and ears (section 9) |
+| Unreadable at phone size | Under-posed; weapon inside the outline | Black-fill test; 1.5× |
+| Choppy by accident | Keys on every Nth frame with easing None | That is the deliberate low-frame-rate style; otherwise restore easing `[community]` |
+
+### Critique rubric
+
+Score each line 0, 1 or 2 from a recording taken on a phone. Ship at 14 of 18 or more with no zero `[house]`.
+
+| Check | 2 means |
 |---|---|
-| Squash and stretch | Rigid rigs cannot deform: compress the spine and knees into the hit, extend at contact; scale-pop props for 2–3 frames |
-| Anticipation | Player light attack 2–5 f; enemy telegraph ≥ 0.45 s; hide wind-up N+1 inside follow-through N in combos |
-| Staging | Weapon and limbs outside the body silhouette from the gameplay camera; one idea per pose |
-| Straight ahead / pose to pose | Block key poses with Constant interpolation, then add breakdowns; straight-ahead only for cloth and tails |
-| Follow-through and overlap | Hips lead chest by about 1 f, chest leads arm by about 2 f; head and off arm trail 1–2 f |
-| Slow in / slow out | Ease out of the wind-up, arrive at contact at speed, decelerate after contact, hold |
-| Arcs | A breakdown key keeps the blade on the arc; sparse keys cut the corner through the body |
-| Secondary action | Breathing 1–3° on a 3–5 s cycle; spring bones for tails and ears; random phase per NPC so crowds do not pulse |
-| Timing | Light vs heavy is frame count, not playback speed: author heavy creatures slow, never play below 1× |
-| Exaggeration | Chunky avatars at phone distance need about 1.5× the pose you think |
-| Solid drawing | Balance: centre of mass over the support foot; no twinning (mirror-identical arms) |
-| Appeal | Distinct idle silhouette per character class; readable at 64 px tall |
-
-Frame counts (30 fps; double for 60 fps authoring; clips store seconds, so playback is frame-rate independent):
-
-| Clip | 30 fps | Seconds | Rules |
-|---|---|---|---|
-| Idle loop | 90–150 f | 3–5 | No dead hold over 9 f; end pose near every attack's start pose `[lihfolk]` |
-| Walk (R15) | 12 f per step, 24 f cycle | 0.8 | Contact, down, passing, up with uneven spacing. Author at its real speed, about 5–6 studs/s: a walk cannot fill 16 studs/s without sliding `[lihfolk]` |
-| Run (R15, 16 studs/s) | 8 f per step, 16 f cycle | 0.53 | Planted foot travels back `WalkSpeed / 30` studs per frame (0.533 at 16); lean the chest, pelvis pitch ≤ 8° `[lihfolk]` |
-| Sprint (about 26 studs/s) | 6 f per step | 0.2 per step | Separate clip with a longer stride; do not over-speed the run `[lihfolk]` |
-| Jump | Launch pose within 1–2 f; airborne 15–16 f; land absorb 3 f, hold 2 f, recover about 8–13 f | 0.51–0.54 in the air | The Humanoid leaves the ground on the input frame, so a crouch anticipation needs a delayed jump you script yourself. Air time derives from defaults (JumpPower 50 or JumpHeight 7.2, gravity 196.2) `[house]`. Split into Jump, Fall loop, Land; let movement cancel Land |
-| Light attack | React 1 f, wind-up 2–5, strike 1–3, contact hold 2–3, follow-through 3–5, recovery 4–8 | Hit at 0.20–0.27, total 0.6–0.8 | Recovery cancellable from about 70% with a 0.1–0.2 s input buffer; PvP moves meant to be reacted to need ≥ 8 f startup (reaction time about 0.25 s) `[lihfolk]` |
-| Heavy attack | Wind-up 6–16 (with a held coil), strike 2–4, contact 3–4, recovery 10–25 | Hit at 0.5–0.7, total 1.3–1.8 | Longer startup is acceptable because the player chose it `[lihfolk]` |
-| Enemy attack | Telegraph ≥ 14 f, boss ≥ 15 f | ≥ 0.45 / 0.5 | `(Hit − Tele) / speed` checked for every attack in every phase `[lihfolk]` |
-| Hit reaction | Snap to the flinch pose in 1–2 f, total 6–10 f | 0.2–0.33 | Directional variants (front, left, right, heavy); skip the flinch while a stun or knock-up owns the body `[lihfolk]` |
-| Hit-stop (runtime, never baked) | None on light hits; medium to ultimate about 2–3 f | 0.05–0.09 | On confirmed hits only, on the attacker's client, never on the victim; values owned by `vfx-and-juice.md` §7 |
-
-Locomotion without foot slide: store each gait's authored ground speed, play at `rate = horizontalSpeed / groundSpeed`, clamp to roughly 0.5–1.7, and switch gait when the clamp is hit; swap gaits at the same phase so legs do not scissor; fade gait-to-gait 0.15 s, into Jump and Land 0.08 s, into idle variants 0.4 s `[lihfolk]`. One-shot clips should end within a small angle of the pose that takes over: a finished one-shot holds its last pose and fades over about 0.3 s `[lihfolk]`.
+| Readability | Action named from the black-fill silhouette at 64 px on every key pose |
+| Timing | Frame counts inside the recipe ranges; contact held; nothing evenly spaced |
+| Weight | Anticipation and follow-through sized to the damage; heavy moves authored slow |
+| Overlap | Hips, chest, arm and head arrive on different frames; secondary parts trail |
+| Arcs | Hands and weapon tip trace clean curves; no pass through the body |
+| Transitions | Starts from and returns near idle; no pop into or out of any clip that can follow |
+| Contacts and loops | Feet planted with no slide at authored speed; loops with no hitch |
+| Game fit | Motion on the input frame; `Hit`, `TrailOn`/`TrailOff`, `CancelOpen` present; enemy telegraph at least 0.45 s |
+| Hygiene | Only owned bones keyed; priority set; key density in budget (section 11) |
 
 ## 5. Playback: priorities, blending, weights, speed
 
@@ -220,7 +279,7 @@ end
 
 Under server authority (`Workspace.AuthorityMode = Server`) the cache rule inverts `[official][VS]`: rollback can replace tracks, so store ids and query `Animator:GetTrackByAnimationId()` or `GetPlayingAnimationTracks()` each time, inside functions bound with `RunService:BindToSimulation` (see `networking-and-security.md`).
 
-The Animation Graph Editor `[official][VS]` publishes blend trees and state machines as one asset; load it like a clip and drive it with `AnimationTrack:SetParameter("speed", v)`. It can replace hand-written gait blending; treat it as new and test it on the 3 GB phone before adopting.
+Animation Graphs `[official][VS]` (full release July 2026) publish a blend tree as one asset that loads, plays and replicates like a clip; clips and graphs are interchangeable in code. Drive one with `AnimationTrack:SetParameter("Speed", v)` (parameters replicate; the last write in a frame wins). `Blend1D` and `Blend2D` with Phase Sync replace hand-written gait blending, markers that reach the graph output still fire `GetMarkerReachedSignal`, and Graph > Create Animate script generates the loader for players or NPCs. State machines with Luau-expression transitions (`not Grounded`, `Speed > 5`, a Swing 1 → Swing 2 combo chain) are a Studio beta since October 2026. Test a graph on the 3 GB phone before it replaces a working controller.
 
 ## 6. Markers: syncing VFX, SFX and hitboxes
 
@@ -346,7 +405,7 @@ Multiplying onto `Transform` is safe only on joints a playing clip rewrites ever
 | Foot planting | Per foot: weight by animated foot height (fade out as the clip lifts the foot 0.15–0.6 studs), raycast down from above the sole excluding the character, move an `IKControl` Position target to the hit, tilt up to 25–35°, lower the pelvis by the lowest foot's deficit with smoothing; off in the air `[lihfolk][community]` | Two raycasts per rig per frame: local character and nearest few only; never on the server |
 | Springs | Tails, ears, trinkets, weapon sway: critically damped spring per joint; clamp `dt` (≤ 1/30) or use the exact solution so a lag spike cannot explode it; guard NaN `[lihfolk]` | Small CPU per joint; first layer to drop in LOD |
 | Smoothing | `1 - exp(-k * dt)`, never a constant lerp per frame (frame-rate dependent) | Free |
-| Ragdoll / physical joints | AnimationConstraint `IsKinematic = false` with `MaxForce`/`MaxTorque`, or BallSocket limits; `Humanoid.RequiresNeck = false` and `BreakJointsOnDeath = false` first `[official][lihfolk]` | Owner simulates; see `physics-and-vehicles.md` |
+| Ragdoll / physical joints | AnimationConstraint `IsKinematic = false`: `MaxForce`/`MaxTorque` are hard limits, `AngularStrength`/`LinearStrength` and their `Damping` twins (default 1, mass-independent) set how firmly the joint tracks the clip `[official][VS]`; upgraded avatars already contain BallSocketConstraints. `Humanoid.RequiresNeck = false` and `BreakJointsOnDeath = false` first `[official][lihfolk]` | Owner simulates; see `physics-and-vehicles.md` |
 
 Known issue `[community][VS]`: with `UseFixedSimulation` (required for server authority) a forum bug report says `Transform` writes are ignored while a track plays; the poster's workaround is writing in `PreAnimation`. Test procedural layers under that setting before relying on them.
 
@@ -368,7 +427,7 @@ Rig-side facts kept here: actors are local clones on a client Animator with `Pre
 
 Solid props that animate (house rule 2): the server owns collision truth. It moves or toggles the invisible `_COL` proxy at the state change; clients animate only the visual mesh. A door tweened on clients with its collision still closed on the server is a bug in both directions. Parts moved by a client-only Animator stay at rest on the server, so server raycasts see the rest pose.
 
-**UI-in-world** (BillboardGui, SurfaceGui on Blender signage): tween `UIScale` from a centred `AnchorPoint` for pops, `CanvasGroup.GroupTransparency` for fades, pooled BillboardGuis for damage numbers, `MaxDistance` set, loops stopped while hidden or off-screen. See `ui-input-crossplatform.md` and `vfx-and-juice.md`.
+World-space UI motion (BillboardGui pops, damage numbers) is owned by `ui-input-crossplatform.md` and `vfx-and-juice.md` §8.
 
 ## 11. Performance budgets
 
@@ -421,11 +480,11 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 ## 13. Conflicts and open questions
 
 - House rule 2 and held items: a colliding held weapon or first-person viewmodel destabilises its own wielder, so this file treats items welded or jointed to a character as covered by the character's collider plus a hitbox proxy, and requires the normal `_COL` proxy the moment the item is dropped or placed in the world. SKILL.md states this resolution explicitly (held tools, weapons and viewmodels do not collide; skinned meshes need a `_COL` proxy).
-- Conflict: `performance.md` and knowledge-base 5.9 say Blender animation goes through FBX, one track per file, matching the modeling specification `[official]`. LihFolk measured GLB exports with every Action importing as separate clips, and a 2026 Clip Editor importer beta reportedly added glTF and track selection `[community]`. Trust the docs as the default route; treat multi-clip GLB as valid only after a test import on the pinned Studio version.
+- Resolved 2026: multi-clip FBX and glTF import is official in the Clip Editor importer. `performance.md` and knowledge-base 5.9 still describe one track per FBX, which remains the documented avatar-asset route. Keep the calibration clip per export route: the importer beta shipped a 180° rotation bug, fixed before release `[official]`.
 - Conflict: "create the Animator on the server" (Animator reference) versus "create the Animator on the client" (performance docs). Both hold: a server-created Animator is required for replication; a client-created one is the documented way to keep NPC animation local.
 - Conflict: "cache tracks" (Animator reference, community 256 limit) versus "do not cache tracks" (server authority techniques). Cache everywhere except inside server-authority simulation code.
 - Conflict: LihFolk's interpolation model (rotation-vector blending between unevenly spaced keys, 0.3 s end fade, unapplied top-level pose) is measured, not documented. Adopted only as authoring guards (turn limits, end poses near idle, root motion on the first child).
-- Open `[VS]`: Avatar Joint Upgrade phase timing (a forum post lists the breaking default for H2 2026); whether client-played tracks on client-owned non-character models replicate; marker timing on throttled remote rigs; the 256-track limit (engine warning text, not in the reference).
+- Open `[VS]`: the date the Avatar Joint Upgrade opt-out disappears (announced target: end of 2026); whether client-played tracks on client-owned non-character models replicate; marker timing on throttled remote rigs; the 256-track limit (engine warning text, not in the reference).
 
 ## Review gate
 
@@ -435,6 +494,7 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 - [ ] Every clip is published under the game's owner (or permission granted); no temporary ids; no clip sources or importer saves in the shipped place.
 - [ ] One generated animation table holds ids, lengths, ground speeds and marker times; the server times hits from it.
 - [ ] A written priority convention exists; `Priority` is set before `Play`; tracks are loaded once and preloaded on equip.
+- [ ] Every attack, hit reaction and gait scores 14 of 18 or more on the section 4 rubric with no zero, judged from a phone recording.
 - [ ] Player actions move on the input frame; enemy telegraphs ≥ 0.45 s; hit-stop is runtime and client-side; cutscenes restore camera, HUD and input on every exit path and honour reduced motion.
 - [ ] NPC animation runs on clients from attributes with server start times; a late-join test passes.
 - [ ] Procedural layers write in `PreSimulation`, accept `AnimationConstraint`, check `EvaluationThrottled`, and run on every viewer.

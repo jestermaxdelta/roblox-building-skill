@@ -10,6 +10,8 @@ How to make the icon, the 16:9 thumbnails, the gameplay video and the page text 
 | Intermediate | A five-slot set with five different promises (§3), a Blender hero render with an outline (§7), a brand system shared by icon and thumbnails (§6), a 20–30 s gameplay video (§9), the rubric before every upload (§15), a refresh per update (§14) | Per-language icons until one market passes 15% of plays |
 | Expert | A PhotoStudio place with saved cameras, a linked-library render file that re-renders every hero after an art change, test rounds with a kept control and written hypotheses (§13), per-locale icons, Open Cloud upload, an archive of every tile with its metric window | Nothing; re-read the `[VS]` specs each quarter |
 
+Modes: for a new game go §2 → §8 → §13 round 1 before launch. For a live game start at the Level-up table, keep the current winning thumbnail active, and change one family of things per update.
+
 Terms: **tile** the image a player sees on Home; **qPTR** qualified play-through rate, plays that last ÷ impressions; **RFY** Recommended For You; **key / fill / rim** the main light, the shadow-softening light and the edge light behind the subject; **focal length** the Blender camera's zoom (long = narrow view, flatter faces); **wordmark** the game name drawn as a logo; **plate** a background image a character is composited onto.
 
 Related: `lighting-and-atmosphere.md` (in-game key, fill, rim and presets) · `ui-design-figma.md` (logo, tokens, Figma export) · `blender-modeling-craft.md` (silhouette test) · `growth-and-marketing.md` §3–4 (ad creatives, short-form clips, capture rules) · `accessibility-and-player-qol.md` (contrast).
