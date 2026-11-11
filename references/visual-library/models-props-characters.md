@@ -1,6 +1,6 @@
 # Models, props, buildings, vehicles, creatures and characters reference library
 
-What this is: 36 checked references for single assets and asset families in styles that suit Roblox, including the weak and generated examples that show what to avoid. The rules they support live in `references/blender-modeling-craft.md` (numbers, recipes, per-asset rubric) and `references/art-direction-and-quality-bar.md` (slop tells, style choice, AI line).
+What this is: 36 checked references (39 rows; three point at rows in the environments file) for single assets and asset families in styles that suit Roblox, including the weak and generated examples that show what to avoid. The rules they support live in `references/blender-modeling-craft.md` (numbers, recipes, per-asset rubric) and `references/art-direction-and-quality-bar.md` (slop tells, style choice, AI line).
 
 How to use this file:
 - Before modelling an asset class, open one strong row, one Weak row and one "too realistic" row, and put all three on the asset's board with a label each (on target, too generic, too realistic). View each at 64–96 px tall: that is the size it will have in play.
@@ -57,7 +57,7 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 22 | [Simple Creature: Duckdeer](https://sketchfab.com/models/08041ba3342d43298b35d84754dec392), davs27, 2024, CC BY | image | A run pose with a clear line of action; beard as one large mass, antlers as outline breakers, one glowing lens as the focal accent; 17.5k faces | viewed |
 | 23 | [Toad the Frog Rogue](https://sketchfab.com/models/79a32154dba445bf8c7df46dd2a1a315), sch0i, 2022, CC BY-NC | image | 4,331 faces, inside an NPC budget: oversized hands and feet on thin limbs, a cloak collar as the secondary shape, a yellow-to-green gradient in place of texture detail | viewed |
 | 24 | [Cute ghost](https://sketchfab.com/models/2c8c03bb0e5049529e653f9011a8fc90), P3D, 2022, CC BY | image | A face from three marks on one smooth primary shape; pumpkins grouped three and one around it; white and orange on purple | viewed |
-| 25 | [Low Poly Stylized Texture Pet](https://devforum.roblox.com/t/2811808), Misioka, 2024 · `DF/5X/0/f/d/2/0fd2f2ed94975323603e9ce615c2caaee384ed67.png` | image | Weak: the cube-pet template: rounded cube, face decal, stub legs, a recolour as the second pet. The first reply jokes that the originating studio will object | viewed |
+| 25 | [Low Poly Stylized Texture Pet](https://devforum.roblox.com/t/2811808), Misioka, 2024 · `DF/5X/0/f/d/2/0fd2f2ed94975323603e9ce615c2caaee384ed67.png` | image | Weak: the cube-pet template: rounded cube, face decal, stub legs, a recolour as the second pet. A reply jokes that the originating studio will object | viewed |
 | 26 | [My First (Simulator Style) Low-Poly Dog](https://devforum.roblox.com/t/1088281), HeIpfuIIyy, 2021 · `DF/4X/5/d/c/5dc75f7062ce65c50024ea6df864efa5fbe0ec8f.jpeg` | image | Weak: the same template three years earlier: only a decal and two flaps say "dog" | viewed |
 | 27 | [How are modern simulator pets made?](https://devforum.roblox.com/t/2882620), Waddletastic and replies, 2024 | tutorial | Cautionary: the top answer starts by exporting a hit game's pets as the reference. This is how the template spreads; study construction, change the primary shape | read |
 
