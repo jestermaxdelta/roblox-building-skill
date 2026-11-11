@@ -63,12 +63,12 @@ An effect has three jobs **in this order**: communicate gameplay without clutter
 | Whole-screen response | GUI overlay or a post effect on the Camera (§8) | Post effects on `Workspace.CurrentCamera` show for that player only `[official]` |
 | Runtime-generated images or meshes | Avoid: bake offline and upload | `EditableImage`/`EditableMesh` need an experience permission and have tight memory budgets `[lihfolk]` `[VS]` |
 
-**ParticleEmitter.** Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachment` (spawn at a point; rotate the attachment rather than using `EmissionDirection`). Emitters, beams and trails parented inside a character are hidden for that player in first person (since September 2024); parent them to a part welded to the character to keep them visible `[official]` `[VS]`.
+**ParticleEmitter.** Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachment` (spawn at a point; rotate the attachment rather than using `EmissionDirection`). With the default camera scripts, emitters, beams and trails parented inside a character are hidden for that player in first person (since September 2024); parent them to a part welded to the character to keep them visible `[official]` `[VS]`.
 
 | Property | What it does | Trap or tip |
 |---|---|---|
 | `Texture` | Sprite. Transparent PNG, or greyscale on black with `LightEmission = 1` `[official]` | Author white and grey; tint with `Color` so one texture serves every element (§5) |
-| `Color`, `Transparency`, `Size` | Sequences over each particle's life (at most 20 keypoints `[VS]`); a keypoint envelope randomises per particle `[official]` | `Color` multiplies the whole sprite: it cannot recolour light and dark areas separately. Punchy growth reaches about 80% of final size by 35% of life `[lihfolk]` |
+| `Color`, `Transparency`, `Size` | Sequences over each particle's life (at most 20 keypoints `[VS]`); a number-sequence keypoint envelope randomises `Size` or `Transparency` per particle `[official]` | `Color` multiplies the whole sprite: it cannot recolour light and dark areas separately. Punchy growth reaches about 80% of final size by 35% of life `[lihfolk]` |
 | `Squash` | Above 0 thinner and taller, below 0 wider and shorter `[official]` | With `VelocityParallel`: embers, rain streaks, speed lines |
 | `LightEmission` | 0 normal blend, 1 additive; with additive, darker colours look more transparent `[official]` | Additive layers sum to white. Dense matter (water, smoke, debris) stays at 0 |
 | `LightInfluence` | 0 ignores scene light, 1 lit like a part. Defaults to 1 when inserted in Studio but 0 from `Instance.new` `[official]` | Set 0 explicitly or the effect goes black in caves and grey in shade |
@@ -79,7 +79,7 @@ An effect has three jobs **in this order**: communicate gameplay without clutter
 | `Rate`, `Enabled` | Continuous emission. Cap 400/s per emitter, 100/s on mobile `[official]` | Scaled down by graphics level; one forum test measured `Rate × level / 10` `[community]` |
 | `:Emit(n)` | Instant burst; works with `Enabled = false` | Forum reports and one production measurement say bursts are not thinned by graphics level (one report disagrees) `[community]` `[lihfolk]`: scale `n` yourself (§11) |
 | `Lifetime` | Per-particle age range; values above 20 s are capped (the official volcano tutorial's 50–60 s smoke plume is clamped to 20); 0 emits nothing `[official]` | Alive particles ≈ `Rate × Lifetime.Max`: this is the cost |
-| `Speed`, `SpreadAngle`, `Acceleration`, `Drag` | Launch speed and cone; `Acceleration` is world space; `Drag` is the time in seconds to lose half the speed `[official]` | High speed with strong drag = a streak that stops at a fixed distance (official spark burst: Speed 20–40, Drag 10, Lifetime 0.2–0.6) |
+| `Speed`, `SpreadAngle`, `Acceleration`, `Drag` | Launch speed and cone; `Acceleration` is world space; `Drag` decays speed exponentially, higher is stronger (official examples: 0.8 for drifting embers, 10 for sparks that stop almost at once) `[official]` | High speed with strong drag = a streak that stops at a fixed distance (official spark burst: Speed 20–40, Drag 10, Lifetime 0.2–0.6) |
 | `LockedToPart`, `VelocityInheritance` | Particles glued to the emitter, or given the parent's velocity at birth | Locked for auras on a moving body; inherited for dust shed by a foot |
 | `Rotation`, `RotSpeed` | Start angle and spin per particle | `[0, 360]` rotation hides texture repetition |
 | `TimeScale` | 0–1 playback speed `[official]` | 0.2–0.4 to review in slow motion; 0 for a still capture |

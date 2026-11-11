@@ -11,14 +11,14 @@
     <div class="grid" id="grid"></div></div>
   <div class="card mt"><h3>UI icons: outline weight is set at the final size</h3>
     <div class="row" style="align-items:center;gap:20px"><div class="ui" id="ui"></div>
-      <div class="note grow">Left group: one master drawing, scaled. Its 2 px outline is 0.5 px at 32 px and the inner detail closes up. Right group: redrawn per size class, outline held at <span class="v">2–3 px</span>, detail removed as it shrinks.</div></div></div>
+      <div class="note grow">Left group: one master drawing, scaled. Its outline thins to nothing at 32 px and the inner detail closes up. Right group: redrawn per size class, stroke held at <span class="v">8–10%</span> of the icon size, detail removed as it shrinks. Under 24 px, draw a simpler version.</div></div></div>
   <div class="card mt"><h3>Rules</h3><div class="legend">
-      <div class="li"><div><b>Game icon:</b> 512×512 upload; judge it at <span class="v">150 px</span>. One focal subject, at most 5 elements; text under about 40 px is unreadable.</div></div>
-      <div class="li"><div><b>Greyscale:</b> the subject must separate from the background without hue.</div></div>
-      <div class="li"><div><b>Inventory cell:</b> <span class="v">64–72 px</span>. <b>HUD currency icon:</b> <span class="v">28–32 px</span>. Design at the smallest size first.</div></div>
-      <div class="li"><div><b>One authored family:</b> white base, tinted with ImageColor3, outline baked into the PNG.</div></div>
+      <div class="li"><div><b>Game icon:</b> 512×512 or larger, shown down to <span class="v">150 px</span> and smaller. One focal subject filling <span class="v">60–80%</span>; three or fewer value masses; a flat or two-tone ground.</div></div>
+      <div class="li"><div><b>Pass marks:</b> at <span class="v">32 px</span> a stranger names the subject; at <span class="v">64 px</span> they name the genre; in greyscale the subject separates. At 32 px no text survives.</div></div>
+      <div class="li"><div><b>Inventory cell:</b> <span class="v">64–72 px</span>. <b>HUD currency icon:</b> <span class="v">28–32 px</span>. An icon must read at the size it ships.</div></div>
+      <div class="li"><div><b>One family:</b> glyph icons drawn white with the outline baked in and tinted; item icons rendered from the real Blender asset with one camera and light rig.</div></div>
       <div class="li"><div><b>Export</b> 2× at most 1024 px; keep the ImageLabel near native size.</div></div>
-      <div class="li"><div><b>Designed, not generated:</b> icons and thumbnails are drawn in Figma or by hand and show what is really in the game.</div></div></div></div>
+      <div class="li"><div><b>Designed, not generated:</b> no AI-generated icons or thumbnails; the image shows what is really in the game.</div></div></div></div>
 </div>
 <script src="sheet.js"></script>
 <script>
@@ -32,7 +32,7 @@ const B = g => { const c = g ? Sheet.grey : (x => x); let s = `<rect width="150"
   spots.forEach((p, i) => s += `<g transform="translate(${p[0]},${p[1]}) scale(.9)"><path d="${[G.egg, G.gem, G.star, G.potion, G.sword, G.shield, G.key, G.heart, G.bolt][i]}" fill="${c(p[2])}" stroke="${c('#3E5A36')}" stroke-width="1"/></g>`);
   s += `<text x="75" y="64" font-size="13" font-weight="800" text-anchor="middle" fill="${c('#F4F1EA')}">MEGA PET SIM</text><text x="75" y="144" font-size="9" font-weight="700" text-anchor="middle" fill="${c('#F4F1EA')}">NEW UPDATE! 2X LUCK</text>`; return s; };
 const svg = (fn, px, g) => `<svg width="${px}" height="${px}" viewBox="0 0 150 150" data-lint="off">${fn(g)}</svg>`;
-const rows = [['One bold subject', 'good', 'reads at every size', A, 'A face, one shape, a thick outline, strong value contrast with the background. Survives greyscale and the 32 px strip.'], ['Nine things, two captions', 'bad', 'gone by 64 px', B, 'Every element is the same size and value; the text is 13 px at 150 px and dust below. In greyscale the subjects merge with the grass.']];
+const rows = [['One bold subject', 'good', 'reads at every size', A, 'A single shape or face on a flat field, a thick outline, strong value contrast. The subject can be named at 32 px and survives greyscale.'], ['Nine things, two captions', 'bad', 'gone by 64 px', B, 'Every element is the same size and value. At 64 px only a wordmark of one or two heavy words would survive; at 32 px every word is gone. In greyscale the subjects merge with the grass.']];
 document.getElementById('grid').innerHTML = `<span class="h">150 px · store tile</span><span class="h">150 px greyscale</span><span class="h">64 px</span><span class="h">32 px</span><span class="h">64 grey</span><span></span>` + rows.map(r => svg(r[3], 150) + svg(r[3], 150, 1) + svg(r[3], 64) + svg(r[3], 32) + svg(r[3], 64, 1) + `<div class="nm"><b>${r[0]} <span class="chip ${r[1]}">${r[2]}</span></b>${r[4]}</div>`).join('');
 // UI icon scaling
 const master = `<path d="M12 2.5l8 3v6c0 5-3.4 8.4-8 10-4.600-1.600-8-5-8-10v-6z" fill="#fff" stroke="#1A1F2B" stroke-width="1" stroke-linejoin="round"/><path d="M12 6v12M7.500 9.500h9M8.500 13.500h7" stroke="#1A1F2B" stroke-width=".8" fill="none"/><circle cx="12" cy="9.500" r="1.200" fill="#1A1F2B"/>`.replace(/\.(\d)00/g, '.$1');
@@ -40,5 +40,5 @@ const tile = (px, inner, vb = '0 0 24 24') => `<svg width="${px}" height="${px}"
 const redraw = (px) => { const sw = (2.4 * 24 / px).toFixed(2); const detail = px >= 96 ? `<path d="M12 6.500v11" stroke="#1A1F2B" stroke-width="${(1.6 * 24 / px).toFixed(2)}"/>` : ''; return `<path d="M12 3l7.500 2.800v5.700c0 4.600-3.100 7.800-7.500 9.300-4.400-1.500-7.500-4.700-7.500-9.300V5.800z" fill="#fff" stroke="#1A1F2B" stroke-width="${sw}" stroke-linejoin="round"/>${detail}`.replace(/\.(\d)00/g, '.$1'); };
 document.getElementById('ui').innerHTML = [96, 64, 32].map(px => `<div>${tile(px, master)}scaled · ${px}</div>`).join('') + `<div style="width:1px;align-self:stretch;background:var(--line)"></div>` + [96, 64, 32].map(px => `<div>${tile(px, redraw(px))}redrawn · ${px}</div>`).join('');
 Sheet.frame({ n: '20', cat: 'UI · store', title: 'Icon readability at 150, 64 and 32 px', sub: 'An icon is judged at the size the player sees it, not the size it was painted. Two game icons and one UI icon, shrunk.',
-  supports: ['analytics-and-discovery.md §Icon and thumbnails (150 px check)', 'ui-design-figma.md §Patterns with sizes, §Export', 'blender-modeling-craft.md §Shape language (64 px silhouette test)'], sources: 'analytics-and-discovery.md, ui-design-figma.md ([community] store figures)' });
+  supports: ['icons-thumbnails-and-store-page.md §5 Icon craft and the 150/64/32 test, §3 Composition recipes', 'ui-design-figma.md §5 Icons (optical size)', 'ui-screen-recipes.md §1 Patterns with sizes'], sources: 'icons-thumbnails-and-store-page.md ([house] viewed sample of 62 icons), ui-design-figma.md' });
 </script></body></html>

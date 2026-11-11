@@ -327,7 +327,7 @@ Read: warning line, bolt, burst, residue: five beats in under 1.5 s `[community]
 
 | Layer | Build | Window |
 |---|---|---|
-| Warning line | Vertical `Beam`, Width 0.1, Transparency 0.7, LE 1, brightening | −300 to 0 |
+| Warning line | Vertical `Beam`, Width 0.3, Transparency 0.7 → 0.3, LE 1 | −300 to 0 |
 | Bolt (primary) | Crossed-ribbon mesh in 3 jagged variants shown 2 frames each, or 2–3 beams with fresh random curves per step; Width 1.2 → 0; white core, body colour edge | 0–100 |
 | Flash | `star4` at the ground, `PointLight` Brightness 6, Range 30, 60 ms; no full-screen flash by default | 0–60 |
 | Ground burst | `ring_drawn`, forking `spark_streak` sparks (Emit 8, Spd 30, Drag 10, Life 0.2) | 16–300 |

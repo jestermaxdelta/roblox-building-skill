@@ -3,7 +3,7 @@
 What this is: 49 checked references for learning to make stylised effects and for tooling a Roblox VFX pipeline: principle courses and talks, texture techniques, official Roblox pages and staff posts, community tutorials and workflows, plugins and libraries with the licence that was read, and texture sources. The rules they support live in `references/vfx-and-juice.md`; builds are in `references/vfx-recipes.md`; reference images are in `vfx.md`.
 
 How to use this file:
-- Beginners: rows 1–3, then 20–23. Intermediate: rows 4–8 and 12–15, then build a recipe. Experts: rows 9–10, 16 and the staff posts 26–31 before changing a pipeline.
+- Beginners: rows 1–3, then 20–23. Intermediate: rows 4–8 and 12–15, then build a recipe. Experts: rows 9–10 and the staff posts 26–29 before changing a pipeline.
 - Evidence: `read` = the page, thread, README or licence file was read; `oembed` = the video exists with that title and creator, it was not watched, and the note comes from its title or the page that led to it; `search` = not opened. `[VS]` = depends on an API or feature that can change.
 - These are references to study, not assets to copy. Tool rows state the licence that was read, or say "licence not verified". House rule 1 applies to anything a pack or plugin library contains: effect **meshes** that ship are modelled in Blender for the game; textures from a pack need a licence you have read; nothing AI-generated ships. Accessed 2026-11-11.
 

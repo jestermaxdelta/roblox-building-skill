@@ -9,14 +9,14 @@
 </style></head><body>
 <div class="sheet">
   <div class="shots" id="shots"></div>
-  <div class="note mt6">Distances are for the default vertical FOV of 70° and for FOV 40°, from <b>distance = visible height ÷ (2 × tan(FOV ÷ 2))</b>: the visible height is 1.40 × distance at FOV 70 and 0.73 × distance at FOV 40. Avatar: classic R15, about 5 studs tall. Close shots work better with a narrower FOV from further back: at FOV 70 the camera would sit about 1 stud from the face.</div>
+  <div class="note mt6"><b>Distance = frame height ÷ (2 × tan(FOV ÷ 2))</b>; the guide's table also lists cowboy (5 studs), medium close (3) and extreme wide (50+), and FOV 30 and 50. Lens defaults: establishing <span class="v">55–70</span>, action <span class="v">45–60</span>, dialogue and reveals <span class="v">35–45</span>, close-ups <span class="v">25–40</span>. A close-up at FOV 70 puts the camera 1.4 studs from the face: distorted, and one step from clipping through it. Between shots of one subject, change size by two steps and angle by 30° or more.</div>
   <div class="row mt">
     <div class="card" style="flex:0 0 250px"><h3>Field of view by screen shape</h3><div id="fov"></div>
-      <div class="cap">Vertical FOV is fixed (default 70°, clamped 1–120). The horizontal view grows with the aspect ratio, so a phone sees more at the sides. Frame for 16:9; check 19.5:9 for what must stay hidden and 4:3 for what must stay in shot.</div></div>
+      <div class="cap">Vertical FOV is fixed (default 70°, clamped 1–120), so width changes by device. Compose inside the centre 4:3 area and treat the sides as a bonus; check that nothing unfinished shows at the phone's width.</div></div>
     <div class="card grow"><h3>Lead room and headroom</h3>
       <div class="row" style="gap:10px"><div class="mini grow" id="lead1"></div><div class="mini grow" id="lead2"></div></div>
       <div class="row" style="gap:10px"><div class="cap grow"><span class="chip good">reads</span> Subject on a third, looking and moving into the open two-thirds. Eyes near the upper third line.</div><div class="cap grow"><span class="chip bad">cramped</span> Nose against the frame edge, empty space behind, head centred with dead space above.</div></div>
-      <div class="cap">The arrow is the look or travel direction. Faster subjects need more lead room; keep the place they are heading for in frame. On a phone the sides are wider, so check the 16:9 crop inside the 19.5:9 frame.</div></div>
+      <div class="cap">The arrow is the look or travel direction: leave more space in front of it than behind, keep eyes near the upper third, and do not centre everything. Letterbox bars only while controls are off, capped at 10% of height per bar.</div></div>
   </div>
   <div class="row mt">
     <div class="card" style="flex:0 0 440px"><h3>The 180-degree line</h3>
@@ -24,12 +24,12 @@
         <div class="col" style="gap:6px"><div class="mini" id="la"></div><div class="cap" style="margin-top:0">Cameras 1, 2, 3: A stays screen-left.</div><div class="mini" id="lx"></div><div class="cap" style="margin-top:0">Camera X: A and B swap sides. The cut reads as a teleport.</div></div></div>
       <div class="cap">Draw a line through the two subjects (or along the direction of travel) and keep every camera of the scene on one side of it. Cross it only with a visible move or a neutral shot on the line.</div></div>
     <div class="card grow"><h3>Roblox cutscene rules</h3><div class="legend one">
-      <div class="li"><div><b>Client-local</b>, never freezing other players; actors are local clones.</div></div>
-      <div class="li"><div><b>Skippable after about 2 s</b>; skipping grants exactly what watching grants.</div></div>
-      <div class="li"><div><b>Restore on every exit</b> (death, respawn, error, watchdog): camera type, FOV, HUD, input.</div></div>
-      <div class="li"><div><b>Cuts over whip pans</b>; under reduced motion, cuts and fades only.</div></div>
-      <div class="li"><div><b>FOV changes over about 10–15°</b> need the reduced-motion variant. One module owns Camera.FieldOfView.</div></div>
-      <div class="li"><div><b>Shake scales with FOV:</b> 1° of rotation moves the image 1.25% of screen height at FOV 70 and 2.4% at FOV 40.</div></div></div></div>
+      <div class="li"><div><b>Client-only</b>; actors are local clones; game state changes on the server first.</div></div>
+      <div class="li"><div><b>Skip</b> on every scene over 2 s; the control appears after <span class="v">1–2 s</span>, bottom-right, thumb size.</div></div>
+      <div class="li"><div><b>One restore function</b> for every exit (finished, skipped, died, error, watchdog): camera, FOV, controls, HUD.</div></div>
+      <div class="li"><div><b>Comfort:</b> pans under <span class="v">30°/s</span> (cut instead of a whip pan), no roll while moving, FOV change <span class="v">≤ 15°</span> over 0.5 s or more.</div></div>
+      <div class="li"><div><b>Reduced motion:</b> hold each shot at its final framing and cut; no shake, drift or FOV animation.</div></div>
+      <div class="li"><div><b>Near plane:</b> keep the camera 1.5 studs or more from any surface it passes.</div></div></div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
@@ -45,9 +45,9 @@ function actor(x, dir = 1, c = {}) {
 const world = () => `<rect x="-2000" y="-2000" width="4000" height="2000" fill="#A9CBDD"/><path d="M-600 0L-420 -150L-300 -60L-140 -210L60 -40L220 -170L420 -30L600 -120L600 0Z" fill="#8FB3A8"/><rect x="-2000" y="0" width="4000" height="600" fill="#6A9777"/>
   <rect x="150" y="-160" width="46" height="160" fill="#C9B79A" stroke="#1A1F2B" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M140 -160L173 -205L206 -160Z" fill="#B5553A" stroke="#1A1F2B" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
 function view(cx, top, h, w, hpx, kids) { const vw = h * 16 / 9; return `<svg width="${w}" height="${hpx}" viewBox="${(cx - vw / 2).toFixed(1)} ${top.toFixed(1)} ${vw.toFixed(1)} ${h.toFixed(1)}" preserveAspectRatio="xMidYMid slice">${world()}${kids}</svg>`; }
-const d = (h, fov) => (h / (2 * Math.tan(fov * Math.PI / 360))).toFixed(1);
-const shots = [['Wide (establishing)', 250, -205, 'Where we are. Avatar about a fifth of the frame; landmark in shot.', 30], ['Full', 65, -58, 'Who and what they do. Head to toe with headroom.', 0], ['Medium', 32, -57, 'Dialogue and gestures. Waist up.', 0], ['Close-up', 18, -56, 'Reaction. Head and shoulders.', 0], ['Extreme close-up', 8, -51.5, 'One detail: eyes, a key, a button.', 1.5]];
-document.getElementById('shots').innerHTML = shots.map(s => `<div class="shot">${view(s[4], s[2], s[1], 136, 76.5, actor(0))}<h2>${s[0]}</h2><p>${s[3]}</p><div class="d">${(s[1] / 10).toFixed(1)} studs visible<br>${d(s[1] / 10, 70)} studs at FOV 70<br>${d(s[1] / 10, 40)} studs at FOV 40</div></div>`).join('');
+const d = (h, fov) => { const v = h / (2 * Math.tan(fov * Math.PI / 360)); return v >= 10 ? v.toFixed(0) : v.toFixed(1); };
+const shots = [['Wide', 150, -112, 'Establish who is where. Avatar about a third of the frame.', 30], ['Full', 65, -58, 'Outfit, pet, pose, action. Head to feet with air.', 0], ['Medium', 40, -57, 'Dialogue, reactions. Waist up.', 0], ['Close', 20, -55, 'Emotion, the roar. Head and shoulders.', 0], ['Extreme close', 8, -51.5, 'Eyes or a prop. Props and hands only: it exposes low-polygon faces.', 1.5]];
+document.getElementById('shots').innerHTML = shots.map(s => `<div class="shot">${view(s[4], s[2], s[1], 136, 76.5, actor(0))}<h2>${s[0]}</h2><p>${s[3]}</p><div class="d">frame height ${s[1] / 10} studs<br>${d(s[1] / 10, 70)} studs at FOV 70<br>${d(s[1] / 10, 40)} studs at FOV 40</div></div>`).join('');
 // FOV wedges
 const hf = [[113, '19.5:9 phone', '#F3C9BC'], [102, '16:9', '#E8957C'], [86, '4:3 tablet', '#DD4F27']];
 let f = ''; const ox = 113, oy = 132, R = 112;
@@ -69,5 +69,5 @@ document.getElementById('line').innerHTML = `<svg width="210" height="170" viewB
 const two = (flip) => { const a = flip ? 26 : -26; return `<svg width="170" height="62" viewBox="-80 -62 160 58">${world()}${actor(a, flip ? -1 : 1)}${actor(-a, flip ? 1 : -1, { top: '#B5553A' })}</svg>`; };
 document.getElementById('la').innerHTML = two(false); document.getElementById('lx').innerHTML = two(true);
 Sheet.frame({ n: '13', cat: 'Camera', title: 'Camera shot vocabulary for cutscenes', sub: 'Shot sizes on an avatar with the camera distance that produces them, field of view by screen shape, lead room, and the 180-degree line.',
-  supports: ['animation-and-rigs.md §10 Cutscenes', 'game-craft.md §3 Camera', 'level-design-worldbuilding.md §2 (screen maths)', 'accessibility-and-player-qol.md §5 Motion'], sources: 'the guides listed; shot names and the 180-degree rule are film convention' });
+  supports: ['cutscenes-and-cinematics.md §4 Shot vocabulary for Roblox avatars, §5 Comfort limits, §8 Skip and reduced motion', 'level-design-worldbuilding.md §2 (screen maths)'], sources: 'cutscenes-and-cinematics.md ([house] table, computed)' });
 </script></body></html>

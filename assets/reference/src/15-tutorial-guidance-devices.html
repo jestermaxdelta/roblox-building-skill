@@ -16,18 +16,18 @@ table.spec td{padding-top:5px;padding-bottom:5px}
   <div class="wrap">
     <div class="stage scaled" style="transform:scale(.93)" data-lint="nosize">
       <div id="bg"></div>
-      <div class="obj"><span class="key">E</span> Open the supply chest</div>
+      <div class="obj"><span class="key">E</span> Open the chest</div>
       <div class="tracker">Open the chest<div class="bar"><i></i></div></div>
       <div id="menu"></div>
       <div class="stick"></div><div class="jump"></div>
     </div>
     <div id="pins"></div>
   </div>
-  <div class="rule-box mt" style="border-color:var(--accent)"><b style="color:var(--accent)">Shown together for reference only.</b> In a game, <b>one pointer at a time</b>: two pointers and the player follows neither. Pick the device from the table, show it for the current step, remove it when the step completes.</div>
+  <div class="rule-box mt" style="border-color:var(--accent)"><b style="color:var(--accent)">Shown together for reference only.</b> In a game, <b>one pointer and one pulse at a time</b>: with two, players follow neither. Pick the device from the table, show it for the current step, remove it when the step completes.</div>
   <div class="card mt"><table class="spec" id="tbl"></table></div>
   <div class="g3 mt">
-    <div class="card"><h3>When help appears</h3><div class="note">Try first, help later: <b>hintAfter</b> <span class="v">6–10 s</span> without progress (or "when most players have acted, + 1 s"). Progress resets the timer. Guidance stops once the player has done it unaided.</div></div>
-    <div class="card"><h3>The objective line</h3><div class="note">Verb + object, <span class="v">8 words or fewer</span>, the control named for the device in use (tap icon, E, gamepad glyph). Never over the play area. One step, one line.</div></div>
+    <div class="card"><h3>When help appears</h3><div class="note">Timed hint: delay = the time most players need <span class="v">+ 1 s</span> (docs example: most act by 10 s, hint at 11 s). It appears once, after a stall, and goes on progress. Guidance stops once the player has done it unaided.</div></div>
+    <div class="card"><h3>The objective line</h3><div class="note">Verb + object in <span class="v">2–5 words</span>; <span class="v">8 or fewer</span> words on screen at any moment; one- and two-syllable words a 7-year-old reads. The control token is resolved for the device in use.</div></div>
     <div class="card"><h3>Fix the space first</h3><div class="note">Target: about <span class="v">80%</span> of first-time players find the critical path without UI. If fewer do, change light, openings and path value before adding arrows.</div></div>
   </div>
 </div>
@@ -52,16 +52,16 @@ document.getElementById('menu').innerHTML = `<div class="mbtn lip" style="left:3
 const pins = [[1, 242, 73], [2, 436, 130], [3, 372, 256], [4, 430, 206], [5, 638, 238], [6, 770, 232], [7, 112, 122], [8, 560, 108]];
 document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x * S - 9.5}px;top:${y * S - 9.5}px">${n}</span>`).join('');
 const rows = [
-  ['Objective line', 'Every guided step', 'It covers the play area, or names the wrong device\'s control'],
-  ['World arrow', 'The target is in view but not obvious; a Blender mesh above head height or beside the route', 'Its collision could block the path; several targets at once'],
-  ['Beam from the character', 'The target is off-screen or far', 'The target is already in view'],
-  ['Highlight on the target', 'One interactable among look-alikes', 'Several targets at once: one per step, and the engine caps live highlights'],
-  ['ProximityPrompt', '"Walk up and press" is the verb; the prompt sits on the object at chest height', 'A HUD button performs the action'],
-  ['Off-screen pointer', 'Fallback: the player has been stationary or off-route for a while', 'From minute one, or while the route is readable from the space'],
-  ['Pulse or hand on a HUD button', 'The target is a GUI element; the world pointer stays off', 'World targets; under reduced motion the pulse stops (keep the hand)'],
-  ['Quest tracker', 'Persistent progress: 1–3 lines, folded by default on phones', 'It is the only place the current step is explained'],
+  ['Objective line', 'Every guided step: 2–5 words, the control named for the device in use', 'It covers the play area, or shows the wrong device\'s key'],
+  ['Marker over the target', 'The target is visible among look-alikes: a bobbing Blender arrow above head height, or a billboard icon that stays ≥ 44 px', 'Its collision is on; several targets at once. The bob stops under reduced motion'],
+  ['World beam, character to target', 'The target is far or out of view; switch it off within about 10 studs', 'The target is already in view; a straight beam through walls'],
+  ['Highlight on the target', 'One interactable among look-alikes; one reused instance, FillTransparency 0.7 or more, occluded', 'Several targets at once; the engine caps highlights at 255 and ignores extras silently'],
+  ['ProximityPrompt', '"Walk up and press" is the verb; HoldDuration 0 for a first interaction', 'A HUD button does the action: use the pulse instead'],
+  ['Screen-edge pointer', 'The target is off-screen or behind the camera; clamped inside a margin, rotated toward the target', 'The target is on screen: hide it at once and let the world marker take over'],
+  ['Pulse or hand on a button', 'A GUI target: scale 1 → 1.08 about once a second, or a tapping-hand sprite', 'World targets; more than one on screen. Static outline under reduced motion'],
+  ['Quest tracker line', 'Always: the verb and the count ("Open the chest 0/1")', 'It is the only cue for a first verb'],
 ];
 document.getElementById('tbl').innerHTML = `<tr><th style="width:26px"></th><th style="width:170px">Device</th><th>Use when</th><th style="width:262px">Avoid when</th></tr>` + rows.map((r, i) => `<tr><td><span class="pin">${i + 1}</span></td><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
 Sheet.frame({ n: '15', cat: 'Onboarding', title: 'Tutorial guidance devices', sub: 'Eight ways to point at the next action, in one annotated scene, with when each one is the right tool. Steps are data; the client only draws guidance.',
-  supports: ['core-loop-tuning.md §3 Building the tutorial (guidance tools)', 'level-design-worldbuilding.md §5 Wayfinding', 'vfx-and-juice.md §3 Beam, §4 Highlight'], sources: 'core-loop-tuning.md, level-design-worldbuilding.md' });
+  supports: ['tutorial-and-onboarding.md §5 Guidance devices, §3 Teaching patterns, §7 Copy for children', 'level-design-worldbuilding.md §5 Landmarks, sightlines and wayfinding'], sources: 'tutorial-and-onboarding.md, level-design-worldbuilding.md' });
 </script></body></html>

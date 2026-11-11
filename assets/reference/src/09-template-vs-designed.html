@@ -32,7 +32,7 @@
     <table class="spec" id="tbl"></table></div>
   <div class="row mt">
     <div class="card grow"><h3>Why the left one reads as a template</h3><div class="note">Nothing in it was decided: every value is what Studio inserts. Players have seen these exact greys, this font and these 1 px borders in hundreds of free models, so the game inherits their reputation before it is played.</div></div>
-    <div class="card grow"><h3>What "designed" means here</h3><div class="note">Not more decoration. Fewer, repeated decisions: one radius family, one outline colour, one accent on the one action, states that tell the player where they are. Copy this method, not this skin: each game derives its own tokens.</div></div>
+    <div class="card grow"><h3>What "designed" means here</h3><div class="note">Not more decoration. Fewer, repeated decisions: one radius family, one outline weight, one filled action, states that tell the player where they are. Thin saturated strokes on dark translucent panels and a panel behind every number are what reviewers now call the AI look. Copy this method, not this skin: each game derives its own tokens.</div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
@@ -51,16 +51,16 @@ const pin = (n, x, y) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y
 document.getElementById('p1').innerHTML = [[1, 22, 20], [2, 250, 34], [3, 344, 36], [4, 36, 124], [5, 236, 212], [6, 180, 176]].map(a => pin(...a)).join('');
 document.getElementById('p2').innerHTML = [[1, 14, 12], [2, 276, 34], [3, 346, 60], [4, 30, 132], [5, 28, 224], [6, 176, 127]].map(a => pin(...a)).join('');
 const rows = [
-  ['Panel', 'BackgroundColor3 (163,162,165), BorderSizePixel 1, square corners', 'Surface token, UICorner L 16, UIStroke 3 px in the one outline colour; full-screen dim behind at 0.5–0.6'],
-  ['Title', 'A centred TextLabel in the default font, TextScaled', 'Header 44–48 px in the window\'s signature colour, icon + Display 28–32 title in the display family'],
+  ['Panel', 'BackgroundColor3 (163,162,165), BorderSizePixel 1, square corners', 'Surface token, UICorner 16, UIStroke Outer 3 in the one Outline colour; content areas radius 4 (16 − 12 padding); full-screen dim behind at 0.5–0.6'],
+  ['Title', 'A centred TextLabel in the default font, TextScaled', 'Header 44–48 px in the destination\'s colour, icon + Display 30 title in the display family'],
   ['Close', '"X" TextButton, 20 px, unstyled', 'Shared red component, ≥ 44 px, about 1.1 × header height, anchored to the header; also B and Escape'],
   ['Cards', 'Seven identical grey boxes: no state, no hierarchy', 'States: claimed (tick, dimmed), today (lightest plate + ring), later (locked look). The last card is visibly larger'],
-  ['Primary action', 'Same grey as everything else, 26 px tall', 'The only accent on the screen: full width, ≥ 44 px, lip 4–6 px, pressed and pending states'],
-  ['Spacing', 'Whatever the mouse left: 6, 9, 14 px', '8 px grid: padding 16, gaps 8; inner radius = outer radius − padding'],
+  ['Primary action', 'Same grey as everything else, 26 px tall', 'The one filled action on the screen: full width, ≥ 44 px, lip 5 px, pressed and pending states'],
+  ['Spacing', 'Whatever the mouse left: 6, 9, 14 px', 'Base unit 4: panel padding 16, gaps 8, layouts instead of hand placement; inner radius = outer radius − padding'],
 ];
 document.getElementById('tbl').innerHTML = `<tr><th style="width:26px"></th><th style="width:104px">Element</th><th style="width:240px">Template</th><th>Designed</th></tr>` + rows.map((r, i) => `<tr><td><span class="pin">${i + 1}</span></td><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')
   + `<tr><td></td><td><b>Motion</b></td><td>Visible = true; numbers snap</td><td>enter 0.18–0.26 s (scale from 0.90–0.92 + fade), exit 0.10–0.15 s; counters count up</td></tr>`
-  + `<tr><td></td><td><b>Type</b></td><td>One size everywhere, or TextScaled on every label</td><td>Fixed scale: 28–32 / 22–24 / 16 / 14; two families at most</td></tr>`;
+  + `<tr><td></td><td><b>Type</b></td><td>One size everywhere, or TextScaled on every label</td><td>Fixed scale 30 / 24 / 20 / 16 / 14, at most 4 sizes per screen; two families</td></tr>`;
 Sheet.frame({ n: '09', cat: 'UI', title: 'Template look versus designed look', sub: 'One daily-rewards panel built twice with the same content. The difference is a short list of properties, not artistic talent.',
-  supports: ['ui-design-figma.md §Generic-UI tells and fixes, §Daily rewards, §Design system and tokens'], sources: 'ui-design-figma.md' });
+  supports: ['ui-design-figma.md §8 Generic and AI-look tells, §6 Construction recipes, §2 Grid and spacing', 'ui-screen-recipes.md §9 Daily rewards', 'ui-motion-and-feedback.md §2 Motion tokens'], sources: 'ui-design-figma.md, ui-screen-recipes.md' });
 </script></body></html>

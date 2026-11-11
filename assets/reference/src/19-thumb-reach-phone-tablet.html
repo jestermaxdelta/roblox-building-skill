@@ -1,46 +1,44 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>19 Thumb reach on phone and tablet</title><link rel="stylesheet" href="sheet.css">
 <style>.key{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--ink2);margin-top:8px}.key span{display:flex;align-items:center;gap:6px}.key i{width:16px;height:12px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.2)}</style></head><body>
 <div class="sheet">
-  <div class="card"><h3>Two devices at the same physical scale (1 mm = 2 px here), held in two hands with thumbs on the stick and the jump button</h3>
+  <div class="card"><h3>Two devices at the same physical scale (1 mm = 2 px here): the zone map from the guide on both</h3>
     <div id="dev"></div>
-    <div class="key"><span><i style="background:#8FD3A8"></i>easy: thumb rests here</span><span><i style="background:#F3D58A"></i>stretch: reachable, slower</span><span><i style="background:#E6E1D5"></i>needs a grip shift: read-only content</span><span><i style="background:none;border:1.5px dashed #1A1F2B"></i>reserved by the stick and jump button</span><span><i style="background:#DD4F27;border-radius:50%;width:12px"></i>the same button, 40% from the top</span></div></div>
+    <div class="key"><span><i style="background:#F3D58A"></i>right thumb arc: about 0.9 × the phone's height</span><span><i style="background:#8FD3A8"></i>inner arc: least effort (illustrative)</span><span><i style="background:#E6E1D5"></i>outside the arc: read-only content</span><span><i style="background:none;border:1.5px dashed #1A1F2B"></i>thumbstick touch area: left 40% × lower two thirds</span><span><i style="background:#fff;border-radius:50%;width:12px;border:1.5px solid #1A1F2B"></i>jump button</span><span><i style="background:#DD4F27;border-radius:50%;width:12px"></i>the same button, 40% from the top</span></div></div>
   <div class="g3 mt">
-    <div class="card"><h3>What the picture says</h3><div class="note">A button 40% from the top is within easy reach on a phone and far outside any reach on a tablet. <b>Place frequent actions relative to the jump button</b> (for example 20 px to its left, 0.8 × its size), never by screen percentage.</div></div>
-    <div class="card"><h3>Where things go</h3><div class="note"><b>Easy:</b> the primary action and one or two frequent buttons, outside the reserved zones. <b>Stretch:</b> the menu column, tracker toggle. <b>Out of reach:</b> status only: objective, timer, currencies, toasts.</div></div>
-    <div class="card"><h3>Limits of this sheet</h3><div class="note">Reach radii are illustrative (about 45 and 70 mm from the grip), not measured Roblox data. The emulator does not show real thumbs: check on the real 3 GB Android phone and one tablet, with chat open.</div></div>
+    <div class="card"><h3>What the picture says</h3><div class="note">A button 40% from the top is inside the right thumb's arc on a phone and far outside it on a tablet: the arc is the same hand, so it covers under half the fraction of a tablet. <b>Place frequent actions relative to the jump button</b> (centre at jump.X − 0.6 × jump size − 8, size 0.8–1.0 × jump), never by screen percentage.</div></div>
+    <div class="card"><h3>Where things go</h3><div class="note"><b>Inside the arc:</b> the primary action left of jump; up to 3 secondary actions on an arc about 1.3 × the jump size from its centre. <b>Right edge above jump:</b> the menu block. <b>Top centre (0.3–0.7 W):</b> status only.</div></div>
+    <div class="card"><h3>Limits of this sheet</h3><div class="note">Device sizes and the inner arc are illustrative; the outer arc uses the guide's 0.9 H of a phone, a rough figure. The emulator does not show real thumbs: check on the real 3 GB Android phone and one tablet, with chat open.</div></div>
   </div>
   <div class="row mt">
-    <div class="card grow"><h3>Detecting the layout</h3><div class="note">Phones report short sides of about <span class="v">360–430 px</span> in landscape, the smallest tablets about <span class="v">600</span>. A workable phone test: touch input with a short side under about <span class="v">520 px</span>. Use <b>PreferredInput</b>, not TouchEnabled, to decide whether touch controls show.</div></div>
-    <div class="card grow"><h3>Reserved zones</h3><div class="note">The dynamic thumbstick covers about <span class="v">20–25%</span> of the left side; a button beside it gets opened by accident. The default jump button is about <span class="v">70 px</span> on small screens and about 120 px on large ones: read it at runtime. The right half is also the camera-drag area.</div></div>
+    <div class="card grow"><h3>Which layout am I on</h3><div class="note">Roblox itself switches the jump button at a short side of <span class="v">500 px</span>. Decide whether touch controls show with <b>PreferredInput</b>, not TouchEnabled (touch laptops). Design at Phone-S 800×360 first, then check 667×375, 844×390 and the 1024×768 tablet frame.</div></div>
+    <div class="card grow"><h3>Reserved zones</h3><div class="note">A touch that starts in the left <span class="v">40%</span> × lower <span class="v">two thirds</span> starts the stick, so buttons there get pressed by accident. Jump is <span class="v">70 px</span> when the short side is ≤ 500 px (95 and 90 px from the corner), else <span class="v">120 px</span> (170 and 210 px). Keep an 8 px moat; read live sizes at runtime.</div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
 <script>
 const E = Sheet.el, T = Sheet.txt, k = 2;
-function device(x, y, wmm, hmm, name, sub) {
-  const w = wmm * k, h = hmm * k, id = name.replace(/\W/g, '');
-  const grips = [[x + 6 * k, y + h + 4 * k], [x + w - 6 * k, y + h + 4 * k]];
+// pxmm = screen points per mm (phone 360 pt over 65 mm; tablet 768 pt over 143 mm); jump = [size, left, top] in points from the bottom-right corner
+function device(x, y, wmm, hmm, name, sub, pxmm, jump) {
+  const w = wmm * k, h = hmm * k, id = name.replace(/\W/g, ''), R = 58; // right thumb arc: about 0.9 x the phone's height = 58 mm
   let s = `<clipPath id="c${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10"/></clipPath><rect x="${x - 5}" y="${y - 5}" width="${w + 10}" height="${h + 10}" rx="14" fill="#1A1F2B"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#E6E1D5"/><g clip-path="url(#c${id})">`;
-  grips.forEach(g => s += `<circle cx="${g[0]}" cy="${g[1]}" r="${70 * k}" fill="#F3D58A"/>`);
-  grips.forEach(g => s += `<circle cx="${g[0]}" cy="${g[1]}" r="${45 * k}" fill="#8FD3A8"/>`);
-  // reserved zones: stick (bottom-left, about 22% of width) and jump
-  const zw = Math.min(w * 0.22, 46 * k), zh = Math.min(h * 0.42, 34 * k);
-  s += `<rect x="${x + 4}" y="${y + h - zh - 4}" width="${zw}" height="${zh}" rx="6" fill="rgba(26,31,43,.12)" stroke="#1A1F2B" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${x + 4 + zw / 2}" cy="${y + h - zh / 2 - 4}" r="${9 * k}" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
-  s += `<rect x="${x + w - 30 * k - 4}" y="${y + h - 30 * k - 4}" width="${30 * k}" height="${30 * k}" rx="6" fill="rgba(26,31,43,.12)" stroke="#1A1F2B" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${x + w - 15 * k - 4}" cy="${y + h - 15 * k - 4}" r="${7.5 * k}" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
-  // top-centre status
-  s += `<rect x="${x + w / 2 - 22 * k}" y="${y + 6 * k}" width="${44 * k}" height="${6 * k}" rx="${3 * k}" fill="#788294"/>`;
-  // the 40% button near the right edge
+  s += `<circle cx="${x + w}" cy="${y + h}" r="${R * k}" fill="#F3D58A"/><circle cx="${x + w}" cy="${y + h}" r="${R * 0.6 * k}" fill="#8FD3A8"/>`;
+  // thumbstick touch area: left 40% of the width x lower two thirds of the height
+  s += `<rect x="${x + 3}" y="${y + h / 3}" width="${w * 0.4 - 3}" height="${h * 2 / 3 - 3}" rx="6" fill="rgba(26,31,43,.12)" stroke="#1A1F2B" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${x + w * 0.16}" cy="${y + h * 0.7}" r="${9 * k}" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
+  const js = jump[0] / pxmm * k, jl = jump[1] / pxmm * k, jt = jump[2] / pxmm * k;
+  s += `<circle cx="${x + w - jl + js / 2}" cy="${y + h - jt + js / 2}" r="${js / 2}" fill="rgba(255,255,255,.55)" stroke="#1A1F2B" stroke-width="1.5"/>`;
+  s += `<rect x="${x + w / 2 - 22 * k}" y="${y + 5 * k}" width="${44 * k}" height="${6 * k}" rx="${3 * k}" fill="#788294"/>`;
   const bx = x + w - 12 * k, by = y + h * 0.4;
   s += `<circle cx="${bx}" cy="${by}" r="${5 * k}" fill="#DD4F27" stroke="#1A1F2B" stroke-width="1.5"/></g>`;
-  const dist = Math.hypot(bx - grips[1][0], by - grips[1][1]) / k;
-  s += `<path d="M${grips[1][0]} ${y + h}L${bx} ${by + 5 * k}" stroke="#1A1F2B" stroke-width="1.2" stroke-dasharray="3 3"/>`;
+  const dist = Math.hypot(bx - (x + w), by - (y + h)) / k;
+  s += `<path d="M${x + w} ${y + h}L${bx} ${by + 5 * k}" stroke="#1A1F2B" stroke-width="1.2" stroke-dasharray="3 3"/>`;
   s += T(x, y - 12, name, { fill: '#1A1F2B', 'font-weight': 700, 'font-size': 12 }) + T(x + w, y - 12, sub, { 'text-anchor': 'end' });
-  s += T(bx - 7 * k, by + 4, `${Math.round(dist)} mm from the grip`, { 'text-anchor': 'end', fill: '#1A1F2B', 'font-weight': 650 });
+  s += T(bx - 7 * k, by + 4, `${Math.round(dist)} mm from the corner`, { 'text-anchor': 'end', fill: '#1A1F2B', 'font-weight': 650 });
+  s += T(x + 10, y + h - 10, 'thumbstick touch area', { fill: '#1A1F2B', 'font-weight': 650 });
   return s;
 }
 const W = 716, H = 356;
-document.getElementById('dev').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${device(8, 206, 141, 65, 'Phone, 6.1 inch', '141 × 65 mm')}${device(8 + 282 + 34, 28, 191, 143, 'Tablet, 9.4 inch, 4:3', '191 × 143 mm')}
+document.getElementById('dev').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${device(8, 206, 141, 65, 'Phone, 6.1 inch', '141 × 65 mm', 360 / 65, [70, 95, 90])}${device(8 + 282 + 34, 28, 191, 143, 'Tablet, 9.4 inch, 4:3', '191 × 143 mm', 768 / 143, [120, 170, 210])}
   ${T(8, 60, 'status top-centre: read-only on both', {})}<path d="M150 66C200 86 300 60 440 44" fill="none" stroke="#788294" stroke-width="1.2" stroke-dasharray="3 3"/><path d="M118 66L140 214" fill="none" stroke="#788294" stroke-width="1.2" stroke-dasharray="3 3"/></svg>`;
-Sheet.frame({ n: '19', cat: 'UI · mobile', title: 'Thumb reach on phone and tablet', sub: 'Why percentage placement fails: the same layout on two devices drawn at real size, with the area each thumb can reach from a two-handed grip.',
-  supports: ['ui-input-crossplatform.md §Mobile layout (thumb reach, reserved zones)', 'ui-design-figma.md §Frames and scale'], sources: 'ui-input-crossplatform.md, ui-design-figma.md; reach radii illustrative' });
+Sheet.frame({ n: '19', cat: 'UI · mobile', title: 'Thumb reach on phone and tablet', sub: 'Why percentage placement fails: the same layout on two devices drawn at real size, with the reserved zones and the arc of the right thumb.',
+  supports: ['ui-input-crossplatform.md §Mobile layout and thumb zones', 'ui-design-figma.md §11 Frames and scale'], sources: 'ui-input-crossplatform.md ([official] zone map, read from PlayerModule)' });
 </script></body></html>

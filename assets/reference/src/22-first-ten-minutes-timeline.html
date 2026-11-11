@@ -14,19 +14,19 @@
   <div class="row mt">
     <div class="card grow"><h3>Not before minute 10 and a first win</h3><div class="note">No purchase prompt, no offer popup, no notification opt-in. At arrival: no menu, no play button, no cutscene. Offers begin only through the offer gate, after positive moments.</div></div>
     <div class="card grow"><h3>How to use it</h3><div class="note">Write your game's beats into this table, build exactly that, then time it with a stopwatch on a 3 GB Android phone. Log each beat as one custom event with seconds since Spawned, which gives time-to-beat as well as the funnel.</div></div>
-    <div class="card grow"><h3>Tutorial style</h3><div class="note">No forced tutorial; at most a skippable 3-step guided first loop. Teach each system when the player meets it. Hints go only to players who have not acted after most players have.</div></div>
+    <div class="card grow"><h3>Tutorial style</h3><div class="note">No forced tutorial; at most a soft-gated, skippable guided first loop of 3–7 steps, timed hints for the minority who stall. Teach each system when the player meets it. Hints go only to players who have not acted after most players have.</div></div>
   </div>
 </div>
 <script src="sheet.js"></script>
 <script>
 const E = Sheet.el, T = Sheet.txt;
 const beats = [
-  ['0–5 s', 'Arrive', 'Spawns in a playable area facing the verb target; the rest of the map streams in.', 'Spawned', 'Control takes over 10 s on the target phone', 5],
-  ['5–15 s', 'Call to action', 'One device-matched prompt on the one thing to do. Nothing else pulses.', '', 'Two or more things compete for attention', 15],
+  ['0–5 s', 'Arrive', 'Spawns in a playable area facing the verb target. No menu, play button or cutscene: 0 words on screen.', 'Spawned', 'Control takes over 10 s on the target phone', 5],
+  ['5–15 s', 'Call to action', 'One device-matched prompt on the one thing to do, 4 words or fewer. Nothing else pulses.', '', 'Two or more things compete for attention', 15],
   ['15–30 s', 'First rep', 'Player performs the verb: same-frame feedback, sound, number, first reward.', 'FirstAction · FirstReward', 'No reward by 30 s', 30],
   ['30–60 s', 'Repeat', '2–3 more reps. The goal bar appears already part-filled with real progress.', 'GoalBarShown', 'Player stops and looks around', 60],
   ['1–2 min', 'First upgrade', 'Bought or earned; a visible power change in the world (the aha).', 'FirstUpgrade', 'Upgrade is a menu stat with no visible effect', 120],
-  ['2–3 min', 'First choice', 'Two real options. A contextual tip only when the player meets the system.', 'FirstChoice', 'A third concept is taught before minute 2', 180],
+  ['2–3 min', 'First choice', 'Two real options. A contextual tip only when the player meets the system.', 'FirstChoice', 'A fourth concept is taught before minute 2', 180],
   ['3–5 min', 'Joy moment', 'A milestone with a designed celebration; first collection entry.', 'FirstCollect', 'Nothing memorable has happened by minute 5', 300],
   ['5–10 min', 'Meso goal', 'Completed; shows the next three goals (now, this session, long-term) and the return hook.', 'FirstWin · SawGoals', 'No visible next goal; dead time over 5 s', 600],
 ];
@@ -39,5 +39,5 @@ a += T(0, 50, 'Segments are equal width; time is not to scale. Half of the scrip
 document.getElementById('axis').innerHTML = `<svg width="${W}" height="54" viewBox="0 0 ${W} 54">${a}</svg>`;
 document.getElementById('beats').innerHTML = beats.map((b, i) => `<div class="b" style="border-top:4px solid ${cols[i]}"><div class="w">${b[0]}</div><h2>${b[1]}</h2><p>${b[2]}</p><p class="fail"><b class="fail">Fails when:</b> ${b[4]}</p>${b[3] ? `<span class="log">log ${b[3]}</span>` : ''}</div>`).join('');
 Sheet.frame({ n: '22', cat: 'Onboarding', title: 'The first ten minutes as a timeline', sub: 'Eight beats from spawn to the first meso goal, with what the game does, what to log and the observable failure for each.',
-  supports: ['core-loop-tuning.md §2 First-10-minutes script template', 'liveops-quests-retention.md (onboarding)', 'analytics-and-discovery.md (funnel step names)'], sources: 'core-loop-tuning.md ([official], [house] as tagged there)' });
+  supports: ['tutorial-and-onboarding.md §2 First-minute script format, §3 Teaching patterns, §9 Funnel', 'core-loop-tuning.md §2 (same beats)'], sources: 'tutorial-and-onboarding.md ([official], [house] as tagged there)' });
 </script></body></html>

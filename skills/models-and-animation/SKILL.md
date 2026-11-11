@@ -1,25 +1,28 @@
 ---
 name: models-and-animation
 description: "Create, fix and import 3D models and animation for Roblox using Blender. Use when the user says \"my models look bad / amateur / like free models\", \"the style doesn't match\", \"make a prop / building / vehicle / pet / character in Blender\", \"export to Roblox\", \"the mesh imports wrong / wrong size / no collision\", \"rig this\", or \"the animation is broken / doesn't play / looks stiff\"."
+argument-hint: "[the asset or animation]"
 ---
 
 # Blender models, import pipeline, rigs and animation
 
 Produce a cohesive, non-generic look from Blender and get it into Roblox correctly, with collision.
 
-This is one of the focused skills in the `roblox-dev` plugin. It loads a small set of instructions and points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
+One of the focused skills in the `roblox-dev` plugin: a short set of instructions that points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
 
 ## How to work
 
 Follow this loop every time. It exists so the user gets a fixed game, not a lecture.
 
-1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`), and any numbers the user gave. If there is no access yet, give a short first pass from what they said and ask for at most three things that would change the answer.
+1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
 2. **Diagnose.** Match what you see against the "Level-up: symptom → cause → fix" table in the reference for this topic. Name the cause in one sentence, with the evidence.
-3. **Recommend.** Give a short ranked list (impact × confidence ÷ effort), the option you recommend, and one bolder alternative. Pitch it at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
+3. **Recommend.** A short ranked list (impact × confidence ÷ effort), the option you recommend and one bolder alternative, pitched at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
 4. **Implement.** Do not stop at advice. Make the top changes in the same turn when you can reach the code or Studio. Pause and ask only before something hard to undo or outward-facing: publishing, changing save data or its schema, creating or repricing products, spending Robux or money, deleting the user's work, or a design choice that is truly the owner's taste.
 5. **Verify and report.** Check the work against the reference's review gate, playtest through the Studio MCP when it is connected, then say what changed, what was not verified, and which number will show whether it worked.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
+
+**Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
 ## What to read
 
@@ -27,14 +30,18 @@ On a live game, change it safely: note the baseline number, put the change behin
 |---|---|
 | Modelling craft: silhouette, bevels, colour, budgets, recipes, per-asset rubric, a first kit | `${CLAUDE_PLUGIN_ROOT}/references/blender-modeling-craft.md` |
 | Blender → GLB → Roblox: naming, export, collision authoring, textures, packages, import traps, symptom table | `${CLAUDE_PLUGIN_ROOT}/references/art-pipeline-blender.md` |
-| Rigs, animation, markers, replication, NPC animation at scale, bug table | `${CLAUDE_PLUGIN_ROOT}/references/animation-and-rigs.md` |
-| Shipped export scripts | `${CLAUDE_PLUGIN_ROOT}/scripts/README.md` |
+| Rigs, animation craft with frame counts, markers, replication, NPC animation at scale, stiff-animation tells, bug table | `${CLAUDE_PLUGIN_ROOT}/references/animation-and-rigs.md` |
+| What makes assets read as generic, and the style bible they must follow | `${CLAUDE_PLUGIN_ROOT}/references/art-direction-and-quality-bar.md` |
+| Shipped export and check scripts | `${CLAUDE_PLUGIN_ROOT}/scripts/README.md` |
 | Blender and Studio MCP servers and how to vet them | `${CLAUDE_PLUGIN_ROOT}/references/ai-toolchain-skills.md` |
+| Reference images: props, buildings, vehicles, creatures, characters | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/models-props-characters.md` |
+| Animation breakdowns and tutorials | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/animation.md` |
+| Bundled sheets: style-bible one-pager, attack frame data (18, 21) | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/reference-sheets.md` |
 
 ## Reading the references
 
-- Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file.
-- Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are practice from other developers, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
+- Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file. Anything not listed here: `${CLAUDE_PLUGIN_ROOT}/references/INDEX.md`.
+- Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
 - Luau in the references is unexecuted: adapt it, keep `--!strict`, test it.
 - Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
 
@@ -58,6 +65,7 @@ In a game that already breaks these, list each violation as a finding with a pla
 
 ## When it is really a different problem
 
-- If the placement and layout are the problem, not the assets: use the `world-and-lighting` skill.
+- If the placement, layout or overall look is the problem, not the assets: use the `world-and-lighting` skill.
+- If it is a cutscene or camera move: use the `cinematics` skill.
 - If the scene is too heavy: use the `performance` skill.
 - If it needs the whole picture (new game, genre choice, full plan): use the `roblox-game-design` skill.
