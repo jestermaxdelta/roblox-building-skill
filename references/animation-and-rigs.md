@@ -150,14 +150,14 @@ Frame numbers are at 30 fps (the editor grid; clips store seconds, so playback i
 | Frames | Pose | Rule |
 |---|---|---|
 | 0 | Idle, or the last pose of the previous attack | Chest or weapon already moves on f1 |
-| 1–4 | Anticipation: coil away from the target, weight on the back foot, weapon clear of the body outline | 2–5 f. In combos, hide wind-up N+1 inside follow-through N `[lihfolk]` |
+| 1–4 | Anticipation: coil away from the target, weight on the back foot, weapon clear of the body outline | 2–6 f. In combos, hide wind-up N+1 inside follow-through N `[lihfolk]` |
 | 5–6 | Strike: hips, then chest, then arm; the weapon covers most of its arc here | 1–3 f; `TrailOn` at 5. Add a breakdown key so the blade stays on the arc |
 | 7 | Contact with one frame of overshoot, arm at full extension | `Hit` marker at 0.20–0.27 s |
 | 8–9 | Hold the contact pose | 2–3 f; `TrailOff` |
 | 10–14 | Follow-through: weapon carries on, body settles, head arrives last | Slow out |
-| 15–22 | Recovery to a pose within a small angle of idle | `CancelOpen` marker (next combo hit may start) at about 70% of the clip `[lihfolk]`. Buffer lengths and the dodge-cancel lock are owned by `game-craft.md` §1.2 |
+| 15–22 | Recovery to a pose within a small angle of idle | `CancelOpen` marker (next combo hit may start) at about 70% of the clip `[lihfolk]`. The press it accepts is buffered 0.15–0.20 s, never above 0.30 s; that window and the dodge-cancel lock are owned by `game-craft.md` §1.2 |
 
-Variants `[lihfolk]`: **heavy** = wind-up 6–16 f with a held coil, strike 2–4, contact hold 3–4, recovery 10–25 (hit at 0.5–0.7 s, total 1.3–1.8 s; the player chose the delay); weight is frame count, so author heavy moves and creatures slow and never play a clip below 1×. **Enemy** = telegraph at least 14 f (0.45 s), boss 15 f (0.5 s), checked as `(Hit − Tele) / speed` for every attack in every phase. PvP moves meant to be reacted to need at least 8 f of startup (reaction time is about 0.25 s). Think in three columns for every move: startup, active, recovery `[community: fighting-game frame data]`. Hit-stop is runtime and never baked (`vfx-and-juice.md` §7).
+Variants `[lihfolk]`: **heavy** = wind-up 6–15 f with a held coil, strike 2–4, contact hold 3–4, recovery 10–20 (hit at about 0.4–0.7 s, total about 0.7–1.5 s; the player chose the delay); weight is frame count, so author heavy moves and creatures slow and never play a clip below 1×. **Enemy** = telegraph at least 14 f (0.45 s), boss 15 f (0.5 s), checked as `(Hit − Tele) / speed` for every attack in every phase. PvP moves meant to be reacted to need at least 8 f of startup (reaction time is about 0.25 s). Think in three columns for every move: startup, active, recovery `[community: fighting-game frame data]`. Hit-stop is runtime and never baked (`vfx-and-juice.md` §7).
 
 ### Recipe: hit reaction (6–10 f, 0.2–0.33 s)
 
@@ -197,7 +197,7 @@ Build in this order: Idle, Walk, Run, Jump, Fall, Land; add Climb, Swim and Swim
 | Limbs move, torso and head do not | Only arms and legs keyed | Key LowerTorso and UpperTorso: twist, lean, bob |
 | Even, floating motion | Two distant keys and default easing | Favour the keys; fast in, slow out; hold the contact |
 | Bouncy wobble at the end | Bounce or Elastic easing, or several overshoots | One overshoot frame, then Quad or Cubic out `[community]` |
-| Attack looks weak | No coil, no hold, no overshoot | 2–5 f anticipation, 2–3 f hold, 1 f overshoot, trail on the strike |
+| Attack looks weak | No coil, no hold, no overshoot | 2–6 f anticipation, 2–3 f hold, 1 f overshoot, trail on the strike |
 | Hand or blade cuts through the body or travels in a straight line | Missing breakdown | A breakdown key on the far side of the arc |
 | Pop to idle between actions | Clip ends far from the next start pose; zero fade | End near the pose that takes over (a finished one-shot holds its last pose and fades over about 0.3 s `[lihfolk]`); upper-body layers over locomotion |
 | Hitch once per loop | The editor does not interpolate from the last key to the first `[official]` | Copy the first keys to the last frame |

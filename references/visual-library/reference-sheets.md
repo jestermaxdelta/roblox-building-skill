@@ -86,4 +86,4 @@ Also viewed and left out: `Section2/UserFlowChart.jpg` (text too small to read a
 ## Sources and licences
 
 - Bundled sheets: original work made for this skill with HTML, SVG and a headless browser; no third-party artwork. Details, method credits and the rebuild command: `assets/reference/ATTRIBUTION.md`.
-- External images: © Roblox Corporation and, for game screenshots, their respective studios; from `Roblox/creator-docs` at commit `7cbffff7` (2026-11-10). Licence evidence and the decision not to bundle: `assets/reference/ATTRIBUTION.md`.
+- External images: © Roblox Corporation and, for game screenshots, their respective studios; from `Roblox/creator-docs` at commit `7cbffff7` (2026-11-10). All 30 paths answered on the docs asset host in a link check on 2026-11-11. Licence evidence and the decision not to bundle: `assets/reference/ATTRIBUTION.md`.

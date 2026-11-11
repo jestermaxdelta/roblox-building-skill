@@ -60,7 +60,7 @@ The texture spec page still says both "supports up to 4096×4096" and, under UV 
 
 ## Grid and pivots
 
-- One grid per project, written in the style bible: 5-stud grid (environmental-art curriculum), 16-stud for large architecture (Beyond the Dark), 4- or 8-stud sub-grid for props in town games.
+- One grid per project, written in the style bible. Architecture on 5, 8 or 16 studs (5 in the environmental-art curriculum, 16 in Beyond the Dark `[official]`; a 4-stud module cannot hold the 5-stud gameplay door); props and trims on a sub-grid of it (4 or 2).
 - Modular kit pivots at the front-lower corner so pieces snap edge to edge in 90° steps. Prop pivots where the prop attaches: bottom-centre for floor props, back-centre for wall props, top-centre for hanging props.
 - The export script moves each asset's origin to world (0,0,0) so Use Imported Pivot, Set Pivot to Scene Origin and Insert Using Scene Position agree.
 
@@ -248,7 +248,7 @@ Instancing rule `[official]`: MeshParts share a draw call only when they have th
 ## Style bible and lighting (pointers)
 
 - **Style bible**: the one-page template, the measurable form of each line, the tie-ins to UI, VFX, audio and writing, and the generic-look tells and anti-patterns are in `references/art-direction-and-quality-bar.md` (§6 and §2). This file needs four of its lines filled in before export: grid and pivots, texturing method, texel density and bevel widths.
-- **Lighting**: `references/lighting-and-atmosphere.md` owns `LightingStyle`, property ranges (§6), presets (§12, including the official curriculum values) and the low-end tests (§11). What the pipeline contributes: every fixture model carries a `Light_Att` marker just outside its shade, lights are added with `Shadows = false` by default, interior shells are at least 1 stud thick and sealed, vertex-colour AO is baked for the levels where shadows are off, and every asset is reviewed under the game's preset, never under default lighting.
+- **Lighting**: `references/lighting-and-atmosphere.md` owns `LightingStyle`, property ranges (§6), presets (§12), the official curriculum sample values (§5) and the low-end tests (§11). What the pipeline contributes: every fixture model carries a `Light_Att` marker just outside its shade, lights are added with `Shadows = false` by default, interior shells are at least 1 stud thick and sealed, vertex-colour AO is baked for the levels where shadows are off, and every asset is reviewed under the game's preset, never under default lighting.
 
 ## Asset acceptance checklist (per asset, pass or fail)
 
@@ -307,6 +307,6 @@ Accessed 2026-11-10; platform facts re-checked and DevForum posts read on 2026-1
 - https://github.com/Roblox/roblox-blender-plugin (read: README, package versioning)
 - https://github.com/jackTabsCode/asphalt (read: README note that the web API exposes no import settings)
 - Blender 5.2.3 LTS `bpy` wheel from PyPI (ran the scripts above; read `export_scene.gltf` option defaults)
-- Community threads (read): https://devforum.roblox.com/t/does-roblox-use-mesh-instancing/399564 (2019 answer that `MeshPart.Color` does not affect instancing) · https://devforum.roblox.com/t/can-roblox-import-empty-objects-from-blender/1893887 (2022: empties dropped by the FBX importer) · https://devforum.roblox.com/t/4933005 (2026-10: UI images above 1024² downscaled) · https://devforum.roblox.com/t/meshstreamingandimprovedlods-persistently-stuck-at-lowest-lod-level-for-all-meshes/4835534 and https://devforum.roblox.com/t/4742906 (bug reports with mesh streaming enabled; titles and opening posts)
+- Community threads (read): https://devforum.roblox.com/t/does-roblox-use-mesh-instancing/399564 (2019 answer that `MeshPart.Color` does not affect instancing) · https://devforum.roblox.com/t/1893887 (2022: empties dropped by the FBX importer) · https://devforum.roblox.com/t/4933005 (2026-10: UI images above 1024² downscaled) · https://devforum.roblox.com/t/meshstreamingandimprovedlods-persistently-stuck-at-lowest-lod-level-for-all-meshes/4835534 and https://devforum.roblox.com/t/4742906 (bug reports with mesh streaming enabled; titles and opening posts)
 - Search summaries only, not re-read: https://devforum.roblox.com/t/surface-appearance-loads-inconsistently-on-mobile-and-often-displays-at-very-low-quality-even-if-the-phone-allows-it/4530853 · https://projects.blender.org/blender/blender-addons/issues/96517 and https://blenderartists.org/t/geo-nodes-instances-to-real-instances/1409710 (Geometry Nodes instances and UVs on export)
 - Not verified: nothing here was imported into Studio. Open questions to settle on the first test import: whether `_Att` empties become Attachments, which glTF name lands on the MeshPart, and the `_COL` naming under the glTF node hierarchy. No 2026 triangle-limit increase was found.

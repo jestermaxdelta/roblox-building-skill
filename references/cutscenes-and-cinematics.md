@@ -369,7 +369,7 @@ What reaches `finish`: scene end, skip, death, character removal, teleport start
 
 ## 15. First-session intros that do not cost the first 30 seconds
 
-`core-loop-tuning.md` §2 sets the arrival beat at 0–5 s with no menu, no play button and no cutscene, and its case study removed a 27 s intro `[lihfolk]`. Community post-mortems of weak day-one retention keep pointing at the seconds before control, long loading screens first `[community]`. So the rule is zero non-interactive seconds before the first input. Ways to still arrive with style:
+`tutorial-and-onboarding.md` §2 sets the arrival beat at 0–5 s with no menu, no play button and no cutscene, and its case study (§12) disabled a 27 s intro `[lihfolk]`. Community post-mortems of weak day-one retention keep pointing at the seconds before control, long loading screens first `[community]`. So the rule is zero non-interactive seconds before the first input. Ways to still arrive with style:
 
 | Technique | Cost to the player | How |
 |---|---|---|
@@ -379,7 +379,7 @@ What reaches `finish`: scene end, skip, death, character removal, teleport start
 | Deferred story beat | Up to 8 s, skippable | After `FirstReward` (30–60 s in), when the player has a reason to care |
 | First boss or first chest reveal | 2–6 s | The first cinematic the player sees is a reward they caused |
 
-Measure it: log time from `Spawned` to `FirstAction` as an `FtueBeat` (`core-loop-tuning.md` §2) and compare variants in an experiment. Returning players never see an intro. The first-minute script and step funnel are owned by `tutorial-and-onboarding.md`.
+Measure it: log time from `Spawned` to `FirstAction` as an `FtueBeat` (`tutorial-and-onboarding.md` §2, instrumented in its §9) and compare variants in an experiment. Returning players never see an intro. The first-minute script and step funnel are owned by `tutorial-and-onboarding.md`.
 
 ## 16. In-engine trailers and marketing capture
 
@@ -478,5 +478,5 @@ Accessed 2026-11-11. "(read)" = opened and read; "(viewed)" = image looked at; "
 - StudioBinder: shot sizes https://www.studiobinder.com/blog/types-of-camera-shots-sizes-in-film/, the 180-degree rule https://www.studiobinder.com/blog/what-is-the-180-degree-rule-film/, camera movement https://www.studiobinder.com/blog/different-types-of-camera-movements-in-film/ (read; cheat-sheet images viewed). The 30-degree rule: Wikipedia summary (read).
 - GDC talks (oembed): John Nesky, "50 Game Camera Mistakes" https://www.youtube.com/watch?v=C7307qRmlMI; Squirrel Eiserloh, "Juicing Your Cameras With Math" https://www.youtube.com/watch?v=tu-Qe66AvtY; Simon Unger, "Animating Cameras for Games" https://www.youtube.com/watch?v=hP1Vz70WouE.
 - DOORS Seek reveal structure: game-guide articles (search summary); compilation video listed in the library file (oembed).
-- Sibling guides for `[lihfolk]` figures: `core-loop-tuning.md` §2–3, `genres/horror-coop-escape.md`, `accessibility-and-player-qol.md` §5–6. Game-page video policy and lifts: `icons-thumbnails-and-store-page.md` §9.
+- Sibling guides for `[lihfolk]` figures: `tutorial-and-onboarding.md` §2 and §11–12, `genres/horror-coop-escape.md`, `accessibility-and-player-qol.md` §5–6. Game-page video policy and lifts: `icons-thumbnails-and-store-page.md` §9.
 - Failed or not found: reddit.com not reachable; Wikipedia API rate-limited after two pages; no breakdown by the developers of DOORS, Pressure or Deepwoken of how their scenes are built was found; no official statement of a maximum length or file format for game-page videos in the mirrored docs.

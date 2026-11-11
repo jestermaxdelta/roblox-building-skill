@@ -430,7 +430,7 @@ Accessed 2026-11-10; platform facts re-read on 2026-11-11 against the `Roblox/cr
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/publish-games-and-places.md, kids-and-select.md, thumbnails.md (read)
 - https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary; GameAnalytics medians)
 - https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
-- GameAnalytics 2026 Roblox report percentiles (500+ titles above 1M MAU), as recorded in `references/liveops-quests-retention.md` from search summaries of https://www.gameanalytics.com/reports/2026-roblox-report
+- GameAnalytics 2026 Roblox Benchmark Report (500+ titles above 1M MAU), https://www.gameanalytics.com/reports/2026-roblox-report (read 2026-11-11; figures held in `references/analytics-and-discovery.md` §Benchmarks)
 - https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
 - https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 (read: 28-day window, QPTR replaced by PTR and first-play bounce); /t/improved-discovery-measurement-in-creator-analytics/4930122 (read: 12 Oct 2026 measurement change)
 - https://devforum.roblox.com/t/struggling-to-increase-ccu-for-new-game/3353917, /t/poor-stats-for-my-new-game-across-the-board/3413365, /t/help-with-improving-player-session-time/3554677, /t/looking-for-advice-on-improving-retention-for-a-wave-based-zombie-shooter/3307981 (search summaries)

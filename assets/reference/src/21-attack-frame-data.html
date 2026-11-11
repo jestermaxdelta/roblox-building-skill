@@ -7,13 +7,13 @@ table.spec td{white-space:nowrap}table.spec td:last-child{white-space:normal}</s
     <div class="card" style="flex:0 0 430px"><h3>Ranges at 30 fps</h3><table class="spec">
       <tr><th>Phase</th><th>Light</th><th>Heavy</th><th>Job</th></tr>
       <tr><td><b>React</b></td><td>1 f</td><td>1 f</td><td>Motion on the input frame</td></tr>
-      <tr><td><b>Wind-up</b></td><td>2–5 f</td><td>6–16 f</td><td>Anticipation; a held coil on heavies</td></tr>
+      <tr><td><b>Wind-up</b></td><td>2–6 f</td><td>6–15 f</td><td>Anticipation; a held coil on heavies</td></tr>
       <tr><td><b>Strike</b></td><td>1–3 f</td><td>2–4 f</td><td>Active frames; trail on</td></tr>
       <tr><td><b>Contact hold</b></td><td>2–3 f</td><td>3–4 f</td><td>Weight; hit-stop is added at runtime</td></tr>
       <tr><td><b>Follow-through</b></td><td>5 f</td><td>in recovery</td><td>Overlap: hips lead chest, chest leads arm</td></tr>
-      <tr><td><b>Recovery</b></td><td>8 f</td><td>10–25 f</td><td>Where feel lives; cancel windows</td></tr>
-      <tr><td><b>Hit lands</b></td><td>0.20–0.27 s</td><td>0.5–0.7 s</td><td></td></tr>
-      <tr><td><b>Total</b></td><td>22 f, 0.73 s</td><td>1.3–1.8 s</td><td></td></tr></table></div>
+      <tr><td><b>Recovery</b></td><td>8 f</td><td>10–20 f</td><td>Where feel lives; cancel windows</td></tr>
+      <tr><td><b>Hit lands</b></td><td>0.20–0.27 s</td><td>0.4–0.7 s</td><td></td></tr>
+      <tr><td><b>Total</b></td><td>22 f, 0.73 s</td><td>0.7–1.5 s</td><td></td></tr></table></div>
     <div class="col grow">
       <div class="card"><h3>Proportions of a light attack</h3><div id="prop"></div><div class="note mt6">Roughly 20–30% wind-up, 10–20% active, 50–70% recovery.</div></div>
       <div class="card"><h3>Who gets the anticipation</h3><div class="note"><b>Player:</b> motion on the input frame; wind-up is input delay, so keep it short and let a glint or sound anticipate. <b>Enemies:</b> telegraph ≥ 14 f (0.45 s), bosses ≥ 15 f, so players can react. <b>PvP</b> moves meant to be reacted to need ≥ 8 f startup (reaction time is about 0.25 s).</div></div>
