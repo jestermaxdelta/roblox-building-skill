@@ -1,0 +1,59 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>12 VFX shape and value language</title><link rel="stylesheet" href="sheet.css">
+<style>
+.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pair h2{margin-bottom:4px}
+.two{display:flex;gap:6px}.two svg{display:block;border-radius:7px}
+.cap2{display:flex;gap:6px;margin-top:4px}.cap2 span{flex:1;text-align:center}
+.pair p{font-size:11px;color:var(--ink2);margin-top:5px;line-height:1.36}
+.pal{display:grid;grid-template-columns:86px 46px repeat(6,1fr) 12px repeat(6,26px);gap:4px 4px;align-items:center;font-size:11px}
+.pal .h{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;text-align:center}
+.pal i{display:block;height:24px;border-radius:5px;border:1px solid rgba(0,0,0,.3)}
+.pal b{font-weight:650}
+.zt{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.zt svg{display:block;border-radius:7px}.zt div{font-size:10.5px;color:var(--ink2);text-align:center;line-height:1.3}
+</style></head><body>
+<div class="sheet">
+  <div class="pairs" id="pairs"></div>
+  <div class="card mt"><h3>Value first: one white-and-grey texture set, coloured at runtime through palette roles (example values)</h3>
+    <div class="pal" id="pal"></div>
+    <div class="note mt6">Right-hand block: the same roles in greyscale. Each row keeps the order hot &gt; glow &gt; main &gt; dark, so the effect reads with colour removed. White appears only as a thin core; one accent hue at most; hit colours that do not read as blood.</div></div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 470px"><h3>Test in the darkest and the brightest zone of the map</h3><div class="zt" id="zt"></div>
+      <div class="note mt6">An additive-only effect tuned in a cave disappears at noon: additive layers can only add light. The dark backing layer is what keeps a shape on a bright floor.</div></div>
+    <div class="card grow"><h3>Shape rules</h3><div class="legend one">
+      <div class="li"><div><b>One primary shape</b> a player could draw from memory: crescent, ring, bolt, pillar, dome.</div></div>
+      <div class="li"><div><b>Direction is information:</b> sparks follow the swing; rings expand from the cause.</div></div>
+      <div class="li"><div><b>Repeats differ:</b> later copies of a layer are shorter and changed, never identical.</div></div>
+      <div class="li"><div><b>Grandeur</b> comes from escalating a few layers and cutting others, not from adding everything.</div></div>
+      <div class="li"><div><b>Check the character's silhouette</b> at game distance after each addition.</div></div></div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el, W = 116, H = 92, BG = '#1B2233';
+const P = (cx, cy, r, a) => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)];
+function cres(cx, cy, r, a0, a1, th) { const p0 = P(cx, cy, r, a0), p1 = P(cx, cy, r, a1), m = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2], t = P(cx, cy, r - th, (a0 + a1) / 2), c = [2 * t[0] - m[0], 2 * t[1] - m[1]]; return `M${p0[0].toFixed(1)} ${p0[1].toFixed(1)}A${r} ${r} 0 0 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}Q${c[0].toFixed(1)} ${c[1].toFixed(1)} ${p0[0].toFixed(1)} ${p0[1].toFixed(1)}Z`; }
+const tile = (kids, bg = BG, w = W, h = H) => `<svg width="${w}" height="${h}" viewBox="0 0 ${W} ${H}">${E('rect', { width: W, height: H, fill: bg })}${kids}</svg>`;
+const spark = (x, y, a, l, c = '#FFD98A') => `<path d="M0 -1.8L${l} 0L0 1.8L-3 0Z" fill="${c}" transform="translate(${x},${y}) rotate(${a})"/>`;
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const stack = (dark, body, core) => `<path d="${cres(24, 50, 66, -52, 46, 22)}" fill="${dark}"/><path d="${cres(24, 50, 63, -47, 42, 15)}" fill="${body}"/><path d="${cres(24, 50, 62, -36, 32, 4)}" fill="${core}"/>`;
+let noise = ''; for (let i = 0; i < 46; i++) { const a = rnd() * 360, r = 8 + rnd() * 34; const p = P(58, 46, r, a); noise += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${(2.5 + rnd() * 3).toFixed(1)}" fill="${['#FF7A2E', '#FFD98A', '#FFF6DD'][i % 3]}" opacity="${(0.5 + rnd() * 0.4).toFixed(2)}"/>`; }
+let radial = ''; for (let i = 0; i < 18; i++) radial += spark(...P(58, 46, 14, i * 20), i * 20, 16);
+let dirn = `${stack('#6B1220', '#FF7A2E', '#FFF6DD')}` + [[-34, 20], [-20, 16], [-8, 22], [6, 15], [20, 19], [32, 12], [-26, 10], [14, 9]].map(d => spark(...P(24, 50, 70, d[0] * 0.7 + 4), d[0] * 0.7 + 4 + 12, d[1])).join('');
+const blobAdd = `<circle cx="58" cy="46" r="34" fill="#FFB86B" opacity=".5"/><circle cx="58" cy="46" r="28" fill="#FFE7C2"/><circle cx="58" cy="46" r="22" fill="#fff"/>`;
+const pairs = [
+  ['Silhouette', tile(stack('#6B1220', '#FF7A2E', '#FFF6DD')), tile(noise), 'One clear crescent says "slash, this way". Forty similar specks say nothing: three similar-sized lumps already read as noise.'],
+  ['Direction', tile(dirn), tile(radial + `<circle cx="58" cy="46" r="9" fill="#FFF6DD"/>`), 'Sparks follow the swing and vary in length. A radial sphere on a directional hit hides where the blow came from.'],
+  ['Value stack', tile(stack('#6B1220', '#FF7A2E', '#FFF6DD')), tile(blobAdd), 'Thin white core, element body, saturated dark behind. Every layer additive sums to a white blob with no shape.'],
+];
+document.getElementById('pairs').innerHTML = pairs.map(p => `<div class="pair"><h2>${p[0]}</h2><div class="two">${p[1]}${p[2]}</div><div class="cap2"><span><span class="chip good">reads</span></span><span><span class="chip bad">noise</span></span></div><p>${p[3]}</p></div>`).join('');
+const roles = ['hot', 'glow', 'main', 'dark', 'spark', 'debris'];
+const pal = [['Fire', 'teardrops, shells', '#FFF6DD', '#FFC83D', '#FF6A1A', '#6B1220', '#FFD98A', '#3A2420'], ['Ice', 'shards, facets', '#FFFFFF', '#BFEFFF', '#55B8F0', '#12305E', '#E6FAFF', '#7FA6C4'], ['Lightning', 'crossed ribbons', '#FFFFFF', '#FFF29A', '#8FD0FF', '#1B1F5C', '#FFF9D1', '#3A3F6B'], ['Nature', 'leaves, rings', '#F4FFD6', '#C6F26B', '#4FB83A', '#0F3D2A', '#E3FF9C', '#5A4630'], ['Water', 'arcs, droplets', '#FFFFFF', '#B8F0FF', '#2F9BE0', '#0C2A5A', '#DDF7FF', '#6F93B5'], ['Arcane', 'rings, discs', '#FFFFFF', '#E7C6FF', '#A05BF0', '#2A0F52', '#F3E1FF', '#4A3A66']];
+let ph = `<span></span><span></span>` + roles.map(r => `<span class="h">${r}</span>`).join('') + `<span></span>` + roles.map(r => `<span></span>`).join('');
+pal.forEach(p => { ph += `<span><b>${p[0]}</b><br><span style="font-size:10.5px;color:var(--ink2)">${p[1]}</span></span><span></span>` + p.slice(2).map(c => `<i style="background:${c}"></i>`).join('') + `<span></span>` + p.slice(2).map(c => `<i style="background:${Sheet.grey(c)}"></i>`).join(''); });
+document.getElementById('pal').innerHTML = ph;
+const addOnly = (o) => `<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FFD9A0" opacity="${o}"/><path d="${cres(24, 50, 62, -36, 32, 4)}" fill="#fff" opacity="${o}"/>`;
+const zw = 104, zh = 82, cave = '#141A28', noon = '#E9DFC6';
+document.getElementById('zt').innerHTML = [[tile(`<path d="${cres(24, 50, 63, -47, 42, 15)}" fill="#FF7A2E"/><path d="${cres(24, 50, 62, -36, 32, 4)}" fill="#FFF6DD"/>`, cave, zw, zh), 'Additive only, cave: fine'], [tile(addOnly(0.75), noon, zw, zh), 'Additive only, noon: gone'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), cave, zw, zh), 'Stacked, cave: reads'], [tile(stack('#6B1220', '#FF7A2E', '#FFF6DD'), noon, zw, zh), 'Stacked, noon: reads']].map(z => `<div>${z[0]}${z[1]}</div>`).join('');
+Sheet.frame({ n: '12', cat: 'VFX', title: 'VFX shape and value language', sub: 'Readable silhouettes versus noise, and palettes built value-first so one texture set serves every element.',
+  supports: ['vfx-and-juice.md §2 (value rules), §5 (kit pieces, texture authoring), §6 (readability budget)'], sources: 'vfx-and-juice.md ([lihfolk] value rules); palette values are examples' });
+</script></body></html>

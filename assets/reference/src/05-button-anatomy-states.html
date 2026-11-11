@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>05 Button anatomy and states</title><link rel="stylesheet" href="sheet.css">
+<style>
+.b{position:relative;width:132px;height:50px}
+.b .lipx{position:absolute;left:0;right:0;top:6px;bottom:0;border-radius:12px;background:#1F7A3D;border:2.5px solid #1A1F2B}
+.b .face{position:absolute;left:0;right:0;top:0;bottom:6px;border-radius:12px;background:#35B25D;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;font-weight:850;font-size:17px}
+.b .sheen{position:absolute;left:8px;right:8px;top:4px;height:6px;border-radius:4px;background:rgba(255,255,255,.35)}
+.states{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px}
+.st{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:10.5px;color:var(--ink2);line-height:1.32}
+.st b{display:block;color:var(--ink);font-size:11.5px}
+.holder{height:70px;display:flex;align-items:center;justify-content:center}
+.ring{outline:3px solid var(--accent);outline-offset:5px;border-radius:12px}
+.big{position:relative;width:300px;height:150px;flex:none}
+</style></head><body>
+<div class="sheet">
+  <div class="row">
+    <div class="card" style="flex:0 0 330px"><h3>Anatomy (drawn at 2×)</h3>
+      <div class="big" id="anat"></div>
+      <h3 style="margin-top:4px">Instance tree</h3>
+      <table class="spec"><tr><td><b>ImageButton</b></td><td>hit area; 9-sliced body art, no text</td></tr>
+      <tr><td>&nbsp;&nbsp;<b>UIScale</b></td><td>press, hover and pop (device scale lives on the root, never on the same object)</td></tr>
+      <tr><td>&nbsp;&nbsp;<b>ImageLabel</b></td><td>icon, tinted</td></tr>
+      <tr><td>&nbsp;&nbsp;<b>TextLabel</b></td><td>price or word, + UIStroke</td></tr></table></div>
+    <div class="card grow"><div class="legend one" id="legend"></div></div>
+  </div>
+  <div class="card mt"><h3>The full state set: draw and build all eight before shipping the component</h3><div class="states" id="states"></div></div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 452px"><h3>Press and release on a millisecond axis (UIScale of the face)</h3><div id="chart"></div></div>
+    <div class="col grow">
+      <div class="card"><h3>Perception bands</h3><table class="spec">
+        <tr><td><b>&lt; 0.1 s</b></td><td>reads as instant</td></tr><tr><td><b>0.1–0.2 s</b></td><td>snappy: feedback, exits</td></tr><tr><td><b>0.2–0.35 s</b></td><td>visible: entrances</td></tr><tr><td><b>0.35–0.6 s</b></td><td>deliberate: big reveals only</td></tr><tr><td><b>&gt; 0.6 s</b></td><td>the player is waiting</td></tr></table></div>
+      <div class="card"><h3>Reduced motion</h3><div class="note">Squash and lift become a <b>colour or brightness change</b>. Feedback stays; movement goes. Every tween runs through one Motion module that checks <b>GuiService.ReducedMotionEnabled</b>.</div></div>
+    </div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const I = Sheet.icon, E = Sheet.el;
+// anatomy drawing (button 240 x 84 at 2x of a 120 x 42 button)
+document.getElementById('anat').innerHTML = `<svg width="300" height="150" viewBox="0 0 300 150">
+  <rect x="14" y="12" width="262" height="120" rx="10" fill="none" stroke="#788294" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="30" y="40" width="230" height="80" rx="20" fill="#1F7A3D" stroke="#1A1F2B" stroke-width="5"/>
+  <rect x="30" y="28" width="230" height="80" rx="20" fill="#35B25D" stroke="#1A1F2B" stroke-width="5"/>
+  <rect x="48" y="37" width="194" height="10" rx="5" fill="#fff" opacity=".35"/>
+  <g transform="translate(74,46) scale(1.9)"><path d="${Sheet.GLYPH.gem}" fill="#fff" stroke="#1A1F2B" stroke-width="1.6" stroke-linejoin="round"/></g>
+  <text x="132" y="80" font-size="32" font-weight="850" fill="#fff" stroke="#1A1F2B" stroke-width="6" paint-order="stroke" stroke-linejoin="round">BUY</text>
+</svg>` + [[1, 14, 12], [2, 262, 124], [3, 258, 64], [4, 232, 42], [5, 30, 86], [6, 86, 96], [7, 172, 92]].map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
+const L = [
+  ['Hit area', '≥ 44×44 px', 'An invisible tap pad may be larger than the art (Selectable = false). Gaps ≥ 8 px.'],
+  ['Lip', 'darker duplicate, offset 4–6 px', 'The depth cue. Pressed sinks the face into it.'],
+  ['Face', '9-sliced ImageButton, radius M 10', 'Holds a child UIScale for press and hover; the hit area stays full size.'],
+  ['Sheen', 'baked into the art', 'Bevel, lip and sheen are one PNG; Roblox has no inner shadow or blend modes.'],
+  ['Outline', '2–3 px, one near-black colour', 'Baked into the art, in the family outline colour.'],
+  ['Icon', 'child ImageLabel, white base', 'Tinted with ImageColor3; outline baked in white-safe art.'],
+  ['Label', 'child TextLabel, native text', 'Never baked: prices and words stay crisp, scriptable and localisable.'],
+];
+document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
+const btn = (o = {}) => `<div class="b ${o.cls || ''}" style="${o.style || ''}" data-lint="nosize"><div class="lipx" style="${o.lip || ''}"></div><div class="face" style="${o.face || ''}"><div class="sheen" style="${o.nosheen ? 'display:none' : ''}"></div>${o.label === undefined ? 'BUY' : o.label}</div></div>`;
+const st = [
+  ['Rest', 'Face up on its lip. Scale 1.', btn()],
+  ['Hover', 'Scale <span class="v">1.04–1.06</span> in <span class="v">0.10–0.12 s</span>, Quad Out. Pointer devices only.', btn({ style: 'transform:scale(1.06)', face: 'background:#3FC76C' })],
+  ['Pressed', 'Scale <span class="v">0.92–0.96</span> in <span class="v">0.06–0.10 s</span>, Quad Out. Face sinks into the lip; light click sound.', btn({ style: 'transform:scale(.94)', face: 'top:5px;bottom:1px;background:#2A9A4E', nosheen: 1 })],
+  ['Gamepad focus', 'At least the hover look, plus a ring (SelectionImageObject) with a margin.', btn({ cls: 'ring', style: 'transform:scale(1.04)', face: 'background:#3FC76C' })],
+  ['Selected', '"This page is open" (tabs, toggles). Must differ from focus: colour and an indicator, not a ring.', btn({ face: 'background:#fff;color:#1A1F2B', lip: 'background:#B9C0CC', label: 'ON ✓', nosheen: 1 })],
+  ['Disabled', 'Greyed and says why: the reason is the label.', btn({ face: 'background:#8A93A3;font-size:12.5px', lip: 'background:#5E6676', label: 'Need 50 coins', nosheen: 1 })],
+  ['Pending', 'Request in flight (<span class="v">50–500 ms</span> typical). Non-interactable, shows progress.', btn({ face: 'background:#6E9E7D', lip: 'background:#4C7559', label: '· · ·', nosheen: 1 })],
+  ['Done', 'Kept visible with a tick. Set by the server reply.', btn({ face: 'background:#52648A;font-size:15px', lip: 'background:#3A4A6B', label: '✓ Owned', nosheen: 1 })],
+];
+document.getElementById('states').innerHTML = st.map(s => `<div class="st"><div class="holder">${s[2]}</div><div><b>${s[0]}</b>${s[1]}</div></div>`).join('');
+// timing chart: 0..520 ms, scale 0.90..1.04
+const W = 428, H = 196, x0 = 34, y0 = 12, w = 380, h = 140, tmax = 520, lo = 0.90, hi = 1.03;
+const X = t => x0 + (t / tmax) * w, Y = v => y0 + h - ((v - lo) / (hi - lo)) * h;
+let d = `M${X(0)} ${Y(1)}`;
+for (let t = 0; t <= 80; t += 4) d += `L${X(t).toFixed(1)} ${Y(1 - 0.06 * Sheet.ease.quadOut(t / 80)).toFixed(1)}`;
+d += `L${X(200)} ${Y(0.94)}`;
+for (let t = 0; t <= 220; t += 5) d += `L${X(200 + t).toFixed(1)} ${Y(0.94 + 0.06 * Sheet.ease.backOut(t / 220)).toFixed(1)}`;
+d += `L${X(tmax)} ${Y(1)}`;
+let g = '';
+[0.92, 0.96, 1.0].forEach(v => g += E('line', { x1: x0, x2: x0 + w, y1: Y(v), y2: Y(v), stroke: '#D9D4C7', 'stroke-width': 1 }) + Sheet.txt(x0 - 5, Y(v) + 3.5, v.toFixed(2), { 'text-anchor': 'end' }));
+[0, 100, 200, 300, 400, 500].forEach(t => g += E('line', { x1: X(t), x2: X(t), y1: y0 + h, y2: y0 + h + 4, stroke: '#788294' }) + Sheet.txt(X(t), y0 + h + 16, t + (t === 500 ? ' ms' : ''), { 'text-anchor': 'middle' }));
+g += E('rect', { x: X(0), y: y0, width: X(80) - X(0), height: h, fill: '#DD4F27', opacity: 0.12 }) + E('rect', { x: X(200), y: y0, width: X(420) - X(200), height: h, fill: '#2D6CDF', opacity: 0.1 });
+g += E('path', { d, fill: 'none', stroke: '#1A1F2B', 'stroke-width': 2.2, 'stroke-linejoin': 'round' });
+g += Sheet.txt(X(2), y0 + 11, 'press', { fill: '#DD4F27', 'font-weight': 700 }) + Sheet.txt(X(86), Y(0.94) + 15, 'held while the finger is down', {}) + Sheet.txt(X(204), y0 + 11, 'release: 0.16–0.30 s, Back Out', { fill: '#2D6CDF', 'font-weight': 700 });
+g += Sheet.txt(X(2), y0 + h + 32, 'Press 0.06–0.10 s, Quad Out. Under 0.08 s is hard to see at 30 fps.', { fill: '#465062' });
+document.getElementById('chart').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+Sheet.frame({ n: '05', cat: 'UI', title: 'Button anatomy and the full state set', sub: 'What a button is made of, the eight states it needs, and how long each transition lasts. Motion uses named tokens, never a per-screen TweenInfo.',
+  supports: ['ui-design-figma.md §The one rule of the pipeline, §Method (state matrix), §Motion spec'], sources: 'ui-design-figma.md §Motion spec ([lihfolk] field values)' });
+</script></body></html>

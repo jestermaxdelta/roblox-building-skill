@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>07 Colour roles, rarity and contrast</title><link rel="stylesheet" href="sheet.css">
+<style>
+.roles{display:grid;grid-template-columns:repeat(9,1fr);gap:6px}
+.role{font-size:10.5px;color:var(--ink2);line-height:1.3}.role i{display:block;height:34px;border-radius:6px;border:1.5px solid rgba(0,0,0,.25);margin-bottom:4px}.role b{display:block;color:var(--ink);font-size:11px}
+.cx{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cxi{border-radius:8px;height:58px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;border:1.5px solid rgba(0,0,0,.2)}
+.cap{font-size:10.5px;color:var(--ink2);margin-top:4px;line-height:1.3;display:flex;gap:5px;align-items:flex-start}
+.lad{display:grid;grid-template-columns:70px repeat(6,1fr);gap:4px;align-items:center;font-size:10.5px;color:var(--ink2)}
+.lad i{display:flex;height:26px;border-radius:5px;border:1.5px solid rgba(0,0,0,.25);align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:10px;color:#1A1F2B;white-space:nowrap}
+.team{display:grid;grid-template-columns:86px 1fr 1fr 1fr 1fr 58px;gap:5px;align-items:center;font-size:10.5px;color:var(--ink2)}
+.team .hd{font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;font-size:10px;text-align:center}
+.pair{display:flex;height:36px;border-radius:6px;overflow:hidden;border:1.5px solid rgba(0,0,0,.25)}
+.pair span{flex:1;display:flex;align-items:center;justify-content:center}
+</style></head><body>
+<div class="sheet">
+  <div class="card"><h3>Colour roles: colour means function, not decoration (example values: every game derives its own)</h3>
+    <div class="roles" id="roles"></div>
+    <div class="note mt6">One accent per screen, on the primary action. Window bodies stay neutral so coloured cards and rarity read. Give each destination one colour and keep it everywhere.</div></div>
+  <div class="row mt">
+    <div class="card grow"><h3>Rarity ladder under colour-vision simulation</h3>
+      <div class="lad" id="lad"></div>
+      <div class="note mt6">Protan and deutan views fold green, gold and pink toward the same yellows and blue and purple toward the same blues. The ladder survives because <b>lightness rises every step</b> and every card also carries a <b>name and a pip count</b>.</div></div>
+    <div class="card" style="flex:0 0 250px"><h3>Risky pairs</h3>
+      <div class="note">red / green · red / brown · green / brown · green / orange · blue / purple · blue / green · yellow / light pink · any two pastels.<br><br>Signals fail when they are <b>small</b> (a 6 px pip), <b>far apart</b>, <b>pastel</b> or <b>brief</b> (a 0.2 s flash). Rescue a signal you cannot recolour by making it bigger or longer-lived.</div></div>
+  </div>
+  <div class="card mt"><h3>Contrast: 4.5:1 for text, 3:1 for large text and icons (ratios computed from the swatches shown)</h3>
+    <div class="cx" id="cx"></div>
+    <div class="note mt6">Test over a gameplay screenshot, not a grey canvas. Text that sits on the 3D world gets an outline or a plate, because the world behind it changes every frame.</div></div>
+  <div class="card mt"><h3>Two teams: blue versus orange needs a lightness gap and an emblem</h3>
+    <div class="team" id="team"></div>
+    <div class="note mt6">Minimum Oklab distance under every simulation: <span class="v">0.08</span> big patches side by side · <span class="v">0.15</span> small or separated signals (outlines, markers, pips) · <span class="v">0.20</span> plus a second channel for critical reads (ally or enemy, safe or harmful floor) · lightness-only check ΔL <span class="v">≥ 0.15</span>.</div></div>
+  <div class="row mt">
+    <div class="card grow"><h3>Second channels</h3><div class="note">Every information-carrying colour also uses one of: lightness, shape, icon, text, pattern, position, size, motion. Heal and damage differ by sign and direction; crits are bigger, not just yellower.</div></div>
+    <div class="card grow"><h3>Cheapest tests first</h3><div class="note">1. Greyscale pass: ColorCorrectionEffect with Saturation = −1 (3D only; desaturate UI screenshots in an editor). 2. Simulator pass per graded zone. 3. Numeric audit of the tokens. 4. Smallest size, real phone, outdoors.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const R = Sheet.RARITY, c = Sheet.contrast;
+const roles = [['Primary', '#35B25D', 'confirm, buy'], ['Premium', '#F0B63A', 'paid currency'], ['Danger', '#E5484D', 'close, destructive'], ['Info', '#2D6CDF', 'neutral notice'], ['Surface', '#26324A', 'window body'], ['SurfaceAlt', '#3A4A6B', 'cards, rows'], ['Ink', '#FFFFFF', 'text on surface'], ['InkMuted', '#C8D2E3', 'secondary text'], ['Outline', '#1A1F2B', 'one near-black']];
+document.getElementById('roles').innerHTML = roles.map(r => `<div class="role"><i style="background:${r[1]}"></i><b>${r[0]}</b>${r[2]}</div>`).join('');
+const rows = [['Normal vision', h => h], ['Protan', h => Sheet.sim(h, 'protan')], ['Deutan', h => Sheet.sim(h, 'deutan')], ['Tritan', h => Sheet.sim(h, 'tritan')], ['Greyscale', h => Sheet.grey(h)]];
+document.getElementById('lad').innerHTML = rows.map((row, ri) => `<span>${row[0]}</span>` + R.map((r, i) => `<i style="background:${row[1](r[1])};${i < 1 ? 'color:#fff' : ''}">${ri === 0 ? r[0] : ri === 4 ? 'L ' + Sheet.oklab(r[1])[0].toFixed(2) : '●'.repeat(i + 1)}</i>`).join('')).join('');
+const ex = [['#26324A', '#FFFFFF', 'Body text on Surface', 4.5], ['#3A4A6B', '#8492AB', 'Muted text too close to its card', 4.5], ['#35B25D', '#FFFFFF', 'Bare white label on a mid green', 3], ['#1B8553', '#FFFFFF', 'Fix: deepen the fill, or outline the label', 3]];
+document.getElementById('cx').innerHTML = ex.map(e => { const k = c(e[0], e[1]); const ok = k >= e[3]; return `<div><div class="cxi" style="background:${e[0]};color:${e[1]}">${e[3] === 3 ? '<span style="font-size:20px;font-weight:850">BUY 199</span>' : 'Doubles all cash'}</div><div class="cap"><span class="chip ${ok ? 'good' : 'bad'}">${k.toFixed(1)}:1 ${ok ? 'pass' : 'fail'}</span><span>${e[2]} (needs ${e[3]}:1)</span></div></div>`; }).join('');
+const pairs = [['Same lightness', '#2F7FE0', '#D96A1E'], ['Lightness gap', '#2456B8', '#FFB24A']];
+const emb = (name, fill) => Sheet.icon(name, 22, fill, '#1A1F2B', 1.4);
+let t = `<span></span><span class="hd">Normal</span><span class="hd">Deutan</span><span class="hd">Protan</span><span class="hd">Greyscale</span><span class="hd">ΔL</span>`;
+pairs.forEach((p, i) => {
+  const f = [h => h, h => Sheet.sim(h, 'deutan'), h => Sheet.sim(h, 'protan'), h => Sheet.grey(h)];
+  const dl = Math.abs(Sheet.oklab(p[1])[0] - Sheet.oklab(p[2])[0]);
+  t += `<span><b style="color:var(--ink)">${p[0]}</b><br>${i ? 'with emblems' : 'hue only'}</span>` + f.map(fn => `<div class="pair"><span style="background:${fn(p[1])}">${i ? emb('shield', '#fff') : ''}</span><span style="background:${fn(p[2])}">${i ? emb('bolt', '#fff') : ''}</span></div>`).join('') + `<span style="text-align:center"><span class="chip ${dl >= 0.15 ? 'good' : 'bad'}">${dl.toFixed(2)}</span></span>`;
+});
+document.getElementById('team').innerHTML = t;
+Sheet.frame({ n: '07', cat: 'UI · accessibility', title: 'Colour roles, rarity ramp and contrast', sub: 'Role tokens, a rarity ladder that survives colour-blindness, contrast pass and fail examples, and a team pairing that still reads in greyscale.',
+  supports: ['ui-design-figma.md §Design system and tokens', 'accessibility-and-player-qol.md §3 Colour and contrast', 'lighting-and-atmosphere.md §3 (contrast formula)'], sources: 'accessibility-and-player-qol.md ([lihfolk] thresholds), WCAG contrast formula' });
+</script></body></html>

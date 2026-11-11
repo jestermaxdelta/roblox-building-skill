@@ -1,6 +1,6 @@
-# Core loop tuning: spec, first 10 minutes, scorecard, diagnosis, experiments, juice
+# Core loop tuning: spec, scorecard, diagnosis, experiments, juice
 
-A method for writing a core loop from scratch and for finding and fixing the broken part of a live game's loop. Open it when writing the loop section of a GDD, before a playtest, and whenever D1, session time or first-play bounce sits below the Creator Analytics benchmark. Paper-design theory (MDA, nested loops, FTUE phases) is in design-foundations.md; the event API and dashboards are in analytics-and-discovery.md; this file is the working procedure.
+A method for writing a core loop from scratch and for finding and fixing the broken part of a live game's loop. Open it when writing the loop section of a GDD, before a playtest, and whenever D1, session time or first-play bounce sits below the Creator Analytics benchmark. Paper-design theory (MDA, nested loops, FTUE phases) is in design-foundations.md; the first-minute script, tutorial build, guidance devices and onboarding-funnel repair are in tutorial-and-onboarding.md; the event API and dashboards are in analytics-and-discovery.md; this file is the working procedure for the loop itself.
 
 Tags: `[official]` Roblox docs or staff posts; `[community]` forum, Reddit, blog or third-party report (heuristic, often one developer's numbers); `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its "reference project" is one anonymised production RNG combat game, its other figures are rules of thumb dated October 2026); `[VS]` version-sensitive, re-check at create.roblox.com/docs; `[house]` house estimate.
 
@@ -10,13 +10,13 @@ Terms: a **core loop** is the set of actions a player repeats to make progress i
 
 | Level | Do this | Leave for later |
 |---|---|---|
-| Beginner | Write the loop sentence (§1) and the first-10-minutes table (§2). Build the three-step tutorial from the sketch in §3. Time five fresh players with a stopwatch and fill in scorecard checks 1, 2, 4 and 5 (§4). Add juice tier 0 (§8) | Experiments, benchmarks, anything in §7. You do not have the traffic yet |
+| Beginner | Write the loop sentence (§1) and the first-minute script (tutorial-and-onboarding.md §2); build the guided first loop from that guide's §4 and §8. Time five fresh players with a stopwatch and fill in scorecard checks 1, 2, 4 and 5 (§4). Add juice tier 0 (§8) | Experiments, benchmarks, anything in §7. You do not have the traffic yet |
 | Intermediate | Log the onboarding funnel plus skip and hint events; read the charts in the order of §5 every week; fix the earliest weak step; move every tunable number into Configs; run the full scorecard after each change to the first 10 minutes | Three-variant experiments and custom metrics, until daily users pass about 1,000 |
 | Expert | One-key experiments with custom metrics and guardrails (§7); cohort reads by acquisition source; versioned funnels when steps change; wall analysis from progression distribution; `fx_tier` and reward-size tests; the update-curve read in §5 | — |
 
 ## Contents
 
-0 Evidence · 1 Loop spec, sentence test, session arc · 2 First-10-minutes script · 3 Building the tutorial · 4 Scorecard · 5 Finding the broken stage in Creator Analytics · 6 Symptom table · 7 Tuning with Configs and Experiments · 8 Juice by cost
+0 Evidence · 1 Loop spec, sentence test, session arc · 2 First-10-minutes script (pointer) · 3 Building the tutorial (pointer) · 4 Scorecard · 5 Finding the broken stage in Creator Analytics · 6 Symptom table · 7 Tuning with Configs and Experiments · 8 Juice by cost
 
 ## 0. What the evidence supports (read before quoting a number)
 
@@ -83,190 +83,13 @@ Session arc `[lihfolk]`. A loop says what players do; the arc says how one visit
 
 Interrupted phone sessions are normal: save progress counters continuously, checkpoint anything longer than a few minutes, land a rejoin near where the player left, and respawn in seconds `[lihfolk]`.
 
-## 2. First-10-minutes script template
+## 2. First-10-minutes script
 
-Write it as a table of beats, then build exactly this and time it with a stopwatch on a 3 GB Android phone. The standard funnel step names match analytics-and-discovery.md; extra beats go out as one custom event `FtueBeat` (CustomField01 = beat name, value = seconds since `Spawned`), which gives time-to-beat, something a funnel alone does not.
+Moved: the beat-by-beat script template, its funnel steps and fail conditions are in tutorial-and-onboarding.md §2. Targets this file still relies on `[house]`: control within 10 s of joining on a 3 GB Android phone, first verb by 15 s, first reward by 30 s, first upgrade by 2 min, first meso goal at 5–10 min, and no purchase prompt before the first win and minute 10. Extra beats are logged as `FtueBeat` (sketch in §7).
 
-| Window | Beat | Player does | Game does | Log | Fails when |
-|---|---|---|---|---|---|
-| Before join | Promise | Taps a tile | Tile shows minute one, not the endgame | (PTR) | Tile and first minute differ: bounce `[official]` |
-| 0–5 s | Arrive | Nothing | Spawns in a playable area facing the verb target; rest of the map streams in; no menu, no play button, no cutscene | Step 1 `Spawned` | Control takes over 10 s on the target phone `[house]` |
-| 5–15 s | Call to action | Sees one prompt | One device-matched prompt on the one thing to do; nothing else pulses | — | Two or more things compete for attention |
-| 15–30 s | First rep | Performs the verb | Same-frame feedback, sound, number; first reward | Steps 2 `FirstAction`, 3 `FirstReward` | No reward by 30 s |
-| 30–60 s | Repeat | 2–3 more reps | Goal bar appears already part-filled with the real progress so far | `FtueBeat: GoalBarShown` | Player stops and looks around |
-| 60–120 s | First upgrade | Buys or earns it | Visible power change in the world (the aha) | Step 4 `FirstUpgrade` | Upgrade is a menu stat with no visible effect |
-| 2–3 min | First choice | Picks between two real options | Contextual tip only when the player meets the system | `FtueBeat: FirstChoice` | A third concept is taught before minute 2 |
-| 3–5 min | Joy moment | Hits a milestone | Designed celebration; first collection entry; index opens | `FtueBeat: FirstCollect` | Nothing memorable has happened by minute 5 `[official]` |
-| 5–10 min | Meso goal | Completes it | Shows the next three goals (now, this session, long-term); states the return hook | Steps 5 `FirstWin`, 6 `SawGoals` | No visible next goal; dead time over 5 s |
-| 10 min+ and first win | After the script | Keeps playing | Offers may begin, through the offer gate only (monetization-and-policy.md); notification opt-in at a warranted moment, 13+ only `[VS]` | Offer funnel | Any purchase prompt earlier (house rule) |
-| Session 2 | Welcome back | Returns | What happened while away, one new thing, the next goal | Step 7 `Session2Start` | Lands in the same state with nothing new |
+## 3. Building the tutorial
 
-Tutorial style: `[official]` guidance is a brief tutorial or contextual tips, never a long one; teach at the moment the player meets the system; show a timed hint only to players who have not acted after most players have (docs example: most act by 10 s, hint at 11 s). `[community]` reports agree: spawn areas with one clear first action and shorter tutorials are the changes developers credit; no controlled forced-versus-contextual comparison was found. House default: no forced tutorial; a skippable 3-step guided first loop at most.
-
-## 3. Building the tutorial from the script
-
-The script in §2 is a design. This section turns it into something that survives rejoins, skips, deaths and later edits. The method is adapted from the LihFolk tutorial skill and FTUE notes `[lihfolk]`, restated to our rules; the code is our own sketch. Shape: **steps are data, the server owns progress and rewards, the client only draws guidance.**
-
-Step fields:
-
-| Field | Meaning | Rule |
-|---|---|---|
-| `id` | Permanent name | Never reused. Saves store ids, not positions, so steps can be inserted or removed later |
-| `objective` | The one line on screen | Verb + object, 8 words or fewer, control named for the device in use (`{TAP}`, `{E}`, gamepad glyph), never over the play area |
-| `signal`, `goal` | Server event that counts, and how many | Sent by the system that knows it happened (currency changed, pet hatched). Never a client "I finished". 1 for a new verb, 3–10 for a rhythm step |
-| `trigger` | Server condition that activates a contextual step | Backpack full, first time near the trader. Every tip outside the first loop uses this |
-| `isComplete` | Server check for "already done" | Completes the step for players who got there another way (gift, trade, returning account) |
-| `guide`, `hintAfter` | `always`, `whenStuck` or `none`; seconds before help appears | Verbs most players find alone use `whenStuck` with 6–10 s (or the docs' "most players + 1 s"); progress resets the timer; guidance stops once the player has done it unaided |
-| `reveal` | HUD keys shown when the step starts | The HUD is hidden until taught, then animates in; locked features show a lock and a price instead of being invisible |
-| `reward`, `topUpTo` | What the step pays; a guaranteed balance | Every step pays something visible. If a step asks for a purchase, top the player up to exactly the price so the economy cannot fail the step |
-| `optional` | Never blocks the chain | Social steps are always optional; friends can join and play from second one |
-
-Step patterns:
-
-| Pattern | Fields | Use for |
-|---|---|---|
-| Do it once | `goal = 1`, `guide = always` | Each new verb |
-| Do it a few times | `goal = 3..10`, pointer to the nearest target only | Building rhythm; the counter is the reward between hits |
-| Try first, help later | `guide = whenStuck`, `hintAfter = 6..10` | Things most players find alone |
-| Already done | `isComplete` | Returning or gifted players |
-| Contextual | `trigger` + `requires` | Every secondary system, when first met |
-| HUD button | `guide = none`, `reveal`, a pulse or hand on the exact button | Menu verbs; the world pointer stays off |
-| Social, never a gate | `optional`, completed by the server when a friend is present | Invites, co-play |
-| Server-decided moment | Completed by server code | A short skippable scripted beat |
-| Affordable purchase | `topUpTo` on the step before | First upgrade, first hatch |
-
-Guidance tools. One pointer at a time; two pointers and the player follows neither.
-
-| Tool | Use when | Avoid when |
-|---|---|---|
-| `Beam` from the character to the target | Target is off-screen or far | Target is already in view |
-| `Highlight` on the target | One interactable among look-alikes | Several targets at once (one per step; the engine caps live highlights `[VS]`) |
-| `ProximityPrompt` | "Walk up and press" is the verb | A HUD button performs the action |
-| Pulse or hand on a HUD button | The target is a GUI element | World targets |
-| One camera nudge | The player must notice something behind them, once | Repeatedly, or with reduced motion on |
-| NPC or ghost demonstration | Physical verbs such as a combo or jump timing | Text would be enough; never block input during playback |
-| Level shape: show, try, test | Obbies, horror, platforming | Economy steps the space cannot show |
-
-House rules apply: any arrow, sign or chevron that is a 3D object is a Blender mesh, placed above head height or beside the route so its collision never blocks the path; beams, highlights and particles are effects and are fine. Every cue uses colour plus shape or words, sits inside the safe area, and stops pulsing when `GuiService.ReducedMotionEnabled` is true `[VS]`.
-
-What the server machine must guarantee `[lihfolk]`:
-
-- Progress and rewards live on the server and in the profile; the client receives one replicated state value and draws from it. Every HUD script reads that one value (the HUD reveal), never its own guess.
-- Each reward pays once. A skip grants what the remaining steps would have paid; a replay from Settings pays nothing.
-- A failed profile load pauses the tutorial. It never restarts it.
-- Rejoin resumes the same step. Finished steps never show again. Steps added after launch show only to players who lack them.
-- Removed steps map to the nearest current step through a rename table, so nobody is stranded mid-tutorial by an update.
-- Funnel logging is server-side, forward-only, and uses a new funnel name (`Tutorial_v3` through `LogFunnelStepEvent`) whenever steps are reordered, so old and new cohorts are not mixed. Skips and hint displays go out as custom events with the step id in a field.
-- World guidance is cleaned up on step change and on respawn. Death mid-step respawns fast and the step still works.
-- No automatic pop-up of any kind while onboarding runs (daily reward, favourite, group, event, offer). Route every automatic pop-up through one gate function: not during onboarding (treat the first 180 s as onboarding if the state is unknown), not over another panel, reveal or death screen, not in combat, and at least 8 s after the previous one. Purchase offers additionally obey the offer gate in monetization-and-policy.md.
-
-Combat or any step that can be failed is the main funnel risk. If the first minutes need a fight, make it tutorial-safe: the enemy belongs to this player only, and is weakened (reference project: fight-step enemies at 0.5× health and 0.3× damage; the tutorial elite at 4× health and 0.4× damage where normal elites were 12× and 1.5×). A tower-defense first wave cannot be lost; a horror first threat has a long readable warning.
-
-Case study: five versions of one tutorial in two weeks (reference project) `[lihfolk]`.
-
-| Version | Shape | What happened | Change |
-|---|---|---|---|
-| A | 27 s first-person intro cutscene, then tips | The cutscene sat inside the bounce window | Cutscene disabled |
-| B | 11 steps including combat, dash, heal, elite, forge; first roll guaranteed Rare | 7-day funnel lost 31% at the fight step, 34% at the forge step, 82% at the elite step. One step could never complete because the system it depended on had been switched off | Cut hard |
-| C | 3 hub steps, no combat, 16–18 s in total | Fast, but the non-obvious part of the economy was never taught | Rebuilt around the hidden loop |
-| D | 7 steps: roll, equip, roll again, salvage the weaker item, forge the first, open quests, claim a quest. A real daily quest is seeded first in the list so the forge step completes it | The tutorial finishes a real goal and teaches the quest system by paying out | Players still felt "thrown in" afterwards |
-| E | D plus one short combat step ("defeat 3 enemies") and a next-goal chain of 35 goals read from the save | Direction continues after "tutorial complete" | Kept |
-
-Lessons: teach on safe ground first; teach the verbs players will not discover alone, not the obvious one; finish on a real goal; the end of the tutorial needs a successor (design-foundations.md §7.3); check that every step can actually complete after each update. Open trade-off recorded by the same project: guaranteeing a great first pull reads as generous yet reveals the top of the early ladder before its time, while a modest pull leaves room to climb. They switched from Rare-first to Common-first without measuring the effect. Test it.
-
-Starting targets `[lihfolk]` (rules of thumb; replace with your funnel): of the players reaching each early step, 90% or more get past it; 70% or more of starters finish; the whole scripted part is under 3 minutes. Their "first reward under 60 s" is looser than our 30 s; keep 30 s.
-
-Test matrix before shipping any tutorial change: fresh account on a phone-sized viewport, with keyboard, with gamepad; switch input device mid-step; rejoin mid-step; skip; die mid-step; play it with a friend joining; play it with each dependency system's kill switch off.
-
-```lua
---!strict
--- Unexecuted sketch. Server module: tutorial steps as data, progress saved by step id, each step logged once.
-local AnalyticsService = game:GetService("AnalyticsService")
-local HttpService = game:GetService("HttpService")
-
-export type Step = {
-	id: string, -- permanent; never reused for a different step
-	objective: string, -- 8 words or fewer; {TOKENS} are resolved per device on the client
-	signal: string, -- sent by the server system that knows it happened
-	goal: number,
-	hintAfter: number?, -- seconds without progress before the pointer appears
-	reveal: { string }?, -- HUD keys shown when this step starts
-	topUpTo: number?, -- balance guaranteed before this step, so its purchase is affordable
-}
-export type Saved = { stepId: string?, progress: number?, done: boolean? }
-type State = { index: number, progress: number }
-
-local STEPS: { Step } = {
-	{ id = "collect", objective = "Collect 5 boxes", signal = "Collected", goal = 5 },
-	{ id = "sell", objective = "Sell at the green pad", signal = "Sold", goal = 1, hintAfter = 8 },
-	{ id = "upgrade", objective = "{TAP} UPGRADE", signal = "Upgraded", goal = 1, reveal = { "UpgradeButton" }, topUpTo = 40 },
-}
-local RENAMED: { [string]: string } = {} -- removed step id -> nearest current step id
-local states: { [Player]: State } = {}
-local Tutorial = {}
-
-local function publish(player: Player, state: State)
-	local step = STEPS[state.index]
-	player:SetAttribute("Tutorial", HttpService:JSONEncode({
-		id = if step then step.id else "done",
-		objective = if step then step.objective else "",
-		progress = state.progress,
-		goal = if step then step.goal else 0,
-		hintAfter = if step then step.hintAfter else nil,
-		reveal = if step then step.reveal else nil,
-	}))
-end
-
--- Call only after the profile loaded. On a failed load do not call: a paused tutorial beats a reset one.
-function Tutorial.attach(player: Player, saved: Saved?)
-	local state: State = { index = 1, progress = 0 }
-	if saved and saved.done then
-		state.index = #STEPS + 1
-	elseif saved and saved.stepId then
-		local id = RENAMED[saved.stepId] or saved.stepId
-		for index, step in STEPS do
-			if step.id == id then
-				state.index, state.progress = index, saved.progress or 0
-				break
-			end
-		end
-	end
-	states[player] = state
-	if state.index == 1 then
-		AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Joined") -- repeats count once
-	end
-	publish(player, state)
-end
-
--- Gameplay systems call this; the client never does. Returns the step just completed so the caller pays it and saves.
-function Tutorial.signal(player: Player, signal: string, amount: number): Step?
-	local state = states[player]
-	local step = if state then STEPS[state.index] else nil
-	if state == nil or step == nil or step.signal ~= signal then
-		return nil
-	end
-	state.progress = math.min(step.goal, state.progress + amount)
-	local finished = state.progress >= step.goal
-	if finished then
-		state.index += 1
-		state.progress = 0
-		AnalyticsService:LogOnboardingFunnelStepEvent(player, state.index, step.id)
-	end
-	publish(player, state)
-	return if finished then step else nil
-end
-
-function Tutorial.snapshot(player: Player): Saved
-	local state = states[player]
-	local step = if state then STEPS[state.index] else nil
-	return { stepId = if step then step.id else nil, progress = if state then state.progress else 0, done = state ~= nil and step == nil }
-end
-
-function Tutorial.detach(player: Player)
-	states[player] = nil
-end
-return Tutorial
-```
+Moved: teaching patterns, step data, guidance devices, the server step machine (save, skip, resume, returning players), copy rules, the per-genre table, the five-version case study, the critique rubric and the repair procedure are in tutorial-and-onboarding.md §3–14. One rule stays here because the loop depends on it: the tutorial is the first run of the real loop, on the real systems, and it ends on a real goal that has a successor.
 
 ## 4. Loop scorecard (0–10, observable)
 
@@ -300,16 +123,7 @@ Read in this order; stop at the first chart that is clearly bad. Fixing a later 
 7. **Progression distribution** `[official]`: count players per level or stage (grant a marker on advance). A pile-up at one level is the D7 wall.
 8. **Acquisition → Home Recommendations**: when impressions fall, check play-through rate, first-play bounce, play days and playtime in the D1, D2–7 and D8–28 windows first, then co-play, qualified sessions and spend.
 
-Reading the onboarding funnel properly `[lihfolk]` `[official]`:
-
-1. **Check the plumbing first.** Events come only from published servers (Studio sends nothing), only the first instance of a step counts, and a later step logged without the earlier ones marks them complete. A funnel that looks perfect or empty is usually a logging fault.
-2. **Low conversion from `Joined` to step 2** is arrival: join-to-control time, spawn direction, or an unreadable first objective. It is not a tutorial problem.
-3. **One step drops sharply.** Read its hint rate (hint shown ÷ players on the step) and skip rate. High hint rate: the objective or target is unclear. High skip rate: the step is tedious. Neither: play it; it may be impossible (a dependency switched off, a drop that never drops, a button off-screen on phones).
-4. **A step that can be failed drops.** Make it safe or move it later.
-5. **Fix from the earliest weak step forward.** The step after a confusing one inherits its confused players, so the largest drop is not always the one to fix.
-6. **Finished the tutorial, D1 still low.** The tutorial ends in a dead end; add the next-goal chain.
-7. **Segment before concluding**: platform, new against returning, country. Read medians, not averages.
-8. Annotate every release date. One change per release; compare by first-play-date cohort.
+Instrumenting and reading the onboarding funnel step by step (plumbing checks, the cause table, hint and skip rates) is in tutorial-and-onboarding.md §9, and the repair procedure in its §14. Rule that orders everything here: fix from the earliest weak step forward, one change per release, compared by first-play-date cohort.
 
 `AnalyticsService:LogProgressionEvent` and its Start / Complete / Fail variants exist, but the reference says they do not yet appear in any Roblox-provided chart `[official]` `[VS]`. Until they do, log level attempts as a custom event (name `LevelAttempt`, CustomField01 = level, CustomField02 = result) so walls can be read in Explore.
 
@@ -342,7 +156,7 @@ Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalyti
 | Symptom | Likely loop cause | Experiment (one variable) | Expected movement |
 |---|---|---|---|
 | Under-60 s bounce high; first-session curve loses 30%+ in minute 1 | Arrival: slow join, crash on low-memory phones, a menu or play button, spawn far from the verb, tile promises something else | Check Performance (crash rate, out-of-memory exits) by device type first. Then: spawn at the verb with one prompt and no menu, against the current flow | Under-60 s bounce falls within days; D1 follows. Reported: 45% → 18% leaving in the first 30 s after the spawn got one clear first action. Instance streaming cut join times by at least 20% according to a Roblox DevForum streaming thread `[VS]` |
-| 61–180 s bounce high, under-60 s fine | Verb found, no payoff: first reward late or weak, first upgrade too expensive, tutorial text in the way | `loop_first_upgrade_cost` or `ftue_start_coins` at two values; or the tutorial at 3 steps against 5 | `FirstUpgrade` conversion up, then 61–180 s bounce down. Reported: D1 6% → 15% after a 5-step tutorial became 3; session 7.5 → 9.5 min after a tutorial change. Counter-case: a more hand-holding tutorial moved 6 → 6.5 min only |
+| 61–180 s bounce high, under-60 s fine | Verb found, no payoff: first reward late or weak, first upgrade too expensive, tutorial text in the way | `loop_first_upgrade_cost` or `ftue_start_coins` at two values; or the tutorial at 3 steps against 5 | `FirstUpgrade` conversion up, then 61–180 s bounce down. Reported tutorial cases, in both directions, are in tutorial-and-onboarding.md §0 and §15 |
 | One funnel step loses over twice its neighbours | That step is hard to find or not fun | Timed hint at (time most players need + 1 s); move the target into line of sight; `ftue_hint_delay_s` 5 against 10 | Per-user funnel conversion at that step up; D1 only if the step is early |
 | Session time 3–6 min; curve cliff at 4–6 min | No meso goal, or the first wall comes too soon | Lower early thresholds (`xp_curve_early`, `cost_growth_early`); add the goal ladder HUD | Survival from minute 5 to 10 up; session time up; D1 with a lag |
 | Session time at benchmark, D1 low | A consumable session: nothing changes while away, no stated reason to return | End-of-session return hook: capped offline earnings, tomorrow's calendar day, a timer that completes overnight, opt-in notification | D1 and D1 play days up; session time flat |
@@ -358,8 +172,8 @@ Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalyti
 | Large loss at one progression step; players pile up there | A wall with one way past and no visible requirement `[lihfolk]` | Show the required number; make retries free; add a second route (quest, secondary loop, rebirth) | Pile-up level empties over a week; D2–7 play days up |
 | Currency balances climb while spend events stay flat | Nothing worth buying; sinks do not change the verb `[lihfolk]` | Add a sink the player can see working; price it in minutes of income | Sink ratio toward 1; session time up |
 | Players race through, then leave ("too fast") | Content is consumed before the long loop opens `[lihfolk]` | Smaller early rewards (not harder enemies), or open the long loop earlier. Reference project: new profiles roll only the lowest rarity for their first 60–240 s; effect not measured | Later first-wall arrival; watch D1 as the guardrail |
-| High hint rate on one tutorial step | Objective or target unclear `[lihfolk]` | Rewrite the objective in 8 words; pointer on the exact target | Step conversion to 90%+ |
-| Players finish the tutorial, then stall | No successor goal `[lihfolk]` | Next-goal chain that pays once per goal | Session time and D1 up |
+
+Tutorial-specific symptoms (hint rate, skip rate, a drop at the first purchase, forced or teleported tutorials, players who finish the tutorial and stall) are in tutorial-and-onboarding.md §15.
 
 ## 7. Tuning procedure with Configs and Experiments
 
@@ -451,9 +265,7 @@ Rules: juice scales with the size of the event (game-craft.md tier table) and ne
 
 - [ ] Loop spec filled in, every number mapped to a Config key with a code default.
 - [ ] Loop sentence passes all four checks; every wall has a visible requirement, a cheap retry and two ways past; the session arc has an exit hook that punishes nothing.
-- [ ] First-10-minutes script written as beats, built, and timed on a 3 GB Android phone; funnel steps and `FtueBeat` events live in a published test place.
-- [ ] Tutorial built as server-owned steps saved by id; test matrix passed (phone, keyboard, gamepad, device switch, rejoin, skip, death, friend joins, dependency off); no automatic pop-up during onboarding.
-- [ ] Skip and hint events logged; funnel renamed when steps were reordered; release dates annotated.
+- [ ] First-minute script and tutorial pass the review gate in tutorial-and-onboarding.md; funnel steps and `FtueBeat` events live in a published test place; release dates annotated.
 - [ ] Scorecard run with five fresh testers or live data; score recorded; anything under 5 sent back to the verb.
 - [ ] For a live game: §5 read in order and the earliest broken stage named, with the chart that shows it.
 - [ ] One written hypothesis, one key, guardrails named; minimum detectable effect checked or the small-game protocol chosen.
@@ -473,12 +285,12 @@ Accessed 2026-11-10. "(read)" = content opened in the `Roblox/creator-docs` mirr
 - https://www.gameanalytics.com/reports/2026-roblox-report and https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
 - https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
 - https://blog.rrqworld.com/roblox-game-retention/ (search summary; session and sessions-per-day figures)
-- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z and https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summaries of r/robloxgamedev posts via a third-party mirror, not opened; the 45% → 18%, 6% → 15% and 7.5 → 9.5 min cases)
-- https://devforum.roblox.com/t/improving-onboarding-for-our-zombie-shooter/3323657 (search summary; 6 → 6.5 min)
+- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z and https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summaries of r/robloxgamedev posts via a third-party mirror, not opened; the 45% → 18% case)
+- https://devforum.roblox.com/t/improving-onboarding-for-our-zombie-shooter/3323657 (read 2026-11-11; the tutorial case is told in tutorial-and-onboarding.md §0)
 - https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (search summary; daily rewards did not help)
 - https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (search summary)
 - https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566 (search summary)
 - https://devforum.roblox.com/t/my-day-1-retention-is-awful-23-losing-half-my-players-in-under-2-minutes-what-am-i-doing-wrong-with-onboarding/4186434 (search summary)
 - https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (search summary)
 - https://dubit.io/blog/how-we-build-hit-roblox-games (search summary)
-- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/lihfolk-tutorial/SKILL.md`, `skills/lihfolk-tutorial/references/ftue-checklist.md`, `skills/lihfolk-tutorial/references/step-design-patterns.md`, `LihFolk Vault V2/10 Game Design and Genres/Core Loops and Session Design.md`, `…/First-Time User Experience and Onboarding.md`, `…/Onboarding by Genre - The First Five Minutes.md`, `LihFolk Vault V2/11 Monetization Publishing and Live Ops/Measuring Onboarding - Funnels, Drop-off and A-B Tests.md`, `LihFolk Vault V2/27 Marketing and Growth/Update Cadence and Hype Cycles.md` (read). Ideas adapted and rewritten; no code or text copied.
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/10 Game Design and Genres/Core Loops and Session Design.md`, `…/First-Time User Experience and Onboarding.md`, `LihFolk Vault V2/11 Monetization Publishing and Live Ops/Measuring Onboarding - Funnels, Drop-off and A-B Tests.md`, `LihFolk Vault V2/27 Marketing and Growth/Update Cadence and Hype Cycles.md` (read). Ideas adapted and rewritten; no code or text copied.

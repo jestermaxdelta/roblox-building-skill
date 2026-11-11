@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>02 HUD at three densities</title><link rel="stylesheet" href="sheet.css">
+<style>
+.r{display:flex;gap:16px;align-items:stretch;margin-bottom:14px}
+.wrap{position:relative;width:480px;height:216px;flex:0 0 480px}
+.stage{width:800px;height:360px}
+.side{flex:1;min-width:0}
+.side h2{display:flex;align-items:center;gap:8px}
+.side .li{margin-bottom:5px}
+.jump{position:absolute;left:676px;top:262px;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.22)}
+.stick{position:absolute;left:54px;top:256px;width:84px;height:84px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18)}
+.pbox{position:absolute;background:#2B3A54;border:3px solid #F0B63A;border-radius:8px;color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:6px;padding:0 8px}
+.gen{position:absolute;background:#A3A2A5;border:1px solid #1B2A35;color:#1B2A35;font-family:Arial,sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center}
+.hudnum{position:absolute;display:flex;align-items:center;gap:6px;font-size:21px}
+.coin{width:30px;height:30px;border-radius:50%;background:#F0B63A;border:2.5px solid #1A1F2B;flex:none}
+.gem{width:24px;height:24px;background:#5FD0E8;border:2.5px solid #1A1F2B;transform:rotate(45deg);border-radius:4px;margin:0 5px;flex:none}
+</style></head><body>
+<div class="sheet">
+  <div id="rows"></div>
+  <div class="row">
+    <div class="card grow"><h3>How to count</h3><div class="note">Count <b>groups</b>, not instances: one menu column is one element. Cap <span class="v">5–7</span> on phones; more than 8 persistent elements is an audit finding.</div></div>
+    <div class="card grow"><h3>Squint test</h3><div class="note">At phone size over real gameplay, the primary action and the primary currency are found in <span class="v">under 1 s</span>. In A and B nothing wins.</div></div>
+    <div class="card grow"><h3>Density is allowed</h3><div class="note">Hit simulators run dense HUDs. Keep the cap by grouping, hide secondary buttons behind More, badge only what is claimable now.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const S = 0.6, I = Sheet.icon;
+const bg = () => Sheet.scene(800, 360) + `<svg width="800" height="360" style="position:absolute;left:0;top:0">${Sheet.avatar(400, 262, 64)}</svg>`;
+const sticks = `<div class="stick"></div><div class="jump"></div>`;
+const btn = (x, y, s, c, t, extra = '') => `<div class="mbtn lip" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;background:${c};font-size:${Math.max(9, s / 4.6)}px;${extra}">${t}</div>`;
+function cluttered() {
+  let h = bg() + sticks;
+  h += `<div class="pbox" style="left:8px;top:6px;width:150px;height:36px;border-color:#F0B63A">COINS 12480</div>`;
+  h += `<div class="pbox" style="left:164px;top:6px;width:128px;height:36px;border-color:#5FD0E8">GEMS 345</div>`;
+  h += `<div class="pbox" style="left:298px;top:6px;width:140px;height:36px;border-color:#FF6FB1">TOKENS 12</div>`;
+  h += `<div class="pbox" style="left:444px;top:6px;width:150px;height:36px;border-color:#7CE38B">REBIRTH 3</div>`;
+  ['#C4372F', '#E3A21A', '#1B8553', '#2D6CDF', '#7B57D1'].forEach((c, i) => h += btn(8, 50 + i * 60, 54, c, ['SHOP', 'PETS', 'SPIN', 'CODES', 'VIP'][i]));
+  ['#FF6FB1', '#19A7B5', '#DD4F27', '#59616E'].forEach((c, i) => h += btn(738, 50 + i * 52, 46, c, ['GIFT', 'TRADE', 'RANK', 'SET'][i]));
+  ['#7B57D1', '#1B8553', '#E3A21A', '#C4372F', '#2D6CDF'].forEach((c, i) => h += btn(190 + i * 84, 300, 52, c, ['AUTO', 'BOOST', 'DAILY', '2X', 'MAP'][i]));
+  h += `<div class="pbox" style="left:520px;top:50px;width:210px;height:150px;border-color:#fff;align-items:flex-start;padding:8px;font-size:12px;line-height:1.5;flex-direction:column;gap:0"><span>QUESTS</span><span>Collect 500 coins 101/500</span><span>Hatch 3 eggs 0/3</span><span>Defeat 10 slimes 4/10</span><span>Play 15 minutes 6/15</span><span>Join the group 0/1</span></div>`;
+  h += `<div class="pbox" style="left:226px;top:96px;width:200px;height:110px;background:#C4372F;border-color:#FFE45C;flex-direction:column;justify-content:center;font-size:20px;gap:2px"><span>STARTER PACK</span><span style="font-size:13px">ONLY 4:59 LEFT!</span></div>`;
+  h += btn(610, 262, 56, '#DD4F27', 'ACT', 'border-radius:50%') + btn(600, 206, 44, '#19A7B5', 'DASH', 'border-radius:50%');
+  h += btn(150, 250, 48, '#FF6FB1', 'WHEEL');
+  return h;
+}
+function generic() {
+  let h = bg() + sticks;
+  h += `<div class="gen" style="left:16px;top:56px;width:150px;height:28px">Coins: 12480</div><div class="gen" style="left:16px;top:88px;width:150px;height:28px">Gems: 345</div>`;
+  ['Shop', 'Inventory', 'Quests', 'Settings'].forEach((t, i) => h += `<div class="gen" style="left:${250 + i * 78}px;top:56px;width:72px;height:30px">${t}</div>`);
+  h += `<div class="gen" style="left:600px;top:120px;width:176px;height:74px;flex-direction:column;align-items:flex-start;padding-left:8px;gap:3px"><span>Quest: Deliver 3 crates</span><span>Progress: 101/500</span></div>`;
+  h += `<div class="gen" style="left:560px;top:216px;width:96px;height:36px">Attack</div>`;
+  h += `<div class="gen" style="left:340px;top:96px;width:120px;height:26px">Time: 84</div>`;
+  return h;
+}
+function ordered() {
+  let h = bg() + sticks;
+  h += `<div class="hudnum" style="left:36px;top:55px"><div class="coin"></div><span class="outl">12.4K</span><div class="gem"></div><span class="outl">345</span></div>`;
+  ['#C4372F', '#1B8553', '#E3A21A', '#59616E'].forEach((c, i) => h += btn(36 + (i % 2) * 64, 96 + Math.floor(i / 2) * 64, 56, c, ['SHOP', 'PETS', 'QUEST', 'MORE'][i]));
+  h += `<div style="position:absolute;left:310px;top:54px;width:180px;height:36px;border-radius:18px;background:rgba(26,31,43,.72);color:#fff;font-weight:750;font-size:16px;display:flex;align-items:center;justify-content:center">Wave 3 · 01:24</div>`;
+  h += `<div style="position:absolute;left:566px;top:108px;width:210px;height:40px;border-radius:10px;background:rgba(26,31,43,.72);color:#fff;font-weight:650;font-size:14px;display:flex;align-items:center;padding:0 12px;justify-content:space-between"><span>Deliver 3 crates</span><span>1/3</span></div>`;
+  h += btn(600, 269, 56, '#DD4F27', 'ACT', 'border-radius:50%');
+  return h;
+}
+const rows = [
+  { k: 'A', name: 'Cluttered', chip: 'bad', lint: 'off', html: cluttered(), pins: [[1, 612, 24], [2, 72, 140], [3, 226, 96], [4, 150, 250], [5, 520, 50]],
+    notes: ['<b>Panels behind every number</b> and four currencies at once: the world is boxed in.', '<b>Buttons on all four edges</b>, three sizes, eight colours. 23 separate elements.', '<b>Offer card over the play area</b> with a restarting countdown: breaks house rule 3.', '<b>Buttons inside the stick and jump zones</b>: opened by accident on every move.', '<b>Tracker expanded</b> to five lines; text near 7 px once drawn on a phone.'] },
+  { k: 'B', name: 'Generic', chip: 'neutral', lint: 'nosize', html: generic(), pins: [[1, 178, 70], [2, 238, 70], [3, 600, 120], [4, 560, 216], [5, 328, 110]],
+    notes: ['<b>Default grey frames</b>, 1 px borders, square corners, system font. "Label: value" with no icon and no number formatting.', '<b>Navigation in the status position</b> (top-centre) and far from both thumbs.', '<b>Every element equally loud</b>: same grey, same weight, same size.', '<b>Action placed by screen percentage</b>, not from the jump button; lands under the camera-drag thumb.', '<b>13 px text</b> authored at 800 px wide draws under the 12 px floor on a 667 px phone.'] },
+  { k: 'C', name: 'Well ordered', chip: 'good', lint: 'nosize', html: ordered(), pins: [[1, 120, 46], [2, 20, 156], [3, 400, 44], [4, 628, 252], [5, 556, 128]],
+    notes: ['<b>Icon + outlined number</b>, no panel; abbreviated to 3 significant figures (12.4K).', '<b>One home edge</b>: a 2 × 2 column above the stick zone; the rest behind More.', '<b>Status top-centre</b>, read-only, in the least reachable place.', '<b>One accent</b>: the primary action, ≥ 0.8 × jump, anchored 20 px left of it.', '<b>Tracker folded</b> to one line. 6 groups in total; zones and centre clear.'] },
+];
+document.getElementById('rows').innerHTML = rows.map(r => `<div class="r"><div class="wrap"><div class="stage scaled" style="transform:scale(${S})" data-lint="${r.lint}">${r.html}</div>
+  ${r.pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x * S - 9.5}px;top:${y * S - 9.5}px">${n}</span>`).join('')}</div>
+  <div class="side"><h2>${r.k} · ${r.name} <span class="chip ${r.chip}">${r.chip === 'good' ? 'ship this' : r.chip === 'bad' ? 'fails' : 'works, but reads as a template'}</span></h2>
+  ${r.notes.map((t, i) => `<div class="li"><span class="pin">${i + 1}</span><div>${t}</div></div>`).join('')}</div></div>`).join('');
+Sheet.frame({ n: '02', cat: 'UI', title: 'One HUD at three densities', sub: 'The same information (two currencies, a quest, a timer, an action) drawn cluttered, generic and well ordered. Frame: Phone-S, 800×360 px, shown at 60%.',
+  supports: ['ui-design-figma.md §Generic-UI tells and fixes, §HUD', 'ui-input-crossplatform.md §UI design principles'], sources: 'ui-design-figma.md, ui-input-crossplatform.md' });
+</script></body></html>

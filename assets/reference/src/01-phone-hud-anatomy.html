@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>01 Phone HUD anatomy</title><link rel="stylesheet" href="sheet.css">
+<style>
+.wrap{position:relative;width:744px;height:335px}
+.stage{width:800px;height:360px}
+.hudnum{position:absolute;display:flex;align-items:center;gap:6px;font-size:20px}
+.coin{width:30px;height:30px;border-radius:50%;background:#F0B63A;border:2.5px solid #1A1F2B}
+.gem{width:26px;height:26px;background:#5FD0E8;border:2.5px solid #1A1F2B;transform:rotate(45deg);border-radius:4px;margin:0 4px}
+.obj{position:absolute;left:300px;top:54px;width:200px;height:36px;border-radius:18px;background:rgba(26,31,43,.72);color:#fff;font-weight:750;font-size:16px;display:flex;align-items:center;justify-content:center}
+.toast{position:absolute;left:290px;top:98px;width:220px;height:40px;border-radius:10px;background:#fff;border:2.5px solid #1A1F2B;border-left:8px solid var(--c-rare);font-weight:700;font-size:14px;display:flex;align-items:center;padding-left:10px;color:#1A1F2B}
+.tracker{position:absolute;left:560px;top:108px;width:216px;height:84px;border-radius:10px;background:rgba(26,31,43,.72);color:#fff;padding:9px 12px;font-size:14px;font-weight:650}
+.bar{height:10px;border-radius:5px;background:rgba(255,255,255,.25);margin-top:7px;overflow:hidden}.bar i{display:block;height:100%;width:22%;background:#F0B63A}
+.jump{position:absolute;left:676px;top:262px;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.22)}
+.stick{position:absolute;left:54px;top:256px;width:84px;height:84px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18)}
+.stick i{position:absolute;left:24px;top:24px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.75)}
+.topbar{position:absolute;left:0;top:0;width:800px;height:48px;background:rgba(26,31,43,.3);border-bottom:1.5px dashed rgba(255,255,255,.9)}
+.core{position:absolute;top:8px;width:32px;height:32px;border-radius:9px;background:rgba(26,31,43,.75)}
+.notch{position:absolute;top:0;width:24px;height:360px;background:repeating-linear-gradient(135deg,rgba(26,31,43,.32) 0 5px,rgba(26,31,43,.08) 5px 10px)}
+.centre{position:absolute;left:267px;top:150px;width:266px;height:150px;border:1.5px dashed rgba(255,255,255,.85);border-radius:6px}
+.dim{position:absolute;height:1.5px;background:#fff}
+</style></head><body>
+<div class="sheet">
+  <div class="wrap">
+    <div class="stage scaled" style="transform:scale(.93)" data-lint="nosize">
+      <div id="bg"></div>
+      <div class="notch" style="left:0"></div><div class="notch" style="right:0"></div>
+      <div class="topbar"></div>
+      <div class="core" style="left:34px"></div><div class="core" style="left:74px"></div>
+      <span class="zlabel" style="left:118px;top:17px">Top bar strip (Roblox controls) · 48 px reported on phones</span>
+      <span class="zlabel" style="left:598px;top:17px">ScreenInsets = CoreUISafeInsets</span>
+      <div class="hudnum" style="left:36px;top:55px"><div class="coin"></div><span class="outl">12,480</span><div class="gem"></div><span class="outl">345</span></div>
+      <div id="menu"></div>
+      <div class="obj">Wave 3 · 01:24</div>
+      <div class="toast">Iron Ore ×3</div>
+      <div class="tracker">Deliver 3 crates<div class="bar"><i></i></div><div style="font-size:13px;margin-top:5px;font-weight:600;opacity:.9">101 / 500</div></div>
+      <div class="centre"><span class="zlabel" style="left:8px;bottom:6px">Centre third: clear. Short feedback only</span></div>
+      <div class="zone" style="left:24px;top:226px;width:176px;height:128px"><span style="left:122px;top:8px;width:50px">Stick zone</span></div>
+      <div class="stick"><i></i></div>
+      <div class="zone" style="left:664px;top:244px;width:112px;height:110px"><span style="left:8px;top:-17px;white-space:nowrap">Jump zone</span></div>
+      <div class="jump"></div>
+      <div class="mbtn lip" style="left:600px;top:269px;width:56px;height:56px;border-radius:50%;background:#DD4F27;font-size:13px">ACT</div>
+    </div>
+    <div id="pins"></div>
+  </div>
+  <div class="legend mt" id="legend"></div>
+  <div class="row mt">
+    <div class="card grow"><h3>Sizing rules</h3>
+      <div class="note"><b>Size from the short side:</b> height by scale + <b>UIAspectRatioConstraint</b>. Offsets only for margins, padding and strokes. Edge-pinned pieces use scale position + matching AnchorPoint + a px margin (16 px here).</div></div>
+    <div class="card grow"><h3>Text floors (rendered px on the phone)</h3>
+      <div class="note">HUD number <span class="v">18–20</span> · body <span class="v">16</span> · caption <span class="v">14</span> (design floor) · anything under <span class="v">12</span> fails the audit. Outline or plate all text that sits on the 3D world.</div></div>
+    <div class="card grow"><h3>Pass test</h3>
+      <div class="note">Zero overlapping rectangles at <span class="v">667×375</span>, <span class="v">844×390</span> and <span class="v">932×430</span> in every scenario: idle, combat, boss bar, tracker open, tutorial, chat open.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const S = 0.93;
+document.getElementById('bg').innerHTML = Sheet.scene(800, 360) + `<svg width="800" height="360" style="position:absolute;left:0;top:0">${Sheet.avatar(400, 262, 64)}</svg>`;
+const cols = ['#C4372F', '#1B8553', '#E3A21A', '#2D6CDF'], names = ['SHOP', 'PETS', 'QUEST', 'MORE'];
+document.getElementById('menu').innerHTML = names.map((n, i) => `<div class="mbtn lip" style="left:${36 + (i % 2) * 64}px;top:${96 + Math.floor(i / 2) * 64}px;width:56px;height:56px;background:${cols[i]};font-size:12px">${n}</div>`).join('');
+const pins = [[1, 22, 24], [2, 12, 150], [3, 250, 70], [4, 164, 152], [5, 512, 72], [6, 520, 118], [7, 548, 150], [8, 212, 290], [9, 760, 250], [10, 628, 252], [11, 400, 168]];
+document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x * S - 9.5}px;top:${y * S - 9.5}px">${n}</span>`).join('');
+const L = [
+  ['Top bar strip', '48 px reported on phones, 58 on large screens, none on console', 'Never hard-code: read <b>GuiService.TopbarInset</b> and listen for changes.'],
+  ['Device safe inset', 'notch may sit on either side', 'Interactive UI stays inside <b>CoreUISafeInsets</b>; only full-bleed art uses <b>None</b>.'],
+  ['Currency readout', 'icon 28–32 px, number 18–20 px · 0.08–0.09 H', 'Icon + outlined number, no panel behind it. Counts up, never snaps.'],
+  ['Menu buttons', '56×56 px, gap 8 · 0.155 H', 'One home edge, 4–6 max, rest behind More. On phones at most 2 columns, kept above the stick zone.'],
+  ['Objective / timer', 'height 32–40 px · 0.10 H', 'Top-centre, read-only: the hardest thumb reach.'],
+  ['Toast lane', 'height 36–44 px · 0.11 H', 'Under the objective; 2 visible at Phone-S; life 2.5–7 s; never a modal.'],
+  ['Quest tracker', 'width ≤ 220 px · ≤ 0.28 W', 'Right edge, mid-height, 1–3 lines with 101/500 progress; folded by default on phones.'],
+  ['Thumbstick zone', 'reserved, bottom-left', 'Dynamic stick reported over about 20–25% of the left side. Nothing interactive inside.'],
+  ['Jump zone', 'jump button ≈ 70 px on small screens', 'Reserved. Read the live <b>JumpButton</b> size once it IsLoaded.'],
+  ['Primary action', '≥ 0.8 × jump button (≈ 56 px), 20 px to its left', 'Placed relative to the jump button, never by screen percentage. The largest custom control.'],
+  ['Centre third', 'kept clear', 'Short feedback only: hit numbers, one banner slot. The player needs to see the world.'],
+];
+document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('')
+  + `<div class="li"><span class="pin" style="background:var(--ink)">!</span><div><b>Budget</b> · <span class="v">5–7 HUD groups</span> (one menu column = one group)<br>Touch targets ≥ 44 px (48 for HUD buttons), gaps ≥ 8 px. Players drag the right half to turn the camera.</div></div>`;
+Sheet.frame({ n: '01', cat: 'UI', title: 'Phone HUD anatomy', sub: 'Zones, safe areas and what goes where on the smallest landscape phone. Frame: Phone-S, 800×360 px. H and W are fractions of screen height and width.',
+  supports: ['ui-design-figma.md §Patterns with sizes, §HUD', 'ui-input-crossplatform.md §Mobile layout, §Containers'], sources: 'ui-design-figma.md, ui-input-crossplatform.md ([house] unless tagged there)' });
+</script></body></html>

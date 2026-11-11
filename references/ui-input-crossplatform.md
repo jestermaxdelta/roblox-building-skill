@@ -1,6 +1,6 @@
 # UI, input, cross-platform and accessibility
 
-Engine-side rules for Roblox UI and input: HUD and menu principles, containers and safe areas, sizing, text, mobile/console/VR layout, input mapping and accessibility, plus a symptom table and an audit scan for live games. Open it when building or auditing any screen or control scheme; open `ui-design-figma.md` for visual design, tokens, patterns with sizes and the Figma hand-off. Distilled from knowledge-base sections 2.3, 2.5, 5.10 and 5.11, re-verified against `Roblox/creator-docs` on 2026-11-10. Tags: `[official]` Roblox docs, `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten), `[VS]` version-sensitive (several UI and input systems are new), `[house]` house estimates.
+Engine-side rules for Roblox UI and input: containers and safe areas, sizing, UI architecture and performance, text, the mobile thumb-zone map with numbers, gamepad focus design, input mapping and accessibility, plus a symptom table and an audit scan for live games. Open it when building or auditing any screen or control scheme. Siblings: `ui-design-figma.md` (hierarchy, design system, construction, critique, Figma hand-off), `ui-screen-recipes.md` (sizes, HUD layouts by genre, screen recipes), `ui-motion-and-feedback.md` (motion tokens, button feedback, reward sequences). Re-verified against `Roblox/creator-docs`, staff announcements and the `PlayerModule` source on 2026-11-11. Tags: `[official]` Roblox docs, staff announcements and Roblox's own scripts, `[community]` DevForum, GitHub and third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten), `[VS]` version-sensitive (several UI and input systems are new), `[house]` house estimates.
 
 ## Start here by level
 
@@ -14,19 +14,18 @@ Terms: a **ScreenGui** is the container for on-screen UI; **Scale** sizes are fr
 
 ## Contents
 
-UI design principles · Containers, insets and sizing · UI architecture (state, mounting, controllers, frameworks) · UI performance · Text, numbers and localisation · Text filtering · Proximity prompts · Input · Mobile layout · Gamepad and console · VR · Accessibility · Level-up symptom table · UI audit scan · Review gate · Sources
+UI rules that are not about looks · Containers, insets and sizing · UI architecture (state, mounting, presenter, frameworks) · UI performance · Text, numbers and localisation · Text filtering · Proximity prompts · Input · Mobile layout and thumb zones · Gamepad and console (focus design) · VR · Accessibility · Level-up symptom table · UI audit scan · Review gate · Sources
 
-## UI design principles
+## UI rules that are not about looks
 
-- HUD hierarchy: always visible (health, currency, timer), on change (toasts, count-ups), on demand (inventory, shop, settings). Keep the HUD to 5–7 elements.
-- Diegetic UI (a sign, a screen on a Blender-modelled board with a `SurfaceGui`) beats floating panels for immersion; non-diegetic for anything that must be read instantly.
-- Menus are a stack (push/pop), so Back always returns to where the player was.
-- Feedback states for every control: idle, hover, pressed (100–150 ms), disabled, success, error.
-- Readability (XAG): text ≥ 26 px at 1080p on TV, ≥ 18 px on PC, scalable to 200%; contrast 4.5:1 for text and 3:1 for large text and icons; never colour alone (pair rarity colours with labels or icons); touch targets about 9 mm or larger; allow +30% width for localisation.
-- Anti-patterns: modals during play, more than 5–7 HUD elements, counters that snap instead of count up, the shop button under the thumb, perpetual decorative motion.
-- Event-driven HUD: listen to `player:GetAttributeChangedSignal("Coins")` and tween a NumberValue to count up; update text only when values change and throttle counters to about 10 Hz.
+Hierarchy, diegetic and spatial UI, colour, type and component states are owned by `ui-design-figma.md`; press and reward feedback by `ui-motion-and-feedback.md`. What stays here:
+
+- Menus are a stack (push/pop), so Back always returns to where the player was; at most two levels deep on phones.
+- Readability thresholds (XAG): text ≥ 26 px at 1080p on TV, ≥ 18 px on PC, scalable to 200%; contrast 4.5:1 for text, 3:1 for large text and icons; never colour alone; touch targets about 9 mm; +30% width for localisation.
+- Event-driven HUD: listen to `player:GetAttributeChangedSignal("Coins")` and tween a number to count up; write text only when values change, counters at about 10 Hz.
 - `BillboardGui` with `MaxDistance` for world labels; pool them.
-- A 10-dimension UX review with P0–P3 severities (learnability, efficiency, feedback, error prevention, consistency, readability, accessibility, input parity, performance, monetization honesty) belongs in every milestone review (see process-and-playtesting.md).
+- Anti-patterns: modals during play, the shop button under the thumb, perpetual decorative motion, counters that snap.
+- A 10-dimension UX review with P0–P3 severities (learnability, efficiency, feedback, error prevention, consistency, readability, accessibility, input parity, performance, monetization honesty) belongs in every milestone review (`process-and-playtesting.md`); score the look with the rubric in `ui-design-figma.md` §9.
 
 Offer surfaces under house rule 3: small cards (≤ 25% of the screen) in a safe-area corner outside thumb zones, dismissible with an X, after positive moments only, never in the first minutes or on the loading screen, rate-limited (≥ 8 min apart, ≤ 3 per session), never stacked, no sound stings; the shop is always one tap away from a HUD button; boost timers show honest remaining time.
 
@@ -36,7 +35,7 @@ Offer surfaces under house rule 3: small cards (≤ 25% of the screen) in a safe
 - `ScreenGui.ScreenInsets`: `CoreUISafeInsets` (default; use for anything interactive), `DeviceSafeInsets` (clears notches, not the top bar), `TopbarSafeInsets` (the strip between the top-bar controls and the right safe edge; flexes with the bar), `None` (full-bleed backgrounds only). Query insets with `GuiService:GetGuiInset()`.
 - `IgnoreGuiInset = true` now only switches `CoreUISafeInsets` to `DeviceSafeInsets` `[official]`: it ignores the top bar but still respects the notch, so it is not fullscreen. Set `ScreenInsets` explicitly on every ScreenGui. Set `SafeAreaCompatibility = None` on new guis: the default `FullscreenExtension` stretches anything that looks fullscreen and the docs advise against it for new work `[official]`. `ClipToDeviceSafeArea` (default true) cuts overhangs at the safe edge and is ignored under `None` `[lihfolk][VS]`.
 - Two-layer pattern `[lihfolk]`: edge-to-edge art (dimmer, vignette, letterbox, loading cover) in its own `ScreenInsets = None` ScreenGui that no scaler touches; controls in a safe-area ScreenGui one `DisplayOrder` above; open and close them together. Debug aid: a bright translucent full-size frame in each gui shows the area it thinks it owns.
-- `GuiService.TopbarInset` is a `Rect` of the free top-bar area and changes at runtime (health bar, `SetCoreGuiEnabled`): listen with `GetPropertyChangedSignal` `[official]`. Reported top-bar heights are 58 px on large screens, 48 px on phones, none on console, and inset reads of 0 on the first frame `[community][VS]`: never hard-code a top-bar height and never read insets once at startup.
+- `GuiService.TopbarInset` is a `Rect` of the free top-bar area and changes at runtime (health bar, `SetCoreGuiEnabled`): listen with `GetPropertyChangedSignal` `[official]`. Roblox's experience controls are 44 px tall since October 2024 (up from 36) and sit top-left; console and VR have none `[official]`. The full inset including margin is reported as 58 px, and inset reads of 0 on the first frame `[community][VS]`: never hard-code a top-bar height and never read insets once at startup.
 - Screen class: `GuiService.ViewportDisplaySize` is `Small` (most phones, tablets, handhelds), `Medium` (laptops, monitors) or `Large` (TVs); listen for changes `[official]`. Do not use `GuiService:IsTenFootInterface()` to detect console `[official]`.
 - Sizing rules: scale position plus matching `AnchorPoint` for edge-relative elements (`AnchorPoint (1,0)`, `Position UDim2.new(1,-16,0,16)` for a 16 px top-right margin); scale size plus `UIAspectRatioConstraint` for shape; `UISizeConstraint` for min and max; fixed `TextSize` with `UITextSizeConstraint` rather than `TextScaled` for body text; `AutomaticSize` for content-driven panels (Size becomes the minimum); `ScrollingFrame` with `AutomaticCanvasSize` and `CanvasSize = 0`; `UIScale` on a root frame only as a final global multiplier.
 - Gotcha: a `UIAspectRatioConstraint` overrides a layout's sizing.
@@ -57,15 +56,15 @@ Offer surfaces under house rule 3: small cards (≤ 25% of the screen) in a safe
 - Pixel snapping `[lihfolk]`: offsets snap to whole pixels after scaling, so an odd-sized child cannot be exactly centred in an even parent and a 3 px stroke at scale 0.85 renders soft. Lift descender-heavy captions by 1 px on purpose and record it as an attribute so audits accept it.
 - Modifier limits `[official]`: `UICorner` cannot be applied to a `ScrollingFrame`, and it clips input but not descendants (use a `CanvasGroup`, or 9-slice art, for rounded clipping). `ClipsDescendants` does not clip rotated children `[community]`. Do not tween `UIStroke.Thickness` on text (re-renders glyphs every frame). Flex adds a slight layout cost over plain lists; use `UIGridLayout` when cells must align on both axes.
 - `CanvasGroup` `[official]`: flattens only when the ScreenGui uses `ZIndexBehavior.Sibling`; consumes extra texture memory capped by the client's quality level and renders **blank** past the cap; keep its size static.
-- `UIStroke` `[VS]`: fixed-pixel strokes look thicker on small screens; `StrokeSizingMode = ScaledSize` (Improved UIStrokes beta) scales with the parent's short side. The beta announcement is reported to recommend fewer than 300 UIStrokes on screen for low-end devices; a figure of about 100 UIShadows circulates second-hand `[community]`. Budget both. Whether strokes follow a root `UIScale` has conflicting reports: test on a device.
-- New instances `[official][VS]`: `UIDragDetector` (sliders, spinners and draggable panels on every input without code), `Path2D` (2D splines for path animation and curved connectors), radial/elliptical/conical `UIGradient` types (beta), per-corner `UICorner` radii (beta), styling transitions and the Style Editor. Check the beta list before shipping any of them.
+- `UIStroke` `[official][VS]` (improvements fully released December 2025): fixed-pixel strokes look thicker on small screens; `StrokeSizingMode = ScaledSize` makes `Thickness` a fraction of the parent's shorter side (0.1 on a 200×300 frame = 20 px). Several border strokes per object are allowed (give each a distinct `ZIndex`), one contextual stroke per text; `BorderStrokePosition` Outer / Center / Inner and `BorderOffset`. Strokes do not affect layout: leave room. Budget under 300 strokes and 100 `UIShadow`s on screen for low-end devices. Thickness and offset follow `UIScale`; a reported mismatch came from `TextScaled` text hitting its size cap, and staff advise using only one of `TextScaled` or `UIScale` on such labels.
+- Newer instances `[official][VS]`: `UIDragDetector` (sliders, spinners, draggable panels without code; a 2026 bug report says it does not work in gamepad selection mode `[community]`, so give sliders step input), `Path2D` (2D splines for path animation and curved connectors; no `UIShadow` support), `UIShadow` and per-corner `UICorner` radii (released June 2026), text, inset and knockout shadows (November 2026), radial, conical and elliptical `UIGradient` (October 2026), styling transitions (July 2026). `InputActionLabel` (key and button hints from an `InputAction`) is a Studio beta and cannot be published yet. Recipes: `ui-design-figma.md` §6. Recheck status before relying on anything announced within the last few months.
 - Layouts: `UIListLayout` (with flex and `UIFlexItem`), `UIGridLayout` (compute `CellSize` from `AbsoluteSize`), `UITableLayout` (tabular data only), `UIPageLayout` (carousels), `UIPadding`. Use explicit breakpoints (for example switch a category list from vertical to horizontal under about 700 px width) rather than shrinking desktop panels.
-- Styling: `UICorner`, `UIStroke`, `UIGradient`, 9-slice, `UIShadow` (new, partly beta). Sprite sheets via `ImageRectOffset`/`ImageRectSize`. The UI styling system (`StyleSheet`, `StyleRule`, `StyleLink`, `StyleDerive`, `StyleQuery`, tokens like `$Accent`) gives one place to re-skin; define a small token sheet and drive buttons with tag selectors. Status `[VS]`: the styling APIs and Style Editor are fully released for live experiences, `StyleQuery` (media and container queries in one) followed in May 2026 and styling transitions in July 2026 (DevForum announcements, seen through search).
-- Motion: `TweenService` on the client for state changes only; 0.1–0.3 s for feedback; honour `GuiService.ReducedMotionEnabled` (fade instead of slide). **Conflict:** this line used to allow up to 0.75 s for panels (the official sample's value); field reports put window opens at 0.14–0.26 s and closes at 0.12–0.14 s `[lihfolk]`. Use the token table in `ui-design-figma.md` §Motion spec.
+- Styling system `[official][VS]`: `StyleSheet`, `StyleRule`, `StyleLink`, `StyleDerive`, tokens (attributes such as `$Accent`), state selectors (`TextButton:Hover`, `:Press`), `StyleQuery` selectors (`@ViewportDisplaySizeSmall`, `@PreferredInputTouch`, `@ReducedMotionEnabledTrue`, `@PreferredTextSizeLargest`). One place to re-skin: define a small token sheet and drive buttons with tag selectors. Fully released: styling and the Style Editor (January 2026), `StyleQuery` (May 2026), transitions (July 2026). Only one `StyleSheet` applies to a tree; keep query conditions from conflicting and prefer the built-in selectors.
+- Motion: tokens, durations and reduced-motion mapping are owned by `ui-motion-and-feedback.md`; no screen creates its own `TweenInfo`.
 - Framework choice, authoring strategy and the presenter: §UI architecture below.
 - Performance: hidden screens `Enabled = false`; avoid UIGradient and UICorner on constantly changing text (`fillGuiVertices`); `CanvasGroup` for complex static panels (costs memory; do not nest); icons ≤ 256² in sprite sheets; load menu art lazily; interactive `SurfaceGui`s stay in `StarterGui` with `Adornee` set to the Blender board mesh.
-- Long lists `[community]`: a `ScrollingFrame` with about 1,000 or more cells scrolls badly, and mass-parenting buttons into a `UIGridLayout` is reported to freeze. Thresholds, budgets and the virtualising pattern: §UI performance and `ui-design-figma.md` §Inventory. Build a list on first open, not at join `[official]`.
-- Image memory follows pixel count, not file size (a 1024² image costs 4× a 512²) `[official]`; export rules are in `ui-design-figma.md`.
+- Long lists `[community]`: a `ScrollingFrame` with about 1,000 or more cells scrolls badly, and mass-parenting buttons into a `UIGridLayout` is reported to freeze. Thresholds, budgets and the virtualising pattern: §UI performance and `ui-screen-recipes.md` §6. Build a list on first open, not at join `[official]`.
+- Image memory follows pixel count, not file size (a 1024² image costs 4× a 512²) `[official]`; export rules are in `ui-design-figma.md` §13.
 
 ## UI architecture: state, mounting, controllers
 
@@ -77,7 +76,7 @@ The shape that survives growth past a handful of screens:
 - **One client store** holds the replicated profile, session state, the device profile (layout family and input kept separate) and preferences (reduced motion, text size). Screens subscribe; they do not talk to each other.
 - **One boot script** in `StarterPlayerScripts` requires the controllers. No LocalScripts inside screens.
 - **One presenter** opens and closes windows: one window at a time, HUD hidden on phones while a window is open, a stack only for genuine drill-down (shop → item detail). `[lihfolk]`
-- **One entry point per transient channel**: notifications, centre banners and floating numbers each go through a module that queues, merges and gates (`ui-design-figma.md` §Notifications).
+- **One entry point per transient channel**: notifications, centre banners and floating numbers each go through a module that queues, merges and gates (`ui-screen-recipes.md` §11).
 - **Requests carry a pending state.** Every claim, buy, redeem and save button is non-interactable from tap until the server answers. `[lihfolk]`
 - **Find instances by tag or attribute, not by name.** Tutorial pointers, tap pads and controllers that look up `ShopButton` by name break silently when a redesign renames it; use a CollectionService tag or an attribute such as `UiHook = "hud_shop"`. `[lihfolk]`
 
@@ -108,47 +107,7 @@ Authoring strategies:
 - Use `GuiButton.Activated` (mouse, touch and gamepad), not `MouseButton1Click`; set `Interactable = false` for disabled and pending buttons; every `UserInputService` gameplay handler returns early on `gameProcessedEvent`. `[lihfolk]`
 - New ScreenGuis use `ZIndexBehavior.Sibling` (hierarchy is draw order). In a legacy `Global` gui a new label can sit under its own background; do not flip a large gui's mode in place. `[lihfolk]`
 
-Motion and presenter (unexecuted sketch; token values and rules in `ui-design-figma.md` §Motion spec; approach adapted from LihFolk's motion and ScreenGui notes `[lihfolk]`, rewritten):
-
-```lua
---!strict
--- Shared/UI/Motion.luau: the only place a UI TweenInfo is created.
-local GuiService = game:GetService("GuiService")
-local TweenService = game:GetService("TweenService")
-export type Token = "press" | "release" | "hover" | "enter" | "exit" | "move"
-local Out, In = Enum.EasingDirection.Out, Enum.EasingDirection.In
-local TOKENS: { [Token]: TweenInfo } = {
-	press = TweenInfo.new(0.08, Enum.EasingStyle.Quad, Out),
-	release = TweenInfo.new(0.2, Enum.EasingStyle.Back, Out),
-	hover = TweenInfo.new(0.11, Enum.EasingStyle.Quad, Out),
-	enter = TweenInfo.new(0.22, Enum.EasingStyle.Back, Out),
-	exit = TweenInfo.new(0.13, Enum.EasingStyle.Quad, In),
-	move = TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-}
--- Spatial properties jump to the goal under reduced motion; colour and transparency still fade.
-local SPATIAL: { [string]: boolean } = { Position = true, Size = true, Rotation = true, Scale = true, Offset = true }
-local Motion = { userReduced = false } -- in-game toggle on top of the platform setting
-function Motion.reduced(): boolean
-	return Motion.userReduced or GuiService.ReducedMotionEnabled
-end
--- fraction (0–1) shortens a retargeted tween. Returns nil when nothing is left to animate.
-function Motion.play(target: Instance, token: Token, goal: { [string]: any }, fraction: number?): Tween?
-	local base = TOKENS[token]
-	local info = TweenInfo.new(base.Time * math.clamp(fraction or 1, 0.3, 1), base.EasingStyle, base.EasingDirection)
-	if Motion.reduced() then
-		local fades: { [string]: any } = {}
-		for property, value in goal do
-			if SPATIAL[property] then (target :: any)[property] = value else fades[property] = value end
-		end
-		if next(fades) == nil then return nil end
-		goal, info = fades, TweenInfo.new(math.min(info.Time, 0.15), Enum.EasingStyle.Linear)
-	end
-	local tween = TweenService:Create(target, info, goal)
-	tween:Play()
-	return tween
-end
-return Motion
-```
+Presenter (the `Motion` module it requires, with token values and the reduced-motion rule, is in `ui-motion-and-feedback.md` §8; approach adapted from LihFolk's ScreenGui notes `[lihfolk]`, rewritten):
 
 ```lua
 --!strict
@@ -220,18 +179,18 @@ return Presenter
 
 `face` is the window's root `CanvasGroup` (one per open window is affordable; see UI performance) holding an inner `UIScale` for the pop, separate from any device `UIScale` on the ScreenGui root. Extend with the modal blocker, restore-focus-to-opener and a drill-down stack as needed.
 
-Frameworks and tooling (GitHub activity on 2026-11-10):
+Frameworks and tooling (GitHub stars and push dates as of 2026-11-10; READMEs re-read 2026-11-11):
 
 | Option | Status | Use when |
 |---|---|---|
 | Plain instances + Theme + Motion + Presenter | n/a | **Default.** Screens stay visible in Explorer, editable by the Studio MCP and the Style Editor; state is a handful of attributes and signals |
-| `StyleSheet` tokens, `StyleQuery`, transitions | Engine; styling fully released, StyleQuery May 2026, transitions July 2026 `[community][VS]` | Re-skinning Studio-authored screens; swaps by `@ViewportDisplaySizeSmall` / `@PreferredInputTouch` `[official]` |
-| Vide (`centau/vide`) | 355★, pushed 2026-10, MIT | Many dynamic lists and derived state; small reactive core |
-| React (`Roblox/react-luau` read-only mirror; `jsdotlua/react-lua`) | 589★ pushed 2026-10; 582★ pushed 2025-05 | The team already thinks in React; large UI codebase |
+| `StyleSheet` tokens, `StyleQuery`, transitions | Engine, fully released `[official][VS]` | Re-skinning Studio-authored screens; layout swaps by `@ViewportDisplaySizeSmall` / `@PreferredInputTouch`; hover and press without scripts |
+| Vide (`centau/vide`) | 355★, pushed 2026-10, MIT | Many dynamic lists and derived state; Solid-style reactive core (`source`, `create`), fully typecheckable |
+| React (`Roblox/react-luau`; community fork `jsdotlua/react-lua`) | 589★ pushed 2026-10; 582★ pushed 2025-05 | The team already thinks in React; large UI codebase. A translation of React 17 with Roblox-specific bindings (state that does not re-render) for animation |
 | Fusion (`dphfox/Fusion`) | 813★, pushed 2026-02, MIT | Existing Fusion codebases; `Hydrate` binds state onto Studio-authored templates |
 | Roact (`Roblox/roact`) | Archived 2023-12 | Never for new work |
 | Storybooks: `flipbook-labs/flipbook` (MIT), `PepeElToro41/ui-labs` (GPL-3.0), `Kampfkarren/hoarcekat` | 124★ / 202★ / 148★ | Any code-built component library: preview states without playtesting |
-| Springs: `fraktality/spr` (2024-07), `littensy/ripple` (2026-07); `Reselim/Flipper` (2021-11, stale) | 146★ / 137★ / 144★ | Motion that is retargeted mid-flight |
+| Springs: `fraktality/spr` (2024-07), `littensy/ripple` (2026-07); `Reselim/Flipper` (2021-11, stale) | 146★ / 137★ / 144★ | Motion that is retargeted mid-flight (API notes in `ui-motion-and-feedback.md` §6) |
 
 - Declarative libraries pay off with many states, data-driven lists or several UI programmers; a few static windows do not need one. What you pay for them is the learning curve and build setup rather than frame time; hand-wired UI instead pays in state bugs, and the bill rises with each feature added. `[lihfolk]`
 - Traps in any library `[lihfolk]`: animating through component state (60 re-renders a second: tween instances instead); lists keyed by index (instances are recreated on reorder: key by item id); connections not cleaned up when a screen closes; derived values that loop over the whole inventory on every change; 600 declarative cards are still 600 sets of instances, so virtualise.
@@ -262,7 +221,7 @@ Budgets (`[lihfolk]` field values unless tagged; treat as starting points and me
 | Instances per list card | 10–20. 50 cards: nothing felt; 300: a few frames to open; 1,000 (about 15,000 instances): stalls and visible layout passes; 3,000: unusable on phones |
 | Plain layout vs virtualised | Under about 100 entries plain; above about 300, or unbounded, virtualise with `visible + 2 buffer rows` cells positioned by code (no layout object) |
 | `CanvasGroup` | 1–2 visible, never nested, static size; text inside can look soft |
-| `UIStroke` / `UIShadow` on screen | Under 300 / about 100 `[community][VS]` |
+| `UIStroke` / `UIShadow` on screen | Under 300 / at most 100 `[official]`; `UIShadow` is faster than a 9-sliced shadow image |
 | Floating numbers | Pool of about 12, merged within about 0.5 s |
 | `ViewportFrame` | One in a detail pane or featured slot; none per list cell |
 | World labels | Created on the client, always `MaxDistance`, anchored to an attachment; custom nametags turn the built-in one off (`Humanoid.DisplayDistanceType = None`); nothing `AlwaysOnTop` for enemies |
@@ -275,12 +234,12 @@ Measure, in this order: (1) real low-end phone at its lowest graphics level; (2)
 ## Text, numbers and localisation
 
 - Body text: fixed `TextSize` + `TextWrapped` + `AutomaticSize`. With `GuiService.PreferredTextSize` the engine enlarges such text and auto-sized bounds grow; `TextScaled` text is **not** scaled by the setting, and a `UITextSizeConstraint` clamps it `[official]`.
-- `TextScaled` only for short numerals and titles in fixed boxes, always with `UITextSizeConstraint` (min and max). Without a cap, labels of equal size render different text sizes by string length (DevForum reports, thread not individually identified) `[community]`.
+- `TextScaled` only for short numerals and titles in fixed boxes, always with `UITextSizeConstraint` (min and max). The class reference itself recommends avoiding `TextScaled` in favour of `AutomaticSize` `[official]`. Without a cap, sibling labels render different sizes by string length, the most repeated text complaint in UI critique threads `[community]`.
 - Type floor `[house]`: HUD numbers ≥ 18 px, body 16, captions 14 at phone 1×. Outline (`UIStroke`, Contextual) or plate any text over the 3D world `[official]`. Use stylised fonts sparingly: titles and alerts only `[official]`.
 - Big numbers: abbreviate (`12.5K`, `3.4M`), fix the decimals, size every label for the largest value; `TextTruncate` as the last resort and `TextFits` to detect overflow in tests.
 - `RichText` for inline colour, weight and stroke. Localisation strips rich-text tags, so re-apply them in translated strings `[official]`. One 2025 thread reports the text-size setting breaking non-`TextScaled` RichText labels `[community][VS]`: test it.
 - Escape anything a player typed before placing it in a RichText string (`<`, `>`, `&`), or a name containing `<` breaks the markup; escaping is not filtering (next section). For per-letter colour effects animate a `UIGradient.Offset`, not the string. `[lihfolk]`
-- Fonts: set `FontFace` with an explicit family and weight. The `Gotham*` enum values were removed and render Montserrat `[official]`. Outline ratio (≤ 7% of text size for rounded heavy fonts) and number formatting rules are in `ui-design-figma.md` §Design system and tokens.
+- Fonts: set `FontFace` with an explicit family and weight. The `Gotham*` enum values were removed and render Montserrat `[official]`. Outline ratio (≤ 7% of text size for rounded heavy fonts) and number formatting rules are in `ui-design-figma.md` §4.
 - Scripted text `[lihfolk]`: translate through `LocalizationService:GetTranslatorForPlayerAsync` (in `pcall`) and `Translator:FormatByKey` with parameters, never by concatenating sentence fragments; re-translate when the player's locale changes; set `AutoLocalize = false` on script-filled labels so the table does not fill with "Gems: 1,240". Pseudo-localise to 140% length as a test.
 - Localisation `[official]`: Automatic Text Capture collects strings from GUI objects with `AutoLocalize` enabled; turn `AutoLocalize` off on player names and other text that must not translate. Replace unnecessary text with icons, and design each label for the longest translation (+30% width).
 
@@ -311,29 +270,59 @@ Parent prompts to a Blender-authored `Prompt_Att` attachment (or an invisible an
 ## Input: map actions, not keys
 
 - Detect `UserInputService.PreferredInput` `[VS]` (`Touch`, `KeyboardAndMouse`, `Gamepad`, `MicroGamepad`) and listen to its changed signal to swap hints and touch buttons. `TouchEnabled` is true on touch laptops and `GetLastInputType()` thrashes, so neither is an "is mobile" check.
-- Input Action System `[VS]`: `InputContext` (groups of actions with `Priority` and `Sink`), `InputAction` (`Bool`, `Direction1D`, `Direction2D`, `Direction3D`, `ViewportPosition`; events `Pressed`, `Released`, `StateChanged`; `PreferredBinding` for the right key icon), `InputBinding` (keyboard `KeyCode`, gamepad button, touch `UIButton`, composite Up/Down/Left/Right, `MouseDelta`/`TouchDelta` with `Scale`). Set `Workspace.PlayerScriptsUseInputActionSystem` for default scripts. `ContextActionService:BindAction` still works for legacy code. Bind actions only while the owning screen or tool is active.
+- Input Action System `[VS]`: `InputContext` (groups of actions with `Priority` and `Sink`), `InputAction` (`Bool`, `Direction1D`, `Direction2D`, `Direction3D`, `ViewportPosition`; events `Pressed`, `Released`, `StateChanged`; `PreferredBinding` picks the binding to show for the connected devices, with `DisplayName`/`DisplayImage` on the binding: both live `[official]`), `InputBinding` (keyboard `KeyCode`, gamepad button, touch `UIButton`, composite Up/Down/Left/Right, `MouseDelta`/`TouchDelta` with `Scale`). Set `Workspace.PlayerScriptsUseInputActionSystem` for default scripts. `ContextActionService:BindAction` still works for legacy code. Bind actions only while the owning screen or tool is active.
 - Key ownership `[lihfolk]`: Shift is taken by Roblox's shift-lock toggle when `StarterPlayer.EnableMouseLockOption` is on, so sprint on Shift flips the camera lock on every press: move sprint, or disable the option and provide your own lock. Gamepad B as "close window" is bound only while a window is open (Presenter sketch above), or it eats a dash bound to B; disable combat actions while a modal window is open.
 - Rule: every action has a keyboard, a gamepad and a touch binding. Exclude reserved keys (Escape, the Roblox menu key, chat) from rebinding.
 - Feel: distinguish edge (pressed this frame) from held; radial deadzone about 0.2 with a response curve exponent 1.5–2; input buffer 100–150 ms; coyote time 80–120 ms; prompts switch to the last used device with positional gamepad names.
 
 Jump buffer and coyote time: the working sketch for the default Humanoid, with the reasoning, is in `game-craft.md` §1.2 (buffer about 0.12 s, coyote about 0.10 s).
 
-## Mobile layout
+## Mobile layout and thumb zones
 
-- Reserved zones: thumbstick bottom-left, jump button bottom-right. Keep vital information and custom buttons out of both.
-- Place frequent actions relative to the jump button (for example 20 px to its left, 0.8× its size, after it exists and `IsLoaded`), not at a fixed screen percentage; a button 40% from the top works on a phone but not a tablet.
-- House touch rule: custom buttons at least 0.8× the jump button, ≥ 8 px gaps, HUD text ≥ about 18 px at 1× on a phone; test portrait and landscape if both are allowed.
-- Context-based UI: show only what matters now; prompts for object actions.
-- Thumb reach `[official]`: most players hold the phone with two thumbs on the stick and the jump button; frequent buttons sit within reach of the bottom corners without entering the reserved zones, read-only status goes top-centre. Reach differs between phone and tablet, hence jump-relative placement.
-- Field reports `[community]`: the dynamic thumbstick area covers about 20–25% of the left side; a button beside the stick gets opened by accident (one simulator review: the joystick kept triggering the spin menu); mobile chat, when opened, covers a large part of the screen. Keep the left-edge column above the stick zone and test with chat open.
-- The default jump button is reported at about 70 px on small screens, with a larger variant (about 120 px) on big ones `[community][VS]`: read the live `JumpButton` size, never hard-code it.
-- Orientation: lock it with `StarterGui.ScreenOrientation` (`LandscapeSensor` for most games) unless a portrait layout was designed; `PlayerGui.CurrentScreenOrientation` reports the live value `[official]`.
-- Pass criteria, measured on the drawn result after all scaling `[lihfolk]`: text ≥ 12 px, tap targets ≥ 44 px (48 for HUD buttons), gaps ≥ 8 px, zero overlaps between interactive objects, nothing off-screen. The docs' own floor is "no `MinTextSize` under 9" `[official]`; 12 is stricter on purpose. **Conflict:** this file's design floor is 14 px captions at the phone frame `[house]`; keep 14 as the design target and 12 as the hard fail line.
-- Viewports for every pass `[lihfolk]`: 1920×1080, 1366×768, 1024×600, 932×430, 844×390 (also notched, both landscape orientations), 667×375, plus TV at 1080p with `Large` display size and a gamepad. Automated overlap and tap checks must call the game's real placement code; a check with its own copy of the numbers drifts and goes green while players see overlaps.
-- What survives on small phones `[lihfolk]`: not shrinking (fails the text floor) and not zoom-and-pan (players disliked dragging windows that compete with scrolling lists), but a second arrangement of the same instances: pages instead of side-by-side panes, horizontal strips for tabs and filters, bigger cards in fewer columns, and store-set-restore of every touched property so switching back restores the desktop layout exactly.
+Zone map `[official]` (numbers read from Roblox's `PlayerModule` source, client 0.747, and the docs' reserved-zone and thumb-zone diagrams; all `[VS]`: read live sizes at runtime, never hard-code):
+
+| Zone | Where (landscape) | At `Phone-S` 800×360 | Rule |
+|---|---|---|---|
+| Top bar | Roblox controls, 44 px tall, top-left; free strip to their right | y < about 58 on the left | `CoreUISafeInsets`, or `TopbarSafeInsets` for the strip; listen to `TopbarInset` |
+| Thumbstick touch area | Left 40% of the width × lower two thirds of the height (portrait: full width × lower 40%) | x < 320, y > 120 | A touch that starts here starts the stick. Buttons placed here take taps meant for movement and get pressed by accident: nothing interactive below mid-height on the left |
+| Jump button | 70 px when the shorter screen side is ≤ 500 px, else 120 px. Phone: left edge 95 px and top edge 90 px from the bottom-right corner; large: 170 and 210 px. With avatar ability controls enabled: 72 px, inset 64 px (large: 120, inset 100 × 112) | x 705–775, y 270–340 | Keep an 8 px moat; place actions relative to it |
+| Right thumb arc | Roughly a quarter circle around the bottom-right corner; on a phone it reaches most of the right half, on a tablet under half of that fraction | radius about 0.9 H | Frequent actions inside the arc; "40% from the top" is reachable on a phone and not on a tablet |
+| Top centre | Between the top bar and the right safe edge | 0.3–0.7 W | Read-only status: hardest thumb reach |
+| Centre third | W/3–2W/3 × H/4–3H/4 | n/a | Clear except short feedback |
+
+Placement rules `[house]` unless tagged:
+
+- **Primary action**: left of the jump button, centre at `jump.X − 0.6 × jumpSize − 8`, size 0.8–1.0× the jump button, positioned after `JumpButton` exists and `IsLoaded` and re-run when its `AbsoluteSize` changes. A crouch button at a fixed screen position drifts away from jump between phone and tablet (the most-liked mobile-button tutorial on the forum is about exactly this `[community]`).
+- **Secondary actions**: on an arc above and left of jump at about 1.3× the jump size from its centre, at most 3. Epic's mobile guidance caps active controls at 5–6 including movement `[community]`; `genres/sports.md` reaches the same limit.
+- **Menu buttons**: one home edge outside both zones: the right edge above the jump zone, or a row under the top bar. A left column is a simulator convention, but its lower half sits in the stick's touch area: if you keep it, hold it above mid-height, two columns at most, and watch for the field report of a stick that kept opening the spin menu `[community]`.
+- **Sizes**: custom buttons ≥ 44 px drawn (48 on the HUD), gaps ≥ 8 px, HUD text ≥ 18 px at 1×; a small visual may sit in a larger invisible tap pad (`Selectable = false`), and pads must not overlap. Buy versus Cancel style pairs get 16–24 px between them.
+- **Margins**: 16 px from the safe edge; keep 12–16 px clear above the bottom edge (home indicator, and young players hit bottom-edge buttons by accident `[community]`).
+- **Fire on press, not release, for action buttons** (`InputBegan` or the Input Action System's `Pressed`), and leave `Active` false on a button that must not block camera drags; menus keep `Activated` `[community]`.
+- Hide touch buttons by `PreferredInput`, not `TouchEnabled` (touch laptops) `[official]`.
+- Context first: show only what matters now; object actions are proximity prompts, not permanent buttons. A game without jumping can remove the jump button and reclaim the zone (`GuiService.TouchControlsEnabled`, or disabling jump in the controls) `[community][VS]`.
+- Mobile chat, when opened, covers a large part of the left side: test every layout with chat and the player list open `[official]`.
+- Orientation: lock with `StarterGui.ScreenOrientation` (`LandscapeSensor` for most games) unless a portrait layout was designed; `PlayerGui.CurrentScreenOrientation` reports the live value `[official]`.
+
+Pass criteria, measured on the drawn result after all scaling `[lihfolk]`: text ≥ 12 px, tap targets ≥ 44 px (48 for HUD buttons), gaps ≥ 8 px, zero overlaps between interactive objects, nothing off-screen. The docs' own floor is "no `MinTextSize` under 9" `[official]`; 12 is stricter on purpose, and 14 stays the design target `[house]`.
+
+- Viewports for every pass `[lihfolk]`: 1920×1080, 1366×768, 1024×600, 932×430, 844×390 (notched, both landscape orientations), 667×375, plus TV at 1080p with `Large` display size and a gamepad. Automated overlap and tap checks must call the game's real placement code; a check with its own copy of the numbers drifts and goes green while players see overlaps.
+- What survives on small phones `[lihfolk]`: not shrinking (fails the text floor) and not zoom-and-pan, but a second arrangement of the same instances: pages instead of side-by-side panes, horizontal strips for tabs and filters, bigger cards in fewer columns, and store-set-restore of every touched property so switching back restores the desktop layout exactly.
 - Test matrix `[VS]`: Device Emulator, or the Device Simulator beta with Flagship, Mid-range and Entry-level phone presets, then the real 3 GB Android phone. The emulator does not show real thumbs.
 
 ## Gamepad and console
+
+Focus design `[house]` unless tagged (the selection ring is a designed component, not the engine default):
+
+- **Ring**: 3–4 px, the reserved `Focus` colour (used nowhere else), drawn 2–4 px outside the element with a dark outer edge so it reads on any surface; set it once through `SelectionImageObject` (`GuiObject` or `PlayerGui`). Add the hover scale (1.04–1.06) and, for the primary action, a slow pulse.
+- **Focused is not selected.** The open tab or equipped item keeps its own look while the ring moves over it.
+- **First focus** is the most likely action (the claimable card, the first affordable item), never Close; set it when the entrance starts. Each screen remembers its last focused item; closing returns focus to the button that opened it.
+- **Map, don't hunt**: B back, shoulder buttons switch tabs, triggers page long lists, X and Y for the two most-used contextual actions (sort, equip). Show the mapping in a footer legend inside the TV-safe area, built from `GetImageForKeyCode` (or `InputActionLabel` once it leaves Studio beta `[VS]`).
+- **Grids**: left/right wrap within a row only if the row is the whole list; at a grid edge focus moves to the neighbouring group (tabs above, detail pane beside), never to something off-screen. Virtualised lists move focus by data index and scroll the focused cell into view with one row of margin.
+- **Destructive actions**: hold-to-confirm (a ring filling over 0.6–0.8 s) instead of a second dialog.
+- **No virtual cursor.** Sonic Racing shipped cursor navigation under deadline and replaced it with grid navigation in the next update `[community]`.
+- **Tooltips** appear for the focused element after about 0.4 s; nothing may depend on hover.
+
+Engine rules:
 
 - Players sit 8–10 feet from a TV: develop for lower resolutions first, keep UI inside TV-safe areas, use relative positions plus `UISizeConstraint`, check `GuiService.ViewportDisplaySize`, and use ScrollingFrames to reduce clutter.
 - Every element reachable with four directions plus select and back. Set `GuiService.SelectedObject` when a menu opens, define `NextSelection*` neighbours, trap focus in modals, keep action sequences short.
@@ -352,7 +341,7 @@ Target 72 FPS on Quest 2; keep Roblox's comfort settings (vignette, stepped rota
 - Why `[official]`: over 26% of people have some disability and over 5% some colour blindness.
 - `GuiService.PreferredTransparency` (1 default to 0 opaque): multiply background transparency by it and listen for changes. Official pattern: tag translucent backgrounds (for example `TransparentBack`), store each default and reapply on change.
 - `GuiService.PreferredTextSize` (`Medium` default, `Large`, `Larger`, `Largest`): applied by the engine except to `TextScaled` text, so prefer fixed `TextSize` with `AutomaticSize` and `TextWrapped` for body text. Test every screen at `Largest`.
-- `GuiService.ReducedMotionEnabled`: reduce UI motion, camera shake and flashes. Either tween time 0, or swap slides for a fade (`CanvasGroup.GroupTransparency`) `[official]`. Route every UI tween through one helper (`Motion.play`, §UI architecture); the reduced-motion mapping per effect is in `ui-design-figma.md` §Motion spec.
+- `GuiService.ReducedMotionEnabled`: reduce UI motion, camera shake and flashes. Either tween time 0, or swap slides for a fade (`CanvasGroup.GroupTransparency`) `[official]`. Route every UI tween through one helper (`Motion.play`); the reduced-motion mapping per effect is in `ui-motion-and-feedback.md` §7.
 - Offer the same switches in the game's own settings (reduced motion, text size or UI scale, screen-effects intensity): many players never find the platform settings `[lihfolk]`. Keep flashes to at most three per second.
 - Full treatment (contrast checks, cognitive load, motor options, an accessibility settings group, QoL): `accessibility-and-player-qol.md`.
 - Colour non-reliance (icon or label with every colour state), sound non-reliance (visual cues for audio events), separate Music, SFX and Ambience sliders.
@@ -360,7 +349,7 @@ Target 72 FPS on Quest 2; keep Roblox's comfort settings (vignette, stepped rota
 
 ## Level-up: UI symptoms → cause → fix
 
-For live games. Confirm the symptom on a real small phone and in analytics before changing anything; fix P0 rows first.
+For live games. Confirm the symptom on a real small phone and in analytics before changing anything; fix P0 rows first. Look symptoms (generic, cluttered, harsh, blurry) are in `ui-design-figma.md`; screen symptoms (toasts, loading, double claims) in `ui-screen-recipes.md`; motion and feedback symptoms in `ui-motion-and-feedback.md`.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
@@ -370,27 +359,19 @@ For live games. Confirm the symptom on a real small phone and in analytics befor
 | Text tiny on phone, huge on TV, or a different size per label | `TextScaled` without `UITextSizeConstraint`; no breakpoints | Fixed type scale; constraint on scaled numerals; `ViewportDisplaySize` breakpoints |
 | Text Size setting does nothing, or clips | `TextScaled` body text; fixed-height boxes | Fixed `TextSize` + `AutomaticSize` + `TextWrapped`; test at `Largest` |
 | Translated text overflows or shows raw tags | Labels sized for English; rich-text tags stripped by localisation | +30% width, `AutomaticSize`; re-apply tags per language; icons instead of words |
-| Accidental shop or spin opens; mis-taps while moving | Buttons in or beside the thumbstick and jump zones; targets under 44 px; gaps under 8 px | Move to the home edge above the stick zone; primary action jump-relative; enlarge targets |
-| "Too much on screen" feedback; players miss the main button | More than 5–7 persistent elements; every button equally loud; offer stacking | One home edge, "More" drawer, contextual HUD, world-space labels, one accent; offer rate limit |
+| Accidental shop or spin opens; mis-taps while moving | Buttons inside the stick's touch area (left 40% × lower two thirds) or hugging the jump button; targets under 44 px; gaps under 8 px | Move menus to the right edge above jump or under the top bar; primary action jump-relative; enlarge targets |
 | HUD state lost or duplicated after respawn | `ResetOnSpawn = true`, or the ScreenGui sits in a Folder under `StarterGui`; references to a destroyed clone | `ResetOnSpawn = false` on a direct child of `StarterGui`; controllers bind once to `PlayerGui` |
-| Window opens, then vanishes when reopened quickly | Close tween's `Completed` hides the window without checking state | Hide only on `PlaybackState.Completed` and when the intent is still "closed"; drive from `wantOpen` |
-| "UI feels laggy" although tweens are short | Input locked until the entrance ends; full enter time after an interrupted close | Accept input from the first visible frame; proportional retarget |
 | Clicks pass through a popup to the world or to buttons behind | Backdrop is a plain Frame; modality attempted with `DisplayOrder` | Full-screen blocker with `InputSink.All` |
 | A new label or icon is invisible | Legacy `ZIndexBehavior.Global`: it draws under its own background | Raise its `ZIndex` there; build new screens as `Sibling` |
-| Coloured squares poke out of rounded corners | `ClipsDescendants` clips to the rectangle, not the `UICorner` | Round or inset the child, or one `CanvasGroup` |
 | "10" reads as a blob, "Fast" as "Fust" | Text stroke too thick: glyph holes close | Stroke ≤ 7% of text size on rounded heavy fonts; test string at phone size |
-| A wall of identical toasts; toasts still arriving a minute later | No merging, unbounded queue | Kinds with merge rules, capped queue, stale drop (`ui-design-figma.md` §Notifications) |
-| Celebration banner over the death screen or tutorial | No popup gate | One centre slot with gating rules |
-| Loading screen never leaves for some players | Ready check waits without a timeout, or on a streamed-out instance; two teardown paths | Idempotent teardown plus a watchdog that logs the reason |
 | Frame drops when a menu opens or a list scrolls | Thousands of cells built at once; `UIGridLayout` mass-parenting; destroy and recreate each open | Virtualise or paginate, pool cells, build on first open |
 | Constant UI cost in the MicroProfiler with nothing open | Text set every frame; perpetual tweens; hidden screens still `Enabled`; many BillboardGuis | Update on change (≤ 10 Hz), stop idle tweens, `Enabled = false`, `MaxDistance` and pooling |
 | Panels turn blank on low-end phones | `CanvasGroup` texture memory cap exceeded | Fewer, static-size CanvasGroups; native shapes or 9-slice instead |
-| UI images blurry, or client memory high | Upscaled small exports; many large uploads; one upload per colour | Export 2× up to 1024 px; sprite sheets; tint a white base with `ImageColor3` |
-| Outlines thick on phone, thin on TV | Fixed-pixel `UIStroke` on scale-sized elements | Per-breakpoint thickness or `ScaledSize` strokes once out of beta `[VS]`; verify under `UIScale` |
-| Gamepad or console players stuck in a menu | No initial `SelectedObject`; no B to close; focus escapes the modal or stays on a hidden object | Set selection when the entrance starts, `SelectionGroup` with `Stop`, back action on every screen, clear or restore selection on close |
+| Outlines thick on phone, thin on TV | Fixed-pixel `UIStroke` on scale-sized elements | `StrokeSizingMode = ScaledSize`, or one fit `UIScale` on the root; not on `TextScaled` labels |
+| Gamepad or console players stuck in a menu, or cannot see where they are | No initial `SelectedObject`; no B to close; focus escapes the modal or lands on an invisible helper; default ring lost on the art | Set selection when the entrance starts, `SelectionGroup` with `Stop`, back action on every screen, `Selectable = false` on helpers, a designed focus ring |
 | Gamepad dash or dodge dead outside menus; first A press does nothing | B bound globally to "close"; selection set only after the entrance | Bind B only while a window is open and sink it; select at entrance start |
 | Key hints wrong on phone, touch buttons shown on PC | `TouchEnabled` or last-input checks | `PreferredInput` and its changed signal |
-| Buttons feel dead; clicks seem ignored | No pressed state or sound; waiting for the server before any feedback | Local press feedback under 100 ms, then reconcile with the server result |
+| Custom action button too far from or overlapping jump on tablets | Positioned by screen percentage; jump is 70 px on phones and 120 px on large screens | Place from the live `JumpButton` and re-run on `AbsoluteSize` change |
 | Purchase prompts or offers annoy players (reviews, chat) | Modal during play, shown in the first minutes, stacked or with sound stings | Offer-surface rules above; `monetization-and-policy.md` |
 | UI flashes or is missing for the first seconds | UI waits on full replication; loading screen removed early | Minimal `ReplicatedFirst` loading ScreenGui; enable the HUD when data is ready |
 
@@ -452,33 +433,31 @@ Extend it with the game's own rules: buttons under 44 px at the phone frame, col
 ## Review gate
 
 - [ ] Tested in the Device Emulator and on real devices: small phone portrait and landscape, tablet, desktop, 1080p TV with a gamepad.
-- [ ] Interactive UI uses `CoreUISafeInsets`; nothing in the mobile reserved zones; custom buttons near the jump button; no hard-coded top-bar height.
-- [ ] Every action has keyboard, gamepad and touch bindings; gamepad reaches every element; initial selection set; B closes every window; console chat disabled.
+- [ ] Interactive UI uses `CoreUISafeInsets`; nothing interactive in the stick's touch area or within 8 px of jump; custom buttons placed from the live jump button; no hard-coded top-bar height or jump size.
+- [ ] Every action has keyboard, gamepad and touch bindings; gamepad reaches every element; designed focus ring visible on every surface; first focus and focus memory set; B closes every window; console chat disabled.
 - [ ] Hints follow `PreferredInput`; `PreferredTextSize` (tested at `Largest`), `PreferredTransparency` and `ReducedMotionEnabled` honoured; no body text relies on `TextScaled`.
 - [ ] All user-generated text filtered on the server; prompt actions validated on the server.
 - [ ] Offer popups small, dismissible, well-timed, rate-limited and honest; shop one tap away.
-- [ ] HUD ≤ 7 elements; counters count up; contrast and text sizes meet the thresholds above.
+- [ ] HUD ≤ 7 groups, at most 5–6 active touch controls including movement; contrast and text sizes meet the thresholds above.
 - [ ] One presenter, a written `DisplayOrder` band plan, modal blockers that sink input; every ScreenGui a direct child of `StarterGui` with `ScreenInsets` set explicitly.
 - [ ] Measured at the listed viewports: drawn text ≥ 12 px, taps ≥ 44 px, gaps ≥ 8 px, zero overlaps; ten rapid open/close taps end in the last requested state.
 - [ ] UI idle costs no per-frame Lua; loops stop when their screen closes; MicroProfiler checked on a low-end phone with the busiest window open.
-- [ ] Lists over a few hundred items are virtualised or paginated; no beta-only UI property is required in the live client.
+- [ ] Lists over a few hundred items are virtualised or paginated; strokes under 300 and shadows under 100 on screen; no beta-only or unreleased UI feature is required in the live client.
 - [ ] UI audit scan returns no unexplained findings; the symptom table was checked against analytics and player feedback for a live game.
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-11 unless noted. "(read)" = opened and read at source; "(viewed)" = image looked at; "(search summary)" = not opened.
 
 - `references/knowledge-base.md` sections `## 2.3`, `## 2.5`, `## 5.10`, `## 5.11` (read; grep those headings for the long form)
-- `Roblox/creator-docs` (read): `ui/position-and-size.md`, `includes/ui/screen-insets.md`, `ui/size-modifiers.md`, `ui/list-flex-layouts.md`, `ui/scrolling-frames.md`, `ui/appearance-modifiers.md`, `ui/rich-text.md`, `ui/ui-drag-detectors.md`, `ui/2D-paths.md`, `ui/styling/index.md`, `ui/styling/editor.md`, `projects/cross-platform.md`, `production/publishing/accessibility.md`, `production/localization/automatic-translations.md`, `performance-optimization/improve.md`, `studio/device-simulator.md`, class reference for `GuiService`, `GuiObject`, `GuiBase2d`, `ScreenGui`, `PlayerGui`, `StarterGui`, `CanvasGroup`, `UICorner`, `UIStroke`, `UIShadow`, `TextLabel`: https://github.com/Roblox/creator-docs
-- https://devforum.roblox.com/t/full-release-ui-styling-is-officially-released/4275082, https://devforum.roblox.com/t/full-release-stylequery-more-styling-features/4566519, https://devforum.roblox.com/t/full-release-styling-transitions/4646870 (search summary)
-- https://devforum.roblox.com/t/studio-beta-uistroke-improvements-scaling-offsets-and-more/3958036, https://gamineai.com/blog/what-roblox-uishadow-beta-changed-for-studio-ui-2026 (search summary)
-- https://devforum.roblox.com/t/how-tall-is-the-roblox-top-bar/3248916, https://devforum.roblox.com/t/guiservicegetguiinset-returns-0-0-0-0-for-the-first-frame-of-the-game-with-new-topbar-ui/2973508 (search summary)
-- https://devforum.roblox.com/t/mobile-navigation-thumbstick-covers-important-game-uis/205611, https://devforum.roblox.com/t/feedback-on-simulator/2417686, https://devforum.roblox.com/t/thoughts-on-my-simulator-ui/1168190, https://devforum.roblox.com/t/feedback-on-simulator-game/2630240, https://devforum.roblox.com/t/jump-button-and-thumbstick-sized-positioned-wrong-in-mobile-emulator/2861222 (search summary)
-- https://devforum.roblox.com/t/virtual-scrolling-list-virtualization/2732175, https://devforum.roblox.com/t/parenting-objects-to-uigridlayouts-causing-extreme-lag-all-of-a-sudden/3607305, https://devforum.roblox.com/t/virtualscroller-infinite-scrollingframes/3990429 (search summary)
-- https://devforum.roblox.com/t/introducing-text-scaling-setting-studio-beta/3136967, https://devforum.roblox.com/t/new-preferred-text-size-setting-makes-it-impossible-to-have-text-objects-using-richtext-without-textscaled-enabled-that-arent-affected-by-the-setting/3914959 (search summary)
-- https://devforum.roblox.com/t/new-gamepad-ui-selection-apis/1791278, https://devforum.roblox.com/t/introducing-improvements-to-directional-ui-selection-on-gamepad/3864317, https://devforum.roblox.com/t/make-nextselection-properties-dictate-selectiongroup-navigation/3314485 (search summary)
-- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `05 UI and UX/ScreenGui Fundamentals.md`, `Layout - Scale Offset and Constraints.md`, `Responsive UI for Phone Tablet Console and PC.md`, `Safe Areas and Insets.md`, `HUD Design.md`, `UI Motion Language and Timing.md`, `Virtualized Lists and Large Inventories.md`, `Declarative UI - React-Lua and Fusion.md`, `Gamepad and Console UX.md`, `Text Fonts and Rich Text.md`, `Localization.md`, `Accessibility.md`, `UI Design Systems.md`, `World-Space UI - BillboardGui and SurfaceGui.md`, `Nametags and Overhead Bars - Cost and Visibility Rules.md`; `56 Field Notes/` (Shift-Lock Sprint and Gamepad B for Menus, Streaming Joins and Loading Screen Teardown, UIStroke on Text); `skills/roblox-ui-builder/SKILL.md` (read)
-- `Roblox/creator-docs` (read, wave 2): `performance-optimization/microprofiler/tag-table.md`, class reference for `LayerCollector`, `TweenService`, `TweenBase`, `UIScale`, `UITextSizeConstraint`, enums `Font`, `InputSink`
-- GitHub search API metadata (read) for https://github.com/centau/vide, https://github.com/Roblox/react-luau, https://github.com/jsdotlua/react-lua, https://github.com/dphfox/Fusion, https://github.com/Roblox/roact, https://github.com/flipbook-labs/flipbook, https://github.com/PepeElToro41/ui-labs, https://github.com/Kampfkarren/hoarcekat, https://github.com/fraktality/spr, https://github.com/littensy/ripple, https://github.com/Reselim/Flipper
+- `Roblox/creator-docs` mirror (read; commit `7cbffff` for the 2026-11-11 pass, earlier commit on 2026-11-10): `ui/position-and-size.md` (reserved zones, thumb zones), `includes/ui/screen-insets.md`, `ui/size-modifiers.md`, `ui/list-flex-layouts.md`, `ui/scrolling-frames.md`, `ui/appearance-modifiers.md`, `ui/rich-text.md`, `ui/ui-drag-detectors.md`, `ui/2D-paths.md`, `ui/styling/index.md`, `ui/styling/editor.md`, `ui/styling/css-comparisons.md` (state and query selectors), `projects/cross-platform.md`, `production/publishing/accessibility.md`, `production/localization/automatic-translations.md`, `performance-optimization/improve.md`, `performance-optimization/microprofiler/tag-table.md`, `studio/device-simulator.md`, `tutorials/curriculums/user-interface-design/wireframe-your-layouts.md`; class reference `GuiService`, `GuiObject`, `GuiBase2d`, `ScreenGui`, `LayerCollector`, `PlayerGui`, `StarterGui`, `CanvasGroup`, `UICorner`, `UIStroke`, `UIShadow`, `UIGradient`, `UIScale`, `UITextSizeConstraint`, `UIFlexItem`, `Path2D`, `StyleQuery`, `InputActionLabel`, `HapticEffect`, `TextLabel`, `TweenService`, `TweenBase`; enums `Font`, `InputSink`, `GuiState`, `PreferredInput`: https://github.com/Roblox/creator-docs
+- Official diagrams (viewed): https://prod.docsiteassets.roblox.com/assets/ui/misc/Touch-Reserved-Zones.png, https://prod.docsiteassets.roblox.com/assets/ui/misc/Thumb-Zones-Phone-Reachable.png
+- Roblox `PlayerModule` source, client 0.747, via https://github.com/MaximumADHD/Roblox-Client-Tracker (read: `ControlModule/DynamicThumbstick.lua` for the 40% × two-thirds touch frame, `ControlModule/TouchJump.lua` for jump sizes and positions)
+- Roblox staff announcements on DevForum (read): updated experience controls, 44 px (2024) https://devforum.roblox.com/t/3163001 · UIStroke improvements, full release Dec 2025, 300-stroke guidance https://devforum.roblox.com/t/3958036 · shadows and individual corners, full release Jun 2026, 100-shadow guidance https://devforum.roblox.com/t/4636263 · upgraded UIShadow https://devforum.roblox.com/t/4934553 · upgraded gradients https://devforum.roblox.com/t/4846594 · UI styling https://devforum.roblox.com/t/4275082 · StyleQuery https://devforum.roblox.com/t/4566519 · styling transitions https://devforum.roblox.com/t/4646870 · InputActionLabel Studio beta https://devforum.roblox.com/t/4779420
+- DevForum threads (read): The Correct Way to Design Mobile Buttons (2023, 318 likes) https://devforum.roblox.com/t/2494558 · top-bar height questions https://devforum.roblox.com/t/3248916, https://devforum.roblox.com/t/3237388 · scaled-stroke report with staff reply https://devforum.roblox.com/t/4238464 · UI critique threads listed in `ui-design-figma.md` §Sources
+- Outside sources (read): Epic, "Designing for Mobile in Fortnite" https://dev.epicgames.com/documentation/fortnite/designing-for-mobile-in-fortnite · Raffaele Lattanzio, "The UI & UX of Sonic Racing" https://interfaceingame.com/articles/the-ui-ux-of-sonic-racing/ · Smashing Magazine, "A Practical Guide To Designing For Children" https://www.smashingmagazine.com/2024/02/practical-guide-design-children/
+- GitHub READMEs (read 2026-11-11): https://github.com/Roblox/react-luau, https://github.com/jsdotlua/react-lua, https://github.com/dphfox/Fusion, https://github.com/centau/vide, https://github.com/PepeElToro41/ui-labs, https://github.com/fraktality/spr, https://github.com/littensy/ripple. Stars and push dates for these and for `Roblox/roact`, `flipbook-labs/flipbook`, `Kampfkarren/hoarcekat`, `Reselim/Flipper` come from the GitHub API on 2026-11-10 (not refreshed: the API was closed to this session on 2026-11-11).
+- LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/` ScreenGui Fundamentals; Layout - Scale Offset and Constraints; Responsive UI for Phone Tablet Console and PC; Safe Areas and Insets; HUD Design; Virtualized Lists and Large Inventories; Declarative UI - React-Lua and Fusion; Gamepad and Console UX; Text Fonts and Rich Text; Localization; Accessibility; UI Design Systems; World-Space UI - BillboardGui and SurfaceGui; Nametags and Overhead Bars - Cost and Visibility Rules; `56 Field Notes/` Shift-Lock Sprint and Gamepad B for Menus, UIStroke on Text; `skills/roblox-ui-builder/SKILL.md`
 - https://github.com/xtrair/figma-to-roblox-ui (read: the Scale-only rules cited in the conflict note), https://github.com/grim-technologies-arch/ui-figma-roblox (read: rotated-children clipping note)
-- Not reachable directly: reddit.com, devforum.roblox.com, create.roblox.com (blocked); DevForum items above are search-result summaries only.
+- Search summary only (not opened): first-frame inset report https://devforum.roblox.com/t/2973508 · thumbstick and simulator field reports https://devforum.roblox.com/t/205611, https://devforum.roblox.com/t/2417686 · virtual scrolling and grid-layout lag https://devforum.roblox.com/t/2732175, https://devforum.roblox.com/t/3607305, https://devforum.roblox.com/t/3990429 · text-size setting threads https://devforum.roblox.com/t/3136967, https://devforum.roblox.com/t/3914959 · gamepad selection threads https://devforum.roblox.com/t/1791278, https://devforum.roblox.com/t/3864317, https://devforum.roblox.com/t/3314485 · UIDragDetector gamepad bug https://devforum.roblox.com/t/4877569
+- Not reachable: reddit.com, medium.com-hosted articles, GitHub API.

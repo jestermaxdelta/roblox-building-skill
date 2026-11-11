@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>16 Lighting: key, fill, rim and colour scripts</title><link rel="stylesheet" href="sheet.css">
+<style>
+.wrapS{position:relative;width:744px;height:262px}
+.wrapS svg{display:block;border-radius:10px;border:2px solid var(--ink)}
+.t4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.t4 svg{display:block;border-radius:6px}
+.t4 b{display:flex;gap:6px;align-items:center;font-size:11.5px;margin-top:4px}.t4 p{font-size:10.5px;color:var(--ink2);line-height:1.34}
+.cs{display:grid;grid-template-columns:112px repeat(5,1fr);gap:4px 6px;align-items:center;font-size:11px;color:var(--ink2)}
+.cs .h{font-weight:700;color:var(--ink);text-align:center;font-size:11.5px}
+.cs .v2{text-align:center}
+.cs i{display:block;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.25)}
+.cs svg{display:block;border-radius:6px;border:1.5px solid var(--ink)}
+</style></head><body>
+<div class="sheet">
+  <div class="wrapS"><div id="scene"></div><div id="pins"></div></div>
+  <div class="legend mt" id="legend"></div>
+  <div class="card mt"><h3>The white-cube test: lit faces 1.5–2.5 × the brightness of shadow faces (ratios computed from the greys drawn)</h3><div class="t4" id="cubes"></div></div>
+  <div class="card mt"><h3>Colour script for a day cycle: interpolate every field, not only ClockTime (swatches are the guide's RGB values)</h3>
+    <div class="cs" id="cs"></div>
+    <div class="note mt6">Night is shown by hue, lower saturation and lit windows, not by darkness: keep night ambient around 15–25% brightness and tinted so silhouettes read at 50 studs. Most games should pick one hour and tune it; add a cycle only when night changes play.</div></div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el, T = Sheet.txt, rgb = (r, g, b) => Sheet.toHex([r, g, b]);
+// iso-ish cube: front-left face (shadow), front-right face (lit), top
+function cube(x, y, s, top, lit, sh, st = '#1A1F2B') { const a = s * 0.86, b = s * 0.5; return `<path d="M${x} ${y}l${-a} ${-b}v${-s}l${a} ${b}z" fill="${sh}" stroke="${st}" stroke-width="1.5" stroke-linejoin="round"/><path d="M${x} ${y}l${a} ${-b}v${-s}l${-a} ${b}z" fill="${lit}" stroke="${st}" stroke-width="1.5" stroke-linejoin="round"/><path d="M${x} ${y - s}l${-a} ${-b}l${a} ${-b}l${a} ${b}z" fill="${top}" stroke="${st}" stroke-width="1.5" stroke-linejoin="round"/>`; }
+const shadow = (x, y, s) => `<path d="M${x} ${y}l${-s * 0.86} ${-s * 0.5}l${-s * 1.2} ${s * 0.22}l${s * 0.86} ${s * 0.5}z" fill="#3F6B55" opacity=".55"/>`;
+const W = 744, H = 262;
+let s = `<rect width="${W}" height="${H}" fill="#BFD9E6"/><rect y="150" width="${W}" height="112" fill="#7FA98A"/><path d="M0 150L90 112L170 138L270 96L380 140L520 104L640 136L744 110V150Z" fill="#A9C7CF"/><path d="M0 150L140 126L250 144L420 118L560 146L744 128V150Z" fill="#94B8B4"/>`;
+// sun and key arrow
+s += `<circle cx="672" cy="48" r="22" fill="#FFE9A8" stroke="#E3A21A" stroke-width="2"/>` + `<path d="M640 70L470 168" stroke="#E3A21A" stroke-width="3.500" stroke-dasharray="1 0"/><path d="M470 168l15 -2l-8 -13z" fill="#E3A21A"/>`.replace('.500', '.5');
+s += `<path d="M560 150A116 116 0 0 1 612 96" fill="none" stroke="#1A1F2B" stroke-width="1.2" stroke-dasharray="3 3"/>` + T(520, 124, '30–50°', { fill: '#1A1F2B', 'font-weight': 700 });
+// fill arrows from the sky (cool)
+[[150, 18, 230, 120], [250, 14, 300, 110], [70, 60, 180, 150]].forEach(a => s += `<path d="M${a[0]} ${a[1]}L${a[2]} ${a[3]}" stroke="#5C8FD6" stroke-width="2.500" stroke-dasharray="6 5"/><path d="M${a[2]} ${a[3]}l-11 -5l9 -8z" fill="#5C8FD6"/>`.replace('.500', '.5'));
+// objects
+s += shadow(300, 214, 64) + cube(300, 214, 64, '#FFF7E6', '#F2E6CF', '#9FAEC6');
+s += `<ellipse cx="420" cy="228" rx="46" ry="9" fill="#3F6B55" opacity=".55"/><circle cx="452" cy="196" r="34" fill="#9FAEC6" stroke="#1A1F2B" stroke-width="1.5"/><path d="M452 162a34 34 0 0 1 0 68a46 34 0 0 0 0 -68z" fill="#F2E6CF"/><circle cx="452" cy="196" r="34" fill="none" stroke="#1A1F2B" stroke-width="1.5"/>`;
+// avatar with rim: darker body against light ground, bounce on underside
+s += `<ellipse cx="560" cy="232" rx="30" ry="6" fill="#3F6B55" opacity=".55"/>` + Sheet.avatar(580, 234, 74, { top: '#2B4E86', leg: '#1F2A3D', skin: '#D9B98F' }) + `<path d="M596 162v72" stroke="#FFE9A8" stroke-width="3" stroke-linecap="round"/><path d="M561 234h38" stroke="#F0B27A" stroke-width="3" stroke-linecap="round"/>`;
+// local key: lamp post with pool
+s += `<ellipse cx="96" cy="232" rx="62" ry="13" fill="#FFD98A" opacity=".5"/><rect x="92" y="150" width="7" height="82" fill="#3A4663" stroke="#1A1F2B" stroke-width="1.5"/><rect x="82" y="132" width="27" height="20" rx="4" fill="#FFD98A" stroke="#1A1F2B" stroke-width="1.5"/>`;
+document.getElementById('scene').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
+const pins = [[1, 560, 96], [2, 204, 80], [3, 618, 176], [4, 126, 122]];
+document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
+const L = [
+  ['Key: sun or moon', 'ClockTime + GeographicLatitude (angle), Brightness (strength), ColorShift_Top (tint)', 'Sun 30–50° above the horizon, a quarter turn off the main direction of travel, so every object shows a lit side, a shadow side and a readable top.'],
+  ['Fill: the ambient terms', 'OutdoorAmbient, Ambient, EnvironmentDiffuseScale 0.2–0.5', 'Cooler than the key. Brightness raises contrast, not visibility in shadow: ambient is what lifts shadows.'],
+  ['Rim and separation', 'ColorShift_Bottom (bounce), value contrast, Atmosphere depth bands, Highlight as fallback', 'Characters, enemies and pickups sit at a value nothing around them uses. Do not rely on cast shadows: they are off below quality level 4.'],
+  ['Local key', 'one hero light per room or node', 'A pool about the size of the play space around the feature. A bright lamp in a dead end pulls players into it.'],
+];
+document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
+const tiles = [['Angled key, cool fill', 'good', '#FFF7E6', '#EFE3CC', '#9FAEC6', 'Three distinct faces. Warm key and cool fill give a free hue shift on flat colours.'], ['Flat noon', 'bad', '#FFFBF0', '#B9BEC6', '#B9BEC6', 'Overhead sun lights all tops equally and flattens every wall.'], ['Fill too bright', 'bad', '#FFF7E6', '#EFE3CC', '#E0DCD2', 'Lit and shadow faces nearly equal: objects read as flat cut-outs.'], ['Fill near black', 'bad', '#FFF7E6', '#EFE3CC', '#2E3442', 'Shadow sides become holes on a phone in daylight.']];
+document.getElementById('cubes').innerHTML = tiles.map(t => { const r = Sheet.lum(t[3]) / Sheet.lum(t[4]); return `<div><svg width="166" height="96" viewBox="0 0 166 96"><rect width="166" height="96" fill="#BFD9E6"/><rect y="54" width="166" height="42" fill="#7FA98A"/>${cube(83, 84, 40, t[2], t[3], t[4])}</svg><b>${t[0]} <span class="chip ${t[1]}">${r.toFixed(1)} ×</span></b><p>${t[5]}</p></div>`; }).join('');
+const cs = [['Dawn', 6.3, 1.5, [120, 110, 125], [75, 70, 85], [255, 200, 170], [235, 200, 190], 1.5, '0'], ['Day', 14, 2.5, [140, 140, 150], [90, 90, 100], [255, 240, 215], [200, 225, 255], 0.5, '+0.1'], ['Golden hour', 17.6, 2.2, [130, 100, 90], [90, 70, 70], [255, 190, 120], [255, 200, 160], 1.5, '+0.1'], ['Dusk', 18.6, 1.0, [100, 90, 125], [65, 60, 90], [230, 150, 150], [160, 130, 170], 1.5, '0'], ['Night', 0, 0.6, [80, 95, 140], [60, 70, 110], [150, 170, 255], [60, 75, 120], 0.5, '−0.1']];
+const mul = (a, b, k) => rgb(...a.map((v, i) => Math.min(255, v * b[i] / 255 * k)));
+const tile = c => { const k = 0.55 + c[2] * 0.18, lit = mul([235, 235, 235], c[5], k), sh = rgb(...c[3]), top = mul([250, 250, 250], c[5], k + 0.05), gr = mul([120, 160, 120], c[5], k * 0.9), sunY = { Dawn: 40, Day: 12, 'Golden hour': 34, Dusk: 44, Night: 14 }[c[0]]; return `<svg width="112" height="70" viewBox="0 0 112 70"><rect width="112" height="70" fill="${rgb(...c[6])}"/><circle cx="${c[0] === 'Dawn' ? 22 : 90}" cy="${sunY}" r="7" fill="${c[0] === 'Night' ? '#E8EEFF' : rgb(...c[5])}" stroke="#1A1F2B" stroke-width=".8"/><rect y="46" width="112" height="24" fill="${gr}"/>${cube(54, 62, 24, top, lit, sh)}</svg>`; };
+const row = (label, fn) => `<span>${label}</span>` + cs.map(fn).join('');
+const sw = c => `<i style="background:${rgb(...c)}" title=""></i>`;
+document.getElementById('cs').innerHTML = `<span></span>` + cs.map(c => `<span class="h">${c[0]}</span>`).join('') + row('Sketch: sky, key, fill', c => tile(c)) + row('ClockTime', c => `<span class="v2">${c[1]}</span>`) + row('Brightness', c => `<span class="v2">${c[2].toFixed(1)}</span>`) + row('ColorShift_Top (key)', c => sw(c[5])) + row('OutdoorAmbient (fill)', c => sw(c[3])) + row('Ambient (interiors)', c => sw(c[4])) + row('Atmosphere Color', c => sw(c[6])) + row('Atmosphere Haze', c => `<span class="v2">${c[7]}</span>`) + row('Grade saturation', c => `<span class="v2">${c[8]}</span>`);
+Sheet.frame({ n: '16', cat: 'Lighting', title: 'Lighting: key, fill, rim and colour scripts', sub: 'Film roles mapped onto Roblox properties on a look-dev scene, the white-cube test, and day, dusk and night as one strip of values.',
+  supports: ['lighting-and-atmosphere.md §2 Key, fill and rim, §3 Colour script, §4 Mood by time of day'], sources: 'lighting-and-atmosphere.md ([lihfolk] targets, [house] keyframes)' });
+</script></body></html>

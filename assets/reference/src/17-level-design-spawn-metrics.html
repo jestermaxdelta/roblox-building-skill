@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>17 Level design: spawn view and avatar metrics</title><link rel="stylesheet" href="sheet.css">
+<style>table.spec td:first-child{white-space:nowrap}
+.wrapS{position:relative;width:744px;height:300px}
+.wrapS svg{display:block;border-radius:10px;border:2px solid var(--ink)}
+</style></head><body>
+<div class="sheet">
+  <h3>The first frame after spawning (phone, 16:9 crop)</h3>
+  <div class="wrapS"><div id="scene"></div><div id="pins"></div></div>
+  <div class="legend mt" id="legend"></div>
+  <div class="card mt"><h3>Avatar metrics, drawn to scale (1 stud = 9 px; classic R15 avatar about 5 studs tall, walk 16 studs/s, jump height 7.2)</h3><div id="metrics"></div></div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 404px"><h3>Jump reach changes with height (JumpHeight 7.2 at 16 studs/s, root travel)</h3><div id="jump"></div></div>
+    <div class="card grow"><h3>More house numbers</h3><table class="spec">
+      <tr><td><b>Jump-proof wall</b></td><td>10 tall; 6 is not (the jump is 7.2)</td></tr>
+      <tr><td><b>Critical-path gap</b></td><td>≤ 5.7 (JumpPower 50) or 6.1 (JumpHeight 7.2); comfortable ledge 5</td></tr>
+      <tr><td><b>Main path</b></td><td>12–20 wide; side lanes narrower</td></tr>
+      <tr><td><b>Combat lane</b></td><td>≥ 10 wide, walls ≥ 10 tall</td></tr>
+            <tr><td><b>Spawn area</b></td><td>12–20 across per spawn; nothing overhead below 15</td></tr>
+      <tr><td><b>Prompt spacing</b></td><td>≥ 2 × MaxActivationDistance</td></tr>
+      <tr><td><b>Hero landmark</b></td><td>≥ 1.5 × the next tallest; height ≥ 0.05–0.09 × viewing distance</td></tr></table>
+      <div class="note mt6">Custom rigs and taller bodies (6–6.5 studs) change every number: write your own table on day one and keep it in one LevelMetrics module.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el, T = Sheet.txt, W = 744, H = 300, AV = Sheet.avatar;
+// ---- spawn view (one-point perspective, vanishing point at the gate) ----
+let s = `<rect width="${W}" height="${H}" fill="#BFD9E6"/><path d="M0 150L80 118L170 140L250 108L330 142L470 120L600 144L744 116V160H0Z" fill="#A9C7CF"/><rect y="150" width="${W}" height="150" fill="#7FA98A"/>`;
+s += `<path d="M352 150L392 150L600 300L144 300Z" fill="#E2D5B3"/>`; // path converging on the gate
+// landmark tower (global), right of the gate, breaks the skyline
+s += `<rect x="496" y="34" width="34" height="116" fill="#D8C7A8" stroke="#1A1F2B" stroke-width="2"/><path d="M488 34L513 4L538 34Z" fill="#B5553A" stroke="#1A1F2B" stroke-width="2" stroke-linejoin="round"/><rect x="507" y="52" width="12" height="16" rx="6" fill="#2B3A54"/>`;
+// low buildings (stepped heights)
+s += `<rect x="212" y="112" width="70" height="38" fill="#C9B79A" stroke="#1A1F2B" stroke-width="2"/><path d="M206 112L247 90L288 112Z" fill="#8C6A52" stroke="#1A1F2B" stroke-width="2" stroke-linejoin="round"/><rect x="560" y="122" width="58" height="28" fill="#C9B79A" stroke="#1A1F2B" stroke-width="2"/><path d="M554 122L589 104L624 122Z" fill="#8C6A52" stroke="#1A1F2B" stroke-width="2" stroke-linejoin="round"/>`;
+// objective gate: brightest, most saturated
+s += `<path d="M336 150V104a36 36 0 0 1 72 0V150h-14V106a22 22 0 0 0 -44 0V150Z" fill="#F0B63A" stroke="#1A1F2B" stroke-width="2.500" stroke-linejoin="round"/><path d="M350 150V106a22 22 0 0 1 44 0V150Z" fill="#FFF3C4"/>`.replace('.500', '.5');
+// fences as leading lines
+for (let i = 0; i < 7; i++) { const t = i / 6, xl = 330 - t * 250, xr = 414 + t * 250, y = 152 + t * 130, h = 6 + t * 22; s += `<rect x="${xl - 2}" y="${y - h}" width="${3 + t * 3}" height="${h}" fill="#6B5743"/><rect x="${xr - 2}" y="${y - h}" width="${3 + t * 3}" height="${h}" fill="#6B5743"/>`; }
+s += `<path d="M330 148L80 270M414 148L664 270" stroke="#6B5743" stroke-width="2.500"/>`.replace('.500', '.5');
+// motion: other players and a pickup
+s += AV(430, 196, 26, { top: '#B5553A' }) + AV(318, 178, 17, { top: '#1B8553' }) + `<g transform="translate(250,236)"><path d="M0 -14l12 14l-12 14l-12 -14z" fill="#5FD0E8" stroke="#1A1F2B" stroke-width="2"/><path d="M-22 -8l-7 -4M-22 8l-7 4M22 -8l7 -4M22 8l7 4" stroke="#fff" stroke-width="2.500" stroke-linecap="round"/></g>`.replace('.500', '.5');
+// the player, back to camera, on clear ground
+s += `<ellipse cx="372" cy="284" rx="34" ry="7" fill="#3F6B55" opacity=".5"/>` + AV(372, 284, 74);
+document.getElementById('scene').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
+const pins = [[1, 420, 96], [2, 548, 30], [3, 458, 176], [4, 180, 250], [5, 332, 262], [6, 620, 96]];
+document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
+const L = [
+  ['First objective or its entrance', 'the brightest or most saturated thing in view', 'The spawn is rotated to face it. If a centrepiece hides it, move the spawn off-axis.'],
+  ['One global landmark', '≥ 1.5 × the next tallest thing', 'Unique silhouette against the sky; visible from the whole district, so it also orients after respawn.'],
+  ['Something moving', 'other players, an NPC, a pickup', 'Motion is read second, straight after light and contrast.'],
+  ['Leading lines', 'path edges, fences, lamp rows', 'They converge on the goal. Breadcrumbs that stop are the strongest "wrong way" signal.'],
+  ['Clear ground at the spawn', '12–20 studs across per simultaneous spawn', 'Out of traffic lanes and PvP sightlines; density goes to the edges, nothing on the path.'],
+  ['Stepped skyline', 'low walls, houses, one tower', 'Equal heights read flat. Never spawn facing a wall, and never into an offer.'],
+];
+document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
+// ---- metrics elevation ----
+const k = 9, gy = 172, MW = 716, MH = 206;
+let m = `<line x1="0" y1="${gy}" x2="${MW}" y2="${gy}" stroke="#1A1F2B" stroke-width="2"/>`;
+const box = (x, w, h, f = '#D8CDB6') => `<rect x="${x}" y="${gy - h * k}" width="${w * k}" height="${h * k}" fill="${f}" stroke="#1A1F2B" stroke-width="1.5"/>`;
+const dimH = (x, w, y, label) => `<path d="M${x} ${y}h${w * k}M${x} ${y - 4}v8M${x + w * k} ${y - 4}v8" stroke="#DD4F27" stroke-width="1.500" fill="none"/>`.replace('.500', '.5') + T(x + w * k / 2, y - 5, label, { 'text-anchor': 'middle', fill: '#DD4F27', 'font-weight': 700 });
+const dimV = (x, h, label, side = 1) => `<path d="M${x} ${gy}v${-h * k}M${x - 4} ${gy}h8M${x - 4} ${gy - h * k}h8" stroke="#DD4F27" stroke-width="1.500" fill="none"/>`.replace('.500', '.5') + T(x + 6 * side, gy - h * k / 2 + 4, label, { 'text-anchor': side > 0 ? 'start' : 'end', fill: '#DD4F27', 'font-weight': 700 });
+const cap = (x, t1, t2) => T(x, gy + 15, t1, { 'text-anchor': 'middle', fill: '#1A1F2B', 'font-weight': 700 }) + (t2 ? T(x, gy + 28, t2, { 'text-anchor': 'middle', 'font-size': 10 }) : '');
+// avatar
+m += AV(30, gy, 5 * k) + dimV(54, 5, '5') + cap(34, 'Avatar', '4 wide (agent)');
+// door: wall 11 tall, opening 5 x 8
+let dx = 104; m += `<path d="M${dx} ${gy}V${gy - 11 * k}h${9 * k}V${gy}h${-2 * k}v${-8 * k}h${-5 * k}v${8 * k}Z" fill="#D8CDB6" stroke="#1A1F2B" stroke-width="1.5"/>` + AV(dx + 4.5 * k, gy, 5 * k) + dimH(dx + 2 * k, 5, gy - 8 * k - 7, '≥ 5') + dimV(dx + 9 * k + 8, 8, '7.5–8') + cap(dx + 4.5 * k, 'Gameplay door', '6+ wide for two players');
+// stairs: rise 1, tread 2, five steps
+let sx = 262; let st = `M${sx} ${gy}`; for (let i = 0; i < 5; i++) st += `v${-k}h${2 * k}`; st += `V${gy}Z`;
+m += `<path d="${st}" fill="#D8CDB6" stroke="#1A1F2B" stroke-width="1.5"/>` + `<path d="M${sx} ${gy}L${sx + 10 * k} ${gy - 5 * k}" stroke="#2D6CDF" stroke-width="2" stroke-dasharray="5 4"/>` + T(sx, gy - 5 * k - 22, 'rise ≤ 1, tread ≥ 2', { fill: '#DD4F27', 'font-weight': 700 }) + T(sx, gy - 5 * k - 9, 'about 27°', { fill: '#DD4F27', 'font-weight': 700 }) + cap(sx + 5 * k, 'Stairs, width ≥ 6', 'one ramp collider (blue)');
+// cover
+let cx = 424; [[0, 3, '#D8CDB6', '2.5–3.5', '#DD4F27'], [6, 5, '#F0C9C2', '4–6: avoid', '#C4372F'], [12, 7.5, '#D8CDB6', '7+', '#DD4F27']].forEach(c => { m += box(cx + c[0] * k, 2.5, c[1], c[2]) + T(cx + (c[0] + 1.25) * k, gy - c[1] * k - 5, c[3], { 'text-anchor': 'middle', fill: c[4], 'font-weight': 700 }); });
+m += AV(cx + 9.6 * k, gy, 5 * k) + cap(cx + 7.25 * k, 'Cover', 'low or full, never chest-high');
+// counter and window
+let kx = 600; m += `<path d="M${kx} ${gy}V${gy - 11 * k}h${11 * k}V${gy}Z" fill="#D8CDB6" stroke="#1A1F2B" stroke-width="1.5"/><rect x="${kx + 4 * k}" y="${gy - 7 * k}" width="${3 * k}" height="${3.5 * k}" fill="#BFD9E6" stroke="#1A1F2B" stroke-width="1.5"/><rect x="${kx - 3.6 * k}" y="${gy - 3 * k}" width="${3 * k}" height="${3 * k}" fill="#C9B79A" stroke="#1A1F2B" stroke-width="1.5"/>` + T(kx - 2.1 * k, gy - 3 * k - 5, '2.5–3', { 'text-anchor': 'middle', fill: '#DD4F27', 'font-weight': 700 }) + T(kx + 5.5 * k, gy - 7 * k - 5, '2–3 × 3–4', { 'text-anchor': 'middle', fill: '#DD4F27', 'font-weight': 700 }) + T(kx + 5.5 * k, gy - 1.2 * k, 'sill 3–4', { 'text-anchor': 'middle', fill: '#DD4F27', 'font-weight': 700 }) + cap(kx + 4 * k, 'Counter and window', 'a window reads from 40 studs');
+// ceiling band
+m += `<path d="M96 ${gy - 15 * k}H590" stroke="#788294" stroke-width="1.5" stroke-dasharray="6 4"/>` + T(100, gy - 15 * k - 5, 'interior ceiling 10–15 (2–3 avatar heights); corridor 8–12 wide; lower ceilings push the camera into the player\'s back', {});
+document.getElementById('metrics').innerHTML = `<svg width="${MW}" height="${MH}" viewBox="0 0 ${MW} ${MH}">${m}</svg>`;
+// ---- jump reach ----
+const q = 7.5, JW = 380, JH = 176, ox = 60, oy = 80, g = 196.2, v = Math.sqrt(2 * g * 7.2), reach = [[7, 5.1], [5, 6.7], [0, 8.7], [-5, 10.0], [-10, 11.0]];
+let j = `<rect x="${ox - 40}" y="${oy}" width="40" height="${JH - oy}" fill="#D8CDB6" stroke="#1A1F2B" stroke-width="1.500"/>`.replace('.500', '.5') + AV(ox - 14, oy, 5 * q);
+let pd = ''; for (let t = 0; t <= 0.83; t += 0.01) { const x = 16 * t, y = v * t - g * t * t / 2; if (y < -10.5) break; pd += (pd ? 'L' : 'M') + (ox + x * q).toFixed(1) + ' ' + (oy - y * q).toFixed(1); }
+j += `<path d="${pd}" fill="none" stroke="#2D6CDF" stroke-width="2" stroke-dasharray="5 4"/>`;
+reach.forEach(([h, d]) => { const x = ox + d * q, y = oy - h * q; j += `<rect x="${x}" y="${y}" width="${h === 0 ? 46 : 40}" height="7" fill="#1A1F2B"/>` + T(x + (h === 0 ? 52 : 46), y + 8, `${h > 0 ? '+' : h < 0 ? '−' : ''}${Math.abs(h) || 'level'}${h ? ' studs' : ''}: reach ${d.toFixed(1)}`, { fill: '#1A1F2B', 'font-weight': 650 }); });
+j += T(JW - 2, 14, 'add 1–2 studs edge to edge; calibrate on a gap ladder', { 'text-anchor': 'end', 'font-size': 10 });
+document.getElementById('jump').innerHTML = `<svg width="${JW}" height="${JH}" viewBox="0 0 ${JW} ${JH}">${j}</svg>`;
+Sheet.frame({ n: '17', cat: 'Level design', title: 'Spawn view composition and avatar metrics', sub: 'What the first frame must contain, and the sizes that make spaces fit the default avatar and camera. All lengths in studs.',
+  supports: ['level-design-worldbuilding.md §2 Scale and metrics, §4 Spawn and lobby, §5 Landmarks, §6 Composition', 'game-craft.md §2 Level design'], sources: 'level-design-worldbuilding.md ([house], [lihfolk], [official] as tagged there)' });
+</script></body></html>

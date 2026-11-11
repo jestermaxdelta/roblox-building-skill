@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>13 Camera shot vocabulary</title><link rel="stylesheet" href="sheet.css">
+<style>
+.shots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.shot svg{display:block;border-radius:6px;border:2px solid var(--ink)}
+.shot h2{margin:6px 0 1px;font-size:12.5px}.shot p{font-size:10.5px;color:var(--ink2);line-height:1.34}
+.shot .d{font-size:10.5px;font-weight:650;color:var(--accent);margin-top:3px;line-height:1.34}
+.mini svg{display:block;border-radius:6px;border:2px solid var(--ink)}
+.cap{font-size:10.5px;color:var(--ink2);margin-top:4px;line-height:1.34}
+</style></head><body>
+<div class="sheet">
+  <div class="shots" id="shots"></div>
+  <div class="note mt6">Distances are for the default vertical FOV of 70° and for FOV 40°, from <b>distance = visible height ÷ (2 × tan(FOV ÷ 2))</b>: the visible height is 1.40 × distance at FOV 70 and 0.73 × distance at FOV 40. Avatar: classic R15, about 5 studs tall. Close shots work better with a narrower FOV from further back: at FOV 70 the camera would sit about 1 stud from the face.</div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 250px"><h3>Field of view by screen shape</h3><div id="fov"></div>
+      <div class="cap">Vertical FOV is fixed (default 70°, clamped 1–120). The horizontal view grows with the aspect ratio, so a phone sees more at the sides. Frame for 16:9; check 19.5:9 for what must stay hidden and 4:3 for what must stay in shot.</div></div>
+    <div class="card grow"><h3>Lead room and headroom</h3>
+      <div class="row" style="gap:10px"><div class="mini grow" id="lead1"></div><div class="mini grow" id="lead2"></div></div>
+      <div class="row" style="gap:10px"><div class="cap grow"><span class="chip good">reads</span> Subject on a third, looking and moving into the open two-thirds. Eyes near the upper third line.</div><div class="cap grow"><span class="chip bad">cramped</span> Nose against the frame edge, empty space behind, head centred with dead space above.</div></div>
+      <div class="cap">The arrow is the look or travel direction. Faster subjects need more lead room; keep the place they are heading for in frame. On a phone the sides are wider, so check the 16:9 crop inside the 19.5:9 frame.</div></div>
+  </div>
+  <div class="row mt">
+    <div class="card" style="flex:0 0 440px"><h3>The 180-degree line</h3>
+      <div class="row" style="gap:12px;align-items:center"><div id="line"></div>
+        <div class="col" style="gap:6px"><div class="mini" id="la"></div><div class="cap" style="margin-top:0">Cameras 1, 2, 3: A stays screen-left.</div><div class="mini" id="lx"></div><div class="cap" style="margin-top:0">Camera X: A and B swap sides. The cut reads as a teleport.</div></div></div>
+      <div class="cap">Draw a line through the two subjects (or along the direction of travel) and keep every camera of the scene on one side of it. Cross it only with a visible move or a neutral shot on the line.</div></div>
+    <div class="card grow"><h3>Roblox cutscene rules</h3><div class="legend one">
+      <div class="li"><div><b>Client-local</b>, never freezing other players; actors are local clones.</div></div>
+      <div class="li"><div><b>Skippable after about 2 s</b>; skipping grants exactly what watching grants.</div></div>
+      <div class="li"><div><b>Restore on every exit</b> (death, respawn, error, watchdog): camera type, FOV, HUD, input.</div></div>
+      <div class="li"><div><b>Cuts over whip pans</b>; under reduced motion, cuts and fades only.</div></div>
+      <div class="li"><div><b>FOV changes over about 10–15°</b> need the reduced-motion variant. One module owns Camera.FieldOfView.</div></div>
+      <div class="li"><div><b>Shake scales with FOV:</b> 1° of rotation moves the image 1.25% of screen height at FOV 70 and 2.4% at FOV 40.</div></div></div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el;
+// World in units of 0.1 stud; avatar feet at (0,0), 50 units tall, facing right when dir = 1.
+function actor(x, dir = 1, c = {}) {
+  const top = c.top || '#3E6FB8', skin = '#F2D2A9', leg = '#2B3A54', st = 'stroke="#1A1F2B" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"';
+  return `<g transform="translate(${x},0) scale(${dir},1)"><rect x="-10" y="-20" width="9.5" height="20" rx="1" fill="${leg}" ${st}/><rect x="0.5" y="-20" width="9.5" height="20" rx="1" fill="${leg}" ${st}/>
+  <rect x="-10" y="-40" width="20" height="20" rx="1.5" fill="${top}" ${st}/><rect x="-19.500" y="-40" width="9" height="19" rx="1.5" fill="${skin}" ${st}/><rect x="10.5" y="-40" width="9" height="19" rx="1.5" fill="${skin}" ${st}/>
+  <rect x="-6.500" y="-52" width="13" height="12" rx="3.500" fill="${skin}" ${st}/><rect x="-1" y="-48.500" width="1.800" height="3" rx=".8" fill="#1A1F2B"/><rect x="3" y="-48.500" width="1.800" height="3" rx=".8" fill="#1A1F2B"/><path d="M-0.500 -43.200q2.800 1.800 5.600 0" fill="none" stroke="#1A1F2B" stroke-width="1.500" vector-effect="non-scaling-stroke" stroke-linecap="round"/></g>`.replace(/\.500/g, '.5').replace(/\.800/g, '.8').replace(/\.200/g, '.2');
+}
+const world = () => `<rect x="-2000" y="-2000" width="4000" height="2000" fill="#A9CBDD"/><path d="M-600 0L-420 -150L-300 -60L-140 -210L60 -40L220 -170L420 -30L600 -120L600 0Z" fill="#8FB3A8"/><rect x="-2000" y="0" width="4000" height="600" fill="#6A9777"/>
+  <rect x="150" y="-160" width="46" height="160" fill="#C9B79A" stroke="#1A1F2B" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M140 -160L173 -205L206 -160Z" fill="#B5553A" stroke="#1A1F2B" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+function view(cx, top, h, w, hpx, kids) { const vw = h * 16 / 9; return `<svg width="${w}" height="${hpx}" viewBox="${(cx - vw / 2).toFixed(1)} ${top.toFixed(1)} ${vw.toFixed(1)} ${h.toFixed(1)}" preserveAspectRatio="xMidYMid slice">${world()}${kids}</svg>`; }
+const d = (h, fov) => (h / (2 * Math.tan(fov * Math.PI / 360))).toFixed(1);
+const shots = [['Wide (establishing)', 250, -205, 'Where we are. Avatar about a fifth of the frame; landmark in shot.', 30], ['Full', 65, -58, 'Who and what they do. Head to toe with headroom.', 0], ['Medium', 32, -57, 'Dialogue and gestures. Waist up.', 0], ['Close-up', 18, -56, 'Reaction. Head and shoulders.', 0], ['Extreme close-up', 8, -51.5, 'One detail: eyes, a key, a button.', 1.5]];
+document.getElementById('shots').innerHTML = shots.map(s => `<div class="shot">${view(s[4], s[2], s[1], 136, 76.5, actor(0))}<h2>${s[0]}</h2><p>${s[3]}</p><div class="d">${(s[1] / 10).toFixed(1)} studs visible<br>${d(s[1] / 10, 70)} studs at FOV 70<br>${d(s[1] / 10, 40)} studs at FOV 40</div></div>`).join('');
+// FOV wedges
+const hf = [[113, '19.5:9 phone', '#F3C9BC'], [102, '16:9', '#E8957C'], [86, '4:3 tablet', '#DD4F27']];
+let f = ''; const ox = 113, oy = 132, R = 112;
+hf.forEach(([a, n, c]) => { const x = R * Math.sin(a * Math.PI / 360), y = R * Math.cos(a * Math.PI / 360); f += `<path d="M${ox} ${oy}L${(ox - x).toFixed(1)} ${(oy - y).toFixed(1)}A${R} ${R} 0 0 1 ${(ox + x).toFixed(1)} ${(oy - y).toFixed(1)}Z" fill="${c}"/>`; });
+f += `<rect x="${ox - 9}" y="${oy - 4}" width="18" height="12" rx="2" fill="#1A1F2B"/>`;
+document.getElementById('fov').innerHTML = `<svg width="226" height="146" viewBox="0 0 226 146">${f}</svg><div style="display:flex;flex-direction:column;gap:2px;margin-top:4px">` + [...hf].reverse().map(([a, n, c]) => `<div class="cap" style="margin:0"><span class="sw" style="background:${c}"></span> <b style="color:var(--ink)">${a}°</b> horizontal · ${n}</div>`).join('') + '</div>';
+const thirds = (vx, vy, vw, vh) => [1, 2].map(i => `<line x1="${vx + vw * i / 3}" y1="${vy}" x2="${vx + vw * i / 3}" y2="${vy + vh}" stroke="#fff" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke" opacity=".9"/><line x1="${vx}" y1="${vy + vh * i / 3}" x2="${vx + vw}" y2="${vy + vh * i / 3}" stroke="#fff" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke" opacity=".9"/>`).join('');
+const lead = (cx, top, len) => { const h = 34, vw = h * 16 / 9; return view(cx, top, h, 214, 120, actor(0) + thirds(cx - vw / 2, top, vw, h) + `<path d="M9 -46h${len}m-3 -2.5l3 2.5l-3 2.5" fill="none" stroke="#fff" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>`); };
+document.getElementById('lead1').innerHTML = lead(10, -58, 26); document.getElementById('lead2').innerHTML = lead(-22, -64, 4.5);
+// 180 line, top-down
+let L = `<rect width="210" height="170" rx="6" fill="#ECE8DD"/><line x1="10" y1="85" x2="200" y2="85" stroke="#C4372F" stroke-width="2" stroke-dasharray="7 5"/>
+<path d="M10 85A95 80 0 0 0 200 85Z" fill="#1B8553" opacity=".12"/><path d="M10 85A95 80 0 0 1 200 85Z" fill="#C4372F" opacity=".08"/>
+<circle cx="72" cy="85" r="11" fill="#3E6FB8" stroke="#1A1F2B" stroke-width="2"/><circle cx="138" cy="85" r="11" fill="#B5553A" stroke="#1A1F2B" stroke-width="2"/>
+${Sheet.txt(72, 89, 'A', { 'text-anchor': 'middle', fill: '#fff', 'font-weight': 700 })}${Sheet.txt(138, 89, 'B', { 'text-anchor': 'middle', fill: '#fff', 'font-weight': 700 })}`;
+const cam = (x, y, a, n, c) => `<g transform="translate(${x},${y}) rotate(${a})"><path d="M-7 -6h14v12h-14zM7 -3l7 -4v14l-7 -4z" fill="${c}"/></g>` + Sheet.txt(x + (n === 'X' ? 0 : 0), y + (y > 85 ? 24 : -12), n, { 'text-anchor': 'middle', fill: c, 'font-weight': 700, 'font-size': 11.5 });
+L += cam(48, 130, -40, '1', '#1B8553') + cam(105, 138, -90, '2', '#1B8553') + cam(162, 130, -140, '3', '#1B8553') + cam(150, 34, 129, 'X', '#C4372F');
+L += Sheet.txt(14, 78, 'the line', { fill: '#C4372F', 'font-weight': 650 });
+document.getElementById('line').innerHTML = `<svg width="210" height="170" viewBox="0 0 210 170">${L}</svg>`;
+const two = (flip) => { const a = flip ? 26 : -26; return `<svg width="170" height="62" viewBox="-80 -62 160 58">${world()}${actor(a, flip ? -1 : 1)}${actor(-a, flip ? 1 : -1, { top: '#B5553A' })}</svg>`; };
+document.getElementById('la').innerHTML = two(false); document.getElementById('lx').innerHTML = two(true);
+Sheet.frame({ n: '13', cat: 'Camera', title: 'Camera shot vocabulary for cutscenes', sub: 'Shot sizes on an avatar with the camera distance that produces them, field of view by screen shape, lead room, and the 180-degree line.',
+  supports: ['animation-and-rigs.md §10 Cutscenes', 'game-craft.md §3 Camera', 'level-design-worldbuilding.md §2 (screen maths)', 'accessibility-and-player-qol.md §5 Motion'], sources: 'the guides listed; shot names and the 180-degree rule are film convention' });
+</script></body></html>

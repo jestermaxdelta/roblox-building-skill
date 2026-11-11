@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>09 Template look versus designed look</title><link rel="stylesheet" href="sheet.css">
+<style>
+.pan{position:relative;width:360px;height:262px;flex:none}
+.bgw{position:absolute;inset:0;border-radius:8px;overflow:hidden;border:2px solid var(--ink)}
+/* template */
+.t{position:absolute;left:22px;top:20px;width:316px;height:222px;background:#A3A2A5;border:1px solid #1B2A35;font-family:Arial,Helvetica,sans-serif;color:#1B2A35}
+.t .ti{position:absolute;left:0;right:0;top:6px;text-align:center;font-size:17px}
+.t .x{position:absolute;right:4px;top:4px;width:20px;height:20px;background:#A3A2A5;border:1px solid #1B2A35;font-size:12px;display:flex;align-items:center;justify-content:center}
+.t .c{position:absolute;width:66px;height:62px;background:#C8C8C8;border:1px solid #1B2A35;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.4}
+.t .cl{position:absolute;left:108px;top:186px;width:100px;height:26px;background:#C8C8C8;border:1px solid #1B2A35;font-size:13px;display:flex;align-items:center;justify-content:center}
+/* designed */
+.d{position:absolute;left:14px;top:12px;width:332px;height:238px;background:#26324A;border:3px solid #1A1F2B;border-radius:16px;color:#fff}
+.d .hd{height:44px;background:#1B8553;border-radius:13px 13px 0 0;display:flex;align-items:center;gap:8px;padding-left:12px;font-weight:850;font-size:21px;letter-spacing:.01em}
+.d .x{position:absolute;right:5px;top:3px;width:46px;height:46px;border-radius:11px;background:#E5484D;border:3px solid #1A1F2B;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
+.d .c{position:absolute;height:60px;border-radius:8px;border:2.5px solid #1A1F2B;background:#3A4A6B;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;font-weight:750;line-height:1.3;gap:1px}
+.d .c.done{background:#2B3A54;color:#8F9BB0}.d .c.today{background:#fff;color:#1A1F2B;outline:3px solid #F0B63A;outline-offset:1px}
+.d .cl{position:absolute;left:16px;right:16px;bottom:14px;height:44px}
+.d .cl i{position:absolute;left:0;right:0;top:5px;bottom:0;border-radius:11px;background:#B07A10;border:2.5px solid #1A1F2B}
+.d .cl b{position:absolute;left:0;right:0;top:0;bottom:5px;border-radius:11px;background:#F0B63A;border:2.5px solid #1A1F2B;color:#1A1F2B;font-weight:850;font-size:17px;display:flex;align-items:center;justify-content:center}
+.lab{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+</style></head><body>
+<div class="sheet">
+  <div class="row" style="gap:24px">
+    <div><div class="lab"><h2 style="margin:0">Template look</h2><span class="chip bad">default properties</span></div>
+      <div class="pan"><div class="bgw" id="bg1"></div><div class="t" data-lint="nosize">
+        <div class="ti">Daily Rewards</div><div class="x">X</div><div id="tc"></div><div class="cl">Claim</div></div><div id="p1"></div></div></div>
+    <div><div class="lab"><h2 style="margin:0">Designed look</h2><span class="chip good">theme tokens</span></div>
+      <div class="pan"><div class="bgw" id="bg2"></div><div class="d" data-lint="nosize">
+        <div class="hd"><span id="hi"></span>DAILY REWARDS</div><div class="x">✕</div><div id="dc"></div><div class="cl"><i></i><b>Claim day 3</b></div></div><div id="p2"></div></div></div>
+  </div>
+  <div class="card mt"><h3>The same panel, property by property</h3>
+    <table class="spec" id="tbl"></table></div>
+  <div class="row mt">
+    <div class="card grow"><h3>Why the left one reads as a template</h3><div class="note">Nothing in it was decided: every value is what Studio inserts. Players have seen these exact greys, this font and these 1 px borders in hundreds of free models, so the game inherits their reputation before it is played.</div></div>
+    <div class="card grow"><h3>What "designed" means here</h3><div class="note">Not more decoration. Fewer, repeated decisions: one radius family, one outline colour, one accent on the one action, states that tell the player where they are. Copy this method, not this skin: each game derives its own tokens.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const I = Sheet.icon;
+document.getElementById('bg1').innerHTML = Sheet.scene(360, 262); document.getElementById('bg2').innerHTML = Sheet.scene(360, 262) + '<div style="position:absolute;inset:0;background:rgba(0,0,0,.55)"></div>';
+document.getElementById('hi').innerHTML = I('star', 22);
+document.getElementById('tc').innerHTML = [0, 1, 2, 3, 4, 5, 6].map(i => `<div class="c" style="left:${14 + (i % 4) * 74}px;top:${38 + Math.floor(i / 4) * 70}px"><span>Day ${i + 1}</span><span>${[100, 150, 200, 300, 400, 500, 1000][i]} Coins</span></div>`).join('');
+const cw = 68, gap = 8, x0 = 16;
+document.getElementById('dc').innerHTML = [0, 1, 2, 3, 4, 5, 6].map(i => {
+  const row = Math.floor(i / 4), col = i % 4, last = i === 6, cls = i < 2 ? 'done' : i === 2 ? 'today' : '';
+  const ic = i < 2 ? I('check', 20, '#8F9BB0', '#1A1F2B', 1.2) : last ? I('gem', 24, '#B48BF5') : `<svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="#F0B63A" stroke="#1A1F2B" stroke-width="2"/></svg>`;
+  return `<div class="c ${cls}" style="left:${x0 + col * (cw + gap)}px;top:${52 + row * 64}px;width:${last ? cw * 2 + gap : cw}px;${last ? 'background:#4A3F7A' : ''}">${ic}<span>${i < 2 ? 'Claimed' : last ? 'Day 7 · Epic pet' : (i === 2 ? 'Today · ' : 'Day ' + (i + 1) + ' · ') + [100, 150, 200, 300, 400, 500][i]}</span></div>`;
+}).join('');
+const pin = (n, x, y) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`;
+document.getElementById('p1').innerHTML = [[1, 22, 20], [2, 250, 34], [3, 344, 36], [4, 36, 124], [5, 236, 212], [6, 180, 176]].map(a => pin(...a)).join('');
+document.getElementById('p2').innerHTML = [[1, 14, 12], [2, 276, 34], [3, 346, 60], [4, 30, 132], [5, 28, 224], [6, 176, 127]].map(a => pin(...a)).join('');
+const rows = [
+  ['Panel', 'BackgroundColor3 (163,162,165), BorderSizePixel 1, square corners', 'Surface token, UICorner L 16, UIStroke 3 px in the one outline colour; full-screen dim behind at 0.5–0.6'],
+  ['Title', 'A centred TextLabel in the default font, TextScaled', 'Header 44–48 px in the window\'s signature colour, icon + Display 28–32 title in the display family'],
+  ['Close', '"X" TextButton, 20 px, unstyled', 'Shared red component, ≥ 44 px, about 1.1 × header height, anchored to the header; also B and Escape'],
+  ['Cards', 'Seven identical grey boxes: no state, no hierarchy', 'States: claimed (tick, dimmed), today (lightest plate + ring), later (locked look). The last card is visibly larger'],
+  ['Primary action', 'Same grey as everything else, 26 px tall', 'The only accent on the screen: full width, ≥ 44 px, lip 4–6 px, pressed and pending states'],
+  ['Spacing', 'Whatever the mouse left: 6, 9, 14 px', '8 px grid: padding 16, gaps 8; inner radius = outer radius − padding'],
+];
+document.getElementById('tbl').innerHTML = `<tr><th style="width:26px"></th><th style="width:104px">Element</th><th style="width:240px">Template</th><th>Designed</th></tr>` + rows.map((r, i) => `<tr><td><span class="pin">${i + 1}</span></td><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')
+  + `<tr><td></td><td><b>Motion</b></td><td>Visible = true; numbers snap</td><td>enter 0.18–0.26 s (scale from 0.90–0.92 + fade), exit 0.10–0.15 s; counters count up</td></tr>`
+  + `<tr><td></td><td><b>Type</b></td><td>One size everywhere, or TextScaled on every label</td><td>Fixed scale: 28–32 / 22–24 / 16 / 14; two families at most</td></tr>`;
+Sheet.frame({ n: '09', cat: 'UI', title: 'Template look versus designed look', sub: 'One daily-rewards panel built twice with the same content. The difference is a short list of properties, not artistic talent.',
+  supports: ['ui-design-figma.md §Generic-UI tells and fixes, §Daily rewards, §Design system and tokens'], sources: 'ui-design-figma.md' });
+</script></body></html>
