@@ -15,7 +15,7 @@
 <div class="sheet">
   <div class="card"><h3>Colour roles: colour means function, not decoration (example values: every game derives its own)</h3>
     <div class="roles" id="roles"></div>
-    <div class="note mt6">One accent per screen, on the primary action. Window bodies stay neutral so coloured cards and rarity read. Give each destination one colour and keep it everywhere.</div></div>
+    <div class="note mt6">About 60% of a screen is neutral surface, 30% structure, at most 10% accent: one saturated filled action per screen. Premium is used for Robux actions only. Each destination keeps one colour everywhere. Two more roles are reserved: OnAccent (label ink that passes 4.5:1) and Focus (the gamepad ring, used nowhere else).</div></div>
   <div class="row mt">
     <div class="card grow"><h3>Rarity ladder under colour-vision simulation</h3>
       <div class="lad" id="lad"></div>
@@ -53,5 +53,5 @@ pairs.forEach((p, i) => {
 });
 document.getElementById('team').innerHTML = t;
 Sheet.frame({ n: '07', cat: 'UI · accessibility', title: 'Colour roles, rarity ramp and contrast', sub: 'Role tokens, a rarity ladder that survives colour-blindness, contrast pass and fail examples, and a team pairing that still reads in greyscale.',
-  supports: ['ui-design-figma.md §Design system and tokens', 'accessibility-and-player-qol.md §3 Colour and contrast', 'lighting-and-atmosphere.md §3 (contrast formula)'], sources: 'accessibility-and-player-qol.md ([lihfolk] thresholds), WCAG contrast formula' });
+  supports: ['ui-design-figma.md §3 Colour system built from the art direction', 'accessibility-and-player-qol.md §3 Colour and contrast', 'lighting-and-atmosphere.md §3 (contrast formula)'], sources: 'accessibility-and-player-qol.md ([lihfolk] thresholds), WCAG contrast formula' });
 </script></body></html>

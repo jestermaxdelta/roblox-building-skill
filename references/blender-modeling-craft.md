@@ -257,7 +257,7 @@ Mechanical gates for scripted or generated-by-script assets `[lihfolk]`, run aft
 ## Concept to model
 
 1. **Brief** (five lines): role and gameplay job, viewing band, size in studs with the origin position, class budget, style words plus the one exaggerated feature.
-2. **Reference board**: three images marked on target, too realistic and too blocky `[lihfolk]`, plus the golden sample from the style bible. Use references for shape and mood; never trace or lift another game's asset.
+2. **Reference board**: three images marked on target, too realistic and too blocky `[lihfolk]`, plus the golden sample from the style bible. Use references for shape and mood; never trace or lift another game's asset. Board method (how many, from where, labels, avoiding one source): `art-direction-and-quality-bar.md` §5; viewed examples with strong, weak and too-realistic markers: `visual-library/models-props-characters.md`.
 3. **Concept sheet**: orthographic front, side and back at one scale so proportions can be measured, one three-quarter view for feel, the size in studs written on it, part names exactly as they will appear in Studio, one flat colour per part. Remember the sheet shows eye level; the game shows the model from above and behind.
 4. **Blockout** in Blender at final scale beside the proxies, big then medium then small shapes, grey. Export it and look at it in the place before any detail: a silhouette fix costs minutes here and hours later.
 5. **Mid pass**: final shapes and rough colour, no bevels. **Final**: bevels, detail, technical cleanup.

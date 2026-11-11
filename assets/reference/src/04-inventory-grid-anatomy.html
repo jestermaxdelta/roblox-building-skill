@@ -34,7 +34,7 @@
       <div class="strip" style="width:470px"><div class="search">Search…</div><div class="fchip on">Rarity ▾</div><div class="fchip">All</div><div class="fchip">Pets</div><div class="fchip">Tools</div></div>
       <div class="grid" id="grid"></div>
       <div class="pill">1 new ↑</div>
-      <div class="detail"><div style="display:flex;gap:10px"><div class="cell" style="width:84px;height:84px;background:var(--c-epic);flex:none" id="dicon"></div>
+      <div class="detail"><div style="display:flex;gap:10px"><div class="cell" style="width:84px;height:84px;background:color-mix(in srgb, var(--c-epic) 25%, #26324A);border-color:var(--c-epic);flex:none" id="dicon"></div>
         <div><div style="font-size:17px;font-weight:850">Storm Blade</div><div style="font-size:12px;font-weight:750;color:#E2D2FF">Epic ●●●●</div><div style="font-size:12px;color:#C8D2E3;margin-top:5px;line-height:1.35">+24 damage<br>Chains to 2 targets</div></div></div>
         <div class="equip">Equip</div></div>
     </div>
@@ -43,9 +43,9 @@
   <div class="legend mt" id="legend"></div>
   <div class="card mt"><h3>Cell states: draw and build every one (cells shown at 72 px)</h3><div class="states" id="states"></div></div>
   <div class="row mt">
-    <div class="card" style="flex:0 0 468px"><h3>Rarity treatment: colour + name + pips, lightness rising with tier</h3>
+    <div class="card" style="flex:0 0 468px"><h3>Rarity ramp: colour + name + pips, lightness rising with tier</h3>
       <div class="rar" id="rar"></div><div class="rar mt6" id="rarg"></div>
-      <div class="note mt6">Bottom row is the same ladder in greyscale with its Oklab lightness: every step is lighter than the one below, so the order survives colour-blindness. The usual hue order does not do this by itself; pick the values on purpose.</div></div>
+      <div class="note mt6">Bottom row is the same ladder in greyscale with its Oklab lightness: every step is lighter than the one below, so the order survives colour-blindness. The guide asks adjacent tiers to differ by at least 40° of hue and 8% lightness; the usual hue order does not rise in lightness by itself, so pick the values on purpose.</div></div>
     <div class="card grow"><h3>Data rules</h3>
       <div class="legend one">
         <div class="li"><div><b>Stack first:</b> 900 copies of 40 types are 40 entries.</div></div>
@@ -63,24 +63,24 @@ document.getElementById('hi').innerHTML = I('shield', 22);
 document.getElementById('dicon').innerHTML = I('sword', 58);
 const items = [['sword', 3, 0], ['potion', 4, 12], ['gem', 2, 3], ['egg', 1, 0], ['shield', 0, 0], ['key', 0, 7], ['bolt', 5, 0], ['star', 1, 2], ['heart', 0, 31], ['gem', 0, 480], ['potion', 2, 5], ['key', 3, 0], ['egg', 4, 0], ['sword', 0, 0], ['shield', 1, 0], ['star', 0, 9], ['bolt', 0, 0], ['gem', 1, 2]];
 const pipHtml = n => `<div class="pips">${'<i></i>'.repeat(n)}</div>`;
-document.getElementById('grid').innerHTML = items.map((it, i) => `<div class="cell" style="background:${R[it[1]][1]};${i === 0 ? 'outline:3px solid #fff;outline-offset:1px' : ''}">${I(it[0], 40)}${pipHtml(it[1] + 1)}<div class="bar"></div>${it[2] ? `<span class="cnt">${it[2]}</span>` : ''}</div>`).join('');
+document.getElementById('grid').innerHTML = items.map((it, i) => `<div class="cell" style="background:color-mix(in srgb, ${R[it[1]][1]} 25%, #26324A);border-color:${R[it[1]][1]};${i === 0 ? 'outline:3px solid #fff;outline-offset:1px' : ''}">${I(it[0], 40)}${pipHtml(it[1] + 1)}<div class="bar"></div>${it[2] ? `<span class="cnt">${it[2]}</span>` : ''}</div>`).join('');
 const pins = [[1, 262, 20], [2, 12, 64], [3, 94, 88], [4, 160, 164], [5, 476, 52], [6, 240, 262], [7, 300, 236]];
 document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
 const L = [
   ['Explicit cap', '480 / 500', 'Always shown; "Full" is an inline status on the backpack, not a toast.'],
   ['Search, sort, filter', 'debounce 0.15–0.25 s', 'Plain-text match; every sort ends in a unique tiebreaker so equal items do not shuffle.'],
-  ['Cell', '64–72 px · 0.18–0.20 H', 'Columns computed from the width. Rarity = plate colour + pips or name bar, never colour alone.'],
+  ['Cell', '64–72 px · 0.18–0.20 H', 'Columns computed from the width. Plate = rarity colour mixed 25% into Surface, 2 px stroke in the rarity colour, icon about 70% of the cell.'],
   ['Count', 'bottom-right, outlined text', 'Abbreviate to 3 significant figures above the first tier (4.62K).'],
   ['Detail pane', 'beside the grid on wide screens', 'Under about 700 px wide it becomes a pushed page with Back: a breakpoint, not a shrink.'],
   ['Peek row', 'top of the next row visible', 'Shows there is more without a scrollbar.'],
   ['"1 new" pill', 'instead of jumping the scroll', 'Tapping it scrolls to the new item.'],
 ];
 document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
-const big = (bg, inner, extra = '', style = '') => `<div class="big" style="background:${bg};${style}">${inner}${extra}</div>`;
+const big = (bg, inner, extra = '', style = '') => `<div class="big" style="background:${bg.startsWith('#3B') ? bg : `color-mix(in srgb, ${bg} 25%, #26324A)`};border-color:${bg.startsWith('#3B') ? '#1A1F2B' : bg};${style}">${inner}${extra}</div>`;
 const badge = (bg, ic) => `<div class="badge" style="background:${bg}">${I(ic, 13, '#fff', '#1A1F2B', 1.2)}</div>`;
 const st = [
   ['Default', 'Plate, icon, pips, count', big(R[2][1], I('gem', 44) + pipHtml(3))],
-  ['Selected', 'Thick light ring; detail pane follows', big(R[2][1], I('gem', 44) + pipHtml(3), '', 'outline:4px solid #fff;outline-offset:1px;box-shadow:0 0 0 7px #1A1F2B')],
+  ['Selected', 'Thick ring; detail pane follows', big(R[2][1], I('gem', 44) + pipHtml(3), '', 'outline:4px solid #1A1F2B;outline-offset:2px')],
   ['Gamepad focus', 'Ring with a gap, plus a 1.04–1.06 lift', big(R[2][1], I('gem', 44) + pipHtml(3), '', 'outline:3px solid var(--accent);outline-offset:4px;transform:scale(1.05)')],
   ['Equipped', 'Tick badge, not a colour change', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#35B25D', 'check'))],
   ['Favourite', 'Heart badge; blocks sell and trade', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#E5484D', 'heart'))],
@@ -92,5 +92,5 @@ document.getElementById('states').innerHTML = st.map(s => `<div class="st"><div 
 document.getElementById('rar').innerHTML = R.map((r, i) => `<div><div class="rc" style="background:${r[1]}">${pipHtml(i + 1)}<span>${r[0]}</span></div></div>`).join('');
 document.getElementById('rarg').innerHTML = R.map((r, i) => `<div><div class="rc" style="background:${Sheet.grey(r[1])};height:30px"></div><div class="rl">L ${Sheet.oklab(r[1])[0].toFixed(2)}</div></div>`).join('');
 Sheet.frame({ n: '04', cat: 'UI', title: 'Inventory grid anatomy', sub: 'Grid, cell states and rarity treatment. The view is a filtered, sorted list of item keys; cells are windows onto it.',
-  supports: ['ui-design-figma.md §Inventory and collection, §Design system and tokens', 'accessibility-and-player-qol.md §3 Colour and contrast'], sources: 'ui-design-figma.md, accessibility-and-player-qol.md' });
+  supports: ['ui-screen-recipes.md §1 Patterns with sizes, §6 Inventory and collection', 'ui-design-figma.md §3 Colour system (rarity ramp), §6 Construction recipes (card / slot)', 'accessibility-and-player-qol.md §3 Colour and contrast'], sources: 'ui-screen-recipes.md, ui-design-figma.md, accessibility-and-player-qol.md' });
 </script></body></html>

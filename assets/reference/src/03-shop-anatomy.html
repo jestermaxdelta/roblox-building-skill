@@ -45,7 +45,7 @@
         <div class="sm"><div class="sb" style="background:#35B25D">199</div><span class="arrow">→</span><div class="sb" style="background:#7E8A9C">· · ·</div><span class="arrow">→</span><div class="sb" style="background:#52648A">✓ Owned</div><span class="arrow">or</span><div class="sb" style="background:#59616E">Need level 10</div></div>
         <div class="note mt6"><b>available → pending → done</b>, or <b>locked with the reason</b>. Pending covers the server round trip (typically <span class="v">50–500 ms</span>): non-interactable, shows progress, so a second tap cannot buy twice. The card flips to Owned or Active 12:41 only when the server says so.</div></div>
       <div class="card"><h3>House rule 3 on this screen</h3>
-        <div class="note">A timer only for a real state (a boost that is running, an event end that does not move). A discount only against a price that was really charged. No restarting countdown, no hidden close. Paid random items show full odds from the config the server rolls from.</div></div>
+        <div class="note">A timer only for a real state (a boost that is running, an event end that does not move). A discount only against a price that was really charged. No restarting countdown, no hidden or delayed close. Label paid things as paid, with the Robux glyph. Paid random items show full odds from the config the server rolls from.</div></div>
     </div>
   </div>
 </div>
@@ -64,10 +64,10 @@ const L = [
   ['Window', '≤ 736×310 px · ≤ 0.92 W × 0.86 H', 'Centred; dark or neutral body so coloured cards read. Opens in ≤ 0.25 s, closes faster.'],
   ['Header', '44–48 px', 'Icon, loud title, the window\'s signature colour (Shop is the same colour everywhere).'],
   ['Close', '≥ 44 px, about 1.1 × header height', 'Red, top-right, one shared component. Also gamepad B and Escape.'],
-  ['Tabs or section headers', '≥ 44 px tall', 'Passes, products (currency, boosts), bundles. Active tab and focused tab look different.'],
+  ['Tabs or section headers', '≥ 44 px tall', 'Passes, products (currency, boosts), bundles. Navigation at most two levels deep.'],
   ['Card', '≈ 220×190 px, 3 columns · (W − padding) / 3', 'Square art with ScaleType = Fit, never stretched. Phone cards about 1.3–1.4 × their desktop size.'],
   ['Name + one-line benefit', '15 px / 12 px here', 'Say what it does and its scope: "2× luck for 10 min", "this server".'],
-  ['Buy button', 'full width, ≥ 44 px high', 'Native price text from GetProductInfoAsync, never baked into art. Green with the currency glyph.'],
+  ['Buy button', 'full width, ≥ 44 px high', 'Native price text from GetProductInfoAsync, never baked into art. An unaffordable price turns Danger red and states the shortfall.'],
   ['Next row peeks', 'show its top edge', 'Makes scrolling obvious without a scrollbar hint.'],
   ['Server-driven states', 'Owned, Active 12:41', 'Never flipped by the client when the prompt closes.'],
 ];
@@ -82,5 +82,5 @@ for (let i = 0; i < 2; i++) d += r(616 + i * 224, 594, 208, 196, '#3A4A6B', 'bor
 document.getElementById('dk').innerHTML = d + [[1, 470, 420], [2, 836, 420], [3, 1300, 470], [4, 1560, 930]].map(([n, x, y]) => `<span class="pin abs" style="left:${x * k - 9.5}px;top:${y * k - 9.5}px">${n}</span>`).join('');
 document.getElementById('dleg').innerHTML = [['Category rail', 'tabs become a fixed side rail; the page scrolls'], ['Featured slot', 'the only place for a live 3D preview (ViewportFrame)'], ['More, smaller cards', 'same card component, more columns'], ['UISizeConstraint max', '75% width must not become huge on a TV']].map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b>: ${l[1]}</div></div>`).join('');
 Sheet.frame({ n: '03', cat: 'UI', title: 'Shop screen anatomy', sub: 'One window recipe on phone and desktop: header, tabs, scrolling cards, one buy button per card. Prices are native text; ownership comes from the server.',
-  supports: ['ui-design-figma.md §Shop, §Patterns with sizes', 'monetization-and-policy.md (house rule 3)'], sources: 'ui-design-figma.md ([house], [community], [lihfolk] as tagged there)' });
+  supports: ['ui-screen-recipes.md §1 Patterns with sizes, §3 Shared window anatomy, §5 Shop', 'ui-design-figma.md §7 (shared close button)', 'monetization-and-policy.md (house rule 3)'], sources: 'ui-screen-recipes.md ([house], [official], [lihfolk] as tagged there)' });
 </script></body></html>
