@@ -1,24 +1,24 @@
 # Audio: API, licensing, SFX design, mixing, spatial sound, music, memory
 
-What this is: the build-level reference for sound on Roblox: which audio system to use and how to wire it, what audio may legally be used or uploaded, how to design, time, vary and mix sound effects, spatial audio, adaptive music, UI sound sets, loudness, memory and preload on phones, and volume settings. Open it when adding sound to a new game or when a live game sounds repetitive, late, muddy, silent or too loud. It extends `game-craft.md` §4 (bus tree, loudness targets, ducking numbers) and the audio line of `performance.md`; neither is repeated. Visual timing is in `vfx-and-juice.md`.
+What this is: the build-level reference for sound on Roblox: which audio system to use and how to wire it, what audio may legally be used or uploaded, how to design, time, vary and mix sound effects, spatial audio, adaptive music, UI sound sets, loudness, memory and preload on phones, and volume settings. Open it when adding sound to a new game or when a live game sounds repetitive, late, muddy, silent or too loud. It extends `game-craft.md` §4 (bus tree, loudness targets, ducking numbers) and the audio line of `performance.md`; neither is repeated. Visual timing is in `vfx-and-juice.md`. Sound sources with the licence read at source, breakdowns and tools: `references/visual-library/audio-and-sound.md`.
 
 Tags: `[official]` Roblox docs (mirror commit ccc2b01), `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; numbers from one production game are starting points), `[VS]` version-sensitive (the audio API, limits and licence terms change often), `[house]` house estimate. Terms: *SFX* = sound effect; *one-shot* = a short sound played once; *bed* = a quiet loop under everything; *bus* = a group of sounds sharing one volume control; *ducking* = lowering one bus while another plays; *onset* = time from file start to first audible energy; *peak* = time to the loudest transient; *stinger* = a short musical hit on an event; *voice* = one sound playing right now.
 
 ## Contents
 
-Start here by level · 1. The two audio systems · 2. Wiring the audio graph · 3. Licensing: what you may use and upload · 4. Upload limits and moderation · 5. SFX design: layers, variation, timing · 6. Mixing: buses, loudness, ducking, voice limits · 7. Spatial audio and rolloff · 8. Music: playlists, adaptive layers, stingers · 9. UI sound sets · 10. Memory, preload and mobile · 11. Volume settings and accessibility · 12. Level-up table · Review gate · Sources
+Start here by level · 1. The two audio systems · 2. Wiring the audio graph · 3. Licensing: what you may use and upload · 4. Upload limits and moderation · 5. SFX design: layers, variation, timing · 6. Mixing: buses, loudness, ducking, voice limits · 7. Spatial audio and rolloff · 8. Music: playlists, adaptive layers, stingers · 9. UI sound sets · 10. Memory, preload and mobile · 11. Volume settings and accessibility · 12. Level-up table · 13. Starter sound lists by genre · 14. Making your own sounds · 15. Generic-sound tells · 16. Critique rubric · Review gate · Sources
 
 ## Start here by level
 
 | Level | Do first | Ignore for now |
 |---|---|---|
-| Beginner | (1) Use only Creator Store audio published by Roblox, or sound you made yourself. (2) Play every feedback sound on the client. (3) Give each core verb and each UI action a sound, pitch-varied ±5%. (4) Four buses with sliders: Music, SFX, Ambience, UI. (5) Set min and max distance on every 3D sound; never leave the defaults | Adaptive music, acoustic simulation, sidechain compressors |
-| Intermediate | Layer sounds (transient, body, tail). Three or more takes per frequent sound, drawn from a shuffle bag. Trim every file so the transient starts within 10 ms. Level every file to one loudness target before upload. Cap voices and add per-cue cooldowns. Two-deck music crossfades. Keep an asset manifest with licence and uploader | Sample-accurate scheduling, custom attenuation curves |
-| Expert | Schedule sounds so the peak lands on the hit frame. One listener per 3D category wired to its own bus. Stems started on mixer time; bar-quantised transitions. Sidechain ducking. Measure loudness in-engine. Load audio per area and verify the Sounds memory label on a phone | — |
+| Beginner | (1) Use only Creator Store audio published by Roblox, or sound you made yourself. (2) Play every feedback sound on the client. (3) Give each core verb and each UI action a sound, pitch-varied ±5%. (4) Four buses with sliders: Music, SFX, Ambience, UI. (5) Set min and max distance on every 3D sound; never leave the defaults. (6) Build the first six sounds of your genre's list (§13) and the UI set (§9) | Adaptive music, acoustic simulation, sidechain compressors |
+| Intermediate | Layer sounds (transient, body, tail). Three or more takes per frequent sound, drawn from a shuffle bag. Trim every file so the transient starts within 10 ms. Level every file to one loudness target before upload. Cap voices and add per-cue cooldowns. Two-deck music crossfades. Keep an asset manifest with licence and uploader. Record and edit your ten most frequent sounds yourself (§14); clear the tells table (§15) | Sample-accurate scheduling, custom attenuation curves |
+| Expert | Schedule sounds so the peak lands on the hit frame. One listener per 3D category wired to its own bus. Stems started on mixer time; bar-quantised transitions. Sidechain ducking. Measure loudness in-engine. Load audio per area and verify the Sounds memory label on a phone. Score the game with the rubric (§16) each release | — |
 
 ## 1. The two audio systems `[VS]`
 
-Roblox has two systems. The docs now say `Sound`, `SoundGroup` and `SoundEffect` "are now discouraged in favor of the more robust functionality of audio objects" `[official]`; the audio graph left beta according to a DevForum announcement `[community]`.
+Roblox has two systems. The docs now say `Sound`, `SoundGroup` and `SoundEffect` "are now discouraged in favor of the more robust functionality of audio objects" `[official]`; the audio graph left beta on 10 September 2024 `[official]`.
 
 | | Legacy | Audio graph |
 |---|---|---|
@@ -29,7 +29,7 @@ Roblox has two systems. The docs now say `Sound`, `SoundGroup` and `SoundEffect`
 | Rolloff | `RollOffMinDistance`, `RollOffMaxDistance`, `RollOffMode` | `DistanceAttenuationMode` presets with `DistanceAttenuationBounds`, or a custom curve from `SetDistanceAttenuation`; `SetAngleAttenuation` for directional sources |
 | Scheduling | Frame-quantised (`task.delay`) | `Play(atTime)` and `Stop(atTime)` against `SoundService:GetMixerTime()`, sample-accurate; `Cancel(actionId)` revokes |
 | Analysis | `PlaybackLoudness` | `AudioAnalyzer` (`PeakLevel`, `RmsLevel`, spectrum), `AudioPlayer:GetWaveformAsync` |
-| Other | `SoundService:PlayLocalSound`, `VolumetricAudio` on parts, Doppler | Voice input (`AudioDeviceInput`), `AudioTextToSpeech`, `AudioSpeechToText`, acoustic simulation (§7) |
+| Other | `SoundService:PlayLocalSound`, `VolumetricAudio` on parts, Doppler | Voice input (`AudioDeviceInput`), `AudioTextToSpeech`, `AudioSpeechToText`, `AudioRecorder`, `AudioChannelSplitter`/`AudioChannelMixer`, acoustic simulation (§7) |
 
 Which to use:
 
@@ -46,6 +46,7 @@ Facts that bite:
 - `AudioPlayer:Play()` and `:Stop()` called on the server replicate to clients; `AudioDeviceOutput.Player` restricts who hears a server-side graph `[official]`. Build feedback graphs on the client anyway.
 - `SoundService.RespectFilteringEnabled` is true by default, so a `Sound` played from a LocalScript is heard only by that client `[official]`.
 - `SoundService.CharacterSoundsUseNewApi` switches the default footstep and jump sounds to graph instances `[official]`; check it before replacing character sounds.
+- Text-to-speech `[official][VS]`: `AudioTextToSpeech` takes at most 300 characters per request, and an experience may send `1 + 6 × concurrent users` requests per minute. `AutoLocalize` is on by default and re-voices the text in each player's language, so switch it off for names and puns. Pre-generate fixed lines as assets (`AssetService:CreateAssetAsync`, Studio beta, October 2026) to avoid the limit. House use `[house]`: accessibility read-aloud, dynamic text and placeholders; signature character voices are recorded by a person with a signed release.
 - `GetMixerTime()` starts at an arbitrary value and differs between machines: use it to schedule locally, never to synchronise players `[official]`. For shared timing send `Workspace:GetServerTimeNow()` and convert on each client.
 
 ## 2. Wiring the audio graph
@@ -111,15 +112,17 @@ Audio is the asset type most likely to be removed after launch, and a removed so
 
 | Source | Risk | Rule |
 |---|---|---|
-| Creator Store audio published by Roblox and its partners (more than 100,000 professionally produced SFX and music tracks, free to use `[official]`) | Lowest inside Roblox | First choice. Filter by creator. The licence covers use in Roblox experiences; a trailer on another platform is a separate question: check the track's terms or use music you own `[lihfolk]` |
+| Creator Store audio published by Roblox and its partners: more than 100,000 professionally produced SFX and music tracks, free to use `[official]`; partners named in announcements include APM, Monstercat, DistroKid (2024) and Too Lost (2026) `[official][VS]` | Lowest inside Roblox | First choice. Filter by creator. The licence covers use in Roblox experiences; a trailer on another platform is a separate question: check the track's terms or use music you own `[lihfolk]`. A track is acquired into the inventory of the user who inserts it; in 2024 groups could not acquire Creator Store audio, so test a group game live `[official][VS]` |
 | Sound you recorded, synthesised or composed | Low | Keep project files and dated exports as proof |
 | Commissioned music or SFX | Low with a contract | Written grant: perpetual, worldwide, the game and its sequels, Roblox plus trailers, ads and streams; exclusivity stated; composer does not register the track with content-ID systems or whitelists you; stems, loop points and stingers delivered `[lihfolk]` |
-| Licensed third-party libraries (free or paid professional packs) | Medium | Read the licence for "video games" and for redistribution. Upload as private assets under the game's owner and never tick distribution on the Creator Store: that hands the raw sound to every creator, which library licences forbid `[lihfolk]`. LihFolk lists specific vendors with licence notes dated 2026-10-29; not verified here |
+| Licensed third-party libraries (free or paid professional packs) | Medium | Read the licence for "video games" and for redistribution. Upload as private assets under the game's owner and never tick distribution on the Creator Store: that hands the raw sound to every creator, which library licences forbid `[lihfolk]`. Licences read at source are in the library file, §4 |
 | Community uploads on the Creator Store | Medium | Roblox allows it, but the rights chain cannot be checked; prefer verified creators |
-| AI-generated audio | Medium | Same platform rules as any upload; your rights depend on the generator's terms on the day you generated `[lihfolk]` |
+| AI-generated audio | Medium | Ideation only: shipped sound is recorded, synthesised, commissioned or licensed `[house]`. Platform rules are those of any upload, and your rights depend on the generator's terms on the day you generated `[lihfolk]` |
 | Commercial songs you do not own | High | Never upload. The risk is to the uploading account, not only the game |
 
-- Roblox-licensed music has usage terms. A developer post quoting them says: no streaming service or music library inside an experience, no charging players to hear a specific track, and at most 250 distinct licensed tracks in one experience at a time `[community]` `[VS]`. Read the current Licensed Music terms before building a radio.
+- Roblox-licensed music has usage terms. As quoted by developers from the Terms of Use: no streaming service or music library built from Licensed Music inside an experience, and at most 250 distinct licensed tracks in one experience at a time `[community]` `[VS]`. Forum reading: a game that plays music is fine, an experience that is a music player is not. The terms page could not be opened for this guide, so read the current text before building a radio.
+- Licences read at source on 2026-11-11 (`visual-library/audio-and-sound.md` §4): Kenney audio is CC0; the Sonniss GDC bundles are royalty-free with no attribution but may not be redistributed as sounds or used to train AI; ZapSplat's free tier requires a credit; 99Sounds does not; Incompetech's free licence requires a credit; OpenGameArt and itch.io are per asset. Freesound, Pixabay and Mixkit could not be read (check each file's page yourself), and the BBC archive is reported as non-commercial only, so it stays out of a monetised game.
+- Your own songs can appear on the game details page with a 15-second preview once they pass the checks in §4; eligible partner tracks show in the in-experience "What's Playing" panel `[official][VS]`.
 - Player-entered audio ids (boombox, radio) are the highest-risk feature: the game becomes a player for any infringing or abusive upload. Offer a curated list of tracks you may use; if ids must be allowed, restrict to a reviewed whitelist with per-player mute, a volume cap and an "all radios off" setting. Never sell free id entry `[lihfolk]`.
 - Group-owned game: upload audio to the group or grant the experience permission. A personal upload in a group game works in Studio and is silent live `[lihfolk]`.
 - Since the 2022 audio privacy change, audio over 6 seconds became private and new uploads are private by default `[community]`; old third-party ids in inherited scripts are usually silent. Replace them.
@@ -138,6 +141,7 @@ Audio is the asset type most likely to be removed after launch, and a removed so
 | Quota, Open Cloud | 100 per month if ID-verified, 10 if not | `[official]` Open Cloud page. Conflict between two official pages: plan pipelines around the stricter number |
 | Processing | Studio transcodes on import and rejects corrupt or invalid files; uploads then wait in a moderation queue and are visible only to you | `[official]` |
 | Privacy | Imported audio is private; you grant use to specific people and experiences | `[official]` |
+| Versioning | From 17 February 2027 an audio asset can publish new versions under one id; `rbxassetid://id&version=n` pins one, and an unpinned id loads a frozen version (announced November 2026) | `[official][VS]` |
 | Classification | Each upload is classified as a sound effect or a song. Songs can appear on the game details page if they pass moderation and copyright checks, meet duration and play thresholds, have a meaningful title, and the uploader is ID-verified and has accepted the Audio Terms | `[official]` |
 
 - Freshly uploaded assets can fail to load or preload for 20–60 seconds `[lihfolk]`; never judge or ship an id uploaded seconds ago.
@@ -246,7 +250,8 @@ Bus tree, slider curve, loudness targets (−18 LUFS mobile, true peak at most �
 - Set one-shot levels by peak and bed levels by RMS: a short sound is judged by its peak, a long one by its average energy `[lihfolk]`.
 - Shape of a mix `[lihfolk]`: your own actions loudest, enemies below, other players' actions about 0.7×, UI far below combat, music and ambience a bed. After levelling, the loudest sound in the game is something the player caused and wanted.
 - Measure in-engine with `AudioPlayer:GetWaveformAsync` or an `AudioAnalyzer` (`RmsLevel`, `PeakLevel`) when files cannot be re-exported `[official]`.
-- Editing pipeline per file `[lihfolk]`: trim the head to just before the transient; 1–2 ms fade in and 10–50 ms fade out; high-pass below 30–40 Hz; mono for every 3D sound; normalise; export OGG at the native rate; measure peak time; upload under the game's owner; add the manifest row. Free tools (Audacity, a LUFS meter) are enough.
+- Per-file editing (trim, fades, high-pass, mono, normalise, export, measure, manifest) is the numbered procedure in §14.
+- Phones: no enforced mobile loudness standard was found. What is documented is that mobile mixes need a narrower loudness range than console mixes, because quiet content is lost in transit noise and small speakers distort `[community: Audiokinetic via Designing Sound]`. Compress the gap between your quietest bed and loudest hit before raising the overall level.
 - Reject at source: clipped peaks, baked room reverb on positional sounds, a single take for a frequent sound, mismatched takes in one bag `[lihfolk]`.
 
 **Ducking.** Lower Music and Ambience 3–6 dB under heavy hits and stingers, and 6–12 dB under dialogue, with a 250–500 ms release `[lihfolk]`. Three ways: a sidechain compressor on the bus (`CompressorSoundEffect.SideChain` in the legacy system `[official]`, the `Sidechain` pin in the graph); a scripted tween of the bus volume, which is easier to tune; or both. Conflict: the LihFolk SFX skill says legacy sounds cannot sidechain; the docs show a legacy ducking mix tree, so the docs win.
@@ -280,7 +285,7 @@ Starting values `[lihfolk]`; in the graph set the same numbers through `Distance
 
 - **Listener position.** The listener is the camera, often 15–25 studs behind a third-person character, so the player's own footsteps sound distant. Play the local player's own sounds in 2D (or with a large minimum) and other players' at their root `[lihfolk]`.
 - **Directional sources**: `SetAngleAttenuation` makes a megaphone or a roar louder in front `[official]`. `AudioEmitter:GetAudibilityFor(listener)` returns 0–1 and can drive gameplay ("can the monster hear you?") `[official]`.
-- **Acoustic simulation** `[VS]`: `SoundService.AcousticSimulationEnabled` plus `AcousticSimulationEnabled` on each emitter and listener gives occlusion, diffraction and reverberation `[official]`. DevForum announcements describe a beta followed by a full release, graph API only, with quality reduced or disabled on low-end devices `[community]`. Consequences: never make gameplay depend on occlusion (some players would hear through walls); use it for stealth and horror, test busy arenas for mud and CPU, and keep a non-simulated mix that still works.
+- **Acoustic simulation** `[official][VS]`: `SoundService.AcousticSimulationEnabled` gives audio-graph emitters occlusion, diffraction and reverberation (client beta January 2026, out of beta 22 September 2026; legacy `Sound` support is promised, not shipped). Per-object switches: `AcousticSimulationEnabled` on each emitter and listener (on by default), `BasePart.AudioCanCollide` (on by default except in the default character), `PhysicalProperties.AcousticAbsorption` (how little a material reflects) and density (how much it muffles). Default character sounds join in only with `CharacterSoundsUseNewApi`. Accuracy follows the rendering quality level and may drop or switch off to hold frame rate. Consequences: never make gameplay depend on occlusion (some players would hear through walls); use it for stealth and horror, test busy arenas for mud and CPU, and keep a non-simulated mix that still works.
 - **Large sources**: legacy `SoundService.VolumetricAudio` lets a `Sound` on a big part surround the listener inside it (rain zones, crowds) `[official]`; in the graph use a 2D bed that crossfades by zone.
 - **Streaming**: sounds parented to streamed-out parts stop (`performance.md`). Put critical ambience on always-present containers or play it 2D from the client.
 - **Doppler** on fast legacy sounds can sound silly; lower `SoundService.DopplerScale` `[official]`.
@@ -310,20 +315,31 @@ Adaptive music is expensive to compose and costs memory (four stems across five 
 
 ## 9. UI sound sets
 
-One family: same timbre, very short (under about 150 ms `[house]`), pitched up for positive and down for negative, levelled far below combat `[lihfolk]`.
+Spec for one set (`[house]` unless tagged):
+
+| Property | Value |
+|---|---|
+| Size | 10–14 sounds, all made from one palette (one synth patch, or one object recorded several ways) so they read as a family `[lihfolk]` |
+| Length | Ticks and presses 30–150 ms; open, close, confirm up to 300 ms; purchase and reward up to 600 ms. No reverb tails |
+| Pitch language | Positive rises or steps up, negative falls and is softer, neutral stays flat. Pairs (open/close, toggle on/off) are the same sound up and down |
+| Spectrum | Energy between about 500 Hz and 5 kHz: a phone speaker plays little below 300 Hz, and loud content around 3 kHz tires the ear |
+| Level | Files peak-normalised alike, then mixed well below the core verb's sound; the loudest UI sound is the purchase or reward |
+| Routing | 2D, on the UI bus, client only: never a remote to play a click |
+| Build order | Design the confirm first, then derive the rest by pitching, shortening and filtering it |
 
 | Event | Sound |
 |---|---|
 | Hover | Soft tick; none on touch devices; throttled so dragging across 40 buttons is not 40 ticks |
 | Press | Pop click |
 | Panel open, close | Short rise, short fall or air whoosh |
+| Tab, page, toggle, slider step | Soft tick; toggles as an up and down pair |
 | Confirm, claim | Bright note; a rising run for big rewards |
 | Purchase | A distinct "paid" cue, used nowhere else |
 | Error, locked, cannot afford | Short low note, never harsh |
-| Tab or page switch | Soft tick |
-| Counter count-up | A tick that rises in pitch, capped at about 15 per second `[house]` |
+| Notification, toast | Two-note motif, quieter than confirm, at most one per second |
+| Counter count-up | A tick that rises in pitch, capped at about 15 per second |
 
-Rarity ladder for rewards: each tier adds a layer (brighter sound, a riser before the reveal, a music sting at the top) rather than volume, and the riser peaks on the reveal frame `[lihfolk]`. Play UI sound on the client only; never fire a remote to play a click.
+Rarity ladder for rewards: each tier adds a layer (brighter sound, a riser before the reveal, a music sting at the top) rather than volume, and the riser peaks on the reveal frame `[lihfolk]`.
 
 ## 10. Memory, preload and mobile
 
@@ -361,7 +377,6 @@ Mobile constraints:
 | New-API sound is silent | No wire to an `AudioDeviceOutput`; no listener (`DefaultListenerLocation` Default or None); interaction groups differ; wrong pin name | Check `Wire.Connected`; create and wire a listener; match groups |
 | Hits feel late or floaty with good assets | Lead-in in the file; sound started on the beat instead of beat minus peak; first-use loading | Trim onset; schedule by peak; preload on equip |
 | First hit of a session is silent or late | Sound not loaded | Register and load when the owner loads |
-| Machine-gun repetition | One take, no variation | Shuffle bag of 3 or more, pitch and volume jitter, layer recombination |
 | Metallic phasing in group fights | The same file stacked | Voice caps, per-cue cooldown, choke |
 | Distant fights audible everywhere; constant murmur in hubs | Default 10 to 10,000 stud rolloff; no crowd caps | Per-category distances; crowd caps; distance gate |
 | Sound cuts off abruptly at range | Inverse or Linear with a low maximum | `InverseTapered` or a custom curve |
@@ -376,12 +391,71 @@ Mobile constraints:
 | Players miss danger | Audio-only cue, muted phones | Visual twin; caption or icon |
 | Game went quiet after an update or a takedown | Asset moderated or claimed | Load-check job with fallbacks; replace from manifest |
 
+## 13. Starter sound lists by genre
+
+Build in this order and stop when the budget runs out: a game with the first six of its list sounds finished; a game missing the first two feels broken `[house]`. Every list assumes the UI set of §9.
+
+| Genre | In priority order | Trap |
+|---|---|---|
+| Simulator, incremental | 1 the core verb (hit, mine, collect): 4–6 takes, pitch climbing with the combo. 2 Currency gain tick and count-up. 3 Sell or cash-in (the "cha-ching" the docs use as their example of feedback `[official]`). 4 UI set. 5 Egg or crate open: riser, reveal, rarity ladder. 6 Level-up and rebirth stinger. 7 Upgrade bought, zone unlocked. 8 Pet or helper chirps on a cooldown. 9 Playlist of 2–3 tracks with silences. 10 One ambience bed per zone | The collect sound plays thousands of times a session: make it the shortest, softest and most varied sound in the game, and cap its voices |
+| Obby, platformer | 1 Jump and land. 2 Checkpoint reached: bright and unique. 3 Fail and respawn: under 0.5 s, soft, never mocking. 4 Hazard loops (lava, saw, laser) positional with tight rolloff, because they are information. 5 Timing ticks on timed and moving platforms. 6 Collectable. 7 Stage-complete stinger. 8 UI set. 9 Upbeat playlist at a low level. 10 Footsteps by material | The fail sound is heard two hundred times: test it after 50 repeats (§5) |
+| Horror | 1 Ambience bed per area (room tone, never digital silence). 2 Footsteps by surface, the player's and others'. 3 The threat's signature at three ranges: distant, near, chase, always the same so it can be learned. 4 Doors, switches, pickups. 5 Heartbeat or breath driven by proximity or stamina. 6 Subtle one-shots on random 20–90 s timers: creaks, pipes, light hum, insects, wind `[community]`. 7 Chase music layer. 8 Stingers, rationed to the few moments that earn them. 9 Sparse, diegetic UI sounds. 10 Caught or death | Constant loud stingers stop frightening and breach the comfort rules of §11; most phone players are muted, so every scare needs a visual twin |
+
+## 14. Making your own sounds: record, edit, export
+
+Free tools are enough: Audacity, or any editor in `visual-library/audio-and-sound.md` §5. Values are `[house]` starting points unless tagged.
+
+1. **Record.** Quiet, soft-furnished room; phone or USB microphone 10–30 cm from the source; 48 kHz, mono; peaks between −12 and −6 dBFS and never at 0. Record 5–10 takes of each sound and 10 s of room tone.
+2. **Trim.** Zoom in and cut so the sound begins within 5–10 ms of the file start; end the file where the tail sinks into the noise (about −60 dB).
+3. **Fade.** 1–2 ms in (removes the click), 10–50 ms out.
+4. **Clean.** High-pass at 30–40 Hz (80–100 Hz for small UI sounds). Light noise reduction with the room tone as the profile, 12 dB at most: more sounds watery.
+5. **Level.** One-shots: Normalize to a −1 dB peak, then match by ear against one reference sound of the same category. Loops, beds and music: Loudness Normalization, perceived loudness, −18 LUFS (Audacity's default is −23) `[official: Audacity manual]`. Turn on Show Clipping and fix anything it marks.
+6. **Loops.** Cut at zero crossings, crossfade the join, and export WAV, FLAC or OGG: an MP3 encoder pads the file with silence, which leaves a gap at the loop point.
+7. **Export.** Mono for anything positional; stereo only for music, beds and UI. Upload the best master that fits (WAV 16-bit or FLAC under 20 MB), because Studio transcodes on import `[official]` and a pre-compressed file is compressed twice; otherwise OGG at quality 6–8. At most 48 kHz `[official]`. Name files `category_object_action_01`.
+8. **Batch** (intermediate, unexecuted): `ffmpeg -i in.wav -af "highpass=f=40,loudnorm=I=-18:TP=-1:LRA=7" -ar 48000 -ac 1 out.ogg` for beds and music `[official: FFmpeg loudnorm]`; keep peak normalisation for one-shots under half a second (§6).
+9. **Upload** under the game's owner, wait for moderation, measure onset and peak, add the manifest row (§3).
+
+No microphone: synthesise blips, coins and jumps in jsfxr, Bfxr or ChipTone, then layer and filter them into the palette (§5). A recording of a real object nearly always sounds less stock than a preset.
+
+## 15. Generic-sound tells and fixes
+
+Timing, level, rolloff and music-fatigue symptoms are in §12; these are the ones that make a game sound like every other, or broken.
+
+| Tell | Cause | Fix |
+|---|---|---|
+| Stock character sounds: the default footstep, jump, fall and death on every avatar | Roblox's default character sound script left as shipped | Fork the default `RbxCharacterSounds` script and point it at your own set; check `SoundService.CharacterSoundsUseNewApi` first (§1) `[community]` |
+| The same click, coin and level-up jingle heard in a hundred games | First page of Toolbox search, or the most-downloaded free pack used raw | Search deeper or by partner library; re-pitch, layer and filter stock into your palette (§5); make the ten most frequent sounds yourself (§14) |
+| Crackle or distortion at busy moments | Files normalised to 0 dBFS, `Volume` above 1, stacked voices summing past full scale | −1 dB file peaks, per-cue volume at or under 1, voice caps, limiter on the master (§2, §6) |
+| The same sample over and over | One take, no variation | Shuffle bag of 3 or more takes, pitch and volume jitter, layer recombination (§5) |
+| Sounds from different worlds: a dry click, a cavernous chime, an 8-bit coin in an orchestral game | Packs mixed without a palette | One palette statement (era, material, wet or dry); one shared reverb or none; replace the odd ones out |
+| Click or gap each time a loop repeats | Loop cut off a zero crossing, or an MP3 loop | §14 step 6; `LoopRegion` for an intro plus loop |
+| Hiss, hum or a chopped tail | Raw recording, no fades, reverb tail trimmed short | §14 steps 2–4 |
+| Meme and nostalgia sounds re-uploaded from elsewhere | Assumed to be free because they are everywhere | They are someone's property: use only what §3 allows |
+| Silent menus and a silent world between events | No UI set, no bed | §9 set; one bed per zone (§8) |
+
+## 16. Critique rubric
+
+Score each line 0, 1 or 2 on a phone speaker, then on earbuds. Ship at 14 of 18 or more, with no zero and a 2 on Rights `[house]`.
+
+| Check | 2 means |
+|---|---|
+| Coverage | Every core verb, reward and UI action answers with a sound on the frame it happens |
+| Identity | One palette; nothing recognisable as stock; the game could be named from ten seconds of audio |
+| Variation | No frequent sound repeats identically twice in a row; still pleasant after 50 repeats |
+| Timing | Impacts fuse with the picture (0–30 ms late); nothing leads; first use is not late |
+| Mix | The loudest thing is the player's own action; UI under combat; music a bed; no clipping; readable on a phone speaker in a full server |
+| Space | Every 3D sound has deliberate distances; own-character sounds are 2D; no map-wide murmur |
+| Music | Fades in on join, changes with context, leaves silences, ducks under dialogue and big moments |
+| Information and access | Each warning sound has a visual twin; sliders for every bus persist; comfort limits met |
+| Rights and hygiene | Every id has a manifest row with a licence you read; uploads owned by the game's owner; files trimmed, levelled, mono where positional |
+
 ## Review gate
 
 - [ ] Audio system chosen deliberately; if both exist, every slider drives both and ducking was re-tested.
-- [ ] Every asset id has a manifest row: source, licence, uploader, date, loudness, onset, peak. No commercial music; no free-entry audio ids.
+- [ ] Every asset id has a manifest row: source, licence, uploader, date, loudness, onset, peak. No commercial music; no free-entry audio ids; no third-party sound whose licence page was not read.
 - [ ] Uploads owned by the experience's owner; music ids load-checked with fallbacks; quotas planned around the stricter official number.
-- [ ] Each core verb and UI action has a sound; frequent sounds have 3 or more takes, pitch and volume variation, and a cooldown.
+- [ ] Each core verb and UI action has a sound; the first six of the genre's starter list (§13) and the UI set (§9) exist; frequent sounds have 3 or more takes, pitch and volume variation, and a cooldown.
+- [ ] No row of the tells table (§15) applies; the rubric (§16) scores 14 of 18 or more with no zero and a 2 on Rights.
 - [ ] Files trimmed, mono for 3D, normalised to one target; transient within 10 ms; scheduled sounds start at beat minus peak.
 - [ ] Buses for Music, SFX, Ambience and UI with persisted squared sliders; limiter on the master; ducking under dialogue and big moments.
 - [ ] Voice caps, crowd caps, steal order and distance gates set; no default rolloff on any 3D sound; own-character sounds 2D.

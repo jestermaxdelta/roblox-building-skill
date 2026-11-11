@@ -23,7 +23,7 @@ A cutscene is any stretch where the game, not the player, owns the camera or the
 | The moment | Use | Why |
 |---|---|---|
 | Player must notice one thing (door opened across the map, new zone) | 1–2 s camera glance with control returned, or a world beacon and no camera at all | Information, not drama; a glance costs 2 s, a beacon costs 0 |
-| A threat arrives | Telegraph in play, then a reveal of 3–6 s that hands straight into the fight or chase | DOORS foreshadows Seek with eyes on the walls over several rooms, plays a short reveal, and the chase starts at once (search summary) |
+| A threat arrives | Telegraph in play, then a reveal of 3–6 s that hands straight into the fight or chase | DOORS shows eyes on the walls before Seek appears, plays a short reveal, and the chase starts at once (search summary) |
 | Reward, hatch, unlock, rank-up | Short reveal over live play or a 2–4 s framed shot | The reward is the point; see skip and speed in `accessibility-and-player-qol.md` §11 |
 | NPC talk, shop, quest hand-in | Dialogue UI with the gameplay camera, or a bark bubble | Conversation scenes that seize the camera are the classic annoyance (Hancock) |
 | Backstory, lore | Environment, item text, optional readable; never a forced scene | Info-dumps are where cutscenes fail most (Hancock) |
@@ -35,7 +35,7 @@ Three tests before building `[house]`: (1) say what the player learns or feels i
 
 ## 2. Length budgets
 
-Roblox sessions are short and mostly on phones, and one production game removed a polished 27 s intro that sat inside the first minute `[lihfolk]`. Hancock's console-era ceiling was 2 minutes for any scene; halve that here.
+One production game removed a polished 27 s intro that sat inside the first minute, even with a 3 s skip `[lihfolk]`. Hancock's console-era ceiling was 2 minutes for any scene; for a phone-first audience in short sessions the house ceiling is half that.
 
 | Purpose | Budget `[house]` | Skip appears | Repeat views |
 |---|---|---|---|
@@ -113,7 +113,7 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 
 | Quantity | Limit |
 |---|---|
-| Sustained pan or tilt | Under 30°/s; a deliberate whip under 0.3 s, at most one per scene |
+| Sustained pan or tilt | Under 30°/s. Where a whip pan is tempting, cut instead |
 | Speed changes mid-move | None: constant speed between the eased ends |
 | Roll while moving | None. A static tilted frame up to about 10° is fine |
 | FOV change inside a shot | 15° at most, over 0.5 s or more; dolly zoom only as a signature moment |
@@ -471,5 +471,5 @@ Accessed 2026-11-11. "(read)" = opened and read; "(viewed)" = image looked at; "
 - StudioBinder: shot sizes https://www.studiobinder.com/blog/types-of-camera-shots-sizes-in-film/, the 180-degree rule https://www.studiobinder.com/blog/what-is-the-180-degree-rule-film/, camera movement https://www.studiobinder.com/blog/different-types-of-camera-movements-in-film/ (read; cheat-sheet images viewed). The 30-degree rule: Wikipedia summary (read).
 - GDC talks (oembed): John Nesky, "50 Game Camera Mistakes" https://www.youtube.com/watch?v=C7307qRmlMI; Squirrel Eiserloh, "Juicing Your Cameras With Math" https://www.youtube.com/watch?v=tu-Qe66AvtY; Simon Unger, "Animating Cameras for Games" https://www.youtube.com/watch?v=hP1Vz70WouE.
 - DOORS Seek reveal structure: game-guide articles (search summary); compilation video listed in the library file (oembed).
-- Sibling guides for `[lihfolk]` figures: `core-loop-tuning.md` §2–3, `accessibility-and-player-qol.md` §5–6, `animation-and-rigs.md` §10.
+- Sibling guides for `[lihfolk]` figures: `core-loop-tuning.md` §2–3, `genres/horror-coop-escape.md`, `accessibility-and-player-qol.md` §5–6. Game-page video policy and lifts: `icons-thumbnails-and-store-page.md` §9.
 - Failed or not found: reddit.com not reachable; Wikipedia API rate-limited after two pages; no breakdown by the developers of DOORS, Pressure or Deepwoken of how their scenes are built was found; no official statement of a maximum length or file format for game-page videos in the mirrored docs.
