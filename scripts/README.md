@@ -17,6 +17,12 @@ Useful flags: `--only NAME [NAME ...]` on all three command-line scripts; `--che
 
 Conventions the scripts assume (from `references/art-pipeline-blender.md`): 1 Blender unit = 1 stud; an asset is a parentless object named `SM_…`, `KIT_…` or `SK_…`; collision proxies are children named `<Asset>_COL`; attachment points are empties named `<Name>_Att`; an asset without a `_COL` child carries a custom property `Fidelity` set to `Box` or `Hull`.
 
+## Images (`scripts/images/`)
+
+| Script | What it does | Run |
+|---|---|---|
+| `tile_test.py` | Shows an icon and thumbnails the way the Roblox Home grid does: icon at 150, 64 and 32 px on dark and light, each thumbnail small, greyscale, blurred and with the bottom 20% hidden. Needs Pillow. Run on 2026-11-11 | `python3 scripts/images/tile_test.py icon.png thumb1.png thumb2.png` |
+
 ## What was tested, and what was not
 
 - Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS Python module, driving each script the way `blender -b file.blend -P script.py -- args` does: a five-piece test file, every flag above, and the exported GLBs re-read to confirm names, triangle counts, sizes and vertex colour.

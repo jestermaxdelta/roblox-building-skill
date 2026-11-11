@@ -30,13 +30,13 @@ table.spec td{white-space:nowrap}table.spec td:last-child{white-space:normal}</s
 const E = Sheet.el, T = Sheet.txt;
 const C = { react: '#1A1F2B', wind: '#E3A21A', tele: '#7B57D1', strike: '#C4372F', hold: '#DD4F27', follow: '#2D6CDF', rec: '#A8B0BD', can: '#6FBF97' };
 const clips = [
-  { name: 'Light attack', sub: '20 f · 0.67 s', ph: [['react', 1], ['wind', 4], ['strike', 2], ['hold', 2], ['follow', 4], ['rec', 3], ['can', 4]], hit: 6, marks: [[5, 'TrailOn'], [6, 'Hit'], [9, 'TrailOff']] },
-  { name: 'Heavy attack', sub: '43 f · 1.43 s', ph: [['react', 1], ['wind', 15], ['strike', 3], ['hold', 4], ['rec', 14], ['can', 6]], hit: 17, marks: [[16, 'TrailOn'], [17, 'Hit'], [23, 'TrailOff']] },
-  { name: 'Enemy attack', sub: '32 f · 1.07 s', ph: [['tele', 16], ['strike', 3], ['hold', 3], ['rec', 10]], hit: 17, marks: [[0, 'Telegraph shown'], [17, 'Hit']] },
+  { name: 'Light attack', sub: '20 f · 0.67 s', ph: [['react', 1], ['wind', 4], ['strike', 2], ['hold', 2], ['follow', 4], ['rec', 3], ['can', 4]], hit: 6, marks: [[5, 'TrailOn'], [7, 'Hit'], [9, 'TrailOff']] },
+  { name: 'Heavy attack', sub: '43 f · 1.43 s', ph: [['react', 1], ['wind', 15], ['strike', 3], ['hold', 4], ['rec', 14], ['can', 6]], hit: 17, marks: [[16, 'TrailOn'], [19, 'Hit'], [23, 'TrailOff']] },
+  { name: 'Enemy attack', sub: '32 f · 1.07 s', ph: [['tele', 16], ['strike', 3], ['hold', 3], ['rec', 10]], hit: 17, marks: [[0, 'Telegraph shown'], [19, 'Hit']] },
 ];
 const cw = 14, x0 = 104, W = 716, RH = 70; let g = '';
 for (let f = 0; f <= 43; f += 3) g += T(x0 + f * cw, 12, (f / 30).toFixed(1), { 'text-anchor': 'middle', 'font-size': 10 });
-g += T(x0 - 8, 12, 'seconds', { 'text-anchor': 'end', 'font-size': 10 });
+g += T(0, 12, 'seconds', { 'font-size': 10 });
 clips.forEach((c, i) => {
   const y = 34 + i * RH; let f = 0;
   g += T(0, y + 12, c.name, { fill: '#1A1F2B', 'font-weight': 700, 'font-size': 11.5 }) + T(0, y + 26, c.sub, {});

@@ -16,7 +16,7 @@ Terms: a **rig** is parts or mesh vertices joined by animatable joints. A **clip
 
 ## Contents
 
-1 Rig types · 2 Blender rig requirements · 3 Blender to Roblox clip pipeline · 4 Craft: rules, recipes (attack, hit reaction, locomotion), posing checks, stiff tells, rubric · 5 Playback: priorities, blending, weights, speed · 6 Markers · 7 Replication and ownership · 8 NPC animation at scale · 9 Procedural animation · 10 Tools and weapons, cutscenes, props, UI-in-world · 11 Performance budgets · 12 Level-up table · 13 Conflicts and open questions · Review gate · Sources
+1 Rig types · 2 Blender rig requirements · 3 Blender to Roblox clip pipeline · 4 Craft: rules, recipes (attack, hit reaction, locomotion), posing checks, stiff tells, rubric · 5 Playback: priorities, blending, weights, speed · 6 Markers · 7 Replication and ownership · 8 NPC animation at scale · 9 Procedural animation · 10 Tools and weapons, cutscenes, props · 11 Performance budgets · 12 Level-up table · 13 Conflicts and open questions · Review gate · Sources
 
 ## 1. Rig types and when to use each
 
@@ -136,13 +136,12 @@ Data hygiene (matters most when clips are generated, thinned or played by custom
 
 Frame numbers are at 30 fps (the editor grid; clips store seconds, so playback is frame-rate independent). Viewed references for every rule are in `visual-library/animation.md`; the 12 principles one by one, with game examples, are its rows 1, 2, 17 and 19.
 
-**Six rules for short game clips.**
+**Five rules for short game clips.**
 - **Input frame.** The player's own action shows motion on the frame of the press. Anticipation is spent on enemies (so players can react) and rationed on the player `[lihfolk][house]`; input budgets are in `game-craft.md` §1.2.
 - **Weight lives in the follow-through.** A player attack is fast in, slow out: the settle after contact sells the mass, and a marked cancel frame lets it play in full only when no new input arrives `[community: Cooper, Game Anim]`.
 - **Favour the keys.** With few frames, an in-between sits next to a key pose, not halfway. Add frames before or after a key, never between two keys `[community: Skullgirls GDC talk; Dead Cells]`.
 - **One frame of overshoot.** Go one frame past the final pose, then come back: impact at no cost in length `[community: Skullgirls GDC talk]`.
 - **Motion between poses is an effect.** A rigid rig cannot smear or squash. Carry the strike with a `Trail` between `TrailOn` and `TrailOff` or a Blender slash mesh shown for 2–3 f; "squash" by compressing spine and knees, "stretch" by extending limbs `[community: Dead Cells; Cooper]`.
-- **Heavy is frame count, not playback speed.** Author heavy creatures slow; never play a clip below 1× to fake weight `[lihfolk]`.
 
 **Workflow for any clip** `[community: Bavelly spotlight; Skullgirls talk]`. (1) Reference: film yourself or find footage from side and front, step through it, note the frame of every pose change. (2) Block the key poses with Constant interpolation and judge them as a slideshow from the gameplay camera. (3) Break down in halves, then quarters, then eighths, adding the arc and the lead-and-drag. (4) Offset parts: hips lead chest by 1 f, chest leads arm by 2 f, head and off arm trail 1–2 f `[lihfolk]`. (5) Put the rough clip in the game on the real rig at phone distance before polishing. (6) Polish, add markers, score it with the rubric below.
 
@@ -158,13 +157,12 @@ Frame numbers are at 30 fps (the editor grid; clips store seconds, so playback i
 | 10–14 | Follow-through: weapon carries on, body settles, head arrives last | Slow out |
 | 15–22 | Recovery to a pose within a small angle of idle | `CancelOpen` at about 70% with a 0.1–0.2 s input buffer `[lihfolk]` |
 
-Variants `[lihfolk]`: **heavy** = wind-up 6–16 f with a held coil, strike 2–4, contact hold 3–4, recovery 10–25 (hit at 0.5–0.7 s, total 1.3–1.8 s; the player chose the delay). **Enemy** = telegraph at least 14 f (0.45 s), boss 15 f (0.5 s), checked as `(Hit − Tele) / speed` for every attack in every phase. PvP moves meant to be reacted to need at least 8 f of startup (reaction time is about 0.25 s). Think in three columns for every move: startup, active, recovery `[community: fighting-game frame data]`. Hit-stop is runtime and never baked (`vfx-and-juice.md` §7).
+Variants `[lihfolk]`: **heavy** = wind-up 6–16 f with a held coil, strike 2–4, contact hold 3–4, recovery 10–25 (hit at 0.5–0.7 s, total 1.3–1.8 s; the player chose the delay); weight is frame count, so author heavy moves and creatures slow and never play a clip below 1×. **Enemy** = telegraph at least 14 f (0.45 s), boss 15 f (0.5 s), checked as `(Hit − Tele) / speed` for every attack in every phase. PvP moves meant to be reacted to need at least 8 f of startup (reaction time is about 0.25 s). Think in three columns for every move: startup, active, recovery `[community: fighting-game frame data]`. Hit-stop is runtime and never baked (`vfx-and-juice.md` §7).
 
 ### Recipe: hit reaction (6–10 f, 0.2–0.33 s)
 
 - f0–1: snap to the flinch extreme with no ease in: chest and head thrown away from the hit by 15–30° `[house]`, hips lagging.
-- f2–3: hold; the head arrives 1–2 f after the chest.
-- f4–9: slow out back toward idle.
+- f2–3: hold, with the head arriving 1–2 f after the chest; f4–9: slow out back toward idle.
 - Make four: front, left, right, heavy (heavy adds a step back, 12–16 f). Key the upper body only so legs keep their gait; play at Action4; skip the flinch while a stun or knock-up owns the body `[lihfolk]`.
 
 ### Recipe: locomotion set
@@ -173,16 +171,14 @@ Build in this order: Idle, Walk, Run, Jump, Fall, Land; add Climb, Swim and Swim
 
 | Clip | 30 fps | Rules |
 |---|---|---|
-| Idle loop | 90–150 f (3–5 s) | Breathing of 1–3°; no dead hold over 9 f; end pose near every attack's start pose; random phase per NPC `[lihfolk]` |
+| Idle loop | 90–150 f (3–5 s) | Breathing of 1–3°; no dead hold over 9 f; end pose near every attack's start pose; random phase per NPC `[lihfolk]`; a silhouette of its own per character class |
 | Walk (R15) | 12 f per step, 24 f cycle | Four poses per step: contact, down, passing, up, unevenly spaced; mirror for the other foot. Author at its real speed, about 5–6 studs/s `[lihfolk]` |
 | Run (16 studs/s) | 8 f per step, 16 f cycle | Planted foot travels back `WalkSpeed / 30` studs per frame (0.533 at 16); lean the chest, pelvis pitch at most 8° `[lihfolk]` |
 | Sprint (about 26 studs/s) | 6 f per step | A separate clip with a longer stride; do not over-speed the run `[lihfolk]` |
 | Jump, Fall, Land | Launch pose in 1–2 f; airborne 15–16 f; land absorb 3 f, hold 2, recover 8–13 | The Humanoid leaves the ground on the input frame, so a crouch needs a scripted delayed jump. Air time follows from JumpHeight 7.2 and gravity 196.2 `[house]`. Let movement cancel Land |
 
 - Torso and head: counter-twist the chest against the hips each step, bob the root, keep the head steadier than the chest. "The torso and head are static" is the most repeated critique in DevForum feedback threads `[community]`.
-- Loops: the editor does not interpolate from the last key to the first, so copy the first keys to the last frame `[official]`.
 - No foot slide: store each gait's authored ground speed, play at `rate = horizontalSpeed / groundSpeed` clamped to about 0.5–1.7, switch gait at the clamp and at the same phase so legs do not scissor; fade gait to gait 0.15 s, into Jump and Land 0.08 s, into idle variants 0.4 s `[lihfolk]`. An Animation Graph `Blend1D` with Phase Sync does the same without code (section 5).
-- A finished one-shot holds its last pose and fades over about 0.3 s, so end it near the pose that takes over `[lihfolk]`.
 
 ### Posing and silhouette checks
 
@@ -192,7 +188,6 @@ Build in this order: Idle, Walk, Run, Jump, Fall, Land; add Climb, Swim and Swim
 - Centre of mass over the supporting foot; no twinning (mirror-identical arms or legs).
 - Push every key pose to about 1.5× what looks right at the desk: chunky avatars at phone distance flatten it `[house]`.
 - Pose for the camera the player has: behind and above in third person, so swings that travel across the screen read and thrusts toward the screen do not.
-- Each character class has an idle silhouette of its own.
 
 ### Stiff-animation tells and fixes
 
@@ -204,12 +199,10 @@ Build in this order: Idle, Walk, Run, Jump, Fall, Land; add Climb, Swim and Swim
 | Bouncy wobble at the end | Bounce or Elastic easing, or several overshoots | One overshoot frame, then Quad or Cubic out `[community]` |
 | Attack looks weak | No coil, no hold, no overshoot | 2–5 f anticipation, 2–3 f hold, 1 f overshoot, trail on the strike |
 | Hand or blade cuts through the body or travels in a straight line | Missing breakdown | A breakdown key on the far side of the arc |
-| Mirror-image arms | Twinning | Offset one side by 1–2 f and a few degrees |
-| Pop to idle between actions | Clip ends far from the next start pose; zero fade | End near idle; fade 0.1–0.3 s; upper-body layers over locomotion |
-| Hitch once per loop | Last key differs from the first | Copy the first keys to the end |
+| Pop to idle between actions | Clip ends far from the next start pose; zero fade | End near the pose that takes over (a finished one-shot holds its last pose and fades over about 0.3 s `[lihfolk]`); upper-body layers over locomotion |
+| Hitch once per loop | The editor does not interpolate from the last key to the first `[official]` | Copy the first keys to the last frame |
 | Statue idle | Dead holds, no breathing | Idle rules above; a spring layer on tails and ears (section 9) |
 | Unreadable at phone size | Under-posed; weapon inside the outline | Black-fill test; 1.5× |
-| Choppy by accident | Keys on every Nth frame with easing None | That is the deliberate low-frame-rate style; otherwise restore easing `[community]` |
 
 ### Critique rubric
 
@@ -309,7 +302,6 @@ All replication of playing tracks goes through the `Animator` `[official]`:
 - Procedural layers (head look, aim, IK) must run on every client from a replicated input (attribute or `UnreliableRemoteEvent`); do not write `C0` from the server `[official: AnimationConstraint migration notes]`.
 - Network ownership does not widen the rule in practice: community reports say client-played tracks on a client-owned NPC do not replicate; only player characters replicate from the client `[community]`. The docs' `LoadAnimation` text mentions `SetNetworkOwner`; treat it as unreliable and test (section 13).
 - Three architectures: **owner plays** (player characters; relay only the VFX id through a rate-limited remote, never per-frame CFrames); **server plays** (a handful of NPCs whose limbs must be right on the server; costs server CPU and bandwidth per track change); **server writes state, clients animate** (everything at scale; section 8).
-- Synchronised world motion (a gate, a boss door): replicate one attribute with a server start time and let every client run the same deterministic tween.
 
 ## 8. NPC animation at scale
 
@@ -407,9 +399,7 @@ Multiplying onto `Transform` is safe only on joints a playing clip rewrites ever
 | Smoothing | `1 - exp(-k * dt)`, never a constant lerp per frame (frame-rate dependent) | Free |
 | Ragdoll / physical joints | AnimationConstraint `IsKinematic = false`: `MaxForce`/`MaxTorque` are hard limits, `AngularStrength`/`LinearStrength` and their `Damping` twins (default 1, mass-independent) set how firmly the joint tracks the clip `[official][VS]`; upgraded avatars already contain BallSocketConstraints. `Humanoid.RequiresNeck = false` and `BreakJointsOnDeath = false` first `[official][lihfolk]` | Owner simulates; see `physics-and-vehicles.md` |
 
-Known issue `[community][VS]`: with `UseFixedSimulation` (required for server authority) a forum bug report says `Transform` writes are ignored while a track plays; the poster's workaround is writing in `PreAnimation`. Test procedural layers under that setting before relying on them.
-
-## 10. Tools and weapons, cutscenes, props, UI-in-world
+## 10. Tools and weapons, cutscenes, props
 
 **Tools and weapons.** Author the weapon in Blender with a `Grip_Att` empty; hold it with a Motor6D (hand to handle) rather than the default tool weld when clips must move it; held weapon parts are `Massless` with `CanCollide`/`CanTouch` off so they cannot shove the wielder, and gameplay uses an invisible hitbox proxy `[lihfolk]` (house rule 2: see section 13). Put the hold tilt in `C0` once and never change it per state; exactly one controller writes the grip joint; lock procedural sway on the grip from attack accept to recovery end, or the blade twists inside the hand `[lihfolk]`. Moving weapon pieces (bow limbs, a flail) are a small part rig with their own clips on the same Animator, named so poses bind. Preload a kit's clips on equip (first use can otherwise start seconds late). Scale movement speed to 0.55–0.9 during swings to stop sliding `[lihfolk]`. First-person arms are a local-only viewmodel under the camera, bound after camera priority, with every part non-colliding and non-queryable (same house-rule note).
 
@@ -420,14 +410,12 @@ Rig-side facts kept here: actors are local clones on a client Animator with `Pre
 
 | Motion | Tool |
 |---|---|
-| One-shot (door, chest lid, lever) | `TweenService` on the client, tweening `CFrame` (never `Position` on welded models); server sets state and time |
+| One-shot (door, chest lid, lever) | `TweenService` on the client, tweening `CFrame` (never `Position` on welded models); the server replicates state and start time in one attribute and every client runs the same deterministic tween |
 | Endless (spin, bob, sway) | One client loop computing a formula of time, `workspace:BulkMoveTo` for many parts, 30 Hz, range-gated |
 | Authored mechanical motion (crane, trap, creature-like prop) | Blender part rig with Motor6Ds, `AnimationController`, published clip |
 | Platforms players ride | Physics constraints or matching velocity; characters ride velocity, not teleported CFrames (`physics-and-vehicles.md`) |
 
 Solid props that animate (house rule 2): the server owns collision truth. It moves or toggles the invisible `_COL` proxy at the state change; clients animate only the visual mesh. A door tweened on clients with its collision still closed on the server is a bug in both directions. Parts moved by a client-only Animator stay at rest on the server, so server raycasts see the rest pose.
-
-World-space UI motion (BillboardGui pops, damage numbers) is owned by `ui-input-crossplatform.md` and `vfx-and-juice.md` §8.
 
 ## 11. Performance budgets
 
@@ -465,13 +453,11 @@ World-space UI motion (BillboardGui pops, damage numbers) is owned by `ui-input-
 | Shoulders crumple or vertices spike to the origin in Roblox, fine in Blender | More than 4 influences, unnormalised or missing weights | Limit Total 4, Normalize All, run the rig validator, re-export |
 | Feet slide | Playback rate not matched to ground speed, or a walk clip at run speed | `rate = speed / groundSpeed`; author a gait for the common speed |
 | Feet hover or sink on scaled characters | Clip translations do not follow Humanoid body scale; `Model:ScaleTo` multiplies them `[lihfolk]` | Author translations for the scale method in use; test at real size; check `Workspace.Retargeting` |
-| Procedural offset does nothing | Written in `PreRender`/`Heartbeat`, or joints looked up as Motor6D on an upgraded avatar | Write in `PreSimulation`; accept `AnimationConstraint` |
-| Procedural joint slowly spins away | Compounding on a throttled or unkeyed joint | Check `EvaluationThrottled`; assign from your own base |
+| Procedural offset does nothing, or the joint slowly spins away | Written in `PreRender`/`Heartbeat`; joints looked up as Motor6D on an upgraded avatar; compounding on a throttled or unkeyed joint | Write in `PreSimulation`; accept `AnimationConstraint`; check `EvaluationThrottled`; assign from your own base |
 | IKControl does nothing / still acts at weight 0 | Missing required property or wrong parent; weight 0 is not off | Check `GetChainCount()`; `Enabled = false` |
 | Swipes pass through players on a skinned boss | MeshPart collides in its rest shape | Hitbox parts on bones or data-driven hits |
 | Far enemies hit without swinging, or never finish attacks | LOD skipped time and events | Advance time and gameplay events always; skip only pose writes |
 | Blade twists in the hand during swings | Two writers on the grip joint | One grip controller; lock sway during attacks |
-| HUD missing or camera stuck after a cutscene | No restore on an error or death path | Restore on every exit plus a watchdog |
 | Long joins, `stepAnimation` fine | Hundreds of thousands of Pose instances replicated | Publish clips, delete sources and importer saves |
 | Server heartbeat drops with many NPCs | Server-side animation and full Humanoids | Client animation, `AnimationController`, fewer Humanoid states, pooling |
 
@@ -481,10 +467,9 @@ Debug order for anything else: print the track's id and `Length`; dump `Animator
 
 - House rule 2 and held items: a colliding held weapon or first-person viewmodel destabilises its own wielder, so this file treats items welded or jointed to a character as covered by the character's collider plus a hitbox proxy, and requires the normal `_COL` proxy the moment the item is dropped or placed in the world. SKILL.md states this resolution explicitly (held tools, weapons and viewmodels do not collide; skinned meshes need a `_COL` proxy).
 - Resolved 2026: multi-clip FBX and glTF import is official in the Clip Editor importer. `performance.md` and knowledge-base 5.9 still describe one track per FBX, which remains the documented avatar-asset route. Keep the calibration clip per export route: the importer beta shipped a 180° rotation bug, fixed before release `[official]`.
-- Conflict: "create the Animator on the server" (Animator reference) versus "create the Animator on the client" (performance docs). Both hold: a server-created Animator is required for replication; a client-created one is the documented way to keep NPC animation local.
-- Conflict: "cache tracks" (Animator reference, community 256 limit) versus "do not cache tracks" (server authority techniques). Cache everywhere except inside server-authority simulation code.
+- Conflict: "create the Animator on the server" (Animator reference) versus "create the Animator on the client" (performance docs). Both hold: a server-created Animator is required for replication; a client-created one is the documented way to keep NPC animation local. Likewise "cache tracks" (Animator reference) versus "do not cache" (server authority techniques): cache everywhere except inside server-authority simulation code.
 - Conflict: LihFolk's interpolation model (rotation-vector blending between unevenly spaced keys, 0.3 s end fade, unapplied top-level pose) is measured, not documented. Adopted only as authoring guards (turn limits, end poses near idle, root motion on the first child).
-- Open `[VS]`: the date the Avatar Joint Upgrade opt-out disappears (announced target: end of 2026); whether client-played tracks on client-owned non-character models replicate; marker timing on throttled remote rigs; the 256-track limit (engine warning text, not in the reference).
+- Open `[VS]`: the date the Avatar Joint Upgrade opt-out disappears (announced target: end of 2026); whether client-played tracks on client-owned non-character models replicate; marker timing on throttled remote rigs; a forum bug report that `Transform` writes are ignored while a track plays under `UseFixedSimulation` (poster's workaround: write in `PreAnimation`; test procedural layers under that setting); the 256-track limit (engine warning text, not in the reference).
 
 ## Review gate
 

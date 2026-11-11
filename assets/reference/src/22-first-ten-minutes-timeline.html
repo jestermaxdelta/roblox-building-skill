@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>22 First ten minutes timeline</title><link rel="stylesheet" href="sheet.css">
+<style>
+.beats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.b{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 10px 10px;position:relative}
+.b .w{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.b h2{margin:1px 0 4px;font-size:13px;display:flex;gap:6px;align-items:center}
+.b p{font-size:10.5px;color:var(--ink2);line-height:1.36;margin-bottom:3px}.b p b{color:var(--ink)}
+.b .log{display:inline-block;font-size:10px;font-weight:700;background:var(--soft);border-radius:4px;padding:1px 6px;color:var(--ink);margin-top:1px}
+.b .fail{color:var(--bad)}
+</style></head><body>
+<div class="sheet">
+  <div id="axis"></div>
+  <div class="beats mt6" id="beats"></div>
+  <div class="row mt">
+    <div class="card grow"><h3>Not before minute 10 and a first win</h3><div class="note">No purchase prompt, no offer popup, no notification opt-in. At arrival: no menu, no play button, no cutscene. Offers begin only through the offer gate, after positive moments.</div></div>
+    <div class="card grow"><h3>How to use it</h3><div class="note">Write your game's beats into this table, build exactly that, then time it with a stopwatch on a 3 GB Android phone. Log each beat as one custom event with seconds since Spawned, which gives time-to-beat as well as the funnel.</div></div>
+    <div class="card grow"><h3>Tutorial style</h3><div class="note">No forced tutorial; at most a skippable 3-step guided first loop. Teach each system when the player meets it. Hints go only to players who have not acted after most players have.</div></div>
+  </div>
+</div>
+<script src="sheet.js"></script>
+<script>
+const E = Sheet.el, T = Sheet.txt;
+const beats = [
+  ['0–5 s', 'Arrive', 'Spawns in a playable area facing the verb target; the rest of the map streams in.', 'Spawned', 'Control takes over 10 s on the target phone', 5],
+  ['5–15 s', 'Call to action', 'One device-matched prompt on the one thing to do. Nothing else pulses.', '', 'Two or more things compete for attention', 15],
+  ['15–30 s', 'First rep', 'Player performs the verb: same-frame feedback, sound, number, first reward.', 'FirstAction · FirstReward', 'No reward by 30 s', 30],
+  ['30–60 s', 'Repeat', '2–3 more reps. The goal bar appears already part-filled with real progress.', 'GoalBarShown', 'Player stops and looks around', 60],
+  ['1–2 min', 'First upgrade', 'Bought or earned; a visible power change in the world (the aha).', 'FirstUpgrade', 'Upgrade is a menu stat with no visible effect', 120],
+  ['2–3 min', 'First choice', 'Two real options. A contextual tip only when the player meets the system.', 'FirstChoice', 'A third concept is taught before minute 2', 180],
+  ['3–5 min', 'Joy moment', 'A milestone with a designed celebration; first collection entry.', 'FirstCollect', 'Nothing memorable has happened by minute 5', 300],
+  ['5–10 min', 'Meso goal', 'Completed; shows the next three goals (now, this session, long-term) and the return hook.', 'FirstWin · SawGoals', 'No visible next goal; dead time over 5 s', 600],
+];
+// axis: equal-width segments (the scale is not linear), with boundary labels
+const W = 744, sw = W / 8; let a = '';
+const cols = ['#DD4F27', '#E3722B', '#E3A21A', '#B7AE2E', '#4FA35A', '#1B8553', '#2D7FBF', '#2D6CDF'];
+beats.forEach((b, i) => { a += E('rect', { x: i * sw + 1, y: 18, width: sw - 2, height: 16, rx: 3, fill: cols[i] }) + T(i * sw + sw / 2, 30, b[1], { 'text-anchor': 'middle', fill: '#fff', 'font-weight': 700, 'font-size': 10.5 }); });
+['0', '5 s', '15 s', '30 s', '1 min', '2 min', '3 min', '5 min', '10 min'].forEach((t, i) => a += T(Math.min(W - 1, Math.max(1, i * sw)), 12, t, { 'text-anchor': i === 0 ? 'start' : i === 8 ? 'end' : 'middle', fill: '#1A1F2B', 'font-weight': 650 }));
+a += T(0, 50, 'Segments are equal width; time is not to scale. Half of the script happens in the first minute.', {});
+document.getElementById('axis').innerHTML = `<svg width="${W}" height="54" viewBox="0 0 ${W} 54">${a}</svg>`;
+document.getElementById('beats').innerHTML = beats.map((b, i) => `<div class="b" style="border-top:4px solid ${cols[i]}"><div class="w">${b[0]}</div><h2>${b[1]}</h2><p>${b[2]}</p><p class="fail"><b class="fail">Fails when:</b> ${b[4]}</p>${b[3] ? `<span class="log">log ${b[3]}</span>` : ''}</div>`).join('');
+Sheet.frame({ n: '22', cat: 'Onboarding', title: 'The first ten minutes as a timeline', sub: 'Eight beats from spawn to the first meso goal, with what the game does, what to log and the observable failure for each.',
+  supports: ['core-loop-tuning.md §2 First-10-minutes script template', 'liveops-quests-retention.md (onboarding)', 'analytics-and-discovery.md (funnel step names)'], sources: 'core-loop-tuning.md ([official], [house] as tagged there)' });
+</script></body></html>

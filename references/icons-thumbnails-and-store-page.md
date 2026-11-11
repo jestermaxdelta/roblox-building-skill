@@ -114,33 +114,7 @@ What survived when the 62 chart icons were reduced (`[house]` viewed):
 
 Tile test (executed 2026-11-11, Python 3 with Pillow). Icon at 150, 64 and 32 px on both themes; each thumbnail at 320×180, 160×90, greyscale, blurred and with the bottom 20% hidden:
 
-```python
-# tile_test.py icon.png thumb1.png [thumb2.png ...]  ->  tile_test.png
-import sys
-from PIL import Image, ImageFilter, ImageOps
-icon = Image.open(sys.argv[1]).convert("RGB")
-thumbs = [Image.open(p).convert("RGB") for p in sys.argv[2:]]
-DARK, LIGHT, PAD = (17, 18, 20), (242, 244, 245), 12   # approximate theme backgrounds
-rows = []
-for bg in (DARK, LIGHT):
-    row = Image.new("RGB", (150 + 64 + 32 + PAD * 4, 150 + PAD * 2), bg); x = PAD
-    for px in (150, 64, 32):
-        row.paste(icon.resize((px, px), Image.LANCZOS), (x, PAD)); x += px + PAD
-    rows.append(row)
-for t in thumbs:
-    big, small = t.resize((320, 180), Image.LANCZOS), t.resize((160, 90), Image.LANCZOS)
-    grey = ImageOps.grayscale(big).convert("RGB")
-    blur = big.filter(ImageFilter.GaussianBlur(3))
-    cover = big.copy(); cover.paste((0, 0, 0), (0, 144, 320, 180))
-    row = Image.new("RGB", (320 * 4 + 160 + PAD * 6, 180 + PAD * 2), DARK); x = PAD
-    for im in (big, small, grey, blur, cover):
-        row.paste(im, (x, PAD)); x += im.width + PAD
-    rows.append(row)
-sheet = Image.new("RGB", (max(r.width for r in rows), sum(r.height for r in rows)), DARK); y = 0
-for r in rows:
-    sheet.paste(r, (0, y)); y += r.height
-sheet.save("tile_test.png")
-```
+Run `scripts/images/tile_test.py icon.png thumb1.png [thumb2.png ...]` (shipped with this skill; needs Pillow). It writes `tile_test.png`, one contact sheet to judge.
 
 Pass marks: at 32 px a stranger names the subject; at 64 px they name the genre; in greyscale the subject separates; with the bottom hidden nothing is lost; in the blur the focal shape is still the first thing seen. Then look once on a real small phone.
 
