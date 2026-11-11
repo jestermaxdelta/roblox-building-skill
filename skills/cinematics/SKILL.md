@@ -8,13 +8,11 @@ argument-hint: "[the scene or shot you want]"
 
 Short, directed, skippable scenes that look intentional and never trap the player or freeze anyone else.
 
-One of the focused skills in the `roblox-dev` plugin: a short set of instructions that points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
-
 ## How to work
 
-Follow this loop every time. It exists so the user gets a fixed game, not a lecture.
+Follow this loop every time.
 
-1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
+1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP: `list_roblox_studios` and `get_studio_state` first, then `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
 2. **Diagnose.** Match what you see against the "Level-up: symptom → cause → fix" table in the reference for this topic. Name the cause in one sentence, with the evidence.
 3. **Recommend.** A short ranked list (impact × confidence ÷ effort), the option you recommend and one bolder alternative, pitched at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
 4. **Implement.** Do not stop at advice. Make the top changes in the same turn when you can reach the code or Studio. Pause and ask only before something hard to undo or outward-facing: publishing, changing save data or its schema, creating or repricing products, spending Robux or money, deleting the user's work, or a design choice that is truly the owner's taste.
@@ -42,18 +40,19 @@ On a live game, change it safely: note the baseline number, put the change behin
 - Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file. Anything not listed here: `${CLAUDE_PLUGIN_ROOT}/references/INDEX.md`.
 - Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
 - Luau in the references is unexecuted: adapt it, keep `--!strict`, test it.
-- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
+- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1–2. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
 
 ## Rules for this topic
 
-- A cutscene must earn its place: if the moment can be played, let the player play it. Keep scenes short and skippable after about 2 seconds.
+- A cutscene must earn its place: if the moment can be played, let the player play it. No cutscene before the first input of a first session; a skip control appears within 1–2 seconds; non-interactive time stays under about 5% of a session.
 - Client-only: the server changes game state before the scene and never waits on it. Never freeze other players. Late joiners, death and respawn each have a defined path.
 - One restore function for every exit path (finish, skip, error, death, leave): camera, controls, HUD, lighting and sound return to what they were.
-- No linear robot moves: one spline and one ease per shot, aimed with a look-at curve, constant-velocity paths, cuts instead of whip pans.
+- No linear robot moves: one spline and one ease per shot, aimed with a look-at curve, constant-velocity paths, cuts instead of whip pans, no roll while moving.
 - Compose on purpose: choose shot size and field of view for the subject, keep lead room, respect the 180-degree line.
-- Subtitles for all speech, paced for children; respect reduced motion; cap letterbox bars at about 10% of the height.
+- Subtitles for all speech, paced for children; scene motion reads the comfort resolver (`accessibility-and-player-qol.md` §10), so reduced motion gets cuts and fades; cap letterbox bars at 10% of the height.
+- Trailer music must be owned or commissioned: Roblox's licensed audio covers use inside Roblox only.
 - Preload what the scene needs and stream the area in before cutting to it.
-- Actors and props are Blender-authored like everything else; scene actors are local clones.
+- Scene actors are local clones.
 
 ## House rules (the owner's; they override generic advice)
 

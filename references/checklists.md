@@ -4,6 +4,8 @@ Each topic reference ends with its own detailed gate; this file is the short ver
 
 Two entry points. Building from scratch: run Gate 0 → Gate 5 in order. Levelling up an existing game: run Gate A first; it tells you which of Gates 0–5 to re-run and in what order, and every change it produces ships through the live-change items at the end of Gate A.
 
+Contents: Gate A level-up audit · Gate 0 design review · Gate 1 vertical slice · Gate 2 engineering review · Gate 3 compliance and monetization · Gate 4 performance and content (with the house-rule scan) · Gate 5 launch · After launch · Growth gate
+
 ## Start here by level
 
 | Level | Run | Skip for now |
@@ -269,7 +271,7 @@ What the scan can and cannot prove:
 - Not covered: SpecialMesh inside a Part (counted as a primitive), textures and decals, assets inserted at runtime by id, and scripts inside Toolbox models (read those in the security pass).
 - On a game built from Parts expect large primitive counts per area. In Level-up mode that output is the input to the house-rule debt track (`references/audit-existing-game.md` §6): replace by area, most-seen first.
 
-Tag the allowed non-solid visuals `NonSolid`: foliage canopies, cables, held tools, viewmodels and transient effect meshes. Nothing else in the world may carry the tag.
+Tag the allowed non-solid visuals `NonSolid`: foliage canopies, cables, held tools, viewmodels, follower pets and transient effect meshes. Nothing else in the world may carry the tag.
 
 ## Gate 5: launch (discovery, analytics, LiveOps)
 

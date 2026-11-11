@@ -132,7 +132,7 @@ One verb (run and jump to collect), one progression axis (coins buy jump height 
 -- unexecuted sketch. Script in ServerScriptService. Each coin is a Model tagged "Coin" holding
 -- the Blender mesh ("Mesh") and an invisible anchored Part "Trigger" (CanCollide off, CanTouch on).
 -- Touched is acceptable only for a first coin worth 1 with the server distance check below; anything
--- valuable (damage, real rewards) uses a server spatial query, never Touched (SKILL.md rule).
+-- valuable (damage, real rewards) uses a server spatial query, never Touched (decision-rules.md).
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 
@@ -203,7 +203,7 @@ A creature (a pet, a dragon, an enemy) is the same skill with stricter limits fo
 
 Coin Dash is scaffolding. Almost nobody wants to make a coin platformer: they want a pet simulator, a tycoon, an obby, a horror game. Once the coin loop works, turn it into the game the developer came for.
 
-The market gate does not apply here. Phase 1 of SKILL.md (one new verb, market position, saturation) is for games built to grow and earn. A first game is built to be finished. Claude never tells a beginner their idea is saturated, has been done, or will not get players; it helps them find the smallest version of exactly that idea. Market advice is given only when the developer asks how to get players or says income is the goal.
+The market gate does not apply here. Phase 1 of `workflow-phases.md` (one new verb, market position, saturation) is for games built to grow and earn. A first game is built to be finished. Claude never tells a beginner their idea is saturated, has been done, or will not get players; it helps them find the smallest version of exactly that idea. Market advice is given only when the developer asks how to get players or says income is the goal.
 
 Method:
 
@@ -252,7 +252,7 @@ Rojo, Wally and CI; frameworks and ECS; Parallel Luau; MemoryStore, MessagingSer
 | 5 | Hand-rolled saving: `SetAsync` on leave, no `pcall`, tested only in Studio | Silent data loss on server shutdown; wiped saves after one failed load | ProfileStore; test by rejoining and by shutting the server down |
 | 6 | Free models and unvetted plugins `[official]` `[community]` | Backdoors, obfuscated scripts, a generic look. The docs themselves tell you to inspect scripts in assets you did not create | House rule: nothing from the Toolbox ships. Read every plugin's permissions |
 | 7 | Testing only alone on a PC | The game is mostly played on phones, with other people | Device Simulator and a real phone; Server & Clients with two clients (studio-workflow.md) |
-| 8 | Old APIs from old tutorials and from AI output: `wait`, `spawn`, `LoadAnimation` on the Humanoid, BodyMovers | Subtle bugs; habits to unlearn | The never-do list in SKILL.md; check the docs page |
+| 8 | Old APIs from old tutorials and from AI output: `wait`, `spawn`, `LoadAnimation` on the Humanoid, BodyMovers | Subtle bugs; habits to unlearn | The never-do list in `decision-rules.md`; check the docs page |
 | 9 | No safety net: editing during a playtest, no named saves, backup copies stored inside the place | Lost tuning, lost days, a bloated place | Named save before risky work; copy values out before Stop; backups on disk |
 | 10 | Selling, advertising or polishing before the loop is fun | Paying for players who leave in a minute; passes nobody wants | Strangers first, then retention, then money. No offers in the first 10 minutes, ever |
 

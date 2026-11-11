@@ -8,13 +8,11 @@ argument-hint: "[your game and what it sells now]"
 
 Recommend what to sell and what to charge, then build it: products, shop, offer timing and safe purchase code. Heavy on things to buy, never annoying, always within Roblox's rules.
 
-One of the focused skills in the `roblox-dev` plugin: a short set of instructions that points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
-
 ## How to work
 
-Follow this loop every time. It exists so the user gets a fixed game, not a lecture.
+Follow this loop every time.
 
-1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
+1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP: `list_roblox_studios` and `get_studio_state` first, then `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
 2. **Diagnose.** Match what you see against the "Level-up: symptom → cause → fix" table in the reference for this topic. Name the cause in one sentence, with the evidence.
 3. **Recommend.** A short ranked list (impact × confidence ÷ effort), the option you recommend and one bolder alternative, pitched at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
 4. **Implement.** Do not stop at advice. Make the top changes in the same turn when you can reach the code or Studio. Pause and ask only before something hard to undo or outward-facing: publishing, changing save data or its schema, creating or repricing products, spending Robux or money, deleting the user's work, or a design choice that is truly the owner's taste.
@@ -38,17 +36,17 @@ On a live game, change it safely: note the baseline number, put the change behin
 - Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file. Anything not listed here: `${CLAUDE_PLUGIN_ROOT}/references/INDEX.md`.
 - Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
 - Luau in the references is unexecuted: adapt it, keep `--!strict`, test it.
-- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
+- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1–2. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
 
 ## Rules for this topic
 
-- Fix retention before pricing: spend follows session length. If D1 is far below the genre's benchmark, say so and fix that first.
+- Fix retention before pricing: spend follows session length. If D1 is below the game's dashboard benchmark (or the benchmark table in `${CLAUDE_PLUGIN_ROOT}/references/analytics-and-discovery.md`), say so and fix that first.
 - Start from the default set (timed 2× boosts, starter pack, convenience passes, gift versions, Luck only where the game has luck) and delete what does not fit.
 - Every ladder has a rung under 100 R$ and at least one repeatable product. Prices are read at runtime with `GetProductInfoAsync`, never hard-coded.
-- Offer gate: no offers in the first 10 minutes or before the first win; at most 3 a session; two dismissals mean 24 hours of silence; at most 25% of the screen, with an X.
-- Popups only after a win. An offer that answers friction sits inline where the friction is.
+- Offer gate: no popup before 10 minutes of lifetime play and a first win; at least 8 minutes apart; at most 3 a session; at most 1 starter-pack prompt a day; two dismissals mean 24 hours of silence; at most 25% of the screen, with an X, never stacked.
+- Popups fire on wins and other positive moments only. An offer that answers friction sits inline where the friction is. Shop tiles and buttons are unlimited from the first minute.
 - Paid random items need full numeric odds summing to 100% and the `PolicyService` gate. Never grant from a client signal; save the grant before returning `PurchaseGranted`; deduplicate by `PurchaseId`.
-- Never reduce or revalue something bought with Robux. Personal paid boosts count play time; server-wide boosts run in real time and show their end.
+- Never reduce or revalue something bought with Robux. Personal paid boosts count play time and pause offline; server-wide boosts run in real time and show their end; buying the same boost again extends it, never multiplies.
 
 ## House rules (the owner's; they override generic advice)
 

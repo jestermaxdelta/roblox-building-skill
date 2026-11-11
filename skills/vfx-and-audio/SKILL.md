@@ -8,13 +8,11 @@ argument-hint: "[the action or effect]"
 
 Make actions feel good: readable effects, timing that sells impact, and sound that supports it, within a phone's budget.
 
-One of the focused skills in the `roblox-dev` plugin: a short set of instructions that points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
-
 ## How to work
 
-Follow this loop every time. It exists so the user gets a fixed game, not a lecture.
+Follow this loop every time.
 
-1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
+1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP: `list_roblox_studios` and `get_studio_state` first, then `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
 2. **Diagnose.** Match what you see against the "Level-up: symptom → cause → fix" table in the reference for this topic. Name the cause in one sentence, with the evidence.
 3. **Recommend.** A short ranked list (impact × confidence ÷ effort), the option you recommend and one bolder alternative, pitched at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
 4. **Implement.** Do not stop at advice. Make the top changes in the same turn when you can reach the code or Studio. Pause and ask only before something hard to undo or outward-facing: publishing, changing save data or its schema, creating or repricing products, spending Robux or money, deleting the user's work, or a design choice that is truly the owner's taste.
@@ -44,17 +42,18 @@ On a live game, change it safely: note the baseline number, put the change behin
 - Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file. Anything not listed here: `${CLAUDE_PLUGIN_ROOT}/references/INDEX.md`.
 - Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
 - Luau in the references is unexecuted: adapt it, keep `--!strict`, test it.
-- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
+- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1–2. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
 
 ## Rules for this topic
 
 - Effects are built on clients: the server sends one validated event, each client renders, the caster predicts. Never build or tween effects on the server.
 - Climb the juice ladder from the cheapest rung: sound and a UI response first, then particles, then camera, then hit-stop.
-- Timing sells impact: anticipation, a sharp hit, then follow-through. A stop under about 66 ms is invisible at 30 FPS.
-- Scale burst counts to the device yourself, and never cull telegraphs or the player's own hit feedback to save frames.
+- Timing sells impact: anticipation, a sharp hit, then follow-through. Hit-stop is client-only: none on light hits, at least 66 ms where it must be felt (50 ms is one or two frames at 30 FPS), at most 200 ms per stop and 140 ms in any 0.6 s.
+- Scale burst counts yourself from the player's own effects preset and measured frame time, never from `UserGameSettings.SavedQualityLevel`. Never cull telegraphs or the player's own hit feedback to save frames.
+- No camera roll in gameplay; shake is at most 2° of pitch and yaw and ends at exactly 0. Shake, flashes and hit-stop read the one comfort resolver (`accessibility-and-player-qol.md` §10), never the settings directly.
 - Never carry gameplay information by post effects, shadows or sound alone: low-end devices drop them. Every information sound has a visual twin.
-- Effect meshes are authored in Blender like any other model. Particles, beams and trails are fine.
-- Use only audio the owner has the right to use; keep an id manifest. Every sound sits on a mix bus.
+- Particles, beams and trails are not models; a mesh used as an effect is.
+- Use only audio the owner has the right to use; keep an id manifest. Roblox's licensed Creator Store audio is licensed for use inside Roblox only: a trailer or clip posted elsewhere needs owned or commissioned sound. Every sound sits on a mix bus.
 
 ## House rules (the owner's; they override generic advice)
 

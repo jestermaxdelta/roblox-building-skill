@@ -8,13 +8,11 @@ argument-hint: "[what happened or what to check]"
 
 Assume the client is hostile and the server can crash at any line. Protect the players' data and money first.
 
-One of the focused skills in the `roblox-dev` plugin: a short set of instructions that points at the guides for this topic only. For planning or building a whole game, use the `roblox-game-design` skill.
-
 ## How to work
 
-Follow this loop every time. It exists so the user gets a fixed game, not a lecture.
+Follow this loop every time.
 
-1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP's `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
+1. **Look first.** Read what exists before judging: the relevant scripts and instances (Rojo tree, or the Studio MCP: `list_roblox_studios` and `get_studio_state` first, then `script_grep`, `search_game_tree`, `inspect_instance`, `screen_capture`) and any numbers the user gave. Without access, give a short first pass from what they said and ask for at most three things that would change the answer.
 2. **Diagnose.** Match what you see against the "Level-up: symptom → cause → fix" table in the reference for this topic. Name the cause in one sentence, with the evidence.
 3. **Recommend.** A short ranked list (impact × confidence ÷ effort), the option you recommend and one bolder alternative, pitched at the developer's level: three explained actions for a beginner, the full list with measurements for an expert.
 4. **Implement.** Do not stop at advice. Make the top changes in the same turn when you can reach the code or Studio. Pause and ask only before something hard to undo or outward-facing: publishing, changing save data or its schema, creating or repricing products, spending Robux or money, deleting the user's work, or a design choice that is truly the owner's taste.
@@ -37,18 +35,18 @@ On a live game, change it safely: note the baseline number, put the change behin
 - Open only the rows you need. Files over 300 lines have a contents line: read the section, not the file. Anything not listed here: `${CLAUDE_PLUGIN_ROOT}/references/INDEX.md`.
 - Tags: `[official]` Roblox docs; `[VS]` version-sensitive, re-check at https://create.roblox.com/docs (or the `Roblox/creator-docs` mirror) before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. `Conflict:` notes record real disagreements; the house rules win, then official docs, then numbers measured on the user's own game.
 - Luau in the references is unexecuted: adapt it, keep `--!strict`, test it.
-- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
+- Unsure how deep to go for this person: `${CLAUDE_PLUGIN_ROOT}/references/learning-paths.md` §1–2. A term they may not know: `${CLAUDE_PLUGIN_ROOT}/references/glossary.md`.
 
 ## Rules for this topic
 
 - Never trust the client for ids, prices, damage, positions, currency or inventory. Remotes carry intent; the server decides.
 - Every remote is validated and rate limited. Never use `RemoteFunction:InvokeClient`. No secrets or server logic in client-visible containers.
-- A profile that failed to load never saves. Never change the key pattern of a live store. Snapshot before changing save logic.
+- A failed load kicks; it never falls back to default data, and that profile never saves. Never change the key pattern of a live store. Snapshot before changing save logic.
 - Purchases: never grant from a client signal, save the grant before returning `PurchaseGranted`, deduplicate by `PurchaseId`, one `ProcessReceipt` callback.
-- No trading without item GUIDs, the commit protocol, an audit log and a kill switch.
+- No trading without immutable item GUIDs, the two-profile commit protocol built from its full text in `data-and-purchases.md` (both profiles session-locked on one server, item locks honoured by every path, currency escrowed), its fault-injection test passed, a ledger and a kill switch.
 - Any `require(<number>)`, `getfenv`, `loadstring` or obfuscated string is a finding until explained.
 - Never ban on one signal or on a client-side detection alone. Removing duped items must not punish good-faith holders.
-- In an incident, stop the bleeding first (kill switch), then diagnose.
+- In an incident, stop the bleeding first (kill switch), then diagnose. A Config kill switch reaches running servers only if the code connects `ConfigSnapshot.UpdateAvailable` to `Refresh()`.
 
 ## House rules (the owner's; they override generic advice)
 

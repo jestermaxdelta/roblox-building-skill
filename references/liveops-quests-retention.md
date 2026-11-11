@@ -55,7 +55,7 @@ Order of work: the loop first, then these. `[community]` Developers who post res
 | Offline progress | Capped, the cap stated, claimed through a welcome-back panel that also shows one new thing | `[community]` Analyses of Grow a Garden name offline growth as its return trigger | Nothing is lost while away (house) |
 | AFK areas | Prefer none. If the genre expects idle earning, pay the same capped rate offline, so closing the app costs nothing | Pay-to-idle lifts session time without return days; see the playtime row | 20-minute idle disconnect `[official]`; no Roblox rule on AFK rewards was found |
 | Timers and restocks | Global, predictable timers (spawns every 5–15 min, server events every 30 min), next time shown | `[community]` Grow a Garden's shop restock is reported as a global 5-minute timer that players track | Missing one never costs progress |
-| Codes | A dated code in each update log; a milestone ladder (likes, visits) that rewards the community for pushing a counter. Rewards are boosts or cosmetics | `[community]` One press piece: a milestone code buys about a weekend of extra players and a like-ratio bump, not a revival | Nothing about codes, likes or giveaways in the title, thumbnail or description: "leading with giveaways" reduces exposure `[official]` |
+| Codes | A dated code in each update log; a milestone ladder on visits or group members that rewards the community for pushing a counter (a likes ladder rewards likes, which is the risky pair above: prefer visits). Rewards are boosts or cosmetics | `[community]` One press piece: a milestone code buys about a weekend of extra players and a like-ratio bump, not a revival | Nothing about codes, likes or giveaways in the title, thumbnail or description: "leading with giveaways" reduces exposure `[official]` |
 
 Saturdays and December are the peak weeks for Recommended For You traffic; schedule big updates for them.
 
@@ -341,7 +341,7 @@ Platform tools `[official]` `[VS]`: Experience Events (at most 10 ongoing or upc
 | Pre-update event | Staff-run admin event | A scripted 10-minute server event started by a Config timestamp in every server at once; earnable drops in event currency; no staff needed (a calendar entry; module above) |
 | Countdown | Title tag, socials, in-world timer | A Blender update board reading the same Config timestamp; an Experience Event created several days ahead so Notify Me exists |
 | Update log | In-game panel, Discord, video | The same board lists the 3 headline changes; one update announcement |
-| Codes | Several per update across channels | One dated code on the board; one milestone ladder for likes or visits |
+| Codes | Several per update across channels | One dated code on the board; one milestone ladder for visits or group members |
 | After shipping | Analysts on dashboards | Check Performance by place version and the first-session curve the next morning; alerts on crash rate and session time |
 | Community | Moderated Discord, creators | The Roblox group plus one Discord channel; one poll per cycle on what to build next |
 

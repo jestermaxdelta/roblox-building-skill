@@ -6,13 +6,11 @@ argument-hint: "[your idea, your game, or what you need]"
 
 # Roblox game design and development
 
-Takes a Roblox game to the next level from wherever it is: an idea, a prototype or a live game. This file holds the modes, the house rules and the rules that apply to every task. Everything else is in routed files: open `references/INDEX.md` to find the one for a job. Paths are relative to this skill's folder.
+This file holds the modes, the house rules and the rules that apply to every task. Everything else is in routed files: open `references/INDEX.md` to find the one for a job. Paths are relative to this skill's folder.
 
 Design before build. Before gameplay code is written, the fantasy, three pillars, the loops, the first-minute script, an economy model with numbers and an art direction exist and have been checked against their rubrics.
 
 ## Pick the mode first
-
-Starting in the wrong mode wastes the user's time: a design document for a game that already ships, or a rebuild when three fixes would do.
 
 | Mode | Use when | Start at | Done when |
 |---|---|---|---|
@@ -24,7 +22,7 @@ Level-up in one paragraph: collect what exists (numbers, place or repo, Studio M
 
 ## Trigger phrases
 
-People describe symptoms, not topics. When a message sounds like the left column, go straight to that focus. As the `roblox-dev` plugin, each row is also a small focused skill that loads only its own instructions: use it when available, and this table when not.
+When a message sounds like the left column, go straight to that focus. As the `roblox-dev` plugin, each row is also a small focused skill that loads only its own instructions: use it when available, and this table when not.
 
 | The user says something like | Focus (plugin skill) | Open first |
 |---|---|---|
@@ -71,7 +69,7 @@ Simplify the explanation, never the safety: a beginner still gets safe saving, s
 What follows from them:
 
 - No primitive greybox ships: prototype with a Blender blockout kit or in a throwaway place. Nothing from Studio's generative or marketplace tools ships. Terrain needs the owner's approval per game. No AI-generated art ships as final art (UI, icons and thumbnails included); AI tools are for throwaway ideation.
-- "Solid" is about the world players move through. Held tools and viewmodels, short-lived effect meshes and pets that follow a player do not collide; a pet standing in the world as an object does. Skinned meshes need a `_COL` proxy. Particles, Beams, Trails and UI are not models; a mesh used as an effect is still authored in Blender.
+- "Solid" is about the world players move through. Held tools and viewmodels, short-lived effect meshes, pets that follow a player, foliage canopies and hanging cables do not collide; a pet standing in the world as an object does. Skinned meshes need a `_COL` proxy. Particles, Beams, Trails and UI are not models; a mesh used as an effect is still authored in Blender.
 - Luck and Server Luck are paid random items: full numeric odds summing to 100%, boosted odds shown live, gated by `PolicyService`.
 - "Push heavily" applies to games built to earn. A first learning game needs no monetisation, and a minor is never told to spend real money to test a purchase.
 - Without the owner's bridge (`tools/blender_exec.py`), drive Blender through a Blender MCP server or the shipped `scripts/blender/export_kit.py`, and upload through the Studio MCP's `open_cloud_invoke` or the 3D Importer.
@@ -84,23 +82,23 @@ The complete set, by topic, is in `references/decision-rules.md`: open the block
 - The client is hostile: never trust it for ids, prices, damage, positions, currency or inventory. Remotes carry intent only; the server validates, rate limits and decides.
 - Player data: ProfileStore with session locking; a profile that failed to load never saves; never change a live store's key pattern; no yield between a check and its write.
 - Purchases: never grant from a client signal; save the grant before returning `PurchaseGranted`; deduplicate by `PurchaseId`; read prices at runtime.
-- Offers: none in the first 10 minutes or before the first win, at most 3 a session, small and dismissible. Never a timer, discount or stock count that is not literally true. Never power sold in competitive modes. Never reduce something bought with Robux.
+- Offers: no popup before 10 minutes of play and a first win, at least 8 minutes apart, at most 3 a session. Never power sold in competitive modes. Never reduce something bought with Robux.
 - Paid random items need disclosed odds and the `PolicyService` gate. Players converse only through `TextChatService`. No links, invite codes, handles or requests for personal data inside the game.
 - Retention through content, collection, social play and seasons, never through punishment.
+- Social rewards are bonuses, never gates, asked after the first win. Group join and friend join are the default; like and favourite rewards are a risk to re-check before shipping; none for off-platform actions.
 - A next goal with its progress and its reward is always on screen. Fix the earliest broken stage first; reward systems amplify a working loop and do not rescue a broken one.
 - `--!strict`, modern APIs only (`task.*`; no `wait`, `spawn`, `delay`, BodyMovers). Effects render on clients. Crowds are server data with pooled client models.
-- No live change without a baseline number, a Config flag and a rollback trigger.
+- No live change without a baseline number, a Config flag and a rollback trigger. A `ConfigSnapshot` never updates itself: connect `UpdateAvailable` to `Refresh()` or the flag never reaches running servers.
 - Never ban on one signal. Treat `require(<number>)`, `getfenv`, `loadstring` and obfuscated strings as findings until explained.
 - Never install a third-party skill, plugin or MCP server unread; never paste keys or cookies.
 - Legal, tax and IP topics: state the documented fact with its date and point to the current Roblox terms and a professional. Never present it as advice.
-- Where a real design choice exists, give a lower-risk option and a bolder one, with the trade-off and your pick.
 
 ## Using the Roblox Studio MCP
 
 A build and test tool, not a content generator.
 
-- Use freely: `get_studio_state` before any edit; `script_read`, `script_grep`, `script_search`, `multi_edit`; `inspect_instance`, `search_game_tree`; `execute_luau` for edit-mode scans and batch fixes; `start_stop_play`, `get_console_output`, `screen_capture`, `user_*_input` for playtests; `open_cloud_invoke` for uploads and publishing.
-- Never for anything that ships: `generate_mesh`, `generate_procedural_model`, `generate_scene`, `generate_texture`, `generate_material`, `search_asset`. `insert_asset` only for the owner's own Blender-authored assets and packages by id.
+- Use freely: `list_roblox_studios` first (pass its `studio_id` on every call), then `get_studio_state` before any edit; `script_read`, `script_grep`, `script_search`, `multi_edit`; `inspect_instance`, `search_game_tree`; `execute_luau` for edit-mode scans and batch fixes; `start_stop_play`, `character_navigation`, `user_keyboard_input`, `user_mouse_input`, `get_console_output`, `screen_capture` for playtests; `open_cloud_invoke` for uploads.
+- Never for anything that ships: `generate_mesh`, `generate_procedural_model`, `generate_material`, `search_asset`, or any other generator the server offers. `insert_asset` only for the owner's own Blender-authored assets and packages by id.
 - On a live game start read-only, edit in edit mode behind a saved version, and keep live Open Cloud scopes to a dev universe until the change is proven. Re-read instances after each `execute_luau` batch.
 - Match the project: Rojo-synced files when there is a Rojo tree, `multi_edit` when there is not. Do not convert a workflow unasked.
 
@@ -108,13 +106,13 @@ A build and test tool, not a content generator.
 
 - Open only what the task needs. Each guide starts with a "Start here by level" table and ends with a review gate; files over 300 lines have a contents line, so read the section, not the file.
 - Tags: `[official]` Roblox docs; `[VS]` version-sensitive (API names, limits, prices, policy), re-check at https://create.roblox.com/docs or the `Roblox/creator-docs` mirror before relying on it; `[community]` and `[lihfolk]` are other developers' practice, to test rather than trust; `[house]` is a house estimate. Luau in the references is unexecuted: adapt it and test it.
-- `Conflict:` notes record real disagreements. Trust in this order: the house rules, current official docs, the market snapshot in `references/market-scan-2026-11.md` (2026-11-07; if the user's CLAUDE.md or memory names a local research vault, prefer its newer numbers), numbers measured on the user's own game, then community practice. A number measured on the user's game beats any benchmark.
+- `Conflict:` notes record real disagreements. Trust in this order: the house rules, current official docs, numbers measured on the user's own game, the market snapshot in `references/market-scan-2026-11.md` (2026-11-07; if the user's CLAUDE.md or memory names a local research vault, prefer its newer numbers), then community practice. `references/knowledge-base.md` is an unverified archive: where it differs from a guide, the guide is right.
 
 ## Done means
 
 1. The relevant gate was checked item by item and the result reported: a phase gate or Gate A in `references/checklists.md`, or the review gate of the reference used.
 2. `[VS]` facts relied on were re-checked, or the user was told exactly which were not.
 3. New Luau is `--!strict` and has a test or a described manual test.
-4. Nothing delivered breaks a house rule; existing violations are listed as findings with a plan.
+4. Nothing delivered breaks a house rule (scan: `references/checklists.md`, Gate 4); existing violations are listed as findings with a plan.
 5. Visual work was built from looked-at references and passed its critique rubric.
 6. The user got a recommendation and a bolder alternative wherever a real choice existed, pitched at their level.
