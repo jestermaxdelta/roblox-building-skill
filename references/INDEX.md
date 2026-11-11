@@ -41,6 +41,7 @@ One row per job. Find the row, open that file, and read only the section you nee
 | 22 effect build recipes, layer by layer (slash, impact, projectile, explosion, aura, heal, reward burst and more) | `references/vfx-recipes.md` |
 | Game feel: feedback tiers, input budget and buffer windows, gameplay camera and shake module, level metrics and soft-locks, NPC AI, procgen, save design | `references/game-craft.md` |
 | Cutscenes: when one earns its place, length budgets, shot design, camera paths, client-only architecture, skip and subtitles, timeline runner, trailer capture | `references/cutscenes-and-cinematics.md` |
+| The full cutscene timeline runner (constant-speed spline camera, look-at curve, one restore path) | `references/cutscenes-and-cinematics-runner.md` |
 | Audio: the two audio systems, licensing and upload limits, SFX design, mixing numbers, spatial audio, music, UI sound sets, memory, starter sound lists | `references/audio-sfx-music.md` |
 | Maps: planning from the core loop, avatar metrics, spawn and lobby, wayfinding, layout by genre, blockout and kits, streaming-aware layout, collision, procedural levels, heatmaps | `references/level-design-worldbuilding.md` |
 | Lighting: how it works after unified lighting, key, fill and rim, atmosphere, post-processing ranges, local-light budgets, per-zone transitions, low-end fallbacks, presets by genre | `references/lighting-and-atmosphere.md` |

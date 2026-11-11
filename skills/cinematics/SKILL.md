@@ -22,11 +22,26 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/` (`cutscenes` = `cutscenes-and-cinematics.md`, `runner` = `cutscenes-and-cinematics-runner.md`, `tutorial` = `tutorial-and-onboarding.md`); the library is `${CLAUDE_PLUGIN_ROOT}/references/visual-library/cutscenes-and-cameras.md`; sheets are `${CLAUDE_PLUGIN_ROOT}/assets/reference/NN-*.png`. §N is the section numbered N. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Look at | Lines |
+|---|---|---|---|
+| First cutscene (beginner) | cutscenes §1, §2, §8, §14 first script · tutorial §2 | Sheet 14 · library #61, #63, #65 | ~160 |
+| Boss or reveal intro | cutscenes §1–§8 · runner: The module, How it moves, Exits | Sheets 13, 14 · library #67–71, #27 | ~325 |
+| Fix a robotic camera | cutscenes §4, §5, §17, §19 · runner: the module up to `covered`, How it moves | Sheet 14 · library #28, #33–35 | ~165 |
+| Dialogue scene with subtitles | cutscenes §4, §6–§9, §11 · `accessibility-and-player-qol.md` §6 | Sheet 13 · library #37–41 | ~120 |
+| Trailer capture | cutscenes §3–§5, §16 · `icons-thumbnails-and-store-page.md` §9 · `growth-and-marketing.md` §4 | Sheet 13 · library #2–5, #9–11, #43–47, #49–51 | ~150 |
+
+A beginner gets the short first-cutscene script, never the full runner.
+
 ## What to read
 
 | When | Open |
 |---|---|
-| When a cutscene earns its place, length budgets, shot design, camera paths and easing, staging, client-only architecture, skip and subtitles, tools, a timeline runner, amateur tells, rubric | `${CLAUDE_PLUGIN_ROOT}/references/cutscenes-and-cinematics.md` |
+| When a cutscene earns its place, length budgets, shot design, camera paths and easing, staging, client-only architecture, skip and subtitles, tools, a beginner's first-cutscene script, amateur tells, rubric | `${CLAUDE_PLUGIN_ROOT}/references/cutscenes-and-cinematics.md` |
+| The full timeline runner for multi-shot scenes | `${CLAUDE_PLUGIN_ROOT}/references/cutscenes-and-cinematics-runner.md` |
 | Actors, animation playback and markers | `${CLAUDE_PLUGIN_ROOT}/references/animation-and-rigs.md` |
 | Scene lighting and post-processing, and restoring them | `${CLAUDE_PLUGIN_ROOT}/references/lighting-and-atmosphere.md` |
 | Stingers, ducking and scene audio | `${CLAUDE_PLUGIN_ROOT}/references/audio-sfx-music.md` |
@@ -44,7 +59,7 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 ## Rules for this topic
 
-- A cutscene must earn its place: if the moment can be played, let the player play it. No cutscene before the first input of a first session; a skip control appears within 1–2 seconds; non-interactive time stays under about 5% of a session.
+- A cutscene must earn its place: if the moment can be played, let the player play it. No intro on first join by default (horror and story-led games may have one scene under 5 seconds, skippable, inside the 10-second time-to-control target; `tutorial-and-onboarding.md` §2); scenes over 3 seconds show Skip at 2 seconds; non-interactive time stays under about 5% of a session.
 - Client-only: the server changes game state before the scene and never waits on it. Never freeze other players. Late joiners, death and respawn each have a defined path.
 - One restore function for every exit path (finish, skip, error, death, leave): camera, controls, HUD, lighting and sound return to what they were.
 - No linear robot moves: one spline and one ease per shot, aimed with a look-at curve, constant-velocity paths, cuts instead of whip pans, no roll while moving.

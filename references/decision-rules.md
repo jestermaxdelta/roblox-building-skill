@@ -109,7 +109,7 @@ Owners: `references/vfx-and-juice.md` (hit-stop and shake numbers), `references/
 - Shake, flashes, hit-stop and cutscene motion all read one comfort resolver that follows `GuiService.ReducedMotionEnabled`; no system reads the settings itself. At most 2 large flashes a second.
 - Scale effects from the player's own preset and measured frame time. Never read `UserGameSettings.SavedQualityLevel`.
 - Never carry gameplay information by shadows, bloom, post effects or sound alone, and never cull a telegraph to save frames.
-- Cutscenes are client-only, have one restore function for every exit path, show a skip within 1–2 s, and never run before the first input of a first session.
+- Cutscenes are client-only, have one restore function for every exit path, show Skip at 2 s on any scene over 3 s (`cutscenes-and-cinematics.md` §8), and do not run on first join except the short, skippable intro allowed for horror and story-led games (`tutorial-and-onboarding.md` §2).
 - Animation: publish clips under the game's owner; never ship temporary ids (`RegisterKeyframeSequence`, `RegisterAnimationClip`); load each track once; set `Priority` before `Play`.
 - Audio: use only sound the owner has the right to use and keep an id manifest. Roblox's licensed Creator Store audio is licensed for use inside Roblox only: a trailer or clip posted elsewhere needs owned or commissioned sound `[VS]`.
 

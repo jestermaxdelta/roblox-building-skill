@@ -249,7 +249,7 @@ One shot for a first scripted camera: it waits until the marks are there, fades 
 --!strict
 -- FirstCutscene: a LocalScript in StarterPlayerScripts. Unexecuted: play it, then run every test listed below.
 local Players, RunService, TweenService = game:GetService("Players"), game:GetService("RunService"), game:GetService("TweenService")
-local MOVE, EASE, SKIP_AFTER, SOUND_AT = 4, 0.8, 2, 1.5 -- seconds: travel, speed-up and slow-down, skip (§8), sound
+local MOVE, EASE_IN, EASE_OUT, SKIP_AFTER, SOUND_AT = 4, 0.6, 0.9, 2, 1.5 -- seconds: travel, speed-up, slow-down, skip (§8), sound
 local player = Players.LocalPlayer
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game:GetService("VRService").VREnabled then return end -- never take the camera in VR (§7)
@@ -277,10 +277,10 @@ for i = 1, #marks - 1 do
 		table.insert(path, p)
 	end
 end
-local function cameraAt(t: number): Vector3 -- speed ramps up for EASE s, holds steady, ramps down for EASE s
+local function cameraAt(t: number): Vector3 -- speed ramps up, holds steady, then ramps down (§5, sheet 14)
 	t = math.clamp(t, 0, MOVE)
-	local top = 1 / (MOVE - EASE) -- share of the path covered per second at full speed
-	local share = if t < EASE then top * t * t / (2 * EASE) elseif t > MOVE - EASE then 1 - top * (MOVE - t) ^ 2 / (2 * EASE) else top * (t - EASE / 2)
+	local top = 1 / (MOVE - (EASE_IN + EASE_OUT) / 2) -- share of the path covered per second at full speed
+	local share = if t < EASE_IN then top * t * t / (2 * EASE_IN) elseif t > MOVE - EASE_OUT then 1 - top * (MOVE - t) ^ 2 / (2 * EASE_OUT) else top * (t - EASE_IN / 2)
 	local goal, i = share * dist[#dist], 2
 	while i < #dist and dist[i] < goal do i += 1 end
 	return path[i - 1]:Lerp(path[i], math.clamp((goal - dist[i - 1]) / math.max(dist[i] - dist[i - 1], 1e-6), 0, 1))
@@ -336,7 +336,7 @@ end
 if not pcall(start) then finish() end
 ```
 
-Test each, and after each check you can walk, the camera follows you and the HUD is back: watch to the end; press Skip as soon as it shows; reset mid-scene (Esc, Reset); rename `IntroCamera` (the scene must simply not play); a phone in the device emulator (Skip clear of the notch); Reduce Motion on (the camera holds the end framing). It plays on every join, which suits testing; for first join only, the server saves a "seen" flag in the profile it already keeps (§8) and the script skips when it is set. Change the four numbers at the top and where the marks sit; nothing else needs editing. Left for later: hold-to-skip on keyboard and gamepad (§8), letterbox, subtitles.
+Test each, and after each check you can walk, the camera follows you and the HUD is back: watch to the end; press Skip as soon as it shows; reset mid-scene (Esc, Reset); rename `IntroCamera` (the scene must simply not play); a phone in the device emulator (Skip clear of the notch); Reduce Motion on (the camera holds the end framing). It plays on every join, which suits testing; for first join only, the server saves a "seen" flag in the profile it already keeps (§8) and the script skips when it is set. Change the numbers at the top and where the marks sit; nothing else needs editing. Left for later: hold-to-skip on keyboard and gamepad (§8), letterbox, subtitles.
 
 ### Timeline runner
 
