@@ -15,7 +15,7 @@
     <div class="ph"><b>Tidewater Market: style bible v3</b><span>2026-11-11 · owner: art lead · example filled from the template</span></div>
     <div class="cols">
       <div>
-        <div class="f"><h3>Fantasy in one line</h3><p><b>Run a stall in a floating harbour market.</b><br>Mood words: <span class="blank">warm</span> <span class="blank">chunky</span> <span class="blank">breezy</span></p></div>
+        <div class="f"><h3>Fantasy in one line</h3><p><b>Run a stall in a floating harbour market.</b><br>Mood words: <span class="blank">warm</span> <span class="blank">chunky</span> <span class="blank">breezy</span><br>Three decisions: <span class="blank">chunky-rounded</span> shapes, a <span class="blank">teal and sand</span> palette with one mustard accent, the <span class="blank">rope-knot</span> motif.</p></div>
         <div class="f"><h3>Golden sample</h3><div id="stall"></div><p><b>Fishmonger stall.</b> Every new asset is held next to it in Studio, under the game's lighting.</p></div>
         <div class="f"><h3>Shape language</h3><div id="shape"></div><p><b>Chunky-rounded.</b> Primary : secondary : detail = <b>60 : 30 : 10</b>. One primary mass, 2–4 secondary shapes that break the outline, detail only in the hand band.</p></div>
       </div>
@@ -23,7 +23,7 @@
         <div class="f"><h3>Palette (hex)</h3><p style="margin-bottom:3px">Base 10</p><div class="sws" id="base"></div><p style="margin:5px 0 3px">Accents 2: only on things players can use</p><div class="sws" id="acc"></div></div>
         <div class="f"><h3>Value rule</h3><div id="val"></div><p>Ground mid-dark (V 35–60), walls one band away, interactables brightest and most saturated. Checked in greyscale.</p></div>
         <div class="f"><h3>Proportions against the R15 dummy</h3><p>Door <span class="blank">5 × 8</span> studs · counter <span class="blank">3</span> · step rise <span class="blank">1</span> · handle thickness ≥ <span class="blank">0.3</span><br>Handles and lamps × 1.5–2.5, window frames and trims × 2–4.</p></div>
-        <div class="f"><h3>Bevel standard</h3><div id="bev"></div><p>Props <span class="blank">0.08</span> studs (seen from 15) · architecture <span class="blank">0.2</span> (seen from 40). Weighted normals always; outer corners only.</p></div>
+        <div class="f"><h3>Bevel width by viewing band</h3><div id="bev"></div><p>Seen from 15 studs <span class="blank">0.08</span> · seen from 40 studs <span class="blank">0.2</span>. Weighted normals always; outer corners only.</p></div>
       </div>
       <div>
         <div class="f"><h3>Grid and pivots</h3><p>Architecture <span class="blank">8</span> studs · props <span class="blank">4</span> studs. Kit pivots at the front-lower corner; floor props bottom-centre.</p></div>
@@ -38,7 +38,7 @@
     <div class="f" style="border-top:2px solid var(--ink);margin-top:4px;padding-bottom:0"><p><b>Sign-off:</b> every asset passes the acceptance checklist under this lighting, on a phone, scored 8 or more of 10 by someone who did not build it.</p></div>
   </div>
   <div class="g3 mt">
-    <div class="card"><h3>How to use this sheet</h3><div class="note">It is a filled example of the template in art-pipeline-blender.md, not a house style. Replace every underlined value. Write the bible from a finished golden sample, not from intentions.</div></div>
+    <div class="card"><h3>How to use this sheet</h3><div class="note">It is a filled example of the template in art-direction-and-quality-bar.md §6, not a house style. Replace every underlined value. Write the bible from a finished golden sample, not from intentions.</div></div>
     <div class="card"><h3>Why one page</h3><div class="note">Constraints applied everywhere beat detail. A page fits beside the viewport, so two artists (or two agents) build one world instead of two.</div></div>
     <div class="card"><h3>Where the numbers come from</h3><div class="note">Bevels and smallest detail from the viewing-distance tables; door, counter and step from the avatar metrics; lighting from the golden-hour preset.</div></div>
   </div>
@@ -62,6 +62,6 @@ const bands = [['ground', '#3E6F7A'], ['walls', '#C9A77A'], ['props', '#D9584A']
 document.getElementById('val').innerHTML = `<svg width="216" height="50" viewBox="0 0 216 50">` + bands.map((b, i) => `<rect x="${i * 54}" y="0" width="52" height="16" rx="3" fill="${b[1]}"/><rect x="${i * 54}" y="18" width="52" height="16" rx="3" fill="${Sheet.grey(b[1])}"/>${T(i * 54 + 26, 46, b[0], { 'text-anchor': 'middle' })}`).join('') + `</svg>`;
 document.getElementById('bev').innerHTML = `<svg width="216" height="56" viewBox="0 0 216 56"><path d="M8 38V6H60" fill="none" stroke="#1A1F2B" stroke-width="3"/>${T(8, 52, 'sharp: no lit strip', {})}<path d="M120 38V14L128 6H172" fill="none" stroke="#1A1F2B" stroke-width="3"/><path d="M120 14L128 6" stroke="#F2B63C" stroke-width="5" stroke-linecap="round"/>${T(120, 52, 'bevel: a lit strip', {})}</svg>`;
 document.getElementById('lit').innerHTML = `<svg width="216" height="26" viewBox="0 0 216 26">` + [['key', '#FFBE78'], ['fill', '#82645A'], ['bounce', '#3C2850'], ['air', '#FFC8A0']].map((b, i) => `<rect x="${i * 54}" y="0" width="52" height="12" rx="3" fill="${b[1]}"/>${T(i * 54 + 26, 23, b[0], { 'text-anchor': 'middle' })}`).join('') + `</svg>`;
-Sheet.frame({ n: '18', cat: 'Art direction', title: 'Style-bible one-pager, filled in', sub: 'The one-page template from the art pipeline with an example game written into every blank: palette, shapes, bevels, materials and the lighting key.',
-  supports: ['art-pipeline-blender.md §Style bible in one page', 'blender-modeling-craft.md §Shape language, §Edges and shading, §Colour and value', 'lighting-and-atmosphere.md §12 Presets'], sources: 'art-pipeline-blender.md, blender-modeling-craft.md, lighting-and-atmosphere.md' });
+Sheet.frame({ n: '18', cat: 'Art direction', title: 'Style-bible one-pager, filled in', sub: 'The one-page template from the art-direction guide with an example game written into every blank: palette, shapes, bevels, materials and the lighting key.',
+  supports: ['art-direction-and-quality-bar.md §6 Style bible', 'blender-modeling-craft.md §Shape language, §Edges and shading, §Colour and value', 'lighting-and-atmosphere.md §12 Presets'], sources: 'art-direction-and-quality-bar.md, blender-modeling-craft.md, lighting-and-atmosphere.md' });
 </script></body></html>

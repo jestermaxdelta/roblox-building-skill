@@ -53,7 +53,7 @@ Defaults `[official]`: `CharacterWalkSpeed` 16, `CharacterJumpHeight` 7.2, `Char
 | Combat lane, doorway in a shooter | ≥ 10 wide; walls ≥ 10 tall | Official greybox sample: two players abreast, walls not jumpable, camera clear `[official]` |
 | Corridor / interior ceiling | 8–12 wide / 10–15 tall (2–3 avatar heights) | Lower ceilings push the default camera (occlusion mode Zoom) into the player's back `[lihfolk]` |
 | Storey height | 10–12 floor to floor | `[lihfolk, measured on its house kit]` |
-| Stairs | rise ≤ 1, tread 2–3 (27° at 1:2), width ≥ 6; collision is one ramp `_COL` | The official curriculum's stairs are blocks 1 high on 2.5 treads `[official]`. Ledges up to about 1 stud are walked up without a jump (observed `[lihfolk]`; no step limit is documented), so 1 is the ceiling for any step whose collision is not a ramp. This row is the skill's stair rule; `blender-modeling-craft.md` repeats it |
+| Stairs | rise ≤ 1, tread ≥ 2 (2–3 typical; 27° at 1:2), width ≥ 6; collision is one ramp `_COL` | The official curriculum's stairs are blocks 1 high on 2.5 treads `[official]`. Ledges up to about 1 stud are walked up without a jump (observed `[lihfolk]`; no step limit is documented), so 1 is the ceiling for any step whose collision is not a ramp. This row is the skill's stair rule; `blender-modeling-craft.md` repeats it |
 | Cover | low 2.5–3.5, full 7+; avoid 4–6 | Chest-high blocks aim and camera but cannot be vaulted `[lihfolk]` |
 | Counter / window | top at 2.5–3; window 2–3 wide × 3–4 tall, sill at 3–4 | Reads as a window from 40 studs `[lihfolk, measured]` |
 | Main path | 12–20 wide; side lanes narrower | LihFolk measured 20–34 with 9-stud characters; scaled to 5-stud avatars `[house]` |

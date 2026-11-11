@@ -1,6 +1,6 @@
 # Performance: budgets, profiling, rendering, streaming, physics, VFX, loading
 
-What this is: frame and memory budgets, the profiling workflow, engine-feature status and the fix for each cost centre. Open it when setting budgets for a new game, or jump to "Level-up audit" when a live game lags, crashes or loads slowly. Distilled from knowledge-base sections 5.1–5.6, 5.9, 5.12 and 4.9; platform facts re-checked against `Roblox/creator-docs` on 2026-11-10. Design for a 3 GB Android phone first. Tags: `[official]` docs, `[community]` forum practice, `[VS]` version-sensitive (device statistics change yearly; several engine features are new), `[house]` house estimate.
+What this is: frame and memory budgets, the profiling workflow, engine-feature status and the fix for each cost centre. Open it when setting budgets for a new game, or jump to "Level-up audit" when a live game lags, crashes or loads slowly. Distilled from knowledge-base sections 5.1–5.6, 5.9, 5.12 and 4.9; platform facts re-checked against `Roblox/creator-docs` (commit 7cbffff) and the DevForum announcements on 2026-11-11. Design for a 3 GB Android phone first. Tags: `[official]` docs, `[community]` forum practice, `[VS]` version-sensitive (device statistics change yearly; several engine features are new), `[house]` house estimate.
 
 Contents: Start here by level · Frame budgets and device targets · Profiling workflow · Luau performance idioms · Rendering · Streaming · Engine features and status · Physics and collision · Parallel Luau · VFX, animation and audio budgets · Loading and join · Mobile crashes and memory · Level-up audit · Measured investigation by problem class (A compute, B memory leak, C network, D place size, E mobile tiers) · Review gate · Sources
 
@@ -27,21 +27,22 @@ Measure milliseconds per frame, not FPS; consistency beats the average.
 | 72 FPS | 13.9 ms | Standalone VR (Quest 2) |
 | 120 / 240 FPS | 8.33 / 4.17 ms | High-refresh desktops |
 
-Device reality `[VS]`: Android is about 65% of players; about 60% of Android devices have 2–4 GB RAM; more than half score 10k–20k on Passmark. Test on an Infinix Smart 9, Moto G05, Oppo A18 or Fire HD 10 (2023) for the low end and a Galaxy S22 Ultra for the high end. Run a 10–15 minute thermal session; the Device Emulator gets screen size right but not memory or performance.
+Device reality `[official][VS]`: Android is about 65% of a typical game's players; of those about 60% have 2–4 GB RAM, 35% have 4–8 GB and 5% more; more than half of all players score 10k–20k on Passmark. Test on an Infinix Smart 9, Moto G05, Oppo A18 or Fire HD 10 (2023) for the low end and a Galaxy S22 Ultra for the high end. Run a 10–15 minute thermal session; the Device Emulator gets screen size right but not memory or performance.
 
 | Budget | Value | Source |
 |---|---|---|
-| Draw calls in view | < 1,000 | Doc baseline example |
-| Triangles in view | < 1,000,000 | Doc baseline example |
+| Draw calls in the worst view | < 1,000 | House budget (decision-rules.md). The docs use this figure only as an example of a limit you might find on your baseline device |
+| Triangles in the worst view | < 1,000,000 | House budget, same doc example |
+| Frame rate | ≥ 30 FPS in the busiest scene on low-end Android; server heartbeat 60 Hz | House budget (decision-rules.md); 60 is the engine's heartbeat cap `[official]` |
 | Triangles per mesh | ≤ 20,000 (import limit, not a target) | Doc |
-| Long-running script work | about 5 ms per frame, then yield | Doc |
+| Long-running script work | about 5 ms per frame, then `task.wait()` | Doc example |
 | Server memory | < 50% of (6.25 GiB + 100 MiB × peak players); the dashboard chart hides the total, so also stay < 3 GB | Doc |
-| Client memory, whole app | Target < 1.0 GB in the heaviest area; ceiling 1.3 GB so 2 GB phones survive. Conflict: the staff article says 1.3 GB, LihFolk says "well under 1 GB"; neither is an official limit, so aim for the lower | `[community]` staff article; `[lihfolk]` |
-| Stricter working budget | 500 draw calls and 500k triangles in view | `[community]` same article |
+| Client memory, whole app | Target < 1.0 GB in the heaviest area; ceiling 1.3 GB so 2 GB phones survive. Neither is an official limit: 1.3 GB is a Roblox engineer's advice, LihFolk says "well under 1 GB" | `[community: staff article, read]`; `[lihfolk]` |
+| Stricter working budget | 500 draw calls and 500k triangles in scene, the article's target for 60 FPS on 90% of phones without quality scaling down | `[community: staff article, read]` |
 | Client crash rate | investigate above 2–3% | Doc |
 | Particles | ≤ 400/s per emitter (100/s on mobile); lifetime ≤ 20 s | Doc |
 | Simultaneous `Highlight`s | ≤ 255 (extras silently ignored) | Doc |
-| Textures | most ≤ 512², minor ≤ 256², hero ≤ 1024² | Doc |
+| Textures | most ≤ 512², minor ≤ 256² (doc); hero ≤ 1024² (house) | Doc and house |
 | Client Luau per frame | ≤ 3–4 ms | House |
 | Client physics per frame | ≤ 2–3 ms | House |
 | Render CPU (Prepare + Perform) | ≤ 6 ms on mid mobile | House |
@@ -52,28 +53,30 @@ Device reality `[VS]`: Android is about 65% of players; about 60% of Android dev
 
 Server heartbeat below about 50 Hz is an incident (house threshold). Server memory does not shrink when players leave; log `DataModel.ServerLowMemoryWarning`.
 
-Frame order for scripts: PreRender (camera only), PreAnimation, PreSimulation (set forces and `Motor6D.Transform`), physics, PostSimulation/Heartbeat (read final positions). `WaitingHybridScriptJob` resumes `task.wait` callers about 30 times a second with a budget; exceed it and waits run late.
+Frame order for scripts: PreRender (camera only), PreAnimation, PreSimulation (set forces and `Motor6D.Transform`), physics, PostSimulation/Heartbeat (read final positions). `WaitingHybridScriptJob` resumes threads waiting in `WaitForChild` or legacy `wait()` about 30 times a second with a time budget; exceed it and they resume late `[official]`. `task.wait` resumes on Heartbeat instead.
 
-Memory labels (F9 > Memory > PlaceMemory `[official]`): GraphicsTexture and GraphicsTextureCharacter (pixel count and unique count are all that matter; PNG compression and alpha removal do not help), GraphicsMeshParts (the importer does not de-duplicate meshes), PhysicsParts and PhysicsCollision (collision data is stored even with `CanCollide = false`), Sounds, LuaHeap, Instances, Signals, Animation, HttpCache. PlaceScriptMemory breaks script memory down per script and custom tag. UntrackedMemory and CoreMemory are not yours to fix.
+Memory labels (F9 > Memory > PlaceMemory `[official]`): GraphicsTexture and GraphicsTextureCharacter (pixel count and unique count are all that matter; PNG compression and alpha removal do not help), GraphicsMeshParts (the importer does not de-duplicate meshes), PhysicsParts (`BaseParts` in `Enum.DeveloperMemoryTag`) and PhysicsCollision (collision data is stored even with `CanCollide = false`), Sounds, LuaHeap, Instances, Signals, Animation, HttpCache. PlaceScriptMemory breaks script memory down per script and custom tag. UntrackedMemory and CoreMemory are not yours to fix.
 
 ## Profiling workflow
 
 | Tool | Shortcut | Use |
 |---|---|---|
 | Developer Console | F9 | Memory per label, errors, network, server MicroProfiler recording |
-| MicroProfiler | Ctrl+Alt+F6 (client), Ctrl+F6 (Studio) | Per-frame timing; Ctrl+P pauses; dumps open in a browser with flame graphs and diffs |
+| MicroProfiler | Ctrl+F6 in Studio and the desktop client (the MicroProfiler page; two other doc pages print Ctrl+Alt+F6, so try both). Phones: see below | Per-frame timing; Ctrl+P pauses; Timers mode lists labels by time and call count; dumps open in a browser with flame graphs and before/after diffs. Server: F9 > MicroProfiler > Server records up to 60 frames after a delay of up to 4 s (edit permission needed) `[official]` |
 | Performance Stats | Ctrl+Alt+F7 | CPU, GPU, memory, network overlay |
-| Debug stats | Shift+F1–F5 | Shift+F2 Render (draw calls, triangles); Shift+F3 streaming panels |
-| Network Simulator `[VS]` | Studio: Test > Device Simulator > Network pill (beta: enable "New Device Simulator") | Latency, jitter and packet loss presets (Home Wi-Fi, 4G, 3G); values and usage in debugging-and-testing.md |
-| Scene Analysis | Window > Performance Summary | Script memory, unparented instances, triangle categories, audio and animation memory |
+| Debug stats | Shift+F1–F5 in the client; Ctrl+Shift+F1–F5 in Studio | F2 Render (draw calls, triangles); F3 Network (data ping; Shift+1 cycles panels, the fourth is Streaming); F5 Summary (FPS) |
+| Network Simulator `[VS]` | Studio: Test > Device Simulator > Network pill (beta: enable "New Device Simulator" under File > Beta Features) | Latency, jitter and packet loss presets (Home Wi-Fi, 4G, 3G); values and usage in debugging-and-testing.md |
+| Scene Analysis | Studio, during a play test: Window > Performance Summary > Scene Analysis | Treemaps of script memory, unparented instances, instance composition, audio and animation memory, triangles and draw calls by pass. Same data from `SceneAnalysisService` (through the Studio MCP) `[official]`. Numbers are your PC's, not a phone's |
 | Luau heap snapshots, Script Profiler | Developer Console | Snapshot diffs for leaks (unique references, unparented instances); per-function CPU |
-| Performance Dashboard | Creator Hub > Monitoring > Performance | Client: frame rate, crash rate and count, unexpected out-of-memory exits, memory and memory-% by OS, CPU time. Server: CPU time, frame rate, memory, memory by server age, cores used per server |
+| Performance Dashboard | Creator Hub > Monitoring > Performance | Client: frame rate, crash rate and count, unexpected out-of-memory exits, memory and memory-% by OS, CPU time. Server: CPU time, frame rate, memory, memory by server age, cores used per server. Break any client chart down by Place Version |
+| Alerts | Creator Hub > Configurations > Alerts | Up to 20 per game on any dashboard metric (static threshold or change against the previous hour, day or week), delivered to a webhook; needs 100 daily users `[official]` |
+| `Stats` service | Script | `SceneDrawcallCount`, `SceneTriangleCount`, `FrameTime` (client), `HeartbeatTime` (server), `DataReceiveKbps`, `InstanceCount`, `GetMemoryUsageMbForTag`: use them for budget assertions and soak logs `[official]` |
 | Crashes | Creator Hub > Monitoring > Crashes | Server crashes by reason (out-of-memory vs platform); out-of-memory snapshots open as a treemap of the DataModel at crash time; CSV export |
 | Print Join Size Breakdown | Studio setting | Largest instances replicated at join |
 
-Mobile profiling: enable the MicroProfiler in the app settings and open `http://<phone-ip>:1338` from a computer on the same network. Red bars are GPU waits over 2.5 ms (fill rate, overdraw, transparency). Label hot code with `debug.profilebegin("Enemies.UpdateTargets")` / `debug.profileend()`.
+Mobile profiling: turn the MicroProfiler on in the in-game Settings menu and open the address it shows (for example `http://<phone-ip>:1338`) from a computer on the same network; it sends the last 30 frames, or add `/90` to the URL for 90. Frame bars: orange means jobs (scripts, physics, animation) took longer than rendering, blue means rendering took longer, red means rendering took longer and the GPU wait passed 2.5 ms (fill rate, overdraw, large textures) `[official]`. Label hot code with `debug.profilebegin("Enemies.UpdateTargets")` / `debug.profileend()`.
 
-Tag table: `physicsStepped`/`worldStep` → anchor, lower fidelity; `stepContacts` → simpler collision shapes; `stepWorldThrottled` → fewer unanchored assemblies; `stepHumanoid`/`stepAnimation` → disable unused states, AnimationController NPCs, client animation; `updateInvalidatedFastClusters` above about 4 ms → stop changing avatar parts every frame, add a Humanoid to models with moving skinned meshes; `ShadowMapSystem`/`LightGridCPU` → fewer shadowed lights, `CastShadow = false`; `UpdateView`/`RenderView` → fewer draw calls; `Pass3dAdorn` → fewer BillboardGuis; `fillGuiVertices` → avoid UIGradient and UICorner on changing text; `Dispatch StreamJob` → lower `StreamingTargetRadius`; `Sound/stepInstances` → fewer sounds; `ProcessPackets` → fewer and smaller remotes, no server tweens; `WaitingHybridScriptJob` → fewer `task.wait` loops. The renderer treats Transparency ≤ 0.01 as opaque. Parts cast shadows regardless of transparency, so every invisible helper needs `CastShadow = false`.
+Tag table: `physicsStepped`/`worldStep` → anchor, lower fidelity; `stepContacts` → simpler collision shapes; `stepWorldThrottled` → fewer unanchored assemblies; `stepHumanoid`/`stepAnimation` → disable unused states, AnimationController NPCs, client animation; `updateInvalidatedFastClusters` above about 4 ms → stop changing avatar parts every frame, add a Humanoid to models with moving skinned meshes; `ShadowMapSystem`/`LightGridCPU` → fewer shadowed lights, `CastShadow = false`; `UpdateView`/`RenderView` → fewer draw calls; `Pass3dAdorn` → fewer BillboardGuis; `fillGuiVertices` → avoid UIGradient and UICorner on changing text; `Dispatch StreamJob` → lower the streaming radii; `Sound/stepInstances` → fewer sounds; `ProcessPackets` → fewer and smaller remotes, no server tweens; `WaitingHybridScriptJob` → fewer threads parked in `WaitForChild` or legacy `wait()`; `GC` → fewer temporary tables. The renderer treats Transparency ≤ 0.01 as opaque. Parts cast shadows regardless of transparency, so every invisible helper needs `CastShadow = false`.
 
 ## Luau performance idioms
 
@@ -97,7 +100,7 @@ for _, d in workspace:GetDescendants() do
 end
 for name, ids in seen do
 	local n = 0; for _ in ids do n += 1 end
-	if n > 1 then warn(name, "has", n, "different MeshIds — duplicate uploads?") end
+	if n > 1 then warn(name, "has", n, "different MeshIds: duplicate uploads?") end
 end
 ```
 
@@ -107,17 +110,17 @@ Transparency: use 0 or 1; values between sort and overdraw (the classic mobile r
 
 Shadows and lights: shadows are off below graphics level 4, so gameplay must read without them. `CastShadow = false` on small props, distant geometry, fast movers, VFX hosts and every invisible helper. `Light.Shadows = false` by default; small `Range` and `Angle`; a PointLight in an Attachment is the cheap bulb. Under Realistic lighting, interiors need walls at least 1 stud thick (the tutorial uses 2.5-stud blockers) or light leaks.
 
-LOD `[VS]`: `MeshPart.RenderFidelity` Automatic (full under 250 studs, medium 250–500, lowest beyond), Performance for foliage and clutter, Precise for hero close-ups only. SLIM (`Model.LevelOfDetail = SLIM`, `Workspace.EnableSLIMAvatars`) builds cloud-generated composite LODs for static models (needs streaming, a cloud-saved place and Team Create; keep extents around 64 studs; separate co-planar faces by 0.01 studs). Legacy `StreamingMesh` should be converted to SLIM.
+LOD `[VS]`: `MeshPart.RenderFidelity` Automatic (full under 250 studs, medium 250–500, lowest beyond), Performance for foliage and clutter, Precise for hero close-ups only. SLIM (`Model.LevelOfDetail = SLIM`, `Workspace.EnableSLIMAvatars`) builds cloud-generated composite LODs that stay visible when the model streams out. It needs streaming, a place saved to Roblox and Team Create; it works only for static models with no Humanoid and no runtime changes; keep each model's extents around 64 studs and separate co-planar faces by 0.01 studs; where a platform lacks SLIM the model falls back to no LOD `[official]`. Convert legacy `StreamingMesh` models to SLIM.
 
 Other costs: skinned meshes in a model without a Humanoid rebuild FastClusters every move; Highlights cost about 1 ms GPU on mobile for the first one, toggle `Enabled` rather than create and destroy; many SurfaceGuis and BillboardGuis are expensive, especially in VR; built-in materials and MaterialVariants share engine textures.
 
 ## Streaming
 
-Recommended `Workspace` settings: `StreamingEnabled = true`; `ModelStreamingBehavior = Improved`; `StreamingIntegrityMode = PauseOutsideLoadedArea`; `StreamingMinRadius = 64`; `StreamingTargetRadius = 1024` by default, lower for memory (it must exceed MinRadius); `StreamOutBehavior = Opportunistic`; `EnableSLIMAvatars = Enabled` `[VS]`; `PredictiveStreamingMode` opt-in `[VS]`; `Player.FrustumStreaming` left at Default (off) unless the game has scopes, racing or a free camera, then Automatic `[VS]`.
+Recommended `Workspace` settings: `StreamingEnabled = true`; `ModelStreamingBehavior = Improved`; `StreamingIntegrityMode = PauseOutsideLoadedArea`; `StreamingMinRadius = 64`; `StreamingTargetRadius = 1024` by default, lower for memory (it must exceed MinRadius); `StreamOutBehavior = Opportunistic` (the default, `LowMemory`, unloads only under memory pressure); `EnableSLIMAvatars = Enabled` `[VS]`; `PredictiveStreamingMode` opt-in `[VS]`; `Player.FrustumStreaming` left at Default (off) unless the game has scopes, racing or a free camera, then set to Automatic from a server script `[VS]`. All `Workspace` streaming properties are set in Studio, not by script.
 
 Behaviour: only Workspace descendants stream (ReplicatedStorage replicates in full at join, so do not park maps there); streamed-out instances are parented to `nil`, not destroyed; unanchored assemblies stream whole, anchored geometry per part; extra `ReplicationFocus` costs about as much as another player; debug view is Shift+F3 then Shift+1 to the fourth panel.
 
-Model streaming modes: Default/Nonatomic for large static scenery; **Atomic** for interactive props (doors, shops, vehicles) so the whole model arrives together; Persistent rarely (global landmarks only); PersistentPerPlayer for a player's own plot. Flatten container hierarchies.
+Model streaming modes: Default/Nonatomic for large static scenery; **Atomic** for interactive props (doors, shops, vehicles) so the whole model arrives together; Persistent rarely (a few parts client scripts must always find; wait for `Workspace.PersistentLoaded`); PersistentPerPlayer for a player's own plot. Flatten container hierarchies.
 
 Code rules: never index Workspace content directly from a LocalScript (`WaitForChild(name, 10)` with a nil check, or tags with added/removed signals, which also handle re-streaming); spatial queries on the client see only loaded content, so keep gameplay checks on the server or in attributes on always-present containers; sounds, BillboardGuis, prompts and Touched handlers stop when their part streams out; call `player:RequestStreamAroundAsync(position)` before teleports; the loading screen never waits on a spatial instance; use `GuiService:SetGameplayPausedNotificationEnabled(false)` and `player.GameplayPaused` for a branded pause overlay; test with `StreamingTargetRadius = 64`.
 
@@ -127,11 +130,11 @@ Checked against the docs mirror on 2026-11-10. Re-check before relying on any ro
 
 | Feature | Status | What it means for you |
 |---|---|---|
-| Occlusion culling | On by default `[official]`. It tunes itself down when it costs more than it saves, and a wall made of many small parts is not an occluder `[community: staff replies]` | Large contiguous shells (one wall mesh, terrain, building exteriors) hide what is behind them. It saves draw calls, not Luau: scripts for hidden objects still run, so gate them by distance or tag |
-| Texture streaming | Automatic `[official]`: baseline quality first, then raised by free memory, distance and screen size. Covers MeshPart, SurfaceAppearance, Texture, Decal, MaterialVariant, Beam, ParticleEmitter | Texture budgets still apply: UI images are not covered, and unique pixel count is still the memory cost |
-| Unified lighting | `Lighting.Technology` is deprecated; use `LightingStyle` (Soft or Realistic) plus `PrioritizeLightingQuality` `[official]`. Old mapping `[community: announcement]`: Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off | Mobile-first default is Soft. `PrioritizeLightingQuality = false` keeps view distance and drops shading first as quality scales down. Ship Realistic only if a low-end capture still holds 30 FPS |
+| Occlusion culling | On for every game and platform, no setting (Windows 2024-12, all platforms 2025-01-27, terrain 2025-06-23) `[official: announcement, read]`. Not culled: avatars, lights, VFX, UI, shadows and shadow casters. Highly detailed meshes and parts that are small on screen do not act as occluders, and the engine may draw a hidden object when checking would cost more | Large simple shells (one wall mesh, terrain, building exteriors) hide what is behind them; a wall of many small parts does not. It saves draw calls, not Luau: scripts for hidden objects still run, so gate them by distance or tag. Staff measured about 33% lower P10 Android frame time in one dense event game; open arenas gain little |
+| Texture streaming | Automatic `[official]`: baseline quality first, then raised by free memory, distance and screen size. Covers MeshPart, SurfaceAppearance, Texture, Decal, MaterialVariant, Beam, ParticleEmitter and base materials | Texture budgets still apply: UI images are not covered, and unique pixel count is still the memory cost. The docs prefer separate textures to atlases unless the atlas sits on parts that batch: asking for one sharp tile streams the whole atlas at that size |
+| Unified lighting | `Lighting.Technology` is deprecated; use `LightingStyle` (Soft or Realistic) plus `PrioritizeLightingQuality` `[official]`. Old mapping `[official: announcement 2025-01-21, read]`: Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off | Mobile-first default is Soft. `PrioritizeLightingQuality = false` keeps view distance and drops shading first as quality scales down. Ship Realistic only if a low-end capture still holds 30 FPS |
 | SLIM model and avatar LOD | Documented (see LOD above); needs streaming, a cloud-saved place and Team Create | First LOD lever for static kit models and crowds |
-| Frustum streaming | `Player.FrustumStreaming`: Default (= Disabled), Disabled, Automatic, Enabled. Adds to the streaming radius, never replaces it; costs memory | Only for scopes, racing and free cameras. Conflict: this file used to suggest Automatic for every game; the docs call it opt-in and note the memory cost |
+| Frustum streaming | `Player.FrustumStreaming` (server-set): Default (= Disabled), Disabled, Automatic, Enabled. Adds the camera's view volume to the streaming radius, never replaces it; costs memory and ignores occlusion; the engine switches it off on clients whose draw distance has dropped to the target radius `[official]` | Only for scopes, racing and free cameras |
 | Native code generation | Server scripts and Android clients only `[official]` | Unchanged: measured hot maths only |
 | Server authority | Full release in 2026 (see networking-and-security.md) | The server simulates everything and clients roll back and resimulate: profile server CPU and low-end client CPU before adopting |
 | Extended Services for Compute | Paid: more than doubles per-player server CPU; first 100K playtime hours per month free, then $0.001 per playtime hour, billed while enabled `[official]` | Last resort after optimising. Roblox says most games see no benefit |
@@ -160,9 +163,9 @@ Making everything solid (house rule 2): (1) Box or Hull on the visual mesh with 
 
 `CanTouch` off on almost everything except deliberate triggers. Trigger volume: `Transparency = 1`, `CanCollide = false`, `CanTouch = true` or `CanQuery = true`, `CastShadow = false`, `Anchored = true`; set `OverlapParams.RespectCanCollide` deliberately.
 
-Collision groups: register once at server start with `Workspace:RegisterCollisionGroup` and `CollisionGroupSetCollidable` (old PhysicsService methods are deprecated). Use them for player-player, debris and cosmetic cases only; never exclude a visible object from player collision.
+Collision groups: register them in Studio's Collision Groups editor, or once at server start with `workspace:RegisterCollisionGroup` and `workspace:CollisionGroupSetCollidable` (the `PhysicsService` equivalents still work; only `SetPartCollisionGroup` is deprecated: set `part.CollisionGroup`) `[official]`. Use them for player-player, debris and cosmetic cases only; never exclude a visible object from player collision.
 
-`Touched` fires only from physical movement, needs a debounce and is spoofable by the owning client; use spatial queries for gameplay (`Raycast`, `GetPartBoundsInBox`, `GetPartBoundsInRadius`, `GetPartsInPart`, `Blockcast`/`Spherecast`/`Shapecast` for fast projectiles). Reuse params, cap `MaxParts`, dedupe hits by model, and validate on the server. `BindToCollisionSummaries` is newer `[VS]`.
+`Touched` fires only from physical movement, needs a debounce and is spoofable by the owning client; use spatial queries for gameplay (`Raycast`, `GetPartBoundsInBox`, `GetPartBoundsInRadius`, `GetPartsInPart`, `Blockcast`/`Spherecast`/`Shapecast` for fast projectiles). Reuse params, cap `MaxParts`, dedupe hits by model, and validate on the server. For contact points and impact strength use `BasePart:BindToCollisionSummaries(callback)` `[VS]`.
 
 Network ownership: hand vehicles to the driver on `Occupant` change and back with `SetNetworkOwnershipAuto()`; `SetNetworkOwner(nil)` sparingly. Debug colours: green your client owns, red buffer zone, white/grey server or another client, black nobody. Server authority mode (`AuthorityMode = Server`) reached full release in 2026 `[VS]`; see networking-and-security.md before adopting it.
 

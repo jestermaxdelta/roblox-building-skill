@@ -158,7 +158,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §18 Crafting, §
 - [ ] Recipes, tiers and threat curve are drawn as graphs before building.
 - [ ] Crafting, inventory, building and gathering are server-authoritative.
 - [ ] Horde and save designs meet the frame and storage budgets.
-- [ ] Monetisation is revive, convenience and cosmetics; no paid combat power in PvP.
+- [ ] Monetisation is revive, convenience and cosmetics; no paid combat power in PvP; any streak saver is an ad or earned token on a score-only streak (Conflict note in §Monetisation).
 - [ ] Nodes, tools, structures and enemies are Blender models with real collision.
 
 ## Sources
