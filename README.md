@@ -47,7 +47,7 @@ On newer versions of Claude Code (2.1.275 and up) one line does both:
 /plugin install roblox-dev --marketplace jestermaxdelta/roblox-building-skill
 ```
 
-**Why the plugin is better:** it installs 13 small skills instead of one big one. When you say "my game is laggy", Claude loads only the performance skill and its guides, which is about six times lighter than loading the whole playbook. Faster answers, less wasted context.
+**Why the plugin is better:** it installs 14 small skills instead of one big one. When you say "my game is laggy", Claude loads only the performance skill and the guides for that topic, so answers come faster and less context is wasted.
 
 **To update:** run `/plugin marketplace update roblox-game-design`, then `/reload-plugins`. Or open `/plugin`, go to Marketplaces, and switch on auto-update.
 
@@ -78,9 +78,10 @@ You don't need to remember commands. Describe the problem in your own words and 
 | "Make my game better" · "Review my game" · "Why isn't it growing?" | `level-up` | Audits the whole game, scores 10 areas, gives a ranked to-do list, starts on the top items |
 | "Players leave after a minute" · "Nobody comes back" · "It's boring" · "The tutorial is bad" | `retention` | Finds where players drop off and fixes the first minute, the core loop and the reasons to return |
 | "My monetization is bad" · "It isn't making money" · "What should I sell?" · "Set my prices" | `monetization` | Recommends products and prices for your genre, builds the shop and safe purchase code, times offers so they never annoy |
-| "My UI looks bad" · "The menu is broken on phone" · "Make a shop screen" | `ui` | Redesigns it phone-first (with Figma if you use it), builds it, checks text and button sizes |
+| "My UI looks bad / generic" · "The menu is broken on phone" · "Make a shop screen" | `ui` | Studies real reference screens first, redesigns yours phone-first (with Figma if you use it), builds it, checks text and button sizes |
 | "The VFX is bad" · "Combat feels flat" · "No impact" · "The sounds are annoying" | `vfx-and-audio` | Adds readable effects, hit timing, camera feedback and sound, within a phone's limits |
-| "My map feels empty" · "Players get lost" · "The lighting looks flat" | `world-and-lighting` | Fixes layout, landmarks and wayfinding, and sets up lighting that fits the mood |
+| "Make a cutscene" · "Add a boss intro" · "The camera looks robotic" · "Make a trailer" | `cinematics` | Plans the shots, builds a short skippable scene with smooth camera paths, and puts everything back afterwards |
+| "My game looks generic / like AI slop" · "My map feels empty" · "The lighting looks flat" | `world-and-lighting` | Finds what makes it look generic, sets one clear art direction, fixes layout, landmarks and lighting |
 | "My models look bad" · "The style doesn't match" · "The animation is broken" | `models-and-animation` | Improves models in Blender, exports them correctly with collision, fixes rigs and animation |
 | "Make an inventory" · "Add pets" · "Build a round system" · "Add trading" | `systems` | Builds the system safely: server-checked, saved properly, fitted to your game |
 | "It's broken" · "I get this error" · "Works in Studio but not in the real game" | `debug` | Reproduces the bug, finds the real cause, fixes it and leaves a test |
@@ -138,15 +139,31 @@ Claude runs the matching checklist and fixes problems in order of impact.
 | 🔍 **Real game teardowns** | How 18 hit games actually work, and why some collapsed |
 | 💰 **Monetization** | What to sell, what to charge, when to offer it, and Roblox's rules |
 | 📈 **Economy** | Currencies, upgrade costs, rebirths, luck odds, trading, inflation |
+| 🎨 **Art direction** | How to give a game its own look, and the exact things that make a game look generic or AI-made, with the fix for each |
 | 🖼️ **UI and Figma** | Design systems, screen recipes (HUD, shop, inventory, settings), animation, phone layouts |
 | 🧊 **Blender art** | Modelling well, exporting to Roblox, collision, textures, rigs and animation |
-| ✨ **Feel** | Visual effects, sound, music, camera, lighting, level design |
+| ✨ **Feel** | Visual effects (with 21 build recipes), sound, music, camera, lighting, level design |
+| 🎬 **Cutscenes and tutorials** | Short skippable cinematics with smooth cameras; tutorials that teach by playing |
+| 🧭 **Icons and thumbnails** | What earns clicks honestly, tested at the sizes players really see |
 | 🧱 **Game systems** | 24 ready designs: inventory, shop, pets, quests, combat, rounds, trading, leaderboards... |
 | 💻 **Code** | Luau from first script to expert, project structure, physics and vehicles, debugging |
 | 🛡️ **Security and saving** | Stopping exploiters, never losing player data, safe purchases |
 | ⚡ **Performance** | Making it run on cheap phones |
 | 📊 **Growth** | Analytics, the Roblox algorithm, thumbnails, ads, TikTok and YouTube, launch |
 | 🤝 **People** | Accessibility, community and moderation, child safety, teams and business basics |
+
+## A library of things to look at
+
+Good-looking games are built from references, not from memory. So the skill ships with a visual library, and Claude studies a few examples that fit your game before it designs anything.
+
+- **22 original reference sheets** come with the skill: annotated diagrams for HUD layout, shop screens, buttons, colour, effect timing, camera shots, lighting, level metrics and more. Claude can open them at any time, even offline.
+- **About 690 curated references** across 13 topics (HUDs, menus, effects, cutscenes, tutorials, maps, models, lighting, animation, sound, icons and thumbnails). Each one has a note saying exactly what to study in it. Roughly 400 are images the curators actually looked at before listing them; weak, generic or AI-looking examples were thrown out.
+- These are for **studying, never for copying**. Other people's images stay theirs: the library links to them and does not include them.
+
+<p align="center">
+  <img src="assets/reference/09-template-vs-designed.png" alt="Reference sheet: the same daily-rewards panel built with default properties and with a designed theme, with the property differences listed" width="70%">
+</p>
+<p align="center"><sub>One of the bundled sheets: the same panel built two ways, with the exact property differences.</sub></p>
 
 ## Built for every level
 
@@ -192,13 +209,15 @@ If you leave something out, Claude picks a sensible default and tells you.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | The main skill: the three modes, a 12-step path from idea to live game, the rules, the trigger table, and a map of which guide to open for which job |
-| `skills/` | The 12 focused skills (level-up, retention, monetization, ui, vfx-and-audio, world-and-lighting, models-and-animation, systems, debug, performance, security-data, growth). Each is short and points at its own guides |
+| `SKILL.md` | The main skill: the three modes, the rules, and the trigger table. Kept short on purpose |
+| `skills/` | The 13 focused skills (level-up, retention, monetization, ui, vfx-and-audio, cinematics, world-and-lighting, models-and-animation, systems, debug, performance, security-data, growth). Each is short and points at its own guides |
 | `.claude-plugin/` | What makes this installable as a plugin |
-| `references/` | 39 topic guides. Each starts with a "start here by level" table and ends with a checklist |
+| `references/` | 48 topic guides, plus `INDEX.md` (which guide to open for which job). Each guide starts with a "start here by level" table and ends with a checklist |
 | `references/genres/` | 21 genre playbooks |
+| `references/visual-library/` | The curated reference library, one file per topic |
+| `assets/reference/` | The 22 bundled reference sheets, with their sources |
 | `templates/` | Fill-in documents: audit report, one-page plan, design doc, economy sheet, product plan, analytics plan, playtest plan, launch checklist |
-| `scripts/` | Ready-to-run helper scripts (Blender export) |
+| `scripts/` | Ready-to-run helper scripts (Blender export and checks, thumbnail tile test) |
 | `CREDITS.md` | Where the knowledge comes from |
 
 ## Where the knowledge comes from
@@ -207,9 +226,12 @@ If you leave something out, Claude picks a sensible default and tells you.
 - **31 open-source repositories**, for the original knowledge base
 - **The owner's market research**, a November 2026 snapshot of what's winning on Roblox
 - **[LihFolk Vault V2](https://github.com/lihfolk-cy/v2-vault)** (CC BY 4.0), compared against our research and credited wherever we learned from it
-- **Developer forums and community write-ups**, found through web search
+- **The Roblox DevForum and RealtimeVFX**, read directly: tutorials, staff announcements, and threads where experienced developers critique each other's work
+- **Game-craft writing and talks from outside Roblox** (UI, effects, animation, cinematography, onboarding), where the principles carry over
 
-Honest limits: prices, limits and policies on Roblox change, so the skill tells Claude to re-check those against the live docs. Tips from the community are marked as tips, not facts. Code examples are starting points to test, not finished code. Business and legal notes are facts with dates, not legal advice.
+**Checked, not just collected.** After the research, every guide was reviewed again against the Roblox docs at the source: wrong facts were corrected, code sketches were read line by line, duplicates were merged and weak text was cut.
+
+Honest limits: prices, limits and policies on Roblox change, so the skill tells Claude to re-check those against the live docs. Tips from the community are marked as tips, not facts. Code examples were reviewed by reading but never run, so treat them as starting points to test. Reddit could not be read directly, so anything from there came through search results. Business and legal notes are facts with dates, not legal advice.
 
 Full details in [CREDITS.md](CREDITS.md).
 
