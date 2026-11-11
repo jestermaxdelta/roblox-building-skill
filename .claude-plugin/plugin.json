@@ -2,8 +2,8 @@
   "name": "roblox-dev",
   "description": "Takes any Roblox game to the next level, at any stage: one main skill for planning and building a whole game, plus 13 focused skills (level-up audit, retention, monetization, UI, VFX and audio, cutscenes, art direction and maps, Blender models and animation, gameplay systems, debugging, performance, security and data, growth) that trigger on plain phrases like \"the VFX is bad\" or \"my game is laggy\".",
   "author": { "name": "jestermaxdelta" },
-  "homepage": "https://github.com/jestermaxdelta/roblox-building-skill",
-  "repository": "https://github.com/jestermaxdelta/roblox-building-skill",
+  "homepage": "https://github.com/jestermaxdelta/roblox-game-dev-claude-skill",
+  "repository": "https://github.com/jestermaxdelta/roblox-game-dev-claude-skill",
   "keywords": ["roblox", "luau", "game-design", "game-development", "roblox-studio", "blender", "figma", "monetization"],
   "skills": ["./skills/", "."]
 }

@@ -32,7 +32,7 @@ Install this one, then talk to Claude about your Roblox game like you normally w
 Type these two lines in Claude Code:
 
 ```text
-/plugin marketplace add jestermaxdelta/roblox-building-skill
+/plugin marketplace add jestermaxdelta/roblox-game-dev-claude-skill
 ```
 
 ```text
@@ -44,7 +44,7 @@ Then run `/reload-plugins` (or restart Claude Code). Done.
 On newer versions of Claude Code (2.1.275 and up) one line does both:
 
 ```text
-/plugin install roblox-dev --marketplace jestermaxdelta/roblox-building-skill
+/plugin install roblox-dev --marketplace jestermaxdelta/roblox-game-dev-claude-skill
 ```
 
 **Why the plugin is better:** it installs 14 small skills instead of one big one. When you say "my game is laggy", Claude loads only the performance skill and the guides for that topic, so answers come faster and less context is wasted.
@@ -54,7 +54,7 @@ On newer versions of Claude Code (2.1.275 and up) one line does both:
 ### Other way: as a single skill
 
 ```bash
-git clone https://github.com/jestermaxdelta/roblox-building-skill.git ~/.claude/skills/roblox-game-design
+git clone https://github.com/jestermaxdelta/roblox-game-dev-claude-skill.git ~/.claude/skills/roblox-game-design
 ```
 
 Restart Claude Code. This gives you the same knowledge as one large skill. To update it:
