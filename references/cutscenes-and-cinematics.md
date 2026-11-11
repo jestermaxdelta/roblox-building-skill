@@ -349,7 +349,8 @@ local function play(tl: Timeline, onCue: (id: string, skipped: boolean) -> ()): 
 		end)
 		task.delay(tl.length + 2, finish, "watchdog") -- render steps can stall; this timer does not
 		RunService:BindToRenderStep(BIND, Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-			if not pcall(step, dt) then finish("error") end
+			local ok, err = pcall(step, dt)
+			if not ok then warn("cutscene step failed:", err); finish("error") end
 		end)
 	end
 

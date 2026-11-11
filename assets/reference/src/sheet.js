@@ -96,6 +96,6 @@ const Sheet = (() => {
   function icon(name, size = 24, fill = '#fff', stroke = '#1A1F2B', sw = 1.6) {
     return el('svg', { width: size, height: size, viewBox: '0 0 24 24', style: 'display:block;flex:none' }, el('path', { d: GLYPH[name], fill, stroke, 'stroke-width': sw, 'stroke-linejoin': 'round', 'fill-rule': 'evenodd' }));
   }
-  const RARITY = [['Common', '#555D6A'], ['Uncommon', '#2E8F52'], ['Rare', '#4A98E8'], ['Epic', '#B48BF5'], ['Legendary', '#F0B63A'], ['Mythic', '#FFC0D9']];
+  const RARITY = [['Common', '#6A7382'], ['Uncommon', '#2F9E55'], ['Rare', '#4A98E8'], ['Epic', '#B48BF5'], ['Legendary', '#F0B63A'], ['Mythic', '#FFC0D9']];
   return { RARITY, icon, GLYPH, frame, el, txt, esc, hex, toHex, lum, contrast, grey, oklab, dOk, sim, ease, plot, scene, avatar };
 })();

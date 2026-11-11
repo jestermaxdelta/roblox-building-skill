@@ -2,7 +2,7 @@
 <style>
 .b{position:relative;width:132px;height:50px}
 .b .lipx{position:absolute;left:0;right:0;top:6px;bottom:0;border-radius:12px;background:#1F7A3D;border:2.5px solid #1A1F2B}
-.b .face{position:absolute;left:0;right:0;top:0;bottom:6px;border-radius:12px;background:#35B25D;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;font-weight:850;font-size:17px}
+.b .face{position:absolute;left:0;right:0;top:0;bottom:6px;border-radius:12px;background:#35B25D;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;font-weight:850;font-size:17px}
 .b .sheen{position:absolute;left:8px;right:8px;top:4px;height:6px;border-radius:4px;background:rgba(255,255,255,.35)}
 .states{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px}
 .st{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:10.5px;color:var(--ink2);line-height:1.32}
@@ -52,17 +52,17 @@ const L = [
   ['Top highlight', 'inner UIStroke 2, white at 0.65 transparency', 'Top edge only, matching the light direction. On all four edges it reads as glow.'],
   ['Outline', 'UIStroke Outer 3, the one Outline colour', 'One weight and one near-black for the whole UI.'],
   ['Icon', '55–65% of the button height', 'Glyph icons are white with the outline baked in, tinted with ImageColor3.'],
-  ['Label', 'native TextLabel, OnAccent ink', 'Never baked into art. OnAccent is white or near-black, whichever passes 4.5:1.'],
+  ['Label', 'native TextLabel: white + Outline stroke 2', 'Never baked into art. Bare white on this green is only 2.7:1: the stroke carries it. With no stroke, use the OnAccent ink that measures 4.5:1 (here the dark Outline ink, 6.0:1).'],
 ];
 document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
 const btn = (o = {}) => `<div class="b ${o.cls || ''}" style="${o.style || ''}" data-lint="nosize"><div class="lipx" style="${o.lip || ''}"></div><div class="face" style="${o.face || ''}"><div class="sheen" style="${o.nosheen ? 'display:none' : ''}"></div>${o.label === undefined ? 'BUY' : o.label}</div></div>`;
 const st = [
   ['Rest', 'Face up on its lip. Scale 1.', btn()],
   ['Hover', 'Lightness <span class="v">+6–8%</span>, scale <span class="v">1.04–1.06</span> in <span class="v">0.10–0.12 s</span>. Mouse only.', btn({ style: 'transform:scale(1.06)', face: 'background:#3FC76C' })],
-  ['Pressed', 'Face sinks <span class="v">3–4 px</span> or scales to <span class="v">0.92–0.96</span> in <span class="v">0.06–0.10 s</span>; lightness −10–12%; click and haptic at 0 ms.', btn({ style: 'transform:scale(.94)', face: 'top:5px;bottom:1px;background:#2A9A4E', nosheen: 1 })],
+  ['Pressed', 'Face sinks <span class="v">3–4 px</span> or scales to <span class="v">0.92–0.96</span> in <span class="v">0.08–0.10 s</span>; lightness −10–12%; click and haptic at 0 ms.', btn({ style: 'transform:scale(.94)', face: 'top:5px;bottom:1px;background:#2A9A4E', nosheen: 1 })],
   ['Gamepad focus', 'At least the hover look, plus a ring in the reserved Focus colour, with a margin.', btn({ cls: 'ring', style: 'transform:scale(1.04)', face: 'background:#3FC76C' })],
-  ['Selected', '"This page is open": adds an outline and a tint, plus a word or icon. Must not look like focus.', btn({ face: 'background:#fff;color:#1A1F2B', lip: 'background:#B9C0CC', label: 'ON ✓', nosheen: 1 })],
-  ['Disabled', 'Saturation under <span class="v">15%</span>, opacity <span class="v">50–60%</span>, and the reason as the label.', btn({ face: 'background:#8A93A3;font-size:12.5px', lip: 'background:#5E6676', label: 'Need 50 coins', nosheen: 1 })],
+  ['Selected', '"This page is open": adds an outline and a tint, plus a word or icon. Must not look like focus.', btn({ face: 'background:#fff;color:#1A1F2B;-webkit-text-stroke:0', lip: 'background:#B9C0CC', label: 'ON ✓', nosheen: 1 })],
+  ['Disabled', 'Fill saturation under <span class="v">15%</span> and opacity <span class="v">50–60%</span>; label kept at full opacity (≥ 3:1) and it states the reason.', btn({ face: 'background:#8A93A3;font-size:12.5px', lip: 'background:#5E6676', label: 'Need 50 coins', nosheen: 1 })],
   ['Pending', 'Entered at once on release: Interactable = false, progress in place of the label (<span class="v">50–500 ms</span>).', btn({ face: 'background:#6E9E7D', lip: 'background:#4C7559', label: '· · ·', nosheen: 1 })],
   ['Done', 'Kept visible with a tick; set by the server reply. An error shakes and shows inline.', btn({ face: 'background:#52648A;font-size:15px', lip: 'background:#3A4A6B', label: '✓ Owned', nosheen: 1 })],
 ];
@@ -81,7 +81,7 @@ let g = '';
 g += E('rect', { x: X(0), y: y0, width: X(80) - X(0), height: h, fill: '#DD4F27', opacity: 0.12 }) + E('rect', { x: X(200), y: y0, width: X(420) - X(200), height: h, fill: '#2D6CDF', opacity: 0.1 });
 g += E('path', { d, fill: 'none', stroke: '#1A1F2B', 'stroke-width': 2.2, 'stroke-linejoin': 'round' });
 g += Sheet.txt(X(2), y0 + 11, 'press', { fill: '#DD4F27', 'font-weight': 700 }) + Sheet.txt(X(86), Y(0.94) + 15, 'held while the finger is down', {}) + Sheet.txt(X(204), y0 + 11, 'release: 0.16–0.30 s, Back Out', { fill: '#2D6CDF', 'font-weight': 700 });
-g += Sheet.txt(X(2), y0 + h + 32, 'Press 0.06–0.10 s, Quad Out. Under 0.08 s is hard to see at 30 fps.', { fill: '#465062' });
+g += Sheet.txt(X(2), y0 + h + 32, 'Press 0.08–0.10 s, Quad Out: 2–3 frames at 30 fps. Never shorter: set the pose directly.', { fill: '#465062' });
 document.getElementById('chart').innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g}</svg>`;
 Sheet.frame({ n: '05', cat: 'UI', title: 'Button anatomy and the full state set', sub: 'What a button is made of, the eight states it needs, and how long each transition lasts. Motion uses named tokens, never a per-screen TweenInfo.',
   supports: ['ui-design-figma.md §3 Colour system (states), §6 Construction recipes, §7 (state matrix)', 'ui-motion-and-feedback.md §2 Motion tokens, §4 Button and control feedback, §7 Reduced motion'], sources: 'ui-design-figma.md, ui-motion-and-feedback.md ([lihfolk] timings, [house] recipe)' });

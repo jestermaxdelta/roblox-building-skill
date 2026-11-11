@@ -193,7 +193,7 @@ Build these before the incident; none can be added during one:
 | MemoryStore queue | Short cross-server buffer | Quota and expiry |
 | DataStore | Almost never | Shares the budget with player data |
 
-6. **Flags.** A kill switch per new system, tested in both states; a canary (enable for about 5% of servers by hashing `JobId`) and compare error rates; live bisection by switching new systems off one at a time `[lihfolk]`.
+6. **Flags.** A kill switch per new system, tested in both states (a `ConfigSnapshot` does not update itself: `gameplay-systems-cookbook.md`); a canary (enable for about 5% of servers by hashing `JobId`) and compare error rates; live bisection by switching new systems off one at a time `[lihfolk]`.
 7. **A bug-report button** that attaches the server tag, platform, zone and the last few client log lines; and a stuck-player watchdog that logs the state it found.
 
 Facts: Open Cloud Luau Execution starts a headless server from a place version; it does not attach to a running one `[official]`. Client crash causes (out of memory, thermal) give scripts no event: read them as dashboard rates and correlate with version and platform. Client reports are hints, never facts for gameplay or moderation.

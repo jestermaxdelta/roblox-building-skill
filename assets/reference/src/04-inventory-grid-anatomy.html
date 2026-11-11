@@ -3,7 +3,7 @@
 .win{position:relative;width:744px;height:262px;background:#26324A;border:2.5px solid #1A1F2B;border-radius:14px;overflow:hidden}
 .head{height:40px;background:#2D6CDF;display:flex;align-items:center;gap:10px;padding-left:14px;color:#fff;font-weight:850;font-size:19px}
 .cap{font-size:13px;font-weight:750;background:rgba(0,0,0,.28);border-radius:10px;padding:2px 9px}
-.close{position:absolute;right:5px;top:3px;width:44px;height:44px;border-radius:10px;background:#E5484D;border:2.5px solid #1A1F2B;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
+.close{position:absolute;right:5px;top:3px;width:44px;height:44px;border-radius:10px;background:#CF2E3E;border:2.5px solid #1A1F2B;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
 .strip{display:flex;gap:8px;padding:9px 12px 0;align-items:center}
 .search{width:170px;height:30px;border-radius:8px;background:#1B2436;color:#8F9BB0;font-size:12px;display:flex;align-items:center;padding-left:10px;font-weight:600}
 .fchip{height:30px;padding:0 11px;border-radius:15px;background:#1B2436;color:#C8D2E3;font-size:12px;font-weight:700;display:flex;align-items:center}
@@ -14,7 +14,7 @@
 .cnt{position:absolute;right:4px;bottom:3px;font-size:13px;color:#fff;font-weight:800;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill}
 .pips{position:absolute;left:5px;top:4px;display:flex;gap:2px}.pips i{width:5px;height:5px;border-radius:50%;background:#fff;border:1px solid #1A1F2B}
 .detail{position:absolute;left:476px;top:52px;width:254px;height:198px;background:#3A4A6B;border-radius:10px;border:2.5px solid #1A1F2B;padding:10px;color:#fff}
-.equip{position:absolute;left:10px;right:10px;bottom:10px;height:44px;border-radius:10px;border:2.5px solid #1A1F2B;background:#35B25D;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:17px}
+.equip{position:absolute;left:10px;right:10px;bottom:10px;height:44px;border-radius:10px;border:2.5px solid #1A1F2B;background:#35B25D;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:17px}
 .pill{position:absolute;left:176px;top:226px;background:#fff;color:#1A1F2B;border:2px solid #1A1F2B;border-radius:12px;font-size:11.5px;font-weight:800;padding:2px 10px}
 .states{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
 .st{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:10.5px;color:var(--ink2);line-height:1.3}
@@ -83,7 +83,7 @@ const st = [
   ['Selected', 'Thick ring; detail pane follows', big(R[2][1], I('gem', 44) + pipHtml(3), '', 'outline:4px solid #1A1F2B;outline-offset:2px')],
   ['Gamepad focus', 'Ring with a gap, plus a 1.04–1.06 lift', big(R[2][1], I('gem', 44) + pipHtml(3), '', 'outline:3px solid var(--accent);outline-offset:4px;transform:scale(1.05)')],
   ['Equipped', 'Tick badge, not a colour change', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#35B25D', 'check'))],
-  ['Favourite', 'Heart badge; blocks sell and trade', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#E5484D', 'heart'))],
+  ['Favourite', 'Heart badge; blocks sell and trade', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#CF2E3E', 'heart'))],
   ['New', 'Dot until first viewed', big(R[2][1], I('gem', 44) + pipHtml(3), `<div class="badge" style="background:var(--accent);width:16px;height:16px;right:-5px;top:-5px"></div>`)],
   ['Locked', 'Lock plus the requirement in words', big('#3B4252', I('lock', 36, '#AEB8C9'), '<span class="cnt" style="left:0;right:0;text-align:center;font-size:10.5px">Zone 4</span>')],
   ['Undiscovered', 'Silhouette + ??, with 162 / 284 progress', big('#3B4252', I('gem', 44, '#1A1F2B'), '<span class="cnt" style="left:0;right:0;text-align:center">??</span>')],

@@ -5,7 +5,7 @@
   --paper:#F5F2EA; --card:#FFFFFF; --ink:#1A1F2B; --ink2:#465062; --ink3:#788294; --line:#D9D4C7; --soft:#ECE8DD;
   --accent:#DD4F27; --good:#1B8553; --bad:#C4372F; --blue:#2D6CDF; --gold:#E3A21A; --violet:#7B57D1;
   --sky:#A9CBDD; --hill:#7FA892; --ground:#6A9777; --path:#D8CAA6; --dark:#1F2A3D; --dark2:#2B3A54;
-  --c-common:#555D6A; --c-uncommon:#2E8F52; --c-rare:#4A98E8; --c-epic:#B48BF5; --c-legend:#F0B63A; --c-mythic:#FFC0D9;
+  --c-common:#6A7382; --c-uncommon:#2F9E55; --c-rare:#4A98E8; --c-epic:#B48BF5; --c-legend:#F0B63A; --c-mythic:#FFC0D9;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff}
