@@ -49,9 +49,9 @@ Device reality `[official][VS]`: Android is about 65% of a typical game's player
 | Unique textures in view | ≤ 40–60 at ≤ 512² | House |
 | Shadow-casting lights in view | ≤ 2–4 | House |
 | Join to playable, low-end Android | ≤ 10–15 s | House |
-| Per-frame remotes | ≤ 10–20 Hz, deltas | House |
+| Repeating state remotes | ≤ 10–20 Hz, deltas only | House |
 
-Server heartbeat below about 50 Hz is an incident (house threshold). Server memory does not shrink when players leave; log `DataModel.ServerLowMemoryWarning`.
+Server heartbeat below about 50 Hz is an incident (house threshold). Server memory does not shrink when players leave. Connect `DataModel.ServerLowMemoryWarning` to log and to drop non-essential caches; it can fire repeatedly and does not mean a shutdown is certain `[official]`.
 
 Frame order for scripts: PreRender (camera only), PreAnimation, PreSimulation (set forces and `Motor6D.Transform`), physics, PostSimulation/Heartbeat (read final positions). `WaitingHybridScriptJob` resumes threads waiting in `WaitForChild` or legacy `wait()` about 30 times a second with a time budget; exceed it and they resume late `[official]`. `task.wait` resumes on Heartbeat instead.
 

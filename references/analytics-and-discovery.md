@@ -70,12 +70,13 @@ Snapshot 2026-11-10 `[VS]`. This is the one benchmark table for the skill; other
 
 | Metric | Value | Sample and source | Use |
 |---|---|---|---|
-| D1 retention | P25 8.4% · median 10.3% · P75 12.9% · P90 15.9% · P99 22.2% | GameAnalytics 2026 Roblox report: 500+ titles above 1M MAU, Aug 2025–Jul 2026; read through search summaries (figures as recorded in liveops-quests-retention.md) `[community]`. Large titles only, so a small game at the median is doing well | **Drives triage**: under 8.4% below; 8.4–12.9% near median; over 12.9% above. House launch target before paid traffic: above 11% `[house]` (market-scan-2026-11.md) |
-| D7 retention | P25 1.0% · median 1.6% · P99 9.1% | Same report and sample | **Drives triage**: under 1.0% below |
-| D30 retention | Median 0.5% · top 1% 4.7% | Same report and sample | **Drives triage**, coarse: under 0.5% below |
-| D1 by average session length | 0–3 min 4.3% · 7–12 min 7.9% · 13–18 min 10.2% · 19–24 min 11.5% (top 2% 32.3%; D7 median 1.6%, top 2% 8.5%) · 25+ min 10.8% | GameAnalytics 2025 Roblox report (aggregated titles, Jan 2023–Jul 2025), via the owner's vault. The vault copy has no 4–6 min row; interpolate between 4.3% and 7.9% and say so | Cross-check: is D1 low for the engagement the game already has? |
-| Session length | Median 6.6 min · top quarter 14.5 min · top 10% 26.4 min | Same 2025 report, via the vault | Cross-check; house target 19+ min `[house]` |
-| Daily playtime per user | Median 16.8 min · top 10% 64.9 min | Same 2025 report, via the vault. Ranking counts at most 60 min per user per day `[official]` | Cross-check |
+| D1 retention (2026 report) | P25 8.4% · median 10.3% · P75 12.9% · P90 15.9% · P99 22.2% | GameAnalytics 2026 Roblox report: 500+ titles above 1M MAU, Aug 2025–Jul 2026; read through search summaries (figures as recorded in liveops-quests-retention.md) `[community]`. Large titles only, so a small game at the median is doing well | **Drives triage**: under 8.4% below; 8.4–12.9% near median; over 12.9% above. House launch target before paid traffic: above 11% `[house]` (market-scan-2026-11.md) |
+| D7 retention (2026 report) | P25 1.0% · median 1.6% · P99 9.1% | Same 2026 report and sample | **Drives triage**: under 1.0% below |
+| D30 retention (2026 report) | Median 0.5% · top 1% 4.7% | Same 2026 report and sample | **Drives triage**, coarse: under 0.5% below |
+| Session length (2026 report) | Median 9.8 min per game · P99 21.1 min | Same 2026 report and sample (figures as recorded in economy-and-progression.md, search summaries) `[community]` | **Drives triage** for session time (T4b): under 6.6 min is low on either report; 6.6–9.8 min is below the current large-title median; house target 19+ min `[house]` |
+| D1 by average session length (2025 report) | 0–3 min 4.3% · 7–12 min 7.9% · 13–18 min 10.2% · 19–24 min 11.5% (top 2% 32.3%; D7 median 1.6%, top 2% 8.5%) · 25+ min 10.8% | GameAnalytics 2025 Roblox report (aggregated titles, Jan 2023–Jul 2025), via the owner's vault. The vault copy has no 4–6 min row; interpolate between 4.3% and 7.9% and say so | Cross-check: is D1 low for the engagement the game already has? |
+| Session length (2025 report) | Median 6.6 min · top quarter 14.5 min · top 10% 26.4 min | Same 2025 report, via the vault: all aggregated titles, so it sits lower than the 2026 large-title median | Cross-check only; superseded for triage by the 2026 row |
+| Daily playtime per user (2025 report) | Median 16.8 min · top 10% 64.9 min | Same 2025 report, via the vault. Ranking counts at most 60 min per user per day `[official]` | Cross-check |
 | Sessions of comparable hits | 14–27 min (vault sample of management and +1 games, one morning, 7 Nov 2026) | market-scan-2026-11.md; about 10 games | Weak: tiny sample, survivors only |
 | D1 by genre | Obby 25–35% · tycoon 20–28% · shooter 22–30% · roleplay 15–22% | RoWatcher, July 2026: no sample or method stated; far above the measured medians | **Weak: never triage from it** |
 | D1 dashboard example | P50–P90 12.11–18.73% (docs); 12.4–24.1% (a DevForum announcement) | Illustrations of how the dashboard displays a range `[official]`; each game gets its own | **Weak: not a benchmark** |
@@ -90,7 +91,7 @@ Snapshot 2026-11-10 `[VS]`. This is the one benchmark table for the skill; other
 
 How to read one number against it: a D1 of 9% is "near median, lower half" on the triage row. The genre row would call the same game far below and the docs example would call it below P50; both are weak rows and are ignored. The session cut then asks a second question: if that game's average session is 13–18 min (bucket median 10.2%), its D1 is slightly low for its engagement, which points at return reasons rather than the first minute.
 
-Conflict, resolved: the 2025 report's per-session medians and the 2026 report's overall distribution are different cuts of similar populations, not a disagreement. The tracker's genre ranges do disagree with both; the 2026 report attributes figures of that size to small samples of already-promoted games, so the measured distributions are trusted.
+Conflict, resolved: the 2025 report (all aggregated titles, Jan 2023–Jul 2025) and the 2026 report (500+ titles above 1M MAU, Aug 2025–Jul 2026) are different samples, not a disagreement; that is why the median session reads 6.6 min in one and 9.8 min in the other. Triage uses the 2026 rows; quote any figure with its report year. The tracker's genre ranges do disagree with both; the 2026 report attributes figures of that size to small samples of already-promoted games, so the measured distributions are trusted.
 
 ## Event API and limits `[VS]`
 
