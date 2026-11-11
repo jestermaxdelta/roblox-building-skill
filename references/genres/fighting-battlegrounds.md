@@ -7,7 +7,7 @@ Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or
 | Level | Do first | Leave for later |
 |---|---|---|
 | Beginner | One character with a 4-hit basic chain, block, dash and two abilities; a server state machine; server-validated hits with a range margin; respawn in 2–5 s with a 2 s shield; a training dummy | More characters, ultimates, ranked, gacha, ragdoll physics, matchmaking |
-| Intermediate | Character data modules; combo rules (hitstun decay, combo time cap, breaker); input buffer of 100–200 ms; position history and capped rewind; VFX pooling; touch layout with soft targeting | Awakening modes, bounties |
+| Intermediate | Character data modules; combo rules (hitstun decay, combo time cap, breaker); input buffer of 150–200 ms (`references/game-craft.md` §1.2); position history and capped rewind; VFX pooling; touch layout with soft targeting | Awakening modes, bounties |
 | Expert | Lag compensation tuned on live servers; custom matchmaking signals; per-character mastery; win-rate and pick-rate telemetry for balance; server authority mode; cheat statistics | — |
 
 Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after being hit; *i-frames* = invulnerability frames; *guard break* = a block being broken by enough hits or a heavy attack; *rewind* (lag compensation) = checking a hit against where the target was when the attacker pressed.
@@ -112,7 +112,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §14
 - **Performance**: 20+ players each emitting VFX; cull effects by distance, cap particles, and keep the ultimate cinematic client-side.
 - **Lag compensation numbers** `[lihfolk]`: for every player, buffer 1 s of root positions at a 20–30 Hz sample rate; rewind by the attacker's ping with a cap (about 250 ms). Past the cap give no extra compensation: rewinding further hits defenders long after they dodged, which feels worse than an occasional whiff. Show the attack on the attacker's client in under 100 ms.
 - **Server validation list** `[lihfolk]`: attacker alive and not stunned; move off cooldown by the server clock; target within range plus a latency margin; no more targets hit than the move allows; state transition legal.
-- **Input buffer** of 100–200 ms makes combos feel responsive `[lihfolk]`.
+- **Input buffer** of 0.15–0.20 s, never above 0.30 s, makes combos feel responsive (`references/game-craft.md` §1.2 owns the windows).
 - **Ragdoll cost** `[lihfolk]`: ten simultaneous ragdolls in a 20-player server is normal; keep them 1–2 s, simplify constraints and end them early on low-end devices.
 - **Matchmaking** `[lihfolk]` `[VS]`: Roblox lets creators weight matchmaking signals and add custom signals from their own data; use it to group similar skill. Verify the current configuration options in the docs.
 

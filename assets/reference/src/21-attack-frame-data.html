@@ -20,7 +20,7 @@ table.spec td{white-space:nowrap}table.spec td:last-child{white-space:normal}</s
     </div>
   </div>
   <div class="g3 mt">
-    <div class="card"><h3>Markers drive everything</h3><div class="note">TrailOn, Hit, TrailOff and CancelOpen are animation markers. Damage, VFX and SFX fire from the same marker, so when the clip is retimed they move together.</div></div>
+    <div class="card"><h3>Markers drive everything</h3><div class="note">TrailOn, Hit, TrailOff and CancelOpen are animation markers. VFX and SFX fire from the marker on each client. The server times damage from the same marker times exported to a table, so when the clip is retimed everything moves together and no client decides a hit.</div></div>
     <div class="card"><h3>Buffers and cancels</h3><div class="note">Buffer one combo press for <span class="v">0.15–0.20 s</span> (never above 0.30 s); record on press, never on release. Allow the next hit at the link point and a dodge shortly after the active frames, with a 0.05–0.1 s fade.</div></div>
     <div class="card"><h3>Never baked</h3><div class="note">Hit-stop (none on light hits, <span class="v">50–89 ms</span> medium to ultimate) is runtime, on confirmed hits, on the attacker's client only. Heavy means more frames, never slower playback.</div></div>
   </div>

@@ -179,7 +179,7 @@ Capture `[lihfolk]`, adapted to the house rules. Recorder settings (bitrate, fra
 - Keep a capture copy of the place with the same lighting as live, a hide-UI toggle (a `CaptureMode` attribute every ScreenGui respects is more reliable than disabling guis from outside), free camera (Left Shift + P `[official]`), and debug grants that are labelled capture-only and never enabled in the live place. Outcomes shown must be reachable at the real odds.
 - Record landscape at full resolution with the subject in the centre third, then crop 9:16; resize the window tall only for shots that need native vertical.
 - Do not show other players' usernames or display names, and never record voice chat: film with team accounts in a private server. Many players are children.
-- Music: Roblox's audio library licence covers use inside Roblox; whether a track may be used in an off-platform video depends on its own licence. Use music you own or licensed for social video.
+- Music: Roblox's licensed music may be used on Roblox only (Terms of Use §7.1, read 2026-11-11 `[official][VS]`), so it cannot go in a TikTok, YouTube or other off-platform video. Use music you own or have licensed for social video (`references/audio-sfx-music.md`).
 - Answer each platform's "made for kids" question honestly even though it reduces reach; platform minimum ages are commonly 13, so an adult runs the accounts.
 
 Hooks and craft `[community][house]`:
