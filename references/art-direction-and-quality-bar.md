@@ -1,31 +1,30 @@
 # Art direction and the quality bar: a cohesive game that does not look generic
 
-What this is: the cross-discipline guide to the owner's bar ("very high-quality, cohesive, put-together, avoids the generic AI slop look"). It names what gives a Roblox game away as generic or AI-made in every discipline, gives the method that produces one distinct look across models, world, light, UI, effects, motion, sound and words, sets the bar per release tier, and gives a review procedure and an ordered rescue plan for a live game. Open it before the first asset of a new game, at every milestone review, when feedback says "looks like every other game" or "looks AI", and before commissioning art. It owns direction and review; depth stays with the discipline files and is linked, not repeated: `blender-modeling-craft.md` (asset numbers and the per-asset rubric), `art-pipeline-blender.md` (the style-bible template, export), `lighting-and-atmosphere.md`, `level-design-worldbuilding.md`, `ui-design-figma.md`, `vfx-and-juice.md`, `animation-and-rigs.md`, `audio-sfx-music.md`, `icons-thumbnails-and-store-page.md` (icon, thumbnail and store-page recipes, tells and rubric), `growth-and-marketing.md` (ads and channels). Reference images: `visual-library/environments-and-maps.md`, `visual-library/models-props-characters.md`, `visual-library/lighting-and-mood.md`. Tags: `[official]` Roblox, `[community]` forum or named practitioner, `[lihfolk]`, `[VS]` version-sensitive, `[house]` house rule or estimate.
+What this is: the cross-discipline guide to the owner's bar ("very high-quality, cohesive, put-together, avoids the generic AI slop look"). It names what gives a Roblox game away as generic or AI-made in every discipline, gives the method that produces one distinct look across models, world, light, UI, effects, motion, sound and words, sets the bar per release tier, and gives a review procedure and an ordered rescue plan for a live game. Open it before the first asset of a new game, at every milestone review, when feedback says "looks like every other game" or "looks AI", and before commissioning art. It owns direction, the style bible (template in §6) and review; depth stays with the discipline files and is linked, not repeated: `blender-modeling-craft.md` (asset numbers and the per-asset rubric), `art-pipeline-blender.md` (export, import, collision), `lighting-and-atmosphere.md`, `level-design-worldbuilding.md`, `ui-design-figma.md`, `vfx-and-juice.md`, `animation-and-rigs.md`, `audio-sfx-music.md`, `icons-thumbnails-and-store-page.md` (icon, thumbnail and store-page recipes, tells and rubric), `growth-and-marketing.md` (ads and channels). Reference images: `visual-library/environments-and-maps.md`, `visual-library/models-props-characters.md`, `visual-library/lighting-and-mood.md`. Tags: `[official]` Roblox, `[community]` forum or named practitioner, `[lihfolk]`, `[VS]` version-sensitive, `[house]` house rule or estimate.
 
-Contents: 1 What generic means · 2 Slop tells by discipline · 3 Pillars to art direction · 4 A style a small team can sustain · 5 Reference board · 6 Style bible: measurable rules and tie-ins · 7 Quality bar by tier · 8 Art review procedure · 9 AI tools without slop · 10 Raising a live game in ordered passes · 11 Level-up table · Review gate · Sources
+Contents: 1 What generic means · 2 Slop tells by discipline · 3 Pillars to art direction · 4 A style a small team can sustain · 5 Reference board · 6 Style bible: template, measurable rules, tie-ins, palette scan · 7 Quality bar by tier · 8 Art review procedure · 9 AI tools without slop · 10 Raising a live game in ordered passes · 11 Level-up table · Review gate · Sources
 
 ## Start here by level
 
 | Level | Do these first | Ignore for now |
 |---|---|---|
-| Beginner | Run the defaults sweep (§2 last block, §10 pass 1). Write the three-decisions line (§3). Pick the cheapest style in §4. Build a 20-image board with a label on every image (§5). Make one golden sample before anything else | Rubric scoring, tie-in tables, tiers |
-| Intermediate | Fill the measurable rules and tie-ins (§6) into the bible template. Build a beauty corner (§3). Run the four tests on 12 captures at each milestone (§8). Hold contractors to the bible and the rubric | Blind scoring panels |
+| Beginner | In order: run the defaults scan (§2, the code block) and fix what it prints. Write the three-decisions line (§3). Pick the cheapest style in §4. Build a 20-image board with a label on every image (§5). Make one golden sample before any other asset | Rubric scoring, tie-in tables, tiers |
+| Intermediate | Fill in the bible template with measurable rules and tie-ins (§6); run the palette scan. Build a beauty corner (§3). Run the four tests on 12 captures at each milestone (§8). Hold contractors to the bible and the rubric | Blind scoring panels |
 | Expert | Blind one-screenshot tests with strangers; weakest-link scoring per discipline with caps; a motif audit across icon, UI, world and effects; bible versioning with family-by-family migration (§10) | Nothing |
 
 Terms: **generic** = could be swapped into another game unnoticed; **slop** = output nobody made a decision about, whatever tool produced it; **pillar** = one of the three promises the game makes; **golden sample** = the finished asset every new asset is held beside; **beauty corner** = a small area finished to final quality in every discipline; **motif** = a small shape or pattern repeated across disciplines; **value** = lightness independent of hue; **tie-in** = a rule that makes one discipline inherit from another.
 
 ## 1. What "generic" means, and what it costs
 
-Three causes produce the same look `[house]`: **defaults left in** (every other game has them too), **a template copied from one source** (the cube pet, the 2020 simulator lobby), and **averaged output** (generators and mixed asset packs, where nobody chose a rule). Working test: an asset or screen is generic when you cannot name three decisions that make it this game's.
+Three causes produce the same look `[house]`: **defaults left in** (every other game has them too), **a template copied from one source** (the cube pet, the 2020 simulator lobby), and **averaged output** (generators and mixed asset packs, where nobody chose a rule). Working test: an asset or screen is generic when you cannot name three decisions that make it this game's. Hand-made work fails it as easily as generated work: the bar is decisions, not tools.
 
 | Evidence | Detail |
 |---|---|
 | Similar or mismatched games lose discovery `[official]` | Since December 2024, experiences whose thumbnails, title, description or place files closely resemble existing ones are not prioritised in Home and Charts and rank lower in search; metadata that does not match the content is not recommended |
 | Default thumbnails lose Home `[official]` | From 2026-10-19 only games with a custom thumbnail receive homepage recommendation impressions. The most-liked replies ask for AI thumbnails to be excluded as well `[community]` |
 | Developers read the tells within a minute `[community]` | A "why does nobody play my well-made game" thread (143 likes): top replies list an AI thumbnail and description, `print` output left in the console, assets from a premade kit, stiff animation, overlapping UI and a rushed lobby |
-| Players say they skip `[community: search summary]` | Reddit threads and a petition report players avoiding games with AI icons; dissent exists and a meme-led hit shows players forgive it when the game is fun. Treat it as a trust cost, not a law |
+| Players say they skip `[community: search summary, not re-checked]` | Search results for Reddit threads and a petition report players avoiding games with AI icons, with dissent. Reddit is not readable from here, so treat it as a likely trust cost, not a measured one |
 | AI meshes fail technically `[community: Liz Edwards via Game Developer]` | Baked-in lighting, a texture projected from one 2D image with its artefacts, dense automatic topology, jumbled auto-unwrapped UVs, about 50,000 triangles for a crate that needs about 500, asymmetry, limbs fused into blobs that cannot be posed. No single trait proves origin |
-| Hand-made work can be slop too `[community: search summary]` | A player reply makes the point that work with no AI in it can be slop as well: the bar is decisions, not tools |
 
 ## 2. Slop tells by discipline
 
@@ -71,7 +70,7 @@ Defaults to decide on purpose `[official, VS]`: `StarterGui:SetCoreGuiEnabled` p
 --!strict
 -- unexecuted sketch, Studio command bar in Edit mode, read-only: counts engine defaults a player can see or hear
 local ScriptEditorService = game:GetService("ScriptEditorService")
-local DEFAULT_PARTICLE = "rbxasset://textures/particles/sparkles_main.dds" -- [VS] read it off a fresh ParticleEmitter
+local DEFAULT_PARTICLE = "rbxasset://textures/particles/sparkles_main.dds" -- class default in the engine API dump, 2026-11 [VS]
 local DEFAULT_GREY = Color3.fromRGB(163, 162, 165)
 local found: { [string]: number } = {}
 local function note(kind: string)
@@ -96,7 +95,7 @@ for _, service in { workspace, game:GetService("ReplicatedStorage"), game:GetSer
 		elseif inst:IsA("LuaSourceContainer") and string.find(ScriptEditorService:GetEditorSource(inst), "print(", 1, true) then
 			note("script that prints")
 		end
-		if (inst:IsA("TextLabel") or inst:IsA("TextButton")) and string.find(inst.FontFace.Family, "SourceSansPro", 1, true) then
+		if (inst:IsA("TextLabel") or inst:IsA("TextButton") or inst:IsA("TextBox")) and string.find(inst.FontFace.Family, "SourceSansPro", 1, true) then
 			note("default font")
 		end
 		if inst:IsA("Model") and (inst.Name == "Dummy" or inst.Name == "Rig" or inst.Name == "Model") then
@@ -117,10 +116,11 @@ The house-rule scan in `checklists.md` (primitive Parts, marketplace and generat
 ## 3. From pillars to art direction
 
 1. **Three pillars, three visual consequences.** Take the pillars from the one-pager and write what each forces on the look. Example: "cosy" → rounded primary shapes, warm key, nothing darker than value 20; "collect everything" → every collectable identifiable at 64 px by outline; "show off" → the avatar and the pet are the most saturated things on screen, so the world stays under saturation 45.
-2. **The three-decisions line.** "This is the game with ___ shapes, a ___ palette and the ___ motif." If a competitor could sign it, rewrite it.
+2. **The three-decisions line.** "This is the game with ___ shapes, a ___ palette and the ___ motif." If a competitor could sign it, rewrite it. Weak: "chunky low-poly shapes, a bright palette and a star motif" (every simulator). Strong: "everything is sewn felt with no straight edge longer than 2 studs, nine dusk colours with one mustard accent, and a cross-stitch on seams, UI corners and hit effects".
+   **Line-up test before production** `[house]`: capture the first frame of five current competitors in the genre and write each one's line on four axes (dominant shape, hue families and value key, material idea, motif). Yours must differ from every one of them on at least two axes; if it does not, change shape or material idea first, palette last (palette is the cheapest thing for the next clone to copy).
 3. **One motif, repeated across disciplines.** A knot carved on a pauldron that returns on the belt, the bracer and the anvil is what makes a character read as one design (`visual-library/models-props-characters.md`). Put yours on a model trim, a UI corner, the icon and one effect shape.
 4. **Rules can carry meaning.** Team Fortress 2 gave one team warm colours, natural materials and angular geometry and the other cool colours, industrial materials and orthogonal forms, kept characters identifiable as pure silhouettes, and omitted high-frequency detail where possible `[community: Valve, NPAR 2007]`. Use the same device for factions, zones or rarity.
-5. **Find the style by making, then freeze it.** Practitioners describe the same loop: a small prop test before the kit; one or two objects pushed to final to lead everything else; about twenty objects, a critique of the whole, one or two iterations, then hold `[community: Gonçalves, Lucas, Özben on 80.lv]`. Write the bible from that golden sample, not from intentions.
+5. **Find the style by making, then freeze it.** Practitioners describe the same loop: a small prop test before the kit; one or two objects pushed to final to lead everything else; about twenty objects, a critique of the whole, one or two iterations, then hold `[community: Gonçalves, Lucas, Özben on 80.lv]`. Write the bible from that golden sample, not from intentions. Make the golden sample a set of three (one small prop, one kit module, one character, creature or interactable) so every scale has a reference to stand beside.
 6. **Build a beauty corner before production.** About 30 × 30 studs at final quality in every discipline: kit pieces, lighting preset, one interactable with its prompt, the HUD over it, one effect, one sound. It is the capture for the one-screenshot test (§8) and the brief for everyone who joins later.
 
 ## 4. A style a small team can sustain
@@ -139,7 +139,7 @@ A style is what the team can make two hundred times at the same quality. Sable's
 - **Capacity check** `[house]`: assets needed × hours per asset at rubric score 8 ≤ art hours before launch. If not, cut asset count or drop a style tier; never drop the score.
 - **Limitation as style.** Pick two or three hard limits and enforce them everywhere (a 12-colour zone palette, no textures, one bevel width, no outlines, one material idea such as "everything is folded paper" `[community: Lucas]`). Constraints kept everywhere beat detail.
 - **Less detail, better read.** At gameplay distance small detail reads as noise `[community: Koepp]`; areas of low detail are what make the detailed focal point draw the eye `[community: Barrett]`.
-- **Do not raise the detail level mid-production.** A team that used extra time to add painted folds, edge highlights and AO to new assets found them clashing with the earlier flat ones `[community: Epistory team via Game Developer]`. Version the bible; migrate whole families or not at all (§10).
+- **Do not raise the detail level mid-production.** A team that used extra time to add painted folds, edge highlights and AO to new assets found them clashing with the earlier flat ones `[community: Epistory team via Game Developer]`. Version the bible: a change ships as a new version signed by one named owner, with the old and new golden sample side by side and the list of families to migrate. Migrate whole families or not at all (§10).
 - **Free distinctiveness**: a proportion rule, a palette, a motif, a lighting key, one material idea. None costs triangles.
 
 ## 5. Reference board
@@ -158,14 +158,39 @@ The top-liked forum answer to "how are simulator pets made" starts by exporting 
 
 ## 6. Style bible: measurable rules and tie-ins
 
-The one-page template is in `art-pipeline-blender.md` ("Style bible in one page"). A rule belongs in it only if a reviewer can check it with a number or a side-by-side. What each line must say:
+The bible is one page, so it fits beside the viewport and two artists (or two agents) build one world. Fill it in from the golden sample; a filled example is sheet `assets/reference/18-style-bible-one-pager.png`.
+
+```markdown
+# <Game> style bible v<N> (<date>, owner)
+Fantasy in one line:            | Mood words (3):
+Three decisions: ___ shapes, a ___ palette, the ___ motif (passes the line-up test)
+Golden samples: <prop>, <kit module>, <character or interactable>; every new asset is held beside one in Studio
+Palette (hex): base 8–12 ...    | accents 2 ... (accents only on things players can use)
+Value rule: ground V __–__, structures one band away, interactables lightest or a saturation spike
+Shape language: dominant ___, accent ___; big:medium:small = 60:30:10; taper and lean rules
+Proportions vs both avatar proxies: door __ studs, counter __, step rise __, handle thickness ≥ __
+Bevel width by viewing band: hand __, character __, engagement __ studs; segments __; weighted normals always
+Grid: architecture __ studs, props __ studs; pivot rule per class
+Texturing method: palette atlas / trim sheets / mixed (state which classes use which)
+Texel density: __ px per stud (or "none"); max texture __; unique bakes allowed: __ assets
+Materials (closed list, 6–10): name and roughness range each; metalness 0 or 1; emissive only on __
+Outline: yes / no; if yes, where it comes from and its colour
+Wear and story: edge wear yes/no; grime direction; what never gets dirty
+Lighting key: LightingStyle __, sun elevation __, key:fill __, one preset name per zone
+Smallest readable detail: __ studs (anything smaller is deleted or enlarged)
+Tie-ins: UI __ | icons __ | thumbnails __ | VFX __ | motion __ | audio __ | writing __
+Banned (named things): unlisted colours, pure primaries, unbevelled boxes, baked text, one-off textures, Neon as decoration
+Sign-off: asset rubric 8+ from a non-author, acceptance checklist passed, seen under this lighting on a phone
+```
+
+A rule belongs in the bible only if a reviewer can check it with a number or a side-by-side. What each line must say:
 
 | Rule | Measurable form | Source of the number | Check |
 |---|---|---|---|
 | Palette | Hex list per role, with HSV value range and saturation cap per role (ground V 35–60, structures one band away, interactables lightest or a saturation spike); at most 3 hue families per zone plus neutrals; 2 accents | Value-band table in `blender-modeling-craft.md` | Greyscale capture shows three or more bands |
 | Shape language | Dominant primitive (round, square or triangular) and its accent; big:medium:small about 60:30:10; taper and lean rules ("posts lean 2–4°") | §3 pillars | Silhouette sheet; roster test |
 | Edge and bevel | One width per viewing band, 1 or 2 segments, weighted normals | Bevel table in the craft file | Bevels read at 15 and 40 studs on the phone |
-| Texel density | One px-per-stud figure for textured classes (start at 32–64 `[house]`); "none" for palette-atlas art | Texture budget in the pipeline file | Neighbouring assets equally sharp |
+| Texel density | One px-per-stud figure for textured classes; "none" for palette-atlas art. Start at about 50: the docs' 256² per 5 × 5 studs is 51 `[official]`, and a 720 px phone shows at most 64 px per stud at 8 studs | "Texturing strategy" in the pipeline file | Neighbouring assets equally sharp |
 | Material list | A closed list of 6–10 named materials with a roughness range each; metalness 0 or 1 | Golden sample | Nothing in the place uses an unlisted material |
 | Outline | Yes or no, once. If yes: where it comes from and its colour (the darkest palette neutral) | Inverted-hull outlines double triangles (craft file) | UI outline matches |
 | Lighting key | `LightingStyle`, sun elevation, key-to-fill ratio 1.5–2.5, grade values, one preset per zone | `lighting-and-atmosphere.md` | White-cube capture |
@@ -185,6 +210,33 @@ Tie-ins make the other disciplines inherit from the model rules instead of being
 | Writing | A lexicon and two voice rules; naming patterns for zones, items and rarities | "Zones are places a child could draw; no numerals in names" |
 
 The motif from §3 appears at least once in every row.
+
+Check the palette line mechanically (flat-colour and atlas styles; textured parts are skipped):
+
+```lua
+--!strict
+-- unexecuted sketch, Studio command bar in Edit mode, read-only: part colours that are not in the bible palette
+local PALETTE = { "#2F4858", "#3E6F7A", "#F2B63C" } -- paste the bible's hex list
+local allowed: { [string]: boolean } = {}
+for _, hex in PALETTE do
+	allowed[Color3.fromHex(hex):ToHex()] = true
+end
+local offenders: { [string]: number } = {}
+for _, inst in workspace:GetDescendants() do
+	if inst:IsA("BasePart") and inst.Transparency < 1 and not inst:FindFirstChildOfClass("SurfaceAppearance")
+		and not (inst:IsA("MeshPart") and inst.TextureID ~= "") then
+		local hex = inst.Color:ToHex()
+		if not allowed[hex] then
+			offenders[hex] = (offenders[hex] or 0) + 1
+		end
+	end
+end
+for hex, count in offenders do
+	print(string.format("%5d  #%s", count, hex))
+end
+```
+
+Zero rows is the pass for the "unlisted colours" ban; a long tail of near-duplicates (#3E6F7A beside #3F707B) means colours were picked by eye, not from the list.
 
 ## 7. Quality bar by tier
 
@@ -299,8 +351,9 @@ Write the bible after pass 2 from the best fifth of what exists, then hold passe
 - [ ] Three-decisions line written; no competitor could sign it.
 - [ ] Style chosen with the capacity check; two or three hard limits written as bans.
 - [ ] Reference board: 20–40 labelled images, at most a third from one title, at least 40% real world, no generated targets; anti-board exists.
-- [ ] Bible lines are numbers or side-by-sides; tie-ins written for UI, icons, thumbnails, VFX, animation, audio and writing; the motif appears in each.
-- [ ] Golden sample and beauty corner exist and are current.
+- [ ] Three-decisions line differs from each of five named competitors on at least two of the four axes (line-up test).
+- [ ] Bible lines are numbers or side-by-sides; tie-ins written for UI, icons, thumbnails, VFX, animation, audio and writing; the motif appears in each; palette scan prints zero rows.
+- [ ] Golden samples (prop, kit module, character or interactable) and the beauty corner exist and match the current bible version.
 - [ ] Defaults scan shows only deliberate rows; house-rule scan clean.
 - [ ] Twelve captures taken on the phone; four tests run; every discipline scored by someone other than its author; no caps triggered for the target tier.
 - [ ] Nothing generated ships: meshes, textures, UI art, icons, thumbnails, unedited copy.
@@ -326,4 +379,5 @@ Accessed 2026-11-11. DevForum threads read through the Discourse JSON API.
 - Mitchell, Francke, Eng, "Illustrative Rendering in Team Fortress 2", NPAR 2007, https://steamcdn-a.akamaihd.net/apps/valve/2007/NPAR07_IllustrativeRenderingInTeamFortress2.pdf (read: sections 3–4)
 - 80.lv breakdowns (read; images viewed, listed in the three library files): Stanley Barrett, Emek Can Özben, Rodrigo Gonçalves, Benjamin Lucas, Tobias Koepp, Ivan Blinov, Georg Klein, Sasha Bernert, Angelo Tsiflas, Vitaliy Novart
 - Reddit and petition sentiment on AI thumbnails (search summary only; reddit.com is not reachable from here)
-- Not verified: the API names in §2 were written from the engine reference as remembered, not re-read in this pass (check each in Studio); the default `ParticleEmitter.Texture` path and the Luau scan (unexecuted); the 32–64 px-per-stud starting range, board sizes, capacity check and rubric caps are house estimates. No measured data was found linking AI art to retention or click-through; vendor "high CTR" claims were not used.
+- Engine API dump, version 0.747 (https://github.com/MaximumADHD/Roblox-Client-Tracker, read 2026-11-11): every class, member and enum item named in §2 exists with that spelling, and `ParticleEmitter.Texture` defaults to the path in the scan.
+- Not verified: both Luau scans are unexecuted; the default font family and grey GUI colour in the defaults scan are from memory `[VS]`; board sizes, the line-up test, capacity check and rubric caps are house estimates. No measured data was found linking AI art to retention or click-through; vendor "high CTR" claims were not used.

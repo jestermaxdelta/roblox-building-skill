@@ -1,6 +1,6 @@
 # UI motion and feedback: tokens, button response, reward sequences, springs, reduced motion
 
-How Roblox UI should move and answer the player: a small set of motion tokens, the rules that keep motion from breaking under fast input, what a button does in the first 100 ms, how rewards are staged from a +5 coin to a top-tier reveal, which engine or library to animate with, and what replaces motion when the player turns it down. Open it when adding motion to a screen, staging a reward, or when players call the UI laggy, flat or slow. Visual design is in `ui-design-figma.md`; screens in `ui-screen-recipes.md`; the presenter that opens windows in `ui-input-crossplatform.md` §UI architecture; world effects, hit-stop and camera in `vfx-and-juice.md`; UI sound sets in `audio-sfx-music.md` §9.
+How Roblox UI should move and answer the player: a small set of motion tokens, the rules that keep motion from breaking under fast input, what a button does in the first 100 ms, how rewards are staged from a +5 coin to a top-tier reveal, which engine or library to animate with, and what replaces motion when the player turns it down. Open it when adding motion to a screen, staging a reward, or when players call the UI laggy, flat or slow. Visual design is in `ui-design-figma.md`; screens in `ui-screen-recipes.md`; the presenter that opens windows in `ui-input-crossplatform.md` §UI architecture; world effects, hit-stop and camera in `vfx-and-juice.md`; UI sound sets in `audio-sfx-music.md` §9. Examples to study: `visual-library/ui-components-and-style.md` §5 (motion references, spring libraries) and `visual-library/ui-screens.md` §7 (reward popups and summaries).
 
 Tags: `[official]` Roblox docs and staff announcements, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; field values from one production game: starting points, not laws), `[VS]` version-sensitive, `[house]` house rule or estimate.
 
@@ -26,13 +26,13 @@ Define motion as a handful of tokens; no screen creates its own `TweenInfo`.
 
 | Token | Duration | Easing | Animate | Notes |
 |---|---|---|---|---|
-| `press` | 0.06–0.10 s | Quad Out | child `UIScale` to 0.92–0.96; face sinks into the lip | Under 0.08 s nothing is visible at 30 fps |
+| `press` | 0.08–0.10 s | Quad Out | child `UIScale` to 0.92–0.96; face sinks into the lip | 2–3 frames at 30 fps: reads as a snap to the held pose. Never shorter: under 0.08 s the easing is not seen, so set the pose directly instead of tweening |
 | `release` | 0.16–0.30 s | Back Out | `UIScale` to 1 | |
 | `hover` / focus | 0.10–0.12 s | Quad Out | `UIScale` 1.04–1.06 | Gamepad focus looks at least like hover, plus the ring |
 | `enter` | 0.18–0.26 s | Back Out (playful) or Quint Out (clean) | `UIScale` from 0.90–0.92 (not from 0) + fade | Full-screen surfaces about 1.3× longer |
 | `exit` | 0.10–0.15 s | Quad In or Quint In | scale to 0.90 + fade | 0.55–0.75× the enter time; never Back In |
 | `move` | 0.20–0.40 s | Quad or Sine InOut | `Position` | Scale with distance (§3) |
-| `emphasis` | 0.25–0.45 s | Back Out | `UIScale` pop 1.2 → 1 | Reward icons, badge arrival, counter on arrival |
+| `emphasis` | 0.25–0.45 s | Back Out | `UIScale` pop from 1.15 (counter on arrival) or 1.2 (reward icon, badge) → 1 | Jump to the peak, ease back; the counter value is the only one other guides quote |
 | `toggle` / selector | 0.10–0.16 s | Quad Out | knob position, track colour | Keep the colour change under reduced motion |
 | `fill` | 0.35 s | Quad Out | bar `Size.X.Scale` | Fast start reads responsive |
 | `countUp` | `clamp(0.35 + 0.22 × log10(gain), 0.35, 1.8)` s | Quad Out (Exponential Out for huge jumps) | a number driving text at ≤ 10–30 Hz | +1 → 0.35 s, +1,000 → 1.0 s, +1,000,000 → 1.67 s |
@@ -65,7 +65,7 @@ What one press does, in order `[house]` (timings from §2; sound rules in `audio
 
 | Time | Channel | What happens |
 |---|---|---|
-| 0 ms (input began) | Visual | Face sinks 3–4 px into the lip or scales to 0.94; brightness −8% |
+| 0 ms (input began) | Visual | `press` token: face sinks 3–4 px into the lip or scales to 0.94; lightness −10–12% (`ui-design-figma.md` §3) |
 | 0 ms | Sound | One short click from the UI set, pitch-varied a few percent; client-side only |
 | 0 ms | Haptic | `HapticEffect` of type `UIClick` on gamepads and phones that support haptics `[official]`; primary actions only |
 | on release inside | Visual | `release` back to 1 with a small overshoot; the action fires on `Activated` |
@@ -85,11 +85,12 @@ Scale the response to the event; return to rest afterwards. The short loop seque
 | Event | Channel | Sequence |
 |---|---|---|
 | Small gain (`+5`) | Floating number at the point of action | Rise 24–40 px and fade over 0.6–1.2 s; merge same-kind within 0.5 s; counter counts up |
-| Currency batch | Fly-to-counter | 5–12 icons leave the source 0.03–0.05 s apart on curved paths (a `Path2D` or a two-segment tween), 0.35–0.5 s each; the counter pops (`emphasis`, 1.15×) on each arrival and counts up to the server's value; one rising tick, capped per second |
+| Currency batch | Fly-to-counter | 5–12 icons leave the source 0.03–0.05 s apart on curved paths (a `Path2D` or a two-segment tween), 0.35–0.5 s each; the counter pops (`emphasis`, 1.15×) on each arrival and counts up to the server's value; one rising tick, capped per second. |
 | Purchase | Inline on the button, then toast | `pending` → tick + the "paid" sound used nowhere else → the item flies to its home button, which gains a badge. Celebrate what was bought, not the spending `[lihfolk]` |
 | Claim (daily, quest) | Card | Card pops, reward icon jumps to the counter, the card settles into `done` with a tick; `Claim all` staggers with the cap from §3 |
 | Level up, zone unlock | Centre banner | 2–4 s, queued and gated (`ui-screen-recipes.md` §11); bar fills to 100%, flashes once, resets with the new goal visible within 1 s |
 | Rare drop, hatch, roll | Reveal | Four beats below, length by tier |
+| Many items at once (chest, ten-pull, end of run) | One summary | Every item with its count, or the maths (`50 × 1.00 = 50`), on one card with one exit button; never six popups in a row (`visual-library/ui-screens.md` #67, #70, #72) |
 
 Tier ladder `[lihfolk]` (rule-of-thumb values; each tier adds a layer rather than only getting longer or louder):
 

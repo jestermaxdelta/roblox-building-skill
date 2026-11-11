@@ -35,6 +35,8 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 join mid-cycle into a lobby with a toy (a small obby, a ball) and a visible countdown under 60 s.
 2. 0:45 first rule card; first round starts with everyone.
 3. 2:30 results: participation coins even for last place.
@@ -63,9 +65,11 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 - New minigames on a fixed weekly or fortnightly day; rotate the pool by telemetry (drop the least-finished games).
 - A host character or theme ties random games together; escalation toward a special final round `[lihfolk]`.
 - Clip moments: a dramatic final two, slow-motion finishes, silly physics.
-- Private servers and party join; streaks softened with savers, never hard resets.
+- Private servers and party join. A win streak is a score that ends on a loss: keep the best streak as a permanent record, attach no reward multiplier to it, and offer a saver only under the Conflict note in `survival-crafting.md` §Monetisation (ad or earned token, never Robux).
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: coin or reward burst, explosion, shockwave.
 
 - A phase banner with a countdown driven by server time; a rule card with one icon.
 - Scores or elimination counts above heads; a shrinking-zone indicator where relevant.

@@ -38,6 +38,8 @@ Terms: *Wins* = the soft currency paid by lane gates; *World* = a themed lane wi
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn beside the free +1 pad; the stat counter is the largest thing on screen and on the character.
 2. 0:20 enough for gate 1: an arrow points down the lane; the gate breaks with a hit-stop and a Wins pop.
 3. 1:00 back to the pad (teleport button); 2:00 gate 3 and the first egg.
@@ -72,6 +74,8 @@ Terms: *Wins* = the soft currency paid by lane gates; *World* = a themed lane wi
 - Seasonal skin of the lane and a title tag refreshed every update (`[🎄 UPD]`), removed when the season ends.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: level-up, aura, coin or reward burst.
 
 - One giant stat counter in the game's own unit (SIZE, °F, POWER) with a per-second line under it; Wins top right.
 - Lane gates show their requirement in the world at readable size; a progress bar to the next gate on the HUD.

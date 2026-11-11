@@ -117,7 +117,7 @@ Positive triggers only (list them): <delivery complete, level-up, round win, reb
 | 5 min 2× Cash | | | 3 | Shop, next to the paid boost |
 | Second chance | | | 2 | Run end |
 
-Eligibility: 2,000+ monthly visitors, publisher 13+, ID-verified, 2FA, public game with no free-form user creation. Rewards never random, never Robux, never a gate, and never large enough to inflate the economy. Each placement is reachable within one or two taps of its trigger and shows the reward before the player commits. "Exclude your most likely purchasers": <on only if the same reward is sold / off>.
+Eligibility: 2,000+ unique monthly visitors, publisher 13+, ID-verified, 2FA, questionnaire approved, public game with no free-form user creation. Rewards never random, never Robux, never a gate, and never large enough to inflate the economy. Each placement is reachable within one or two taps of its trigger and shows the reward before the player commits. "Exclude your most likely purchasers": <on only if the same reward is sold / off>.
 
 ## Platform setup
 
@@ -130,10 +130,11 @@ Eligibility: 2,000+ monthly visitors, publisher 13+, ID-verified, 2FA, public ga
 
 ## Policy checklist for this plan
 
-- [ ] Paid random items present? <yes/no>. If yes: odds UI, 100% sum, live boosted odds, pity disclosed, `ArePaidRandomItemsRestricted` fallback (free path / direct sale at EV / hide).
+- [ ] Paid random items present? <yes/no> (any bundle or pass tier containing one counts). If yes: odds UI, 100% sum, live boosted odds, pity disclosed, every outcome gives the buyer something, `ArePaidRandomItemsRestricted` fallback (free path / direct sale at EV / hide).
 - [ ] No fake discounts, restarting countdowns or false scarcity in any copy.
 - [ ] No offers during onboarding, loading or combat.
 - [ ] No stat advantage sold in competitive modes.
+- [ ] No contest or giveaway with Robux or real-money-value prizes; no charity or donation claims; no reward for joining an off-platform space.
 - [ ] Gift flow checks price levels; trades check `IsPaidItemTradingAllowed`.
 - [ ] Every paid shortcut lists a free alternative above.
 - [ ] Receipt handler is idempotent (dedupe by PurchaseId in saved data).

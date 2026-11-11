@@ -26,6 +26,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 - [ ] (HR) Asset manifest complete; duplicate-MeshId audit clean; packages AutoUpdate on; no marketplace or free models.
 - [ ] Engineering review gate passed (architecture, security, data, purchases).
 - [ ] Performance gate passed on a 2–4 GB Android phone, mid-range phone, tablet, desktop and TV with gamepad; 10–15 minute thermal test; 1-hour server soak.
+- [ ] Look-and-feel rubrics passed, scored by someone other than the maker (pass marks in references/checklists.md Gate 4): art review __/10 lowest discipline · UI __/10 per screen · tutorial __/20 · core-verb effects __/20 · any cutscene skippable.
 - [ ] Streaming verified at `StreamingTargetRadius = 64`.
 
 ## T-10 days: monetization and compliance
@@ -42,12 +43,12 @@ Do not start this checklist while any of these is true: nobody outside the team 
 
 ## T-7 days: discovery and metadata
 
-- [ ] Five custom 16:9 1920×1080 thumbnails (< 3 MB), 2–5 active; icon 512×512 readable at 150 px.
-- [ ] Title with status tag and verb phrase; description hook in the first 160 characters; genre set; supported languages set.
-- [ ] Gameplay video uploaded: authentic gameplay, no spoken audio, lyrics, real-life footage or ad text (3 uploads per month; rejections count).
+- [ ] Five custom 16:9 1920×1080 thumbnails (< 3 MB), 2–5 active on Home, each with a written first-minute promise; every tile and the 512×512 icon passed the three gates and scored 8.5+ (references/icons-thumbnails-and-store-page.md §15); tile-test sheet saved (icon subject named at 32 px, genre at 64 px).
+- [ ] Title keeps the name inside the first 23 characters (a leading tag is 6 characters or fewer and names a live event); first description sentence repeats the tile's promise; genre set (it can change only once every three months); supported languages set.
+- [ ] Gameplay video uploaded (Configurations > Places > Videos): authentic gameplay, core verb in the first 3 s, no spoken audio, lyrics, real-life footage, enhanced graphics or ad text (3 uploads per month; rejections count).
 - [ ] Thumbnails are distinct hooks, not recolours; each shows something reachable in the first minute; no Robux, giveaway or "free" wording in title, thumbnails or description (HR).
 - [ ] Languages enabled (Experience Information and Strings); Automatic Text Capture on; no text baked into UI images.
-- [ ] Experience Event created with Notify Me for launch or update day; update announcement drafted (60 characters, specific).
+- [ ] Experience Event created with Notify Me and its own thumbnail for launch or update day; update announcement drafted (60 characters, specific; one per 3 days).
 - [ ] Share links per channel; invite prompt and referral banner wired and tested.
 - [ ] Age-tier plan: launch at <16+ / Select>; under-16 eligibility steps started (verification, 2FA, questionnaire, Plus/Premium or 1,000 R$ fee).
 - [ ] Matchmaking weights set (Friends and Occupancy raised for social games).
@@ -68,7 +69,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 
 - [ ] A few hundred players you control brought in (community, testers' friends, a small Plays campaign with a LaunchData tag). Owner: __ Date: __
 - [ ] Zero data loss and no stuck tutorial states across the cohort; console clean.
-- [ ] 85%+ of new players reach the first reward within 60 s (fix first if under 70%).
+- [ ] 85%+ of new players reach the first reward within 60 s (fix first if under 70%); a failing step is repaired with references/tutorial-and-onboarding.md §14, one change per release.
 - [ ] Biggest single-step drop in the first 3 minutes is under 15% (fix first if over 25%).
 - [ ] Median first session 10+ min (fix first if under 5); D1 direction noted (small samples are noisy).
 - [ ] Kill switches exist for trading, new shop items and any currency source; test-only flags guarded by `RunService:IsStudio()`.
@@ -109,6 +110,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 | Engineering | | | |
 | Compliance (HR) | | | |
 | Performance and content (HR) | | | |
+| Look and feel (rubrics) | | | |
 | Discovery and LiveOps | | | |
 | Growth and community | | | |
 | Live-change safety (LIVE) | | | |

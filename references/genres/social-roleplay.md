@@ -38,6 +38,8 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn in a busy plaza beside three obvious toys (vehicle spawner, house door, job board).
 2. 0:20 first interaction that changes the avatar or its vehicle; no currency needed.
 3. 1:00 claim a house or locker with one tap; it is yours for the session and remembers its setup.
@@ -73,6 +75,8 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 - Conflict (cadence): Roblox's general retention guidance, as LihFolk reports it, is smaller updates every 2–4 weeks and larger features every 2–3 months; the vault's leaders ship weekly on a fixed day. For this genre follow the leaders: a small weekly prop drop, larger drops monthly.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: environmental ambience, fire, water splash.
 
 - A radial or bottom-sheet menu for avatar, house, vehicle and roles; one tap to spawn a vehicle; one tap to go home.
 - Quick-chat and emote wheels that work with chat disabled; role tags above heads.
@@ -165,11 +169,11 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/kids-and-select.md (read; chat defaults by account type)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/contextual-purchases.md (read)
-- https://devforum.roblox.com/t/strengthening-our-safety-policies-and-tools/3882864 (search summary; the Aug 2025 announcement described private-space hangouts as ID-verified 17+; the current docs say 18+. Conflict noted: follow the docs and re-check)
-- https://devforum.roblox.com/t/new-publishing-requirements-evaluation-process-for-games/4573166 (search summary)
-- https://devforum.roblox.com/t/how-to-get-physics-to-chill-out-when-handing-over-network-ownership/2152568 (search summary)
-- https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (search summary)
-- https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (search summary)
+- https://devforum.roblox.com/t/strengthening-our-safety-policies-and-tools/3882864 (read 2026-11-11; the Aug 2025 announcement described private-space hangouts as ID-verified 17+; the current docs say 18+. Conflict noted: follow the docs and re-check)
+- https://devforum.roblox.com/t/new-publishing-requirements-evaluation-process-for-games/4573166 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/how-to-get-physics-to-chill-out-when-handing-over-network-ownership/2152568 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - GitHub search for open roleplay frameworks (2026-11-10): no maintained, licensed reference of note found.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Roleplay and Social Hangouts.md` (read)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

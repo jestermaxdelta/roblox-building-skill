@@ -1,22 +1,22 @@
-# Blender-to-Roblox art pipeline and lighting
+# Blender-to-Roblox art pipeline
 
-The house art pipeline: style bible, Blender authoring, headless GLB export, upload, Studio fix-up, lighting. Open it before modelling anything, when writing export or import tooling, and when auditing a live game's look, collisions or draw calls (jump to "Level-up"). House rules 1 and 2: every visible object is a Blender model, nothing visible is a primitive Part or a marketplace asset, and everything visible is solid. Distilled from knowledge-base 5.7, 5.8 and 4.10.4, re-verified against `Roblox/creator-docs` (commit of 2026-11-07). Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
+The house art pipeline from a finished Blender model to a placed, colliding, instanced Roblox asset: units, naming, texturing method, collision plan, headless GLB export, upload, Studio fix-up, packages. Open it when setting up a kit file, writing export or import tooling, or auditing a live game's collisions, draw calls, texture memory or broken imports (jump to "Level-up"). It does not own the look: the style bible and the generic-look tells are `references/art-direction-and-quality-bar.md` (§6, §2), modelling rules are `references/blender-modeling-craft.md`, lighting is `references/lighting-and-atmosphere.md`. House rules 1 and 2: every visible object is a Blender model, nothing visible is a primitive Part or a marketplace asset, and everything visible is solid. Platform facts re-verified against `Roblox/creator-docs` (commit 7cbffff of 2026-11-10) and the DevForum announcements listed under Sources. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
 ## Start here by level
 
 | Level | Do these first | Leave for later |
 |---|---|---|
 | Beginner | Work at 1 Blender unit = 1 stud beside an R15 dummy. Apply transforms, one material, origin where the asset attaches. Export by hand (File > Export > glTF 2.0, selected objects, Apply Modifiers) or with the shipped `scripts/blender/export_kit.py`, import with the preset below, then walk on the asset. Build the first kit in `references/blender-modeling-craft.md` | PBR maps, trim sheets, Open Cloud keys, Geometry Nodes, SLIM |
-| Intermediate | Fill in the style bible. Pick one texturing method. Give every asset a collision plan (`Fidelity` or `_COL`). Wrap pieces as packages, choose one upload route and keep the ids manifest. Run the acceptance checklist on every asset | Custom CI, layout export |
-| Expert | Hash-skipping uploads in CI, duplicate-MeshId and instancing audits, merge-or-modular decisions measured in Shift+F2, Reimport and package versioning, layout transforms from Geometry Nodes, phone measurements under final lighting | Nothing: read "Platform limits" and "Import traps" in full |
+| Intermediate | Fill in the style bible (`art-direction-and-quality-bar.md` §6). Pick one texturing method. Give every asset a collision plan (`Fidelity` or `_COL`). Wrap pieces as packages, choose one upload route and keep the ids manifest. Run the acceptance checklist on every asset | Custom CI, layout export |
+| Expert | Hash-skipping uploads in CI, duplicate-MeshId and instancing audits, merge-or-modular decisions measured in Shift+F2, Reimport and package versioning, layout transforms from Geometry Nodes, the mesh-streaming rollout, phone measurements under final lighting | Nothing: read "Platform limits" and "Import traps" in full |
 
-Terms used below: a **MeshPart** is the Roblox instance one imported mesh becomes; a **draw call** is one batch of geometry sent to the GPU; **instancing** is the engine drawing copies of the same mesh in one draw call; a **SurfaceAppearance** is the child object holding a MeshPart's PBR texture maps; a **package** is a versioned, auto-updating asset wrapper. The craft of modelling itself (silhouette, proportion, bevel and colour rules, recipes, review rubric) is in `references/blender-modeling-craft.md`; rigs and animation are in `references/animation-and-rigs.md`.
+Terms used below: a **MeshPart** is the Roblox instance one imported mesh becomes; a **draw call** is one batch of geometry sent to the GPU; **instancing** is the engine drawing copies of the same mesh in one draw call; a **SurfaceAppearance** is the child object holding a MeshPart's PBR texture maps; a **package** is a versioned, auto-updating asset wrapper. Rigs and animation are in `references/animation-and-rigs.md`.
 
-Contents: Pipeline overview · Platform limits · Units and transforms · Grid and pivots · Mesh budgets · Texturing strategy · Naming · Collision · Blender automation · Upload routes · Importer preset · Post-import fix-up · Import traps · Kits, instancing, merging · Style bible · Lighting · Acceptance checklist · Level-up · Review gate · Sources
+Contents: Pipeline overview · Platform limits · Units and transforms · Grid and pivots · Mesh specifications · Texturing strategy · Naming · Collision · Blender automation · Upload routes · Importer preset · Post-import fix-up · Import traps · Kits, instancing, merging · Style bible and lighting (pointers) · Acceptance checklist · Level-up · Review gate · Sources
 
 ## Pipeline overview
 
-1. **Style bible and kit plan first**: fill in the one-page template below before the first mesh.
+1. **Style bible and kit plan first**: fill in the one-page template in `art-direction-and-quality-bar.md` §6 before the first mesh.
 2. **Author in Blender**, by hand or by driving a running Blender through a Blender MCP server (the official Blender Lab MCP; see `references/ai-toolchain-skills.md`). The owner's game repos also carry an optional bridge script, `tools/blender_exec.py`, that posts Python to that server; it is not shipped with this skill and nothing here needs it. Without any live connection, write a build script and run it headless with `blender -b -P`. Use a live session for modelling, validation and layout, never for export.
 3. **Validate in Blender**: `blender -b --factory-startup <kit>.blend -P scripts/blender/check_asset.py --` (names, transforms, UVs, one material, budgets, collision plan, origin).
 4. **Export GLB in a separate headless process**: `blender -b --factory-startup assets/blender/<kit>.blend -P scripts/blender/export_kit.py -- --out build/<kit>` (script shipped with this skill). Never export from the MCP-driven session.
@@ -33,22 +33,22 @@ Blockout rule: no primitive greybox ships. Prototype with a Blender blockout kit
 |---|---|
 | Triangles | ≤ 20,000 per mesh. Watertight, no n-gons, no zero-thickness geometry. No 2026 increase found. |
 | Materials, UVs | One material per mesh. One UV set, inside 0–1, overlaps allowed. |
-| Texture size | Up to 4096² is supported; texture streaming (automatic) loads a baseline first and raises quality to the device's memory budget. Doc guidance: 256² per 5×5 studs, 512² per 10×10, 1024² per 20×20. |
+| Texture size | Up to 4096² renders on MeshPart textures, SurfaceAppearance maps, Texture, Decal and MaterialVariant, through texture streaming (automatic: a baseline loads first, quality rises to the device's memory budget; live since 2026-01-30). Devices under about 3.5 GB of memory have 4K disabled `[official: staff posts]`. UI images, SurfaceGui content, Terrain and Sky faces are not on texture streaming yet (listed as work in progress, 2026-03), and a 2026-10 bug report shows UI images above 1024² being downscaled `[community]`. Uploads up to 8K are stored and transcoded down. Doc guidance: 256² per 5×5 studs, 512² per 10×10, 1024² per 20×20 (about 51 px per stud). |
 | Texture formats | png, jpg, tga, bmp. Open Cloud images must be under 8000×8000. Albedo and normal 24-bit RGB (normal: OpenGL tangent space); roughness, metalness, emissive mask 8-bit grey. |
 | Import formats | `.fbx`, `.gltf`/`.glb`, `.obj`. FBX and glTF carry hierarchies, PBR textures, cages, rigs, animation data and vertex colours. Asset Manager bulk import does not take rigs, skins or animation. |
 | glTF hierarchy | Each node becomes a Model holding one MeshPart per primitive of its mesh (FBX: MeshParts sit directly in the top Model). If a node and its mesh share a name, one of them gets `_Node`. |
-| Naming hooks | `_Att` → Attachment; `_OuterCage` → WrapTarget; `_InnerCage` + `_OuterCage` → WrapLayer. No collision-mesh naming hook is documented. |
+| Naming hooks | Objects named `…_Att` → Attachment; `_OuterCage` → WrapTarget; `_InnerCage` + `_OuterCage` → WrapLayer. The docs word the `_Att` rule as "mesh objects", and the character-body page says it applies when importing meshes with cage data; whether a Blender empty in a prop GLB arrives as an Attachment is not documented (see "Naming and hierarchy"). No collision-mesh naming hook is documented. |
 | Skinned meshes | Bones scale 1, rotation 0; root at origin; ≤ 4 influences per vertex; none on the root; one animation track per FBX. |
-| `RenderFidelity` | Automatic: full detail under 250 studs, medium 250–500, lowest beyond 500. Performance and Precise are the manual options. No import path for hand-made LOD chains. |
+| `RenderFidelity` | Automatic: full detail under 250 studs, medium 250–500, lowest beyond 500. Performance and Precise are the manual options. No import path for hand-made LOD chains. Being replaced: with `Workspace.MeshStreamingAndImprovedLods = Enabled` (opt-in since 2026-04-27) the property is ignored and the engine picks cloud-generated LODs by screen importance and memory; Roblox plans to make that the default and then remove both properties `[official: staff post]`. |
 | `CollisionFidelity` | Box, Hull, Default, PreciseConvexDecomposition, Tunable (adds `CollisionPrecision`). Collision data is stored even with `CanCollide = false`. |
 | Open Cloud upload | One asset per call, ≤ 20 MB. Model accepts `model/fbx`, `model/gltf+json`, `model/gltf-binary`, arrives as a package of MeshParts. Create Asset is marked beta. Content update (PATCH) works for `.fbx` only. |
 | Rate limits | No per-endpoint number is published for the Assets API in the mirrored spec; undocumented limits may apply and are counted per key owner. Read `x-ratelimit-*` headers and back off on HTTP 429. |
 | Upload cost | No fee is documented for model or image uploads in the pages read. Audio and video have quotas. Send `creationContext.expectedPrice: 0` so an unexpected fee fails the call. |
 | Moderation | Human and automated; "generally within a few hours". An asset still in the queue is invisible to players in a published game. Operation states: `Reviewing`, `Approved`, `Rejected`. |
 | Asset privacy | Images, Decals and Meshes are Open Use by default; with Asset Privacy enabled they are created Restricted and each game needs a grant. Open Use cannot be undone; game grants are permanent. |
-| Misc | Light `Range` is clamped to 120 studs. Shadows switch off below graphics quality level 4. SLIM needs streaming, a published place and Team Create, and static models without a Humanoid. |
+| Misc | Light `Range` is clamped to 120 studs. Shadows switch off below graphics quality level 4. Draw distance is at least 500 studs at the lowest quality level (since 2026-11-05). SLIM needs streaming, a published place and Team Create, and static models without a Humanoid. |
 
-Conflict: the texture spec page says both "supports up to 4096×4096" and, under UV mapping, "supports up to 1024×1024 pixel spaces". House cap stays 1024², mostly ≤ 512², because the target is a 3 GB phone and a mobile bug report describes SurfaceAppearance maps stuck at low mips `[community]`. Community guides that quote 10,000 or 21,000 triangles are wrong or stale.
+The texture spec page still says both "supports up to 4096×4096" and, under UV mapping, "up to 1024×1024 pixel spaces"; the staff posts above settle it (4K on streamed 3D surfaces, 1024² elsewhere). House cap stays 1024², mostly ≤ 512²: the target 3 GB phone is below the 4K memory line, and a staff reply confirms 4K and full texture streaming are off on a 3 GB iPad `[community: staff reply]`. Community guides that quote 10,000 or 21,000 triangles are wrong or stale.
 
 ## Units, scale, orientation, transforms
 
@@ -56,7 +56,7 @@ Conflict: the texture spec page says both "supports up to 4096×4096" and, under
 - Convention: **1 Blender unit = 1 stud** (Studio importer Scale Unit = Stud). Blender Scene > Units > Unit System = None (or Metric with Unit Scale 1), Rotation = Degrees. Do not mix with metric-scale assets (importer Scale Unit = Meter multiplies by about 3.57). The web API exposes no import settings `[community]`, so the file itself must already be in studs.
 - Keep an R15 dummy exported from Studio in a hidden Blender collection; Roblox avatars are chunky, so size doors, counters, steps and seats against it.
 - Orientation: glTF exports +Y up; model assets facing −Y in Blender; Studio importer World Forward = Front, World Up = Top; confirm once with an asset that has an obvious front.
-- Apply all transforms (rotation 0, scale 1) and modifiers before export. Unapplied scale, an unapplied Mirror modifier and flipped normals are the usual causes of inside-out or dark shading after import `[community]`.
+- Apply all transforms (rotation 0, scale 1) and modifiers before export. Unapplied scale, an unapplied Mirror modifier and flipped normals are the usual causes of inside-out or dark shading after import `[house]`.
 
 ## Grid and pivots
 
@@ -64,22 +64,11 @@ Conflict: the texture spec page says both "supports up to 4096×4096" and, under
 - Modular kit pivots at the front-lower corner so pieces snap edge to edge in 90° steps. Prop pivots where the prop attaches: bottom-centre for floor props, back-centre for wall props, top-centre for hanging props.
 - The export script moves each asset's origin to world (0,0,0) so Use Imported Pivot, Set Pivot to Scene Origin and Insert Using Scene Position agree.
 
-## Mesh specifications and budgets
+## Mesh specifications
 
-One material per mesh (each extra slot becomes another MeshPart, draw call and collision shape); consistent normals; Make Double Sided only for foliage cards.
+One material per mesh (each extra slot becomes another MeshPart, draw call and collision shape); consistent normals; Make Double Sided only where a single-sided surface is unavoidable (canopies are solid blobs here, not cards). Triangles are counted after modifiers, so the bevel is part of the budget (a one-segment bevel turns a 12-triangle box into 44, two segments into 108).
 
-| Asset class | Triangles |
-|---|---|
-| Clutter (hand-sized) | 50–300 |
-| Small prop (bins, signs, chairs) | 200–1,500 |
-| Medium prop (street lamps, vending machines) | 1,500–5,000 |
-| Vehicle | 5,000–15,000, split into ≤ 4 meshes |
-| Modular building piece | 200–3,000 |
-| Hero landmark | up to 20,000 per mesh, several meshes |
-| NPC character | 4,000–10,000 |
-| Collision proxy `_COL` | 12–200 |
-
-Spend triangles on silhouette and edge bevels. A chamfer with weighted normals is the single biggest cure for the "cheap AI asset" look; size its width by viewing distance (about 0.05 studs for hand-held props up to 0.15–0.3 for buildings seen from 40 studs, table in `references/blender-modeling-craft.md`). Count triangles after modifiers; the bevel is part of the budget (a one-segment bevel turns a 12-triangle box into 44, two segments into 108). Fuller class budgets with targets and ceilings are in the craft file.
+Class budgets (target and ceiling per class, from clutter at 150 / 300 to hero landmarks at 10,000 / 20,000 per mesh) are the table in `references/blender-modeling-craft.md` ("Recipes and budgets"); `check_asset.py` enforces the same numbers through the `Class` custom property. The only budget set here: collision proxies (`_COL`) 12–200 triangles. Bevel widths come from the viewing-distance table in the same file.
 
 ## Texturing strategy
 
@@ -91,7 +80,7 @@ Spend triangles on silhouette and edge bevels. A chamfer with weighted normals i
 | Unique bake | Hero landmark, hero NPC | ≤ 1024² each | Cap the count in the style bible |
 | Vertex colour | Baked AO, height gradients, tint variation | No texture memory | Export with `export_vertex_color="ACTIVE"` |
 
-Pick one primary method per game and write it in the style bible; mixing a flat palette kit with PBR trim props is the most common cohesion failure `[house]`.
+Pick one primary method per game and write it in the style bible; two methods meeting in one view is a cohesion failure (`art-direction-and-quality-bar.md` §2).
 
 Palette atlas method:
 1. Paint one atlas: a 16×16 grid of flat swatches from the style-bible palette, plus a few vertical gradient strips. Cells ≥ 16 px.
@@ -101,7 +90,7 @@ Palette atlas method:
 5. A re-skin (season, event, night palette) is one texture swap. For per-instance tint, `SurfaceAppearance.Color` tints the ColorMap (author those swatches near-white), or leave swatch alpha at 0 under Overlay so `MeshPart.Color` shows through.
 6. A shared texture cuts texture memory, not draw calls: instancing needs the same MeshId as well.
 
-PBR details (trim and unique routes): ColorMap sRGB, near-white if tinted; NormalMap OpenGL tangent space, never DirectX; RoughnessMap +0.1 to offset Roblox's Fresnel; MetalnessMap 0 or 1; emissive through `EmissiveMaskContent`, `EmissiveStrength`, `EmissiveTint` `[VS]`. `AlphaMode`: Overlay (default), Transparency (cutout at part Transparency 0), TintMask, Opaque (beta `[VS]`). Most SurfaceAppearance properties cannot change at runtime, so variants are separate instances; on publish the engine bakes the maps into one texture pack. One SurfaceAppearance per material named `<Name>_SA`, published as a package material library; the post-import script swaps Blender placeholder materials (`M_Trim_Metal`) for the matching `_SA`. Texel density: about 50 px per stud for architecture, up to 100 px per stud for arm's-length props, constant across the kit.
+PBR details (trim and unique routes): ColorMap sRGB, near-white if tinted; NormalMap OpenGL tangent space, never DirectX; RoughnessMap +0.1 to offset Roblox's Fresnel; MetalnessMap 0 or 1; emissive through `EmissiveMaskContent`, `EmissiveStrength`, `EmissiveTint` `[VS]`. `AlphaMode`: Overlay (default), Transparency (cutout at part Transparency 0), TintMask, Opaque (beta `[VS]`). Most SurfaceAppearance properties cannot change at runtime, so variants are separate instances; on publish the engine bakes the maps into one texture pack. One SurfaceAppearance per material named `<Name>_SA`, published as a package material library; the post-import script swaps Blender placeholder materials (`M_Trim_Metal`) for the matching `_SA`. Texel density: one figure, constant across the kit. Start at about 50 px per stud (the docs' guidance works out to 51; a 1024² map then covers a 20-stud wall). More than 64 is invisible on a 720 px phone even at 8 studs; up to 100 pays off only on arm's-length props on a 1080p screen.
 
 ## Naming and hierarchy
 
@@ -115,7 +104,7 @@ PBR details (trim and unique routes): ColorMap sRGB, near-white if tinted; Norma
 | `<Object>_Mesh` | Mesh datablock name, set by the export script |
 | `<Name>_SA` / `M_<Library>_<Name>` | SurfaceAppearance / Blender placeholder material |
 
-Under glTF the mesh datablock name reaches Studio as well as the object name (hence the `_Node` rule), and Reimport matches on mesh path and name. Blender's defaults (`Cube.014`) are neither unique nor stable, so the export script renames every datablock to `<Object>_Mesh`; which name lands on the MeshPart is not documented, so check one test import `[VS]`. Split multi-part assets into named children (`Door`, `Frame`, `Handle_Att`) so moving parts can animate and each piece gets the right collision. `_Att` empties are the hand-off between art and code: scripts find attachments by name instead of hard-coding offsets.
+Under glTF the mesh datablock name reaches Studio as well as the object name (hence the `_Node` rule), and Reimport matches on mesh path and name. Blender's defaults (`Cube.014`) are neither unique nor stable, so the export script renames every datablock to `<Object>_Mesh`; which name lands on the MeshPart is not documented, so check one test import `[VS]`. Split multi-part assets into named children (`Door`, `Frame`, `Handle_Att`) so moving parts can animate and each piece gets the right collision. `_Att` markers are the hand-off between art and code: scripts find attachments by name instead of hard-coding offsets. Unverified `[VS]`: the scripts and the walkthrough use Blender empties, the docs describe `_Att` **mesh objects**, and an older forum answer says FBX empties are dropped. On the first test import, check that every `_Att` arrived as an Attachment at the right place. If not, make each marker a one-triangle mesh object named `…_Att`, or add the Attachments in the fix-up script.
 
 ## Collision authoring
 
@@ -156,7 +145,7 @@ Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS module driving the scri
 | Open Cloud key (`POST https://apis.roblox.com/assets/v1/assets`) | CI and batch uploads | A Lune or Python script you write for the game repo (none is shipped; the `curl` call below is the whole request) reads `manifest.json`, skips unchanged hashes, polls `GET /assets/v1/operations/{id}`, writes ids. |
 | Studio MCP `open_cloud_invoke` | Interactive agent sessions | No API key. Enable `asset:read` and `asset:write` for the game and approve the export folder; the client cannot copy files into an approved folder. Studio's built-in `rbx-import-asset` skill checks triangle limits, uploads, waits for moderation and fixes scale, rotation, textures and anchoring. |
 | Official Roblox Blender add-on | Artist-driven iteration | OAuth login; uploads selected objects as packages; a re-upload publishes a new version of the same package (tracked in a `Roblox Package ID` custom property). |
-| Studio Importer + Reimport | Manual imports, one-off fixes | Reimport (Alt+Shift+R) updates MeshParts and SurfaceAppearances in place by mesh path and name and keeps CollisionFidelity, RenderFidelity and other properties. Auto-Reimport is a Studio beta `[community]`. |
+| Studio Importer + Reimport | Manual imports, one-off fixes | Reimport (Alt+Shift+R) updates MeshParts and SurfaceAppearances in place by mesh path and name and keeps CollisionFidelity, RenderFidelity and other properties. Auto-Reimport (reimports when the source file changes) is a Studio beta since 2026-09-08 `[official: staff post]`. |
 
 ```bash
 curl -s -X POST "https://apis.roblox.com/assets/v1/assets" -H "x-api-key: $ROBLOX_API_KEY" \
@@ -166,8 +155,8 @@ curl -s -X POST "https://apis.roblox.com/assets/v1/assets" -H "x-api-key: $ROBLO
 
 - The key needs the assets scope with Read and Write (OAuth `asset:read`, `asset:write`). Upload under the group that owns the game or the place may not load the asset. Never commit the key; scope it to one group and the assets API.
 - Check `moderationResult.moderationState` before publishing a build that depends on the asset. Uploads are permanent assets of the owner; remove them in the Creator Dashboard.
-- Conflict: the earlier rule "every GLB re-upload creates a new asset id" is true for raw `POST` uploads only. Package versions (Blender add-on, Studio publish) keep the package id, and Reimport keeps the instances, although a DevForum beta post reports new mesh and texture ids on each reimport with asset versioning still in progress `[community]`. So: reference kit pieces by package, let a script own `assets/asset-ids.json` (name → package id, MeshIds, file hash) and regenerate `Shared/Config/Assets.luau`; never hand-edit or hard-code MeshIds.
-- Audio quota: 100 a month verified, 10 unverified on the Open Cloud page (the audio page says 2,000 / 100; plan around the stricter numbers).
+- Conflict: the earlier rule "every GLB re-upload creates a new asset id" is true for raw `POST` uploads only. Package versions (Blender add-on, Studio publish) keep the package id, and Reimport keeps the instances and their properties but "does not version assets": every reimport uploads new meshes and textures with new asset ids, with mesh and image versioning announced as in progress `[official: staff post, 2026-09-08]`. So: reference kit pieces by package, let a script own `assets/asset-ids.json` (name → package id, MeshIds, file hash) and regenerate `Shared/Config/Assets.luau`; never hand-edit or hard-code MeshIds.
+- Audio uploads have quotas and their own rules: `audio-sfx-music.md` §4.
 
 ## Studio 3D Importer preset (manual imports)
 
@@ -238,8 +227,8 @@ Each row was hit in practice by this file's tests or by the LihFolk vault's Blen
 Conflicts with LihFolk guidance, house position in each case:
 - Conflict (collision default): LihFolk switches `CanCollide`, `CanTouch` and `CanQuery` off on anything it calls decoration and prefers non-colliding visuals with invisible Part colliders. House rule 2 is the reverse default: every visible world mesh is solid unless it carries the `NonSolid` tag for the narrow cases in performance.md (foliage canopies, cables; held tools, viewmodels and transient effect meshes never collide). Invisible collider helpers are fine in both. Trust the house rule; it exists so nothing is walk-through.
 - Conflict (blockout): LihFolk blocks out with grey Parts in the working place. Here Part blockouts live only in a throwaway place; the shipping place gets the Blender blockout kit.
-- Conflict (LOD): LihFolk reports that a Mesh Streaming and improved cloud LOD system announced in April 2026 ignores `RenderFidelity` and will remove it. The creator-docs commit of 2026-11-07 still documents `RenderFidelity` with no deprecation, and DevForum threads describe the beta stuck at the lowest LOD for some players `[community]`. Both sides agree on the practice: never hand-author LOD chains, build one mesh whose silhouette survives simplification, and check hero pieces at 250 and 500 studs. Do not build systems on `RenderFidelity`.
-- Agreement worth noting: LihFolk also flags the 4096² versus 1024² texture wording and the Unit System None versus Metric setup as unresolved in the docs; both conventions end at 1 unit = 1 stud.
+- LOD (resolved at source): the staff announcement of 2026-04-27 confirms LihFolk's report. Mesh Streaming and Improved Cloud LoDs is opt-in through `Workspace.MeshStreamingAndImprovedLods`; when enabled, `RenderFidelity` is ignored; the stated plan is opt-out by default (first targeted for July 2026; no notice of that phase was found by 2026-11-11), then removal of both properties. The docs still describe `RenderFidelity` and do not mention the new property, and bug reports describe meshes stuck at a low LOD or stuttering on moving assemblies with it enabled `[community]`. Practice either way: never hand-author LOD chains, build one mesh whose silhouette survives simplification, check hero pieces at 250 and 500 studs with the property both ways, and do not build systems on `RenderFidelity`.
+- Units: LihFolk uses Unit System Metric with Unit Scale 1, this file uses None; both end at 1 unit = 1 stud.
 
 ## Modular kits, instancing and when to merge
 
@@ -256,56 +245,10 @@ Instancing rule `[official]`: MeshParts share a draw call only when they have th
 | Merged mesh larger than about 64 studs | Split: big meshes defeat culling, streaming and SLIM |
 | Skyline, mountains, unreachable backdrop | One dedicated low-poly backdrop mesh |
 
-## Style bible in one page (template)
+## Style bible and lighting (pointers)
 
-```markdown
-# <Game> style bible v<N> (<date>, owner)
-Fantasy in one line:            | Mood words (3):
-Golden sample: <asset name>, the piece every new asset is held next to in Studio
-Palette (hex): base 8–12 ...    | accents 2 ... (accents only on things players can use)
-Value rule: ground mid-dark, walls mid, interactables brightest and most saturated
-Shape language: chunky-rounded / crisp-bevelled; primary:secondary:detail = 60:30:10
-Proportions vs R15 dummy: door __ studs, counter __, step rise __, handle thickness ≥ __
-Bevel standard: props __ studs, architecture __ studs, weighted normals always
-Grid: architecture __ studs, props __ studs; pivot rule per class
-Texturing method: palette atlas / trim sheets / mixed (state which classes use which)
-Texel density: __ px per stud; max texture __; unique bakes allowed: __ assets
-Material response: roughness range per family; metalness 0 or 1; emissive only on __
-Wear and story: edge wear yes/no; grime direction; what never gets dirty
-Lighting preset: LightingStyle __, ClockTime __, Atmosphere D/O/H/G __, post effects __
-Smallest readable detail: __ studs (anything smaller is deleted or enlarged)
-Banned: unlisted colours, unbevelled boxes, baked text, one-off textures, neon as decoration
-Sign-off: every asset passes the acceptance checklist under this lighting on a phone
-```
-
-Rules behind the template:
-- Constraints applied everywhere beat detail. Write the bible from a finished golden sample, not from intentions.
-- Recurring advice from community builders: keep the art consistent across the whole map, add contrast and a focal point, block out large shapes first, cluster props, vary heights and colour `[community]`. Consistency plus lighting and post-processing is cited as the biggest visual lever `[community]`.
-- Phone readability `[house]`: screenshot at 360 px wide and squint. Each interactable must read by silhouette; details under about 0.5 stud disappear at third-person distance; exaggerate handles, rails and frames for the chunky avatar; reserve the accent colours for things that can be used.
-- Anti-patterns: mixed texel densities, noisy procedural textures, saturated rainbow palettes, everything glowing, unbevelled boxes, one-off textures per prop, marketplace-looking proportions, text baked into textures (use SurfaceGui or decals for localisable signage).
-
-## Lighting `[VS]`
-
-`Lighting.Technology` is superseded by `Lighting.LightingStyle` (Realistic or Soft; new places start on Soft) and `Lighting.PrioritizeLightingQuality` (true keeps shadows and shaders close up; false keeps view distance). Voxel, ShadowMap and Future remain in the old enum; Legacy, Compatibility and Unified are deprecated (Retro look: Voxel plus `ColorGradingEffect.TonemapperPreset = Retro`).
-
-Decision rule: Realistic for interiors, local lights, PBR metals or a night mode (most Blender-art games); Soft for bright flat cartoon styles. `PrioritizeLightingQuality = true` for small dense worlds, false for large open maps.
-
-Starting points: `Ambient` dark and slightly tinted, e.g. (26,34,36); `OutdoorAmbient` warm by day, cool blue at night; `Brightness` 2–3 day, 0.5–1 night; `ExposureCompensation` 0, ±0.5 for mood; `EnvironmentDiffuseScale` 0.5–1; `EnvironmentSpecularScale` 0.7–1 with PBR metals; `ShadowSoftness` 0.15–0.3 (Realistic only); `ClockTime` and `GeographicLatitude` scripted and tuned for long shadows.
-
-Curriculum preset (exact doc values): Ambient and OutdoorAmbient (26,34,36), LightingStyle Realistic, ShadowSoftness 0.15, GeographicLatitude −18; Atmosphere Density 0.285, Offset 0.65, Decay (254,254,254), Glare 0.3, Haze 2.
-
-`lighting-and-atmosphere.md` owns lighting, atmosphere and post-processing values (property ranges in its §6, genre presets in its §12: bright cartoon day, golden hour, night, neon, horror, dungeon); where this section and that file differ, that file wins. Two house presets it does not carry (tune in-engine):
-
-| Preset | Style | ClockTime | Brightness | Ambient / OutdoorAmbient | Atmosphere D/O/H/G | Post |
-|---|---|---|---|---|---|---|
-| Overcast | Realistic | 12 | 1.2 | (50,55,60) / (90,95,100) | 0.4 / 0.1 / 2.5 / 0 | Contrast +0.1 |
-| Interior shop | Realistic | any | 1.5 | (30,30,35) / (60,60,70) | 0.2 / 0.5 / 0 / 0 | SurfaceLights in Blender fixtures |
-
-Stylised finish `[community]`: one `ColorCorrectionEffect` with Contrast and Saturation around +0.1 to +0.2 does most of the work for flat-colour art; take `BloomEffect` Intensity, Size and Threshold from `lighting-and-atmosphere.md` §6 (by day, a threshold high enough that only emissive and neon bloom). There is no agreed preset; tune against the golden sample.
-
-Atmosphere `Density` hides streaming pop-in and lets you lower `StreamingTargetRadius`. Glare needs Haze > 0; Decay needs Haze and Glare > 0. Changing `Workspace.GlobalWind` wakes physics assemblies. Post-processing effects each cost full-screen GPU time: keep at most 2–3 always on; toggle Blur and DepthOfField contextually.
-
-Lighting performance: lights go on `_Att` attachments inside Blender fixture models with `Shadows = false` by default; bake mood into textures, emissive and vertex colour; interiors need walls ≥ 1 stud thick (extra blockers are invisible helpers); test at graphics levels 1–3 where shadows are off.
+- **Style bible**: the one-page template, the measurable form of each line, the tie-ins to UI, VFX, audio and writing, and the generic-look tells and anti-patterns are in `references/art-direction-and-quality-bar.md` (§6 and §2). This file needs four of its lines filled in before export: grid and pivots, texturing method, texel density and bevel widths.
+- **Lighting**: `references/lighting-and-atmosphere.md` owns `LightingStyle`, property ranges (§6), presets (§12, including the official curriculum values) and the low-end tests (§11). What the pipeline contributes: every fixture model carries a `Light_Att` marker just outside its shade, lights are added with `Shadows = false` by default, interior shells are at least 1 stud thick and sealed, vertex-colour AO is baked for the levels where shadows are off, and every asset is reviewed under the game's preset, never under default lighting.
 
 ## Asset acceptance checklist (per asset, pass or fail)
 
@@ -324,50 +267,46 @@ Lighting performance: lights go on `_Att` attachments inside Blender fixture mod
 
 | Symptom in a live game | Likely cause | Fix |
 |---|---|---|
-| Mismatched styles (flat props beside PBR props, sharp beside blurry) | Assets from several sources, no bible, mixed texel density | Write the bible from the best 20% of assets; re-texture the rest onto the palette or trim library; replace marketplace models with kit pieces |
+| Mismatched styles (flat props beside PBR props, sharp beside blurry) | Assets from several sources, no bible, mixed texel density | Ordered rescue passes in `art-direction-and-quality-bar.md` §10; pipeline part: re-texture onto the palette or trim library, replace marketplace models with kit pieces |
 | Primitive leftovers (visible Parts, unions, greybox) | Blockout never replaced | Run the house-rule scan in checklists.md, sort by count, model the top offenders as kit pieces first; invisible helpers may stay |
 | Walk-through props, or invisible walls around props | `CanCollide` off on imports, missing `_COL`, Box fidelity on a concave shape | Collision scan; add `Fidelity` or `_COL`; doorway = three boxes; walk test with collision visualisation |
 | Heavy draw calls in one view | Duplicate MeshIds from whole-map imports, a texture per prop, multi-material meshes, many decals | Duplicate-MeshId audit (performance.md); re-point copies to one package; shared `_SA`; merge unique clutter; replace decals with trim or palette detail |
 | Texture memory high, blurry textures on phones | Unique 1024² sets per prop | Move props to the palette atlas or trim library; cap unique bakes; ≤ 512² default |
-| Looks flat or "plastic" | No bevels, no AO, default lighting | Bevel and weighted-normal pass; vertex-colour AO; pick a lighting preset and one ColorCorrection |
+| Looks flat or "plastic" | No bevels, no AO, default lighting | Bevel and weighted-normal pass; vertex-colour AO; a preset from `lighting-and-atmosphere.md` §12 |
 | Dark, inside-out or faceted shading | Flipped normals, unapplied Mirror or scale, modifiers not applied at export | Recalculate normals, apply transforms, export with `export_apply=True` |
 | Doors, stairs or furniture feel the wrong size | Modelled in metres or without the R15 dummy | Rescale against the dummy; lock the grid and proportions in the bible |
 | Characters snag, hover or stutter on stairs and trims | Default or Precise fidelity on detailed meshes, per-step collision | `_COL` ramp and simple hulls; Box on trims; reserve Precise for approved cases |
 | Meshes missing or failing to load for players | Asset still in moderation, uploaded under the wrong creator, Restricted asset not granted to the game | Check the operation's moderation state; upload under the owning group; grant the game in the asset's permissions |
 | Every art tweak breaks references | Raw re-uploads mint new ids | Package versioning (Blender add-on or Reimport) and the generated ids manifest |
-| Washed-out, glowing scenes | Neon used as decoration, Bloom threshold too low, several stacked post effects | Emissive only on interactables; raise Bloom `Threshold`; keep 2–3 effects |
+| Attachments missing after import (no light, prompt or seat points) | `_Att` markers not converted | Check the test import; one-triangle `_Att` mesh markers or Attachments added by the fix-up script |
+| Distant meshes look crushed or pop | Automatic LOD on a mesh whose silhouette does not survive simplification; mesh streaming enabled | Thicken thin parts; compare with `MeshStreamingAndImprovedLods` both ways; Precise only on approved hero pieces |
 
 ## Review gate
 
-- [ ] Style bible filled in and versioned; a golden sample exists in Studio; every asset passed the acceptance checklist.
+- [ ] Style bible (`art-direction-and-quality-bar.md` §6) filled in and versioned; a golden sample exists in Studio; every asset passed the acceptance checklist.
 - [ ] Every mesh came from the Blender pipeline; the manifest maps every asset name to an id; no marketplace or free models; no visible primitive Parts; Terrain only with the owner's explicit per-game approval.
 - [ ] Each kit piece uploaded once and placed as a package; duplicate-MeshId audit clean.
 - [ ] Triangle budgets met; ≤ 20k per mesh; one material and one UV set per mesh.
 - [ ] Textures ≤ 1024², mostly ≤ 512², from the shared palette or trim library; `_SA` SurfaceAppearances shared.
 - [ ] Every visible world object collides (fidelity or `_COL`; skinned meshes through a `_COL` proxy; `NonSolid` only on canopies, cables, held tools, viewmodels and transient effect meshes); house-rule scan in checklists.md passes; walk-through test passes.
-- [ ] RenderFidelity Automatic (Performance for clutter); SLIM on large static models where available.
+- [ ] RenderFidelity Automatic (Performance for clutter); hero pieces checked at 250 and 500 studs; SLIM on large static models where available.
+- [ ] One test import confirmed pivots, names, `_COL` handling and that every `_Att` marker arrived as an Attachment.
 - [ ] All uploaded assets `Approved` and owned by the game's group before the build is published.
-- [ ] LightingStyle and PrioritizeLightingQuality chosen; no interior light leaks; CastShadow off on small, moving and invisible parts.
+- [ ] Assets reviewed under the game's lighting preset (`lighting-and-atmosphere.md`); no interior light leaks; CastShadow off on small, moving and invisible parts.
 
 Grep `references/knowledge-base.md` for `## 5.7`, `## 5.8` and `### 4.10.4`. Tool and skill options for this pipeline: `references/ai-toolchain-skills.md`.
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-10; platform facts re-checked and DevForum posts read on 2026-11-11.
 
-- https://github.com/Roblox/creator-docs (read, commit ccc2b01 of 2026-11-07), under `content/en-us/`: `art/modeling/specifications.md`, `art/modeling/texture-specifications.md`, `art/modeling/export-requirements.md`, `art/modeling/reimport.md`, `art/modeling/roblox-blender-plugin.md`, `art/blender.md`, `studio/importer.md`, `studio/mcp-open-cloud.md`, `parts/meshes.md`, `parts/textures-decals.md`, `cloud/guides/usage-assets.md`, `cloud/reference/rate-limits.md`, `reference/cloud/assets/v1.json`, `projects/assets/index.md`, `projects/assets/privacy.md`, `performance-optimization/improve.md`, `workspace/streaming/slim.md`, `reference/engine/classes/{MeshPart,TriangleMeshPart,SurfaceAppearance,Lighting,BloomEffect,ColorCorrectionEffect}.yaml`, `reference/engine/enums/CollisionFidelity.yaml`
+- https://github.com/Roblox/creator-docs (read; re-checked at commit 7cbffff of 2026-11-10), under `content/en-us/`: `art/modeling/specifications.md`, `art/modeling/texture-specifications.md`, `art/modeling/export-requirements.md`, `art/modeling/reimport.md`, `art/modeling/roblox-blender-plugin.md`, `art/modeling/index.md`, `art/blender.md`, `studio/importer.md`, `studio/mcp-open-cloud.md`, `parts/meshes.md`, `parts/textures-decals.md`, `avatar/character-bodies/specifications.md` (the `_Att` conversion note), `cloud/guides/usage-assets.md`, `cloud/reference/rate-limits.md`, `reference/cloud/assets/v1.json`, `projects/assets/index.md`, `projects/assets/privacy.md`, `performance-optimization/{improve,design}.md`, `workspace/streaming/{slim,techniques}.md`, `reference/engine/classes/{MeshPart,TriangleMeshPart,SurfaceAppearance}.yaml`, `reference/engine/enums/{CollisionFidelity,RenderFidelity,AlphaMode}.yaml`
+- Roblox staff posts on the DevForum (read): 4K texture rendering, 2026-01-30, https://devforum.roblox.com/t/4k-texture-rendering/4316229 · texture streaming and its platform and instance support list, 2025-12-12 with updates to 2026-03-23, https://devforum.roblox.com/t/introducing-texture-streaming/4144855 · staff reply on 4K below 3.5 GB of memory, 2026-07-10, https://devforum.roblox.com/t/4526736 · Mesh Streaming and Improved Cloud LoDs, 2026-04-27, https://devforum.roblox.com/t/4601232 · Reimport full release, 2026-05-06, https://devforum.roblox.com/t/full-release-reimport/4622567 · Auto-Reimport beta, 2026-09-08, https://devforum.roblox.com/t/studio-beta-auto-reimport-automatically-reimport-external-files-on-changes/4859863 · draw distance and quality levels, 2026-11-05, https://devforum.roblox.com/t/4977292
+- Engine API dump, version 0.747 (https://github.com/MaximumADHD/Roblox-Client-Tracker, read 2026-11-11): `Workspace.MeshStreamingAndImprovedLods` exists (not scriptable); enum items and SurfaceAppearance members as named above
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-asset-import/SKILL.md`, `skills/roblox-blender-modeling/SKILL.md` and `references/quality-research.md`, `Skill - Roblox Asset Import.md`, `14 3D Modeling/Exporting and Validating Models for Roblox.md`, `14 3D Modeling/Mesh Gates for Generated Models - Symmetry, Seating and Caps.md`, `17 Pipelines/Art Pipeline - Concept to In-Game Asset.md`, `45 Procedural Blender Assets/Blender 5 Python Gotchas for Headless Builds.md`, `54 Untextured Stylised Modelling/Flat Colour vs Gradient Atlas vs Vertex Colour.md` (read)
-- https://devforum.roblox.com/t/meshstreamingandimprovedlods-persistently-stuck-at-lowest-lod-level-for-all-meshes/4835534 (search summary)
 - https://github.com/Roblox/roblox-blender-plugin (read: README, package versioning)
 - https://github.com/jackTabsCode/asphalt (read: README note that the web API exposes no import settings)
 - Blender 5.2.3 LTS `bpy` wheel from PyPI (ran the scripts above; read `export_scene.gltf` option defaults)
-- https://devforum.roblox.com/t/studio-beta-auto-reimport-automatically-reimport-external-files-on-changes/4859863 (search summary)
-- https://devforum.roblox.com/t/full-release-reimport/4622567 (search summary)
-- https://devforum.roblox.com/t/4k-texture-rendering/4316229 and https://devforum.roblox.com/t/introducing-texture-streaming/4144855 (search summary)
-- https://devforum.roblox.com/t/surface-appearance-loads-inconsistently-on-mobile-and-often-displays-at-very-low-quality-even-if-the-phone-allows-it/4530853 (search summary)
-- https://devforum.roblox.com/t/does-roblox-use-mesh-instancing/399564 and https://devforum.roblox.com/t/part-instancing-pre-release-announcement/130333 (search summary)
-- https://devforum.roblox.com/t/first-person-shooter-map-design-in-roblox-picture-heavy/25475, https://devforum.roblox.com/t/few-questions-from-professional-builders/2891675, https://devforum.roblox.com/t/low-poly-lighting/1015398, https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 (search summary)
-- https://gamedevreport.beehiiv.com/p/the-one-trick-to-making-good-looking-games (search summary)
-- https://devforum.roblox.com/t/weird-shading-on-meshes-imported-from-blender/2964265 (search summary)
-- https://projects.blender.org/blender/blender-addons/issues/96517 and https://blenderartists.org/t/geo-nodes-instances-to-real-instances/1409710 (search summary)
-- Searched without usable evidence: r/robloxgamedev and r/ROBLOXStudio threads on art cohesion (no results returned), an RDC talk on mobile art readability (none found), a 2026 triangle-limit increase (none found).
+- Community threads (read): https://devforum.roblox.com/t/does-roblox-use-mesh-instancing/399564 (2019 answer that `MeshPart.Color` does not affect instancing) · https://devforum.roblox.com/t/can-roblox-import-empty-objects-from-blender/1893887 (2022: empties dropped by the FBX importer) · https://devforum.roblox.com/t/4933005 (2026-10: UI images above 1024² downscaled) · https://devforum.roblox.com/t/meshstreamingandimprovedlods-persistently-stuck-at-lowest-lod-level-for-all-meshes/4835534 and https://devforum.roblox.com/t/4742906 (bug reports with mesh streaming enabled; titles and opening posts)
+- Search summaries only, not re-read: https://devforum.roblox.com/t/surface-appearance-loads-inconsistently-on-mobile-and-often-displays-at-very-low-quality-even-if-the-phone-allows-it/4530853 · https://projects.blender.org/blender/blender-addons/issues/96517 and https://blenderartists.org/t/geo-nodes-instances-to-real-instances/1409710 (Geometry Nodes instances and UVs on export)
+- Not verified: nothing here was imported into Studio. Open questions to settle on the first test import: whether `_Att` empties become Attachments, which glTF name lands on the MeshPart, and the `_COL` naming under the glTF node hierarchy. No 2026 triangle-limit increase was found.

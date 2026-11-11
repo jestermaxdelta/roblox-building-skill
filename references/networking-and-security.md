@@ -1,6 +1,6 @@
 # Networking and security
 
-What this is: the remote design rules, the threat model, the server-side guard, and the anti-cheat, ban, backdoor and credential practices for a Roblox game. Open it when designing a network surface, or jump to "Level-up audit" for a live game that is being exploited or has never been reviewed. Distilled from knowledge-base sections 4.4 and 4.5; platform facts re-checked against `Roblox/creator-docs` on 2026-11-10. Every client-to-server remote in a shipped game goes through the guard in this file. Snippets are unexecuted sketches. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
+What this is: the remote design rules, the threat model, the server-side guard, and the anti-cheat, ban, backdoor and credential practices for a Roblox game. Open it when designing a network surface, or jump to "Level-up audit" for a live game that is being exploited or has never been reviewed. Distilled from knowledge-base sections 4.4 and 4.5; platform facts and API signatures re-checked at source on 2026-11-11 (`Roblox/creator-docs`, DevForum staff posts). Every client-to-server remote in a shipped game goes through the guard in this file. Snippets are unexecuted sketches. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`, `[lihfolk]` adapted from LihFolk Vault V2.
 
 Contents: Start here by level · The three remote types · Designing the network surface · Threat model: what an exploiting client can always do · Exploit landscape · Server authority mode · Threat modelling: procedure and walkthroughs by system · Validation layers · Remote guard and rate limiter · Remote review procedure · Movement and combat checks · Detection, honeypots and consequences · Ownership, access control and third-party code · HttpService and secrets · Backdoors, plugins and team hygiene · Level-up audit · Review gate · Sources
 
@@ -22,7 +22,7 @@ Related: gameplay-systems-cookbook.md lists the exploit surface of each gameplay
 |---|---|---|---|
 | Delivery | Guaranteed | Best effort | Guaranteed with response |
 | Order | Ordered, including across RemoteEvent instances, per connection and direction | None | Not ordered relative to RemoteEvents |
-| Size | Large, keep small | Payloads over 1,000 bytes are dropped | Large |
+| Size | Large, keep small | Payloads over 1,000 bytes are dropped `[official]` | Large |
 | Use | All intents and state changes | Replaceable high-frequency data (aim, cosmetic positions) | Client asks server for data via `InvokeServer` |
 
 Rules:
@@ -30,8 +30,8 @@ Rules:
 - **Never use `RemoteFunction:InvokeClient`.** A client that never returns yields the server thread forever. Have the client fire a RemoteEvent instead.
 - `OnServerInvoke` is assigned once (the last assignment wins silently). Return small tables such as `{ ok = false }` for rejections.
 - Ordering is about handler start, not completion. Handlers that yield must tolerate interleaving (per-player busy flag or queue).
-- Engine throttle is about 500 requests per second per client per remote type; excess reliable events are delayed, unreliable ones dropped. It protects Roblox, not your game.
-- Connect server handlers in `Init`, before clients can fire. Messages with no handler queue and are then discarded.
+- Engine throttle is about 500 requests per second per client, shared by all instances of a remote type; excess reliable events are delayed in order, unreliable ones dropped `[official]`. It protects Roblox, not your game.
+- Connect server handlers in `Init`, before clients can fire. A reliable message with no handler waits in a bounded queue and is discarded once the queue is full; an unreliable one is discarded at once `[official]`.
 - The first parameter of every server handler is the `Player` who fired. That is the only trustworthy argument. Ignore any player or userId the client sends.
 
 Serialisation: functions arrive as `nil`; metatables are stripped; mixed tables and `nil` holes misbehave; non-string keys become strings; Instances arrive only if the receiver can see them (`ServerStorage` or streamed-out parts arrive as `nil`); exploiters can send tables shaped like Instances, so check `typeof(x) == "Instance"`; numbers can be NaN or infinite; strings can be megabytes long or invalid UTF-8.
@@ -45,7 +45,7 @@ Serialisation: functions arrive as `nil`; metatables are stripped; mixed tables 
 - Private per-player state: attributes on the `Player` or the character replicate to everyone. Send owner-only data with `FireClient` deltas coalesced per tick, or write attributes on a disabled `ScreenGui` (`ResetOnSpawn = false`) inside that player's `PlayerGui`, which only the owner receives `[lihfolk]`. `leaderstats` is public by design.
 - Interest filtering: send per-hit effects and entity updates only to players near enough to see them (tiers in performance.md). It is also security: what never reaches a client cannot be read by an exploiter.
 - Batch and coalesce high-frequency updates into one packed event per Heartbeat or every N frames. Deltas on reliable remotes only; absolute values on unreliable remotes.
-- Attributes as replicated state: `SetAttribute` on the server replicates to clients with the instance. `[VS]` Only the first 64 attributes replicate, names at most 50 characters, string values at most 50 characters. Attributes are public to every client that has the instance; never put private state there.
+- Attributes as replicated state: `SetAttribute` on the server replicates to clients with the instance; names are at most 100 characters `[official]`. Attributes are public to every client that has the instance; never put private state there. The tighter limit (first 64 attributes per instance, names and string values at most 50 characters) is a rule of server authority mode's state sync, not of attributes in general `[official]` `[VS]`.
 - Generated networking (Blink or Zap) packs data into `buffer`s and validates structure, not game rules. Worth it for shooters, large simulations and ECS games; a typed wrapper plus the guard is enough for a simulator or obby. Sync handlers must never yield or error; default to `SingleAsync` / `ManyAsync`. Pin versions and commit generated files `[VS]`.
 - Test with Server & Clients playtests (up to 8 clients), the Network Simulator (latency, jitter, packet loss) and the Developer Console network stats.
 
@@ -67,11 +67,11 @@ For each new feature ask: what happens if this remote is fired 1,000 times per s
 
 ## Server authority mode `[VS]`
 
-Status: Early Access (October 2025), Studio beta (December 2025), client beta (spring 2026), then a DevForum "[Full Release]" post announcing it for all games and a Roblox newsroom post dated July 2026 `[community: search summaries; months inferred from thread order]`. Conflict: `scripting/security/network-ownership.md` in the docs still says "currently in beta", while `projects/server-authority/index.md` has no beta notice. Re-check before committing.
+Status `[official: DevForum staff posts, read]`: Early Access 7 October 2025, Studio beta 9 December 2025, client beta 30 April 2026, full release for all games 9 July 2026. One stale line remains in the docs: `scripting/security/network-ownership.md` still says "currently in beta", while `projects/server-authority/index.md` carries no beta notice.
 
-- Enable with `Workspace.AuthorityMode = Server`. It forces `NextGenerationReplication`, `PlayerScriptsUseInputActionSystem`, `SignalBehavior = Deferred`, `UseFixedSimulation` and `StreamingEnabled` `[official]`.
+- Enable with `Workspace.AuthorityMode = Server` in Studio's Workspace properties. It forces `NextGenerationReplication`, `PlayerScriptsUseInputActionSystem`, `SignalBehavior = Deferred`, `UseFixedSimulation` and `StreamingEnabled` `[official]`.
 - What it removes: fly, speed, teleport and fling as classes. Clients report inputs only; the server simulates; clients predict and roll back on misprediction.
-- What it demands `[official]`: core logic in a shared ModuleScript bound with `RunService:BindToSimulation`; simulation inputs through the Input Action System (InputContexts parented under the Player), still sanity-checked; custom state in attributes (first 64, names and string values ≤ 50 characters); no `Destroy` or reparenting inside the simulation; Tools are not fully supported yet (weld a Model and track "equipped" in an attribute); look tracks up with `Animator:GetTrackByAnimationId()` each frame rather than caching them; effects run outside the simulation and must be reversible.
+- What it demands `[official]`: core logic in a shared ModuleScript bound with `RunService:BindToSimulation`; simulation inputs through the Input Action System (InputContexts parented under the Player), still sanity-checked; custom state in attributes, written only inside the bound simulation function (first 64 per instance, names and string values ≤ 50 characters); no `Destroy` or reparenting inside the simulation; Tools are not fully supported yet (weld a Model and track "equipped" in an attribute); look tracks up with `Animator:GetTrackByAnimationId()` each frame rather than caching them; effects run outside the simulation and must be reversible.
 - What it does not remove: remote validation, economy exploits, backdoors. RemoteEvents are still needed and are not ordered against property and attribute updates.
 - Use it for competitive FPS, racing, sports and fighting games. For simulators, tycoons, obbies and social games, client ownership plus the checks below is enough `[house]`. Retrofitting a live game means rewriting the movement and combat core: do it in a separate test universe, never in place.
 - Cost: more server CPU. Optimise first; Extended Services for Compute is the paid fallback (see performance.md).
@@ -130,7 +130,7 @@ export type RateLimiter = typeof(setmetatable({} :: { capacity: number, refillPe
 
 function RateLimiter.new(capacity: number, refillPerSecond: number): RateLimiter
 	local self = setmetatable({ capacity = capacity, refillPerSecond = refillPerSecond, buckets = {} }, RateLimiter)
-	Players.PlayerRemoving:Connect(function(player) self.buckets[player] = nil end)
+	Players.PlayerRemoving:Connect(function(player) self.buckets[player] = nil end) -- one limiter per remote, created once at boot
 	return self
 end
 
@@ -186,13 +186,14 @@ end
 
 local RemoteGuard = { RateLimiter = RateLimiter, Check = Check }
 
-function RemoteGuard.connect(remote: RemoteEvent, options: GuardOptions, handler: (player: Player, ...any) -> ()): RBXScriptConnection
+function RemoteGuard.connect(remote: RemoteEvent | UnreliableRemoteEvent, options: GuardOptions, handler: (player: Player, ...any) -> ()): RBXScriptConnection
 	return remote.OnServerEvent:Connect(function(player: Player, ...: unknown)
+		if player.Parent ~= Players then return end -- queued event from a player who already left: would re-create their bucket for good
 		if not options.limiter:allow(player) then recordViolation(player, options.name, "rate"); return end
 		if select("#", ...) ~= options.argCount then recordViolation(player, options.name, "argCount"); return end
 		local ok, valid = pcall(options.validate, player, ...)
 		if not ok or valid ~= true then recordViolation(player, options.name, "invalid"); return end
-		handler(player, ...)
+		handler(player, ...) -- nothing above yields; a handler that yields takes a busy lock first (usage below)
 	end)
 end
 
@@ -213,12 +214,12 @@ RemoteGuard.connect(ReplicatedStorage.Remotes.PurchaseItem, {
 	if busy[player] then return end
 	busy[player] = true
 	local ok, err = pcall(ShopService.Buy, ShopService, player, itemId)
-	busy[player] = nil
+	busy[player] = nil -- reached on every path because of the pcall
 	if not ok then warn(`[Shop] {player.UserId} {itemId}: {err}`) end
 end)
 ```
 
-Clear `busy` on `PlayerRemoving` too.
+Clear `busy` on `PlayerRemoving` too. A `RemoteFunction` gets the same steps inside `OnServerInvoke` and returns `{ ok = false }` on rejection.
 
 ## Remote review procedure
 
@@ -270,24 +271,24 @@ At boot the server creates each remote from the manifest, builds its limiter fro
 
 Decide first whether movement cheating can be made worthless `[lihfolk]`: ordered checkpoints with minimum segment times, server zone gating, a server distance check on every interaction. If a fly hacker gains only a view, a speed check with rubber-banding is enough. Build the full set only where position is the prize (races, ranked obbies, PvP, hide-and-seek, capture zones), or adopt server authority.
 
-Movement (without server authority mode): a staggered loop per player compares XZ displacement against `WalkSpeed × elapsed × tolerance` (tolerance at least 1.5) and accumulates violations in a leaky bucket. Exempt server teleports, knockback, vehicles and respawns with a "grace until" timestamp. Check sustained airtime for flying and raycast between positions for noclip (this only works because visible models have real collision, which is one more reason for the house rule). Rubber-band to the last valid position before kicking.
+Movement (without server authority mode): one staggered server loop per player, a leaky bucket per check, a "grace until" exemption for every server-caused move, and rubber-banding to the last valid position before any kick. Noclip rays only work because visible models have real collision (house rule). This table owns the numbers; the sampler sketch and the vehicle checks are in physics-and-vehicles.md, section 11.
 
 | Check | Rule | Starting numbers `[lihfolk, rules of thumb]` | Honest cases to survive |
 |---|---|---|---|
 | Sampling | Compare server-side root positions at a fixed interval using real elapsed time | Every 0.2–0.5 s; skip a sample when elapsed exceeds 3× the interval (server hitch) | Latency bursts bunch positions: never act on one sample |
 | Teleport | One-sample displacement above `maxStep` with no exemption | `maxStep = speed × dt × 1.5 + 8 to 12 studs` | Respawn and every server move: route them all through one helper that sets the exemption (search server code for `PivotTo`, `MoveTo` and character `.CFrame =`) |
-| Speed | Leaky bucket on horizontal displacement | Slack scaled by `player:GetNetworkPing()`, clamped to 1 s because the client influences it | Vehicles (`Humanoid.SeatPart` set: validate the vehicle instead); platforms and conveyors (subtract the floor part's `AssemblyLinearVelocity × dt`); knockback |
+| Speed | Leaky bucket on horizontal displacement against the server's own expected speed × dt × 1.5 | Slack of expected speed × `player:GetNetworkPing()` (round trip, in seconds `[official]`), with the ping clamped to 1 s because the client influences it | Vehicles (`Humanoid.SeatPart` set: validate the vehicle instead); platforms and conveyors (subtract the floor part's `AssemblyLinearVelocity × dt`); knockback |
 | Fly | Airborne and not descending for too long | A default jump (gravity 196.2, `JumpHeight` 7.2) rises for about 0.27 s; flag at 1.5 s | Falling (descending is fine); ragdoll; swimming and climbing. Test "grounded" with a server raycast, not `Humanoid.FloorMaterial`, which comes from the client's simulation |
 | Noclip | Ray from the previous to the current sample hits static collidable geometry | Count only penetration over 1 stud where the reverse ray also hits; cast at torso height; `RespectCanCollide = true` and the character's collision group | Doors and destructibles (tag and exclude); corners; spawns |
 
-Update "last valid position" only when grounded and plausible, so a rubber-band never returns a player to mid-air. Repeated rubber-bands are themselves a strong signal. Conflict: the knowledge base says a 1–2 Hz loop `[house]`; LihFolk samples at 2–5 Hz `[lihfolk]`. Both work with a leaky bucket; use 2–4 Hz where position is the prize, 1–2 Hz elsewhere, and in every case check distance at the moment of each interaction, because a teleport-and-back between samples is invisible.
+Update "last valid position" only when grounded and plausible, so a rubber-band never returns a player to mid-air. Repeated rubber-bands are themselves a strong signal. Sampling rate: 2–4 Hz where position is the prize, 1–2 Hz elsewhere (the knowledge base says 1–2 Hz `[house]`, LihFolk 2–5 Hz `[lihfolk]`; both work with a leaky bucket). In every case check distance at the moment of each interaction, because a teleport-and-back between samples is invisible.
 
-Combat: the client sends aim direction or target plus a timestamp; the server verifies the cooldown, recomputes the ray from the **server's** character position, and allows a small lag tolerance (community heuristic: about 10–15 extra studs and a 300–500 ms rewind cap). Conflict (rewind cap): community threads suggest 300–500 ms `[community]`, LihFolk's melee project clamps at 0.4 s `[lihfolk]`, and the cookbook sketch uses 0.25 s `[house]`. Start at 0.25 s and raise it only when logs show honest claims failing. Reject muzzle origins far from the server root. Never apply damage from `Touched` on a client-owned weapon without a server-side distance check and per-target debounce. Parallel Luau fits bulk raycast validation (see performance.md).
+Combat: the client sends aim direction or target plus a timestamp; the server verifies the cooldown, recomputes the ray from the **server's** character position, and allows a small lag tolerance. Rewind cap (this paragraph owns the value): start at 0.25 s `[house]`, as the cookbook sketch does, and raise it only when logs show honest claims failing; community threads suggest 300–500 ms with 10–15 extra studs `[community]`, and LihFolk's melee project clamps at 0.4 s `[lihfolk]`. Reject muzzle origins far from the server root. Never apply damage from `Touched` on a client-owned weapon without a server-side distance check and per-target debounce. Parallel Luau fits bulk raycast validation (see performance.md).
 
 Combat tuning `[lihfolk, rules of thumb unless marked]`:
 
 - Cadence belongs to the server: stamp each accepted action with `Workspace:GetServerTimeNow()`, compute the effective cooldown in one server function, and accept at about 0.95× the authored cooldown so jitter never rejects an honest input (measured in their reference project). A server cooldown also makes autoclickers pointless: 30 clicks a second do what holding the button does.
-- Reach: start with a generous static tolerance against current server positions (their melee project settled on 17 studs for 1.6×-scale characters after 13 rejected honest hits under real latency). For PvP, rewind the target only, start the interpolation allowance near 0.1 s, and clamp the rewind (0.4 s) so inflated ping buys nothing.
+- Reach: start with a generous static tolerance against current server positions (their melee project settled on 17 studs for 1.6×-scale characters after 13 rejected honest hits under real latency). For PvP, rewind the target only, start the interpolation allowance near 0.1 s, and clamp the rewind (their 0.4 s; this skill starts at 0.25 s, above) so inflated ping buys nothing.
 - Line of sight: one ray from attacker torso to target, ignoring blockers within 1.5 studs of the target. Ranged: replace the claimed origin with the server muzzle position and reject claims more than 2–4 studs from it. Cap and dedupe targets per action; keep a rolling damage-per-second backstop against the loadout maximum.
 - Tune with data: ship every check log-only, record distance ÷ reach, elapsed time and ping, set tolerances so 99.5–99.9% of trusted players' claims pass, then enforce. Re-check after any change to character scale, weapon reach or move data: most new combat false positives come from your own update.
 - Click-rate mechanics: cap the counted rate at about 12–15 per second so fast humans and machines score the same. Timing regularity is a soft signal only (network jitter blurs it and accessibility tools click regularly). For AFK farming prefer diminishing rewards or a presence prompt that pauses rewards, not play.
@@ -295,10 +296,10 @@ Combat tuning `[lihfolk, rules of thumb unless marked]`:
 ## Detection, honeypots and consequences
 
 - Heuristics: completion times below a designer floor, gain per minute above the theoretical maximum, inhumanly regular cadence, impossible combinations. Combine into a suspicion score.
-- Honeypot remotes that no legitimate client code fires are a high-confidence signal: log it and kick the session `[official]`. Variant: record each remote's intended direction and flag a client that fires a server-to-client remote. Conflict: this file used to say "observe before punishing"; the docs treat a honeypot hit as strong enough for a session kick, while bans still need several signals.
+- Honeypot remotes that no legitimate client code fires are a high-confidence signal: log it and kick the session `[official]`. Variant: record each remote's intended direction and flag a client that fires a server-to-client remote. A honeypot hit justifies a session kick on its own; a ban still needs several signals.
 - Why never ban on one signal: it can be lag, a legitimate shortcut or a shared device; an instant ban teaches the exploiter which check fired; and bans spread to suspected alt accounts by default, so a false positive multiplies. Ban only when several different signals push a suspicion score past a high threshold, and never on a client-side detection `[official]`.
 - Consequence ladder: silent logging → quiet mitigation (reject, rubber-band, zero rewards) → temporary restrictions → kick → ban. Delay visible consequences so the exploiter cannot tell which check fired.
-- `Players:BanAsync` fields: `UserIds`, `Duration` (seconds, −1 permanent), `DisplayReason` (≤ 400 chars, filtered), `PrivateReason` (≤ 1,000 chars), `ExcludeAltAccounts` (alt propagation is on by default), `ApplyDeviceBlock` (24 h), `ApplyToUniverse` (default true). `GetBanHistoryAsync` and `UnbanAsync` for escalation and appeals. Publish your rules. `Players.BanningEnabled` switches the API on. Creator Hub > Moderation > Bans adds, lists and lifts bans with history (group permission required) `[official]`. There is no public API to query alt status `[community: open feature request]`; a 2026 DevForum post announces a new device-blocking capability for the Ban API, details not verified here `[VS]`.
+- `Players:BanAsync(config)` fields `[official]`: `UserIds`, `Duration` (seconds, −1 permanent), `DisplayReason` (≤ 400 chars, filtered), `PrivateReason` (≤ 1,000 chars, never sent to clients), `ExcludeAltAccounts` (alt propagation is on by default), `ApplyToUniverse` (default true), `ApplyDeviceBlock` (released June 2026 `[VS]`: blocks the device of a user who is connected when banned for 24 h; desktop only, Windows and macOS; only `UnbanAsync` lifts it, an unban from Creator Hub or Open Cloud does not). It is server-only, makes one HTTP call per user id and can throw: wrap it in `pcall`. `GetBanHistoryAsync` (production servers only) and `UnbanAsync` for escalation and appeals. Publish your rules. `Players.BanningEnabled` switches the API on and can only be set in Studio's properties. Creator Hub > Moderation > Bans adds, lists and lifts bans with history (group permission required). There is no public API to query alt status `[community: open feature request]`.
 - `[VS]` Device trust: `Player.DeviceTrustLevel` (`Pending`, `Unknown`, `None`, `Standard`, `Full`) and `IntegrityService.EvaluatePlayerDeviceTrust` (one callback per place, about 10 s timeout, after which the player is accepted). Android, Chromebook and Quest report `None`, `Standard` or `Full`; web browsers report `None`; iOS, macOS, Windows, Xbox and PlayStation are "coming soon" and report `Unknown` `[official]`. It describes the device, not the player.
 - Device trust rules `[official]`: list the levels you allow (never compare numerically: `Unknown` sorts before `None`); reject only from the callback, never from `PlayerAdded`; read it on the server; check Creator Hub > Safety > Anti-cheat for the share of users, playtime and revenue per level before choosing a policy. Escalate from routing by trust (casual versus ranked places), to gating features such as trading, to rejecting `None` as a last resort.
 
@@ -308,7 +309,7 @@ Enforcement design `[lihfolk]`:
 - **Score shape.** Weight each rule by reviewed precision; cap each rule's contribution so 200 lag-induced speed flags cannot reach the action threshold; require signals from two categories (movement, combat, economy, remote misuse) for any visible consequence, unless one near-certain signal (honeypot) fired.
 - **Rollout.** Every rule has a mode: off, shadow (logged, no effect) or enforce. New and changed rules run in shadow for at least a week; review 20–50 flagged players by hand; enable on a canary (about 10% of servers, by JobId hash or a Configs flag); then enforce. Fall back to shadow automatically when a rule's flag rate jumps (for example 5× its weekly average within an hour): spikes are nearly always your own update.
 - **Log with every signal:** ping, device type, place version, rule version, server frame time. Write an evidence record with a short case id before acting; put the case id in `PrivateReason` and in a neutral `DisplayReason` (never "speed hack detected").
-- **Ban mechanics** `[VS]`: kicked exploiters rejoin in seconds, so confirmed cases get `BanAsync`. Set `ExcludeAltAccounts = true` unless confidence is high. LihFolk also reports that `UserIds` takes up to 50 ids per call, that an unban lifts only bans of the same scope (universe or place) and that bans do not apply from Studio (test in a private production place); none of the three was re-checked in the docs mirror.
+- **Ban mechanics** `[VS]`: kicked exploiters rejoin in seconds, so confirmed cases get `BanAsync`. Set `ExcludeAltAccounts = true` unless confidence is high. An unban lifts only bans of the same `ApplyToUniverse` scope, and bans issued from Studio or a team test do not apply to production (test in a private production place) `[official]`. LihFolk reports a limit of 50 `UserIds` per call; the API reference states none.
 - **Appeals:** look the case up by id, read the evidence before the player's story, check whether the rule version that fired has since been fixed, and check context (high ping, new device type, a buggy place version). Keep evidence for a fixed period and include it in right-to-erasure handling.
 - Not adopted: secretly degrading a suspect's experience. LihFolk allows it at high confidence; here the only silent measure is holding flagged accounts off leaderboards (house rule: no punishment patterns on possibly honest players).
 
@@ -355,7 +356,7 @@ Creator account security and takeover recovery `[lihfolk, community-reported]`:
 1. **Contain an active incident first.** Rotate keys and secrets, remove unknown collaborators and plugins, read Activity History and place version history, then fix, publish and restart servers.
 2. **Backdoor scan** with sketch C over the whole DataModel. Review every hit by hand.
 3. **Remote inventory** with sketch D, then the remote review procedure above on every handler, economy remotes first. Threat-model each system with the walkthrough table.
-4. **Play the exploiter in Studio** (Server & Clients test, client command bar): fire each remote with wrong types, NaN, a megabyte string, another player's instances, and 100 times a second; set `WalkSpeed` locally; teleport; trigger prompts from across the map. Do not use real executors for this: a 2026 bug report describes Hyperion banning developers who tested on their own experiences `[community]`.
+4. **Play the exploiter in Studio** (Server & Clients test, client command bar): fire each remote with wrong types, NaN, a megabyte string, another player's instances, and 100 times a second; set `WalkSpeed` locally; teleport; trigger prompts from across the map. Do not use real executors for this: a March 2026 bug report describes Hyperion banning a developer who tested on an experience they could edit `[community: one report]`.
 5. **Fix in this order:** anything that grants currency, items or purchases; then damage and PvP; then movement; then cosmetics.
 6. **Configuration:** "Secure within universe only"; `LoadStringEnabled` off; HTTP off unless used; dev and test in a separate universe; roles and keys as above; no secrets in source.
 7. **Then add detection:** honeypot, suspicion score, logs to analytics, consequence ladder.
@@ -453,7 +454,7 @@ print(remotes, "remotes;", review, "server scripts to read first")
 - [ ] Unreliable remotes carry only replaceable data under 1,000 bytes.
 - [ ] Backdoor scan run over the whole DataModel; every hit read; no `require(<number>)`, `getfenv` or `loadstring` left.
 - [ ] CI keys live on a dedicated automation account, experience-restricted, IP-restricted and expiring; no cookies in CI; group roles are least-privilege.
-- [ ] Server authority decision recorded (adopt for competitive physics, otherwise validation loops), with the docs status re-checked.
+- [ ] Server authority decision recorded (adopt for competitive physics, otherwise validation loops).
 - [ ] Each system has a threat table (assets, boundaries, scored threats, design fix); every remote has a manifest entry enforced at start-up.
 - [ ] Remote review procedure passed on every value-moving handler, including the Studio fuzz corpus and the race test.
 - [ ] New detectors start in shadow mode; no visible consequence from one rule; bans carry a case id and an evidence record.
@@ -463,14 +464,12 @@ Grep `references/knowledge-base.md` for `## 4.4` and `## 4.5`.
 
 ## Sources
 
-Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
+Accessed 2026-11-11. `Roblox/creator-docs` at commit 7cbffff (2026-11-10).
 
-- https://github.com/Roblox/creator-docs: `content/en-us/scripting/security/{security-tactics,client-server-boundary,network-ownership,server-side-detection,third-party-vulnerabilities,access-control,device-trust}.md`, `projects/server-authority/{index,techniques}.md`, `projects/{groups,activity-history}.md`, `production/bans.md`, `cloud/auth/api-keys.md`, `studio/mcp-open-cloud.md`, `scripting/capabilities.md`, `reference/engine/classes/{Players,Workspace,UnreliableRemoteEvent,ScriptEditorService}.yaml` (read)
-- Server authority (search summary): https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993, https://devforum.roblox.com/t/studio-beta-build-fair-responsive-games-with-server-authority/4139157, https://devforum.roblox.com/t/early-access-server-authority/3983188, https://devforum.roblox.com/t/client-beta-publish-test-your-server-authoritative-experiences/4606949, https://about.roblox.com/newsroom/2026/07/creating-responsive-cheat-resistant-games-roblox-server-authority
-- https://devforum.roblox.com/t/can-you-detect-if-an-event-was-fired-from-an-executor/4064026 (search summary)
-- https://devforum.roblox.com/t/hyperion-incorrectly-bans-developers-for-permitted-anticheat-testing-on-edit-enabled-experiences/4527239 (search summary)
-- https://devforum.roblox.com/t/ban-api-new-device-blocking-capability/4668265, https://devforum.roblox.com/t/give-us-access-to-the-alt-account-detection-api/4909414 (search summary)
-- https://devforum.roblox.com/t/removing-backdoors-101/545574, https://devforum.roblox.com/t/malicious-scripts-inside-cafe-models/3887121, https://devforum.roblox.com/t/backdoor-prevention/3122952, https://devforum.roblox.com/t/clearing-your-game-of-malicious-scripts-plugins/511830, https://devforum.roblox.com/t/shieldscan-anti-backdoor-scanner-for-roblox-studio/4736119 (search summary)
+- https://github.com/Roblox/creator-docs (read): `content/en-us/scripting/security/{security-tactics,client-server-boundary,network-ownership,server-side-detection,third-party-vulnerabilities,access-control,device-trust}.md`, `scripting/events/remote.md`, `projects/server-authority/{index,techniques}.md`, `projects/{groups,activity-history}.md`, `players/index.md` (bans, device blocking), `production/bans.md`, `cloud-services/{http-service,secrets}.md`, `cloud/auth/api-keys.md`, `studio/mcp-open-cloud.md`, `scripting/capabilities.md`, `reference/engine/classes/{Players,Player,Workspace,Instance,RemoteEvent,UnreliableRemoteEvent,ScriptEditorService}.yaml`
+- Server authority (read, Roblox staff posts): https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993, https://devforum.roblox.com/t/studio-beta-build-fair-responsive-games-with-server-authority/4139157, https://devforum.roblox.com/t/early-access-server-authority/3983188, https://devforum.roblox.com/t/client-beta-publish-test-your-server-authoritative-experiences/4606949. Not re-read: https://about.roblox.com/newsroom/2026/07/creating-responsive-cheat-resistant-games-roblox-server-authority
+- Ban API device blocking (read): https://devforum.roblox.com/t/ban-api-new-device-blocking-capability/4668265. Hyperion ban report (read; one developer's bug report, closed): https://devforum.roblox.com/t/hyperion-incorrectly-bans-developers-for-permitted-anticheat-testing-on-edit-enabled-experiences/4527239
+- Search summary, not re-read: https://devforum.roblox.com/t/can-you-detect-if-an-event-was-fired-from-an-executor/4064026, https://devforum.roblox.com/t/give-us-access-to-the-alt-account-detection-api/4909414, https://devforum.roblox.com/t/removing-backdoors-101/545574, https://devforum.roblox.com/t/malicious-scripts-inside-cafe-models/3887121, https://devforum.roblox.com/t/backdoor-prevention/3122952, https://devforum.roblox.com/t/clearing-your-game-of-malicious-scripts-plugins/511830, https://devforum.roblox.com/t/shieldscan-anti-backdoor-scanner-for-roblox-studio/4736119
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-secure-remotes/SKILL.md`, `skills/roblox-anti-exploit-review/SKILL.md`, `LihFolk Vault V2/22 Anti-Exploit and Security/{Threat Modeling a Roblox Game, Economy Exploits - Dupes Races and Purchase Abuse, Detecting Movement Exploits - Speed Fly Noclip Teleport, Detecting Combat Exploits - Reach Rate and Aim, False Positives Lag and Fair Enforcement, Logging Bans and Appeals, Testing Your Own Remotes - Fuzzing and Abuse Tests, Autoclicker and Macro Detection for Combat Remotes, Admin Commands Done Safely - Permissions and Audit Logs, Creator Account Security and Takeover Recovery}.md`, `03 Architecture and Networking/{Remote Abuse Patterns and Rate Limiting in Practice, Interest Management and Per-Player Replication}.md` (read)
 - Executor-vendor pages seen only as search snippets were used solely for the statement that such tools are still advertised; none is linked here.
 - No evidence found: an official statement of which platforms Hyperion covers; an official description of how alt-account detection works.

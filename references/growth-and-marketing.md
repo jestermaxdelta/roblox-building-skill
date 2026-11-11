@@ -21,7 +21,7 @@ Traffic multiplies whatever the game already does to a new player. Buy or borrow
 | Gate item | Threshold | Why |
 |---|---|---|
 | Onboarding funnel, economy and offer events live | Required | Otherwise the spend teaches nothing |
-| First-play bounce and D1 | At or above the dashboard benchmark median; fallback D1 > 11% (market-scan-2026-11.md) | Roblox: improve retention and engagement before acquiring `[official]` |
+| First-play bounce and D1 | At or above the dashboard benchmark median; with no dashboard benchmark, D1 above the 11% house launch target `[house]` (market-scan-2026-11.md; the large-title median is 10.3%, analytics-and-discovery.md §Benchmarks) | Roblox: improve retention and engagement before acquiring `[official]` |
 | Like ratio | ≥ 85% | A sponsored tile pays to display the rating (market-scan rule 13); ad-running games sit at a 79% median vs 92% for others (vault sample) |
 | Tile matches the first minute | Thumbnail rules 1–13 pass; rubric in `icons-thumbnails-and-store-page.md` §15 scores 8.5+ | Mismatched metadata reduces exposure `[official]` |
 | Stability | Crash rate under 2–3%, join ≤ 15 s on low-end Android | A spike magnifies crashes |
@@ -37,7 +37,7 @@ Soft launch `[official]` setting, `[lihfolk]` method: publish publicly with Audi
 | New players reaching the first reward within 60 s | Under 70% | 85%+ |
 | Largest drop at any one step within the first 3 minutes | Over 25% | Under 15% |
 | First session, median | Under 5 min | 10+ min |
-| D1 | Clearly below the genre benchmark | Near or above it |
+| D1 | Below the dashboard benchmark, or under 8.4% on the fallback row | Near or above the median |
 
 What counts for ranking `[official]`: Recommended For You ranks only on users who arrived organically through it. Players from ads, search, friends, share links and social media never enter those signals, but any plays help a game get considered. So outside traffic cannot repair weak organic signals, and cannot damage them either.
 
@@ -62,37 +62,38 @@ Formats and mechanics `[official]`:
 
 | Item | Fact |
 |---|---|
-| Access | 13+ with verified email. Card payment 18+ ($1 verification hold; first-time card users are charged $5 toward the first bill). Ad credits from Robux for 13+: 1-credit minimum, irreversible; Robux earned at the US 18+ DevEx rate are converted first, so convert deliberately |
-| Sponsored experiences | A sponsored tile on Home; the same campaign also runs in search results. The sponsored tile and the organic tile can both show to one user |
+| Access | 13+ with verified email. Card payment 18+ ($1 verification hold; first-time card users are charged $5 toward the first bill). Ad credits from Robux for 13+: 1-credit minimum, irreversible; Robux earned at the US 18+ DevEx rate are converted first, so convert deliberately. One ad credit cost 263 Robux in September 2025 (staff post; read the conversion preview) `[VS]`. Group-owned games get their own ad account through the group switcher |
+| Sponsored experiences | A sponsored tile on Home; the same campaign also runs in search results. The sponsored tile and the organic tile can both show to one user. Since October 2026 sponsored tiles also reach users 13 and under (age-appropriate, labelled, not based on personal data), and gameplay video in sponsored tiles was announced as rolling out (staff post, 2 Oct 2026) `[VS]` |
 | Search ads | Up to 10 keywords per ad set, exact keyword match, shown at the top of results or directly after an exact-name match. No audience targeting (all regions, 13+). Second-price auction adjusted for relevance: bid only on keywords the game truly matches. The search-ads page still describes an older keyword flow with an objective named Visits while the Ads Manager page says campaigns appear in search automatically: check the live UI |
 | Immersive ads | Billboards (image, or video up to 30 s) and portals placed inside other creators' games; a portal teleports the player in. These are also what a publisher places to earn |
-| Objectives | **Plays** (broad, cheapest, early traffic and tests); **Earnings** (marked "Limited" in the docs; likely spenders, higher cost per play); **Engagement** (age-checked highly engaged players who count toward the Kids/Select 250-play threshold; smaller audience, higher cost, does not auto-pause at the goal) |
+| Objectives | **Plays** (broad, cheapest, early traffic and tests); **Earnings** (still marked "Limited" in the docs; beta from May 2026, opened to "nearly 30,000" eligible games on 2 Oct 2026; eligibility is a monetisation threshold Roblox does not publish; likely spenders, higher cost per play, judged on return on ad spend); **Engagement** (age-checked highly engaged players who count toward the Kids/Select 250-play threshold; smaller audience, higher cost, does not auto-pause at the goal) |
 | Audiences | All; New (never played or 180+ days away); Recent (last 30 days; needs 10,000+ recent players); Lapsed (30–180 days; needs 20,000+ lapsed players). Advanced targeting by location, age, gender, genre, device raises cost per play |
 | Budget and bidding | Daily or lifetime budget; automated bidding; engaging games receive ad-system discounts; unused credits return when the campaign ends |
-| Creatives | Up to 10 thumbnails per campaign, 16:9, split evenly, toggled individually. An "AI generate" option exists: do not use it (house rule 1 and the accuracy rule; creatives are real captures of the Blender-built game) |
-| Timing | Moderation within about 24 h; first 24 h is a learning phase; reports lag up to 48 h |
+| Creatives | Up to 10 thumbnails per campaign, 16:9, split evenly, toggled individually (docs; a May 2026 staff post says 25: check the live UI). An "AI generate" option exists: do not use it (house rule 1 and the accuracy rule; creatives are real captures of the Blender-built game) |
+| Timing | Moderation within about 24 h (staff, Oct 2026: review queues now take minutes); first 24 h is a learning phase; reports lag up to 48 h. Staff advice: assess after 7–10 days, and do not pause inside the first 24–48 h because the learning period restarts |
 | Fixed after publishing | Goal, audience and budget type cannot be edited; name, budget amount, schedule and creatives can. A wrong audience means a new campaign |
 | Invalid traffic | Campaigns are re-checked for fraudulent traffic 14 days after they end and billing is adjusted |
-| Attribution | New player: 30 days credited to the ad. Returned after 7+ days away: 7 days. Recent player: that session only. Read the Recent and Resurrected views, not only All Users |
+| Attribution | New player: 30 days credited to the ad. Returned after 7–29 days away: 7 days. Returned after 30+ days away: 30 days. Played in the last 7 days: that session only. Read the New, Recent and Resurrected views, not only All Users |
 | Launch data | Advanced join options pass LaunchData so the game can tailor onboarding per campaign (tutorial for New, "welcome back" for Lapsed) |
 | API | Open Cloud Ads API (`/ads-management/v1`): v1 supports the ENGAGEMENT objective only; budgets are micro-USD strings; creatives are uploaded image assets |
-| Effect on organic | None on ranking. A user acquired by an ad generally stops seeing the organic tile, so organic impressions can dip during a campaign. That is not a penalty |
+| Effect on organic | None on ranking; an ad-acquired user's later play never becomes a ranking signal, even when they return through Home. That user generally stops seeing the organic tile, so organic impressions can dip during a campaign. That is not a penalty |
 
 Costs (none of these is a guarantee):
 
 | Claim | Value | Source and grade |
 |---|---|---|
-| Roblox, RDC 2025 recap | Cost per play down more than 71%; a player for under $0.01; "varies with spend" | `[official]` claim, no baseline given (search summary) |
+| Roblox, RDC 2025 recap (10 Sep 2025) | Cost per play "over 71% cheaper"; a player "for less than $0.01" | `[official]` claim, no baseline or spend level given (read) |
 | Roblox staff posts, 2025 | 44% and 60% cost-per-play decreases quoted in different posts | `[official]`, the two figures conflict (search summary) |
+| Roblox, Ads Manager recap (2 Oct 2026) | Across 21 campaigns in randomised studies: median +14% play sessions and +10% D7-retained users among users shown ads. Of 1,200+ games on the Earnings objective, nearly two in three that reinvested up to 4% of earnings passed 100% return on ad spend (sample: games with 6+ Robux of revenue per user) | `[official]`, Roblox's own studies of selected games (read) |
 | Forum-quoted averages by objective | About $0.007–0.011 per play | `[community]`, undated (search summary) |
 | Vendor guide | $0.0073 per play, Nov 2025 | `[community]`, vendor source (search summary) |
 | Roblox marketing page | Games running ads: +150% impressions, +24% plays, +16% playtime; one top-100 shooter gets up to 10% of plays from sponsored ads after scaling 10 → 25 creatives | `[official]` marketing |
-| Developer reports | Mixed: some call it a money drain for small games; one 2025 thread reports far worse results after the Ads Manager redesign | `[community]` anecdotes |
+| Developer reports | Mixed: some call it a money drain for small games; one July 2025 bug report shows about 28× fewer impressions per dollar in the redesigned Ads Manager than in the classic one (1.8M for $79 against 119K for $147) | `[community]` anecdotes (read) |
 
 When ads are worth it:
 
 - The readiness gate in §1 passes, and the purpose is one of: (a) a measurement buy of a few hundred first sessions to read the funnel; (b) the Engagement objective to clear the 250-play gate, on its own budget, paused at the goal; (c) scaling when the value of an ad-acquired player exceeds the cost per play; (d) re-engaging Lapsed players for a dated update.
-- Not worth it: to fix low organic impressions (ad users do not feed ranking), while the like ratio is under 85%, before funnels exist, or when judged on day 1. Roblox's guidance is to give a campaign several days, and to fix onboarding if nothing moves after 3–5 days (search summary).
+- Not worth it: to fix low organic impressions (ad users do not feed ranking), while the like ratio is under 85%, before funnels exist, or when judged on day 1. Roblox's guidance for the Engagement objective is to give a campaign several days, and to fix onboarding if nothing moves after 3–5 days `[official]`.
 
 Target cost per play `[house]` formula, `[VS]` inputs:
 
@@ -120,7 +121,7 @@ Campaign patterns (structure adapted from `[lihfolk]`):
 | Reactivation | Lapsed Players (needs 20,000+), timed to a real update with an event live that day | Resurrected Users view; your own "returned after 30+ days" segment |
 | Eligibility | Engagement objective, its own budget, 3–5 days, paused by hand at the 250-play threshold | Audience Reach progress |
 
-Reading lag `[lihfolk]` (rule of thumb): decide on CPP after 2–3 days, on the ad cohort's D1 after 3–4 days, on 7-day revenue per user after 9–10 days. Never judge on the first evening.
+Reading lag `[lihfolk]` (rule of thumb): read CPP after 2–3 days, the ad cohort's D1 after 3–4 days, 7-day revenue per user after 9–10 days. Roblox staff say 7–10 days before judging a campaign, and that a pause in the first 24–48 h restarts learning `[official]`: read early, change late.
 
 ```lua
 --!strict
@@ -149,7 +150,7 @@ end
 -- (links get copied): cosmetic or small, once per account, never tradeable.
 ```
 
-Operating rules: start with Plays + New Players and 3–5 distinct honest creatives; cap the test budget; pause creatives with the worst cost per play after the learning day; add creatives rather than budget first; never run a creative the first minute does not deliver; run Lapsed campaigns only in update weeks.
+Operating rules: start with Plays + New Players and 3–5 distinct honest creatives; cap the test budget; switch off the worst creatives only after several days of data (toggle the creative; do not pause the campaign); add creatives rather than budget first; never run a creative the first minute does not deliver; run Lapsed campaigns only in update weeks.
 
 Publisher side (earning, not growth): immersive ad units are Roblox-served surfaces, not Blender assets. If used at all, mount them in a Blender-authored frame with collision, keep them out of the FTUE path, and treat rewarded video under the existing rule (fixed reward, opt-in, never a gate).
 
@@ -173,9 +174,9 @@ Clip structure `[lihfolk]` (rule of thumb): hook in 0–2 s (the most interestin
 
 It works badly when the fun takes ten minutes to arrive (film the payoff, and make the game deliver it fast) or when the first session leaks: video traffic comes in bursts, and a viral clip gives one chance, which a leaky funnel throws away `[lihfolk]`.
 
-Capture `[lihfolk]`, adapted to the house rules:
+Capture `[lihfolk]`, adapted to the house rules. Recorder settings (bitrate, frame rate, file naming), the 2026 free-camera controls, repeatable camera takes and a trailer shot list are in `cutscenes-and-cinematics.md` §16; still-image quality settings are in `icons-thumbnails-and-store-page.md` §8. What belongs here is the capture place and the rules for footage that leaves Roblox:
 
-- Keep a capture copy of the place with the same lighting as live, a hide-UI toggle (a `CaptureMode` attribute every ScreenGui respects is more reliable than disabling guis from outside), free camera (Shift+P in a solo test `[official]`), and debug grants that are labelled capture-only and never enabled in the live place. Outcomes shown must be reachable at the real odds.
+- Keep a capture copy of the place with the same lighting as live, a hide-UI toggle (a `CaptureMode` attribute every ScreenGui respects is more reliable than disabling guis from outside), free camera (Left Shift + P `[official]`), and debug grants that are labelled capture-only and never enabled in the live place. Outcomes shown must be reachable at the real odds.
 - Record landscape at full resolution with the subject in the centre third, then crop 9:16; resize the window tall only for shots that need native vertical.
 - Do not show other players' usernames or display names, and never record voice chat: film with team accounts in a private server. Many players are children.
 - Music: Roblox's audio library licence covers use inside Roblox; whether a track may be used in an off-platform video depends on its own licence. Use music you own or licensed for social video.
@@ -233,7 +234,7 @@ In-game features that generate clips (build these into the game, they are free m
 | Tool | Limits and use `[official][VS]` |
 |---|---|
 | Update announcement | 60 characters, at most one every 3 days, sent to players who opted in; be specific ("New Ice Caves world + 3 pets"), never "bug fixes" |
-| Experience Events | Dated start and end, thumbnails, "Notify Me"; Trending Events sort needs 1,000+ RSVPs; feature the event on the group page; log every weekly update as an event |
+| Experience Events | Dated start and end, up to 5 thumbnails (a unique one lifts engagement), "Notify Me"; the Trending Events sort needs 1,000+ RSVPs and a start inside the last 7 days; feature the event on the group page; log every weekly update as an event |
 | Off-Platform Featuring | Time-limited events or significant updates; submit at least 7 days before start |
 | Experience notifications | Opted-in 13+ users, one per user per day, personal and actionable |
 | Promotional text (beta) | Short secondary line in publish settings; use for the live update, never for giveaways |
@@ -372,7 +373,7 @@ A relaunch is a change of promise plus a change of product, announced honestly: 
 
 ## Sources
 
-Accessed 2026-11-10. Roblox creator docs read from the `Roblox/creator-docs` GitHub mirror (commit dated 2026-11-07).
+Accessed 2026-11-10; Ads Manager, social links, events and discovery facts re-read on 2026-11-11 against the `Roblox/creator-docs` GitHub mirror (commit 7cbffff, 2026-11-10).
 
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/ads-manager.md, search-ads.md, advertise.md, advertise-on-roblox.md, comply-with-advertising-standards.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud/guides/advertising.md (read)
@@ -383,9 +384,10 @@ Accessed 2026-11-10. Roblox creator docs read from the `Roblox/creator-docs` Git
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/publish-games-and-places.md, thumbnails.md, descriptions.md, kids-and-select.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/localization/automatic-translations.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/creator-programs/standout-games.md, creator-affiliate.md (read)
-- https://devforum.roblox.com/t/ads-for-creators-rdc-recap-and-what%E2%80%99s-next/3929106 (search summary)
-- https://devforum.roblox.com/t/leveling-up-ads-manager-with-new-features/3587640, /t/roblox-staff-streams-learn-more-about-the-new-ads-manager/3676241 (search summaries)
-- https://devforum.roblox.com/t/urgent-new-ads-manager-is-delivering-significantly-worse-results-x30-times-worse/3801409 (search summary)
+- https://devforum.roblox.com/t/ads-for-creators-rdc-recap-and-what%E2%80%99s-next/3929106 (read)
+- https://devforum.roblox.com/t/4909790 Ads Manager RDC recap, 2 Oct 2026; /t/4623762 Ads Manager updates, 7 May 2026 (read)
+- https://devforum.roblox.com/t/leveling-up-ads-manager-with-new-features/3587640 (read), /t/roblox-staff-streams-learn-more-about-the-new-ads-manager/3676241 (search summary)
+- https://devforum.roblox.com/t/urgent-new-ads-manager-is-delivering-significantly-worse-results-x30-times-worse/3801409 (read)
 - https://rowatcher.com/news/roblox-ads-in-2026-the-break-even-math-small-devs-ignore (search summary; third-party)
 - https://clipclip.io/guides/get-more-players, https://bloxg.com/guides/roblox-tiktok-marketing (search summaries; vendor content)
 - https://rolearn.dev/guidance/roblox-tiktok-content-strategy-viral, https://rolearn.dev/trend-reports/roblox-youtube-tiktok-content-trends-2026 (search summaries; vendor content)

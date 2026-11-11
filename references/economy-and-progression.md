@@ -1,6 +1,6 @@
 # Economy and progression design
 
-How to model, tune and repair a game economy. Open it when you design currencies, XP curves, upgrade prices, rebirths or luck for a new game, or when a live game shows inflation, a progression wall, a dupe or a rebalance backlash (jump to "Level-up"). Distilled from knowledge-base sections 1.5, 1.6 and 3.5 and extended on 2026-11-10. Every number is a starting point to validate in playtests, not a law. Tags: `[official]` Roblox docs, `[community]` forum/press practice (heuristic), `[VS]` version-sensitive (check https://create.roblox.com/docs), `[house]` house estimate, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers are rules of thumb or simulated unless stated).
+How to model, tune and repair a game economy. Open it when you design currencies, XP curves, upgrade prices, rebirths or luck for a new game, or when a live game shows inflation, a progression wall, a dupe or a rebalance backlash (jump to "Level-up"). Distilled from knowledge-base sections 1.5, 1.6 and 3.5; platform facts re-read in the docs on 2026-11-11. Every number is a starting point to validate in playtests, not a law. Tags: `[official]` Roblox docs, `[community]` forum/press practice (heuristic), `[VS]` version-sensitive (check https://create.roblox.com/docs), `[house]` house estimate, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers are rules of thumb or simulated unless stated).
 
 ## Start here by level
 
@@ -12,7 +12,7 @@ How to model, tune and repair a game economy. Open it when you design currencies
 
 Terms: a **faucet** creates currency, a **sink** destroys it; **soft** currency is earned in play, **hard** (premium) currency is mainly bought with Robux; **time to afford** is price ÷ income per minute.
 
-Contents: Design first · Time to afford · Hard currency or direct Robux · Progression curves and upgrade tracks · Rebirth · Paid multipliers · Offline income · Large numbers · Random rewards, pity and supply · Event currency · Pricing soft currency · Server rules · Trading and dupes · Measuring a live economy · Simulation · Live rebalancing and resets · Level-up table · Review gate · Sources.
+Contents: Design first · Time to afford · Hard currency or direct Robux · Progression curves and upgrade tracks · Rebirth · Paid multipliers · Offline income · Large numbers · Random rewards, pity and supply · Event currency · Pricing soft currency · Server rules · Social balance and trade rules · Trading and dupes and market design · Measuring a live economy · Simulation · Live rebalancing and resets · Level-up table · Review gate · Sources.
 
 Related: monetization-and-policy.md (what is sold, price ladders, boost rules); gameplay-systems-cookbook.md §1 Currency and wallet, §3 Shop, §5 Upgrades and rebirth (implementation); data-and-purchases.md (saving balances, dupes, receipts); templates/economy-balance-sheet.md (the fill-in sheet).
 
@@ -20,7 +20,7 @@ Related: monetization-and-policy.md (what is sold, price ladders, boost rules); 
 
 1. **Name every currency and resource, then limit them.** The Creator Analytics economy dashboard shows up to 5 currencies and the event limits allow 10 resource types. Fewer currencies are easier to balance and to read.
 2. **For each currency, write down who earns it, how (faucets), and what it is spent on (sinks).** Track every source and sink in a sheet. If a currency has no sink, it will inflate; if it has no faucet besides purchase, it is a hard currency and must be priced as one.
-3. **Keep sources minus sinks close to zero over a player's week.** The sink ratio (total spent divided by total earned) should sit within about 5% of 1.0 for soft currency. That ratio is a heuristic from the Roblox balance guide, not a documented rule.
+3. **Keep sources minus sinks close to zero over a player's week.** The sink ratio (total spent divided by total earned) should sit within about 5% of 1.0 for soft currency. The 5% band is a house heuristic `[house]`; the Roblox balance guide only shows sources and sinks "moving close together" during a healthy event `[official]`.
    Conflict: LihFolk's model argues the level is the wrong target in a growing exponential game: balances rise with progress, so the daily sink ÷ faucet ratio sits below 1 (0.29 in its simulated zone game with no endgame sink) and only the trend and the per-zone view carry information `[lihfolk]`. Trust both in their place: 0.95–1.05 is the design target for a settled player's week in the spreadsheet; on live data read the trend within a progress band (see "Measuring a live economy").
 4. **Pick the first ten levels or upgrades for speed.** Early purchases should take 3–10 seconds each, so the player learns the loop while the numbers are still small.
 5. **Decide the long-term engine** (rebirth, prestige, collection completion or seasons) before launch. Retrofitting one changes every number.
@@ -55,7 +55,7 @@ Default `[house]`: price boosts, passes and packs directly in Robux and keep one
 | | For a hard currency | Against |
 |---|---|---|
 | Player trust | Free players can earn premium items slowly | Hides the real price; leftover balances cause complaints |
-| Policy | — | Anything random bought with a Robux-bought currency is a paid random item, even when the currency can also be earned `[official]`; odds, PolicyService and trading gates then apply to every gem sink |
+| Policy | — | Anything random bought with "in-game currency purchasable with Robux" is a paid random item `[official]`; the policy has no exemption for a currency that can also be earned, so treat a mixed currency as paid `[house]`; odds, PolicyService and trading gates then apply to every gem sink |
 | Operations | Monthly subscription drops and season-pass rewards have a unit to pay in `[official]` | One more of the 5 dashboard currencies to balance; a new currency is a new scam and dupe target `[community]` |
 | Pricing | Bundles and sub-1 R$ granularity | Roblox's subscription guide starts from "how much play earns the equivalent of 1 Robux"; keep that rate legible. A DevForum reply recommends rescaling so 1 gem ≈ 1 R$ rather than an odd rate `[community]` |
 
@@ -130,7 +130,7 @@ Rebirths run on the server only. The client sends intent ("Rebirth"); the server
 
 Rebirth as practised in the 2026 stat-lane hits (owner's scan, `references/market-scan-2026-11.md`) `[community]` `[VS]`: multipliers step ×2 / ×3 / ×4 with level caps (22 / 34 / 48); the collection, passes and Robux purchases survive the reset; stage gates grow about ×4; eggs cost ×40–250 the previous egg; a new World unlocks at the first rebirth; 8–10 gates per World. Rebirth is also a sale moment: the post-reset grind is where a 2× boost is worth most.
 
-Conflict: the knowledge base puts the first rebirth at 15–25 minutes (inside session one); one community glossary says 30–60 minutes and "meaningful rewards across 20–50 rebirths". Keep 15–25 minutes: the median Roblox session is 6.6 minutes and 19–24 minutes is already a top band (market scan), so a 60-minute first rebirth is seen by few players.
+Conflict: the knowledge base puts the first rebirth at 15–25 minutes (inside session one); one community glossary says 30–60 minutes and "meaningful rewards across 20–50 rebirths". Keep 15–25 minutes: the median session is 6.6 minutes platform-wide (GameAnalytics 2025, via the market scan) and 9.8 minutes per game even among 1M+ MAU games (GameAnalytics 2026, p99 21.1) `[community]`, so a 60-minute first rebirth is seen by few players.
 
 Conflict (which model): LihFolk prefers an additive multiplier with a cost that grows per rebirth (`C(n) = C0 × 1.25^n`) plus a second reward (a slot, an ability, a cosmetic), arguing that a multiplicative multiplier forces cost to grow at the same rate and so becomes cosmetic `[lihfolk]`. The two views meet at the wait ratio. Additive p = 0.5 with r = 1.25 gives ratios of 0.83, 0.94, 1.00, 1.09 and 1.15 at k = 0, 1, 2, 5 and 10: the first rebirths get shorter (a good hook) and later ones settle toward ×1.25. Default to additive with an escalating cost and a non-numeric second reward; use multiplicative only with r ÷ q held inside 1.2–1.5. A constant rebirth cost under any model ends in runs of a few minutes. If a rebirth resets upgrade tracks, price the tracks from the run's income including the multiplier.
 
@@ -171,7 +171,7 @@ Past about 1e15 double precision loses integer precision. Store a mantissa and e
 
 ## Random rewards, luck and pity
 
-- Show every outcome and its numeric odds before purchase, summing to exactly 100%. Roll from the same weight list you display. (See monetization-and-policy.md for the paid-random-items rules and the PolicyService gate.)
+- Show every outcome and its numeric odds before purchase, summing to exactly 100%. Roll from the same weight list you display. No paid outcome may be "nothing": every result gives the buyer something `[official]`. (See monetization-and-policy.md for the paid-random-items rules and the PolicyService gate.)
 - **Luck boosts are probability modifiers.** Example: 2× Luck multiplies weights of non-common tiers by 2: Common 90 / Rare 18 / Legendary 2 → 81.82% / 16.36% / 1.82% after normalising. Show the boosted odds live while the boost is active.
 - **Server Luck** applies to everyone in the server; announce the activator and the end time to all players and show the boosted odds to all.
 - **Pity**: guarantee the top tier by a fixed count (for example at 100 rolls). With a 1% rate, 63.4% of players already have it by roll 100, so pity protects the unlucky tail without changing the average. Disclose pity rules.
@@ -186,7 +186,7 @@ Past about 1e15 double precision loses integer precision. Store a mantissa and e
 
 ## Event currency example (why events need their own currency)
 
-A fishing game sells fish: Catfish 70% at 10 G, Trout 20% at 20 G, Salmon 10% at 30 G, expected value 14 G per cast. (The Roblox doc has a typo saying "Salmon 30% = 3 G"; the corrected 10% is used here.) Adding a 0.1% Golden Salmon worth 1,000 G, taken from Catfish's share, lifts EV to 14.99 G (+7.1%). If the event triples participation, daily income rises to about 44,970 G (+221%) and the main currency inflates. The fix is a unique event currency with its own sinks that expire with the event.
+A fishing game sells fish: Catfish 70% at 10 G, Trout 20% at 20 G, Salmon 10% at 30 G, expected value 14 G per cast. (The Roblox doc has a typo saying "Salmon 30% = 3 G"; the corrected 10% is used here.) Adding a 0.1% Golden Salmon worth 1,000 G, taken from Catfish's share, lifts EV to 14.99 G (+7.1%). If the event triples participation, income per 1,000 baseline casts rises from 14,000 G to about 44,970 G (+221%) and the main currency inflates. The fix is a unique event currency with its own sinks that expire with the event.
 
 Lifecycle `[lihfolk]`: announce → earn window (1–3 weeks) → spend-only grace (3–7 days) → convert or expire → archive (shop removed, ledger kept for support). Key balances by event id (`Event[eventId]`) and convert lazily on the player's next load, so a late returner is not punished and no batch job races live servers; log all of them under one analytics currency with the event id in a custom field. Convert leftovers into soft currency only, at 10–25% of what they bought in the event shop and capped at about one gate at the player's zone. Warn three days and one day before expiry: silent expiry is the top complaint after any event. Never sell an expiring currency; sell the track (a product that unlocks rewards), not the tokens.
 
@@ -211,17 +211,17 @@ A 2× Cash boost for 10 minutes is worth about 3,110 G of extra earnings (about 
 - Rebirths, rewards, multipliers and boost expiry are computed on the server; clients display attributes.
 - Rate-limit economy remotes with a token bucket (see networking-and-security.md).
 - Repair bad data on load (negative balances, NaN, missing fields) rather than trusting it.
-- Check `PolicyService` `IsPaidItemTradingAllowed` before enabling trades of paid items.
+- Check `PolicyService` `IsPaidItemTradingAllowed` before enabling trades of paid items (required by the Community Standards `[official]`).
 
 ## Social balance and trading
 
 - Asymmetric factions or classes: target win rates between 45% and 55% with a spread under 10 points, at least two counters per option and at least three viable strategies.
-- Trade UI rules: two-sided confirmation, no changes after acceptance, a 3–5 second delay before the final confirm, a value display, a trade history, and a cooldown for new accounts. Gate trading on account age, `Player:IsVerified` or `DeviceTrustLevel` where supported `[VS]`.
+- Trade UI rules: two-sided confirmation, no changes after acceptance, a 3–5 second delay before the final confirm, a value display, a trade history, and a cooldown for new accounts. Gate trading on account age, `Player:IsVerified()` or `Player.DeviceTrustLevel` (`networking-and-security.md` §Detection) `[VS]`.
 - Price levels: `MarketplaceService:GetUsersPriceLevelsAsync` returns a level 1–1000 per user. Allow gifts from a higher level to a lower level, and trades only between equal levels, so regional pricing cannot be arbitraged.
 
 ## Trading, gifting and duplication risk
 
-A dupe turns a scarce item into inflation overnight. Grow a Garden disabled pet gifting in July 2025 after a lag-based duplication exploit; press coverage quotes the developers saying they "had to completely rewrite our data backend" before re-enabling it `[community]`. Design for it before the first trade ships.
+A dupe turns a scarce item into inflation overnight. Grow a Garden disabled pet gifting in July 2025 after a lag-based duplication exploit; press coverage quotes the developers saying they "had to completely rewrite our data backend" before re-enabling it `[community]` (search summary, not re-read). Design for it before the first trade ships.
 
 | Dupe vector | Guard |
 |---|---|
@@ -252,7 +252,6 @@ Once players can trade you no longer set item values; your levers are supply, fr
 - Cross-server boards: MemoryStore is only the index. Escrow the item inside the seller's own profile first, claim a listing with `UpdateAsync` and act on its **return value** (the transform can run more than once), check the price the buyer saw, and settle through a durable decision record plus a mailbox `[lihfolk]`. Implementation belongs with data-and-purchases.md.
 - Real-money trading and scams create more support load than exploits. Budget moderation time before launch, keep an in-game trade history as evidence, and do not launch a market for a young audience or before item supply is modelled.
 - Do not A/B test the supply or price of tradeable goods or any server-wide multiplier: variants leak into each other's market. Use a staged rollout with a before-and-after comparison.
-
 
 ## Measuring a live economy
 
@@ -354,7 +353,7 @@ Operating rules `[lihfolk]`: compare baseline and change on identical seeds and 
 2. Prefer, in order: a new desirable sink → a new tier priced for today's inflated income → event currency → slower growth of future faucets → a cut to an existing faucet (last resort).
 3. Never reduce something bought with Robux. Roblox's own guidance when a pass is replaced: existing holders "should continue to receive the benefit they paid for" `[official]`. Grandfather owners or let them choose compensation.
 4. Buff the weak option rather than nerf the strong one where the maths allows; players read a nerf as a loss.
-5. Ship through Configs to an Experiments cohort, one lever at a time (Roblox's balance guide recommends Experiments for price tests and Configs for live tuning `[official]`), and watch seven days: sink ratio, D1/D7, like ratio, pack and boost sales.
+5. Ship through Configs to an Experiments cohort, one lever at a time (Roblox's balance guide recommends Experiments for price tests and Configs for live tuning `[official]`; it also suggests Configs-driven flash sales, which house rule 3 excludes), and watch seven days: sink ratio, D1/D7, like ratio, pack and boost sales.
 6. Announce before it ships, with the reason and the numbers. The Roblox backlashes that reached the press were changes that arrived without notice or that players read as taking earned value away (Welcome to Bloxburg's job-pay change; the 2026 cross-game pass sales shutdown, which a creator petition says came "without any warning") `[community]`.
 7. Compensate on login when anyone loses value: currency, a timed boost or a cosmetic.
 8. Roll back or wipe only for exploits, only on affected accounts, and say so publicly.
@@ -425,9 +424,11 @@ For the grep-able original, search `references/knowledge-base.md` for `## 1.5`, 
 
 ## Sources
 
-Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror (commit of 2026-11-07); "(search summary)" = seen only through web search result text.
+Accessed 2026-11-11 unless dated. "(read)" = opened and read; "(search summary)" = seen only through web search result text on 2026-11-10 and not re-opened.
 
-- https://github.com/Roblox/creator-docs `content/en-us/production/game-design/balance-virtual-economies.md`, `subscription-design.md`, `season-pass-design.md`; `production/analytics/economy-events.md`; `production/monetization/paid-random-items.md`, `regional-pricing.md`, `subscriptions.md`; `production/promotion/rewarded-video-ads.md` (read)
+- `Roblox/creator-docs` (commit of 2026-11-10) `content/en-us/production/game-design/balance-virtual-economies.md`, `subscription-design.md`, `season-pass-design.md`; `production/analytics/economy-events.md`, `event-types.md`, `custom-fields.md`; `production/experiments.md`; `production/monetization/paid-random-items.md`, `regional-pricing.md`, `subscriptions.md`; `production/promotion/rewarded-video-ads.md`; `scripting/security/device-trust.md` (read)
+- Roblox Community Standards, https://about.roblox.com/community-standards (read: Paid Random Items, Paid Item Trading)
+- https://www.gameanalytics.com/reports/2026-roblox-report (read: session length per game)
 - `references/market-scan-2026-11.md` and `references/knowledge-base.md` §1.5, §1.6, §3.5 (read)
 - https://devforum.roblox.com/t/should-i-charge-more-robux-for-a-smaller-amount-of-gems-or-simply-lower-the-value-of-them/518565, https://devforum.roblox.com/t/paid-random-item-policy-question/3107756, https://devforum.roblox.com/t/premium-tokens-what-they-are-and-how-would-they-work/560411 (search summary)
 - https://devforum.roblox.com/t/preventing-duping-methods-in-trading/2688896, https://www.creation.dev/blog/roblox-trading-system-design (search summary)
@@ -435,5 +436,4 @@ Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror (comm
 - Backlash cases: https://www.404media.co/roblox-community-protests-communism-update, https://www.change.org/p/bring-back-cross-game-sales-of-gamepasses-on-roblox-e1da39b1-809d-42a3-a03a-997af08075d6 (search summary)
 - https://www.creation.dev/glossary/rebirth (search summary; the 30–60 minute and 20–50 rebirth figures)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/48 Economy Design Deep Dive/` (`Simulating an Economy Before Launch`, `Economy Telemetry and Balancing Live`, `Pricing Curves and Upgrade Costs`, `Currency Architecture - Soft Hard and Event Currencies`, `Player-Driven Trading Economies`, `Drop Tables Rarity and Pity Systems`), `11 Monetization Publishing and Live Ops/Economy Inflation Sinks and Faucets Math.md`, `38 Live Ops Deep Dive/Economy Resets and Seasonal Wipes.md` (read). Ideas adapted in our words; its simulated and rule-of-thumb numbers are labelled as such. Not imported: its Python simulator, wallet, telemetry and listing-board code.
-- Wave-2 verification in the docs mirror: `production/analytics/event-types.md`, `custom-fields.md`, `production/experiments.md` (read)
-- No evidence found: a DevForum or Reddit thread with measured rebirth tuning data from a current top simulator; reddit.com was not reachable and surfaced in no search.
+- No evidence found: a DevForum thread with measured rebirth tuning data from a current top simulator. reddit.com was not reachable.

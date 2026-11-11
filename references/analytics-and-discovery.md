@@ -1,6 +1,6 @@
 # Analytics, discovery and the Roblox platform
 
-Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs on 2026-11-10. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: `references/audit-existing-game.md` holds the triage order and benchmark table, `references/growth-and-marketing.md` holds ads, creators and community. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
+Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs and the staff announcements on 2026-11-11. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: this file holds the one benchmark table; `references/audit-existing-game.md` holds the triage order, `references/growth-and-marketing.md` ads, creators and community, `references/icons-thumbnails-and-store-page.md` the craft of the tile, and `references/tutorial-and-onboarding.md` the onboarding funnel. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
 
 ## Start here by level
 
@@ -70,7 +70,7 @@ Snapshot 2026-11-10 `[VS]`. This is the one benchmark table for the skill; other
 
 | Metric | Value | Sample and source | Use |
 |---|---|---|---|
-| D1 retention | P25 8.4% · median 10.3% · P75 12.9% · P90 15.9% · P99 22.2% | GameAnalytics 2026 Roblox report: 500+ titles above 1M MAU, Aug 2025–Jul 2026; read through search summaries (figures as recorded in liveops-quests-retention.md) `[community]`. Large titles only, so a small game at the median is doing well | **Drives triage**: under 8.4% below; 8.4–12.9% near median; over 12.9% above |
+| D1 retention | P25 8.4% · median 10.3% · P75 12.9% · P90 15.9% · P99 22.2% | GameAnalytics 2026 Roblox report: 500+ titles above 1M MAU, Aug 2025–Jul 2026; read through search summaries (figures as recorded in liveops-quests-retention.md) `[community]`. Large titles only, so a small game at the median is doing well | **Drives triage**: under 8.4% below; 8.4–12.9% near median; over 12.9% above. House launch target before paid traffic: above 11% `[house]` (market-scan-2026-11.md) |
 | D7 retention | P25 1.0% · median 1.6% · P99 9.1% | Same report and sample | **Drives triage**: under 1.0% below |
 | D30 retention | Median 0.5% · top 1% 4.7% | Same report and sample | **Drives triage**, coarse: under 0.5% below |
 | D1 by average session length | 0–3 min 4.3% · 7–12 min 7.9% · 13–18 min 10.2% · 19–24 min 11.5% (top 2% 32.3%; D7 median 1.6%, top 2% 8.5%) · 25+ min 10.8% | GameAnalytics 2025 Roblox report (aggregated titles, Jan 2023–Jul 2025), via the owner's vault. The vault copy has no 4–6 min row; interpolate between 4.3% and 7.9% and say so | Cross-check: is D1 low for the engagement the game already has? |
@@ -80,7 +80,7 @@ Snapshot 2026-11-10 `[VS]`. This is the one benchmark table for the skill; other
 | D1 by genre | Obby 25–35% · tycoon 20–28% · shooter 22–30% · roleplay 15–22% | RoWatcher, July 2026: no sample or method stated; far above the measured medians | **Weak: never triage from it** |
 | D1 dashboard example | P50–P90 12.11–18.73% (docs); 12.4–24.1% (a DevForum announcement) | Illustrations of how the dashboard displays a range `[official]`; each game gets its own | **Weak: not a benchmark** |
 | D1 / D7 / D30 "40 / 15 / 5" | Mobile-industry rule of thumb | Not Roblox | **Weak: aspirational only** |
-| PTR and first-play bounce | No public figure found | Roblox publishes none; creators report 26–40% PTR drops across the 12 Oct 2026 measurement change | Dashboard only; rebaseline after 12 Oct 2026 |
+| PTR and first-play bounce | No public figure found | Roblox publishes none. The 12 Oct 2026 measurement change raised impression counts more than play counts: Roblox calls the PTR effect "a small decrease" `[official]`, creators in the vault report 26–40% drops `[community]` | Dashboard only; rebaseline after 12 Oct 2026 |
 | Payer conversion, ARPPU, ARPDAU | No reliable public Roblox figure found | Dashboard benchmarks exist for all three `[official]` | Dashboard only; under 100 DAU compare with your own last month |
 | Like ratio | Ad-running games median 79%; others 92% | Vault coding of Home feed tiles (72 + 177 tiles, 7 Nov 2026) `[community]` | House floor 85% before paid traffic `[house]` |
 | Client crash rate | Investigate above 2–3%; Roblox's alert example fires at 5% for 5 minutes | Knowledge-base "Doc" value; alerts page `[official]` | **Drives triage** (T2) |
@@ -100,9 +100,9 @@ All events are server-side, only in published games, and logged after the action
 - `AnalyticsService:LogFunnelStepEvent(player, funnelName, funnelSessionId, step, stepName)`
 - `AnalyticsService:LogEconomyEvent(player, flowType, currency, amount, endingBalance, transactionType, itemSKU?, customFields?)`
 - `AnalyticsService:LogCustomEvent(player, name, value?, customFields?)`
-- `AnalyticsService:LogJourneyEvent(...)`
+- `AnalyticsService:LogJourneyEvent(player, journeyName, nodeName, journeySessionId?, customFields?)` for branching paths: 2–10 stages of 1–10 nodes, configured in Creator Hub first (tutorial-and-onboarding.md §9)
 
-Limits: 120 + 20 × CCU events per minute; 10 funnels with 100 steps each; 10 resource types; 20 transaction types; 100 SKUs; 100 custom event names; 3 custom fields per event (`Enum.AnalyticsCustomFieldKeys.CustomField01.Name`); 8,000 unique field-value combinations; 90-day roll-off. Transaction types: IAP, TimedReward and Onboarding are sources; Shop and Gameplay can be either; ContextualPurchase is a sink. Prefer one event name with fields over many names.
+Limits `[official]`: 120 + 20 × CCU requests per minute; 10 funnels with 100 steps each; 10 resource types (currencies); 100 custom event names; 3 custom fields per event (`Enum.AnalyticsCustomFieldKeys.CustomField01.Name`). Soft caps, past which values are grouped as "Other": 20 transaction types, 100 item SKUs, 8,000 combined custom-field values. Limits reset daily; an event rolls off the dashboard 90 days after its last data. Transaction types: IAP, TimedReward and Onboarding are sources; Shop and Gameplay can be either; ContextualPurchase is a sink. Prefer one event name with fields over many names.
 
 Standard schema (see templates/analytics-event-plan.md):
 
@@ -115,9 +115,9 @@ Standard schema (see templates/analytics-event-plan.md):
 
 ## Experiments and Configs `[VS]`
 
-- Experiments run 14–60 days with 2 variants plus control, a percent rollout and a metric set (D1, D7, playtime, ARPU, ARPPU, payer conversion, session time). Early-harm detection refreshes playtime, payer conversion and ARPU every 5 minutes in the first 24 hours. Roblox recommends a simple 50/50 on a large rollout; watch the minimum detectable effect. Under 1,000 DAU the statistical power is weak. A result is significant when the confidence interval excludes 0.
+- Experiments `[official]` run 14–60 days with up to 2 variants plus control, a percent rollout and a metric set: the default (D1, D7, playtime, ARPU, ARPPU, payer conversion, session time), a rewarded-video set, or the default plus up to 3 custom metrics built from your own custom, economy and funnel events (for example per-user conversion on the last onboarding step). Nothing can be edited after scheduling. Playtime, payer conversion and ARPU refresh every 5 minutes in the first 24 hours (early harm), but a harm verdict needs 10,000 players enrolled across variant and control. Roblox recommends a simple 50/50 on a large rollout and says games under 1,000 DAU "might struggle to get useful data"; watch the minimum detectable effect. A result is significant when the confidence interval excludes 0.
 - High-value experiments: offer grace 10 vs 20 minutes; offers per session 2 vs 3; starter-pack trigger; 29 vs 49 R$ for the 10-minute boost; rewarded-video placement; hint delay 5 vs 10 s; starting currency.
-- Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. A new value is staged first (visible only in Studio sessions), then "Publish now" reaches servers in about 15 s to 1 min `[VS]` (clients may take a few minutes to reflect it), or "Publish over 15 min" rolls it out gradually; History → Restore re-stages the previous value `[official]`. Configs and experiments can target by country, tenure and spender tier.
+- Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. A new value is staged first (visible only in Studio sessions), then "Publish now" reaches servers in about 15 s to 1 min `[VS]` (clients may take a few minutes to reflect it), or "Publish over 15 min" rolls it out gradually; History → Restore re-stages the previous value `[official]`. Configs and in-game experiments can target by country, language, tenure and payer status.
 - Matchmaking experiments: one at a time, 3 variants, 100% rollout.
 
 Test design and sample size `[lihfolk]` (standard A/B approximation; Roblox shows an MDE on the experiment setup screen instead of a formula):
@@ -162,18 +162,18 @@ How it behaves `[official]`:
 - Value = long-term retention + long-term monetisation. If retention is low, fix core gameplay first; once retention is strong, monetisation raises impressions. Strong in one still gets impressions; strong in both gets the broad distribution.
 - Four things move impressions: your changes, algorithm changes, seasonality (Saturday peak, summer, back to school, holidays) and competitors improving faster than you.
 - When impressions drop, read the Home Recommendations signals in order: PTR, bounce, play days and playtime first, across D8–28, D2–7 and D1; only if those are stable look at co-play, qualified sessions, spend days and Robux per user.
-- Since 15 June 2026 the algorithm reads a 28-day view instead of 7 days and measures play-through, session quality and retention separately, explicitly to stop over-rewarding short-term engagement and attention-grabbing tiles.
+- Since 15 June 2026 the algorithm reads a 28-day view instead of 7 days and measures play-through, session quality (bounce) and retention separately, so a tile that wins the click and loses the session no longer helps.
 - A user acquired by an ad generally stops seeing the organic tile, so organic impressions can dip during a campaign; that is not a penalty.
 
 - Most important signals: PTR, bounce, play days, playtime (capped).
 - Important: co-play days, qualified sessions, spend days, Robux per user.
-- 2026 changes: 9 March deep PTR; 26 March "Not interested" button; 15 June 28-day window with split D1 / D2–7 / D8–28 signals and a qualified-PTR split; 12 October measurement pipeline change, so PTR before and after is not comparable. Signals lag about 24 hours; impression changes take days.
+- 2026 changes `[official]` (staff posts, read): 9 March "deep play-through rate" signal added; late March "Not interested" taps feed the system; 15 June 28-day window with D1 / D2–7 / D8–28 signals, and qualified PTR removed as a ranking signal in favour of PTR plus first-play bounce (thumbnail personalisation still reports qualified PTR); 12 October impressions, clicks and plays moved to a more reliable pipeline, so PTR before and after is not comparable. Signals lag about 24 hours; impression changes take days.
 - Exposure reducers: giveaways and incentivised engagement, mismatched metadata, near-duplicate clones, policy violations. Paid ads do not hurt organic ranking.
 - The genre setting is changeable once every three months and is not a ranking input.
 
 Thumbnails and metadata:
 
-- Custom 16:9 thumbnails at 1920×1080 under 3 MB are required for Home. Up to 10 thumbnails; keep 2–5 active so personalization can pick (average +8.5%, up to +50%). Video thumbnails: 3 uploads per month, authentic gameplay only, not shown on console or VR.
+- Custom 16:9 thumbnails at 1920×1080 under 3 MB are required for Home. Up to 10 thumbnails; keep 2–5 active so personalization can pick (average +8.5%, up to +50%). Gameplay video: 3 uploads per month (rejections count), authentic gameplay only, not shown on console or VR; it autoplays in the Recommended For You tile since 29 July 2026, and YouTube embeds were removed from details pages on 30 September 2026 (icons-thumbnails-and-store-page.md §9).
 - Craft (icon, composition, colour, text, Blender renders, video, the upload procedure and the review rubric) is owned by `icons-thumbnails-and-store-page.md`; the owner's thumbnail rules 1–13 are in `market-scan-2026-11.md`. Title pattern in brief: a short status tag plus a verb phrase, with the name inside the first 23 characters.
 - Description hook in the first 160 characters. (Roblox labels this guidance experimental, for select creators and aimed at external search engines; the general rule is a first sentence that summarises the game, plus relevant keywords.)
 - Name and description rules `[official]`: keep the name consistent (frequent renames break search for the old name); no repeated or irrelevant keywords ("may result in demotion"); one or two well-placed emoji at most. A beta Promotional Text field holds a short secondary line `[VS]`.
@@ -219,7 +219,7 @@ Search `[official]` unless tagged:
 
 Other surfaces: Continue (returning users; not Recommended For You impressions), Friends, Sponsored, Standout Games (curated; nominate), Live Events, Charts (Top Playing Now, Trending, Up-and-Coming, Top Revisited, Trending Events), the details page (events, group, passes), notifications. Social links on the details page are visible only to age-verified 16+ users and may not appear in-game `[official][VS]`.
 
-Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metadata, run a weekly update day, measure PTR and bounce daily. Bold: pay 50,000 R$ for an expedited under-16 review, launch with an influencer plus an admin event, and buy Ads Manager traffic with `max cost per play ≈ ARPU 30d + rewarded-video earnings per user + Audience Expansion share`. Ad attribution: 30 days for a first-time player, 7 days for a player who returns after 7+ days away, that session only for a recent player. (Correction: an earlier version said "30 days click, 7 days view".) The full readiness gate, formats, costs and the cost-per-play worked example are in growth-and-marketing.md.
+Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metadata, run a weekly update day, measure PTR and bounce daily. Bold: pay 50,000 R$ for an expedited under-16 review, launch with an influencer plus an admin event, and buy Ads Manager traffic with `max cost per play ≈ ARPU 30d + rewarded-video earnings per user + Audience Expansion share`. Ad attribution: 30 days for a first-time player or one returning after 30+ days away, 7 days for one returning after 7–29 days, that session only for a player seen in the last 7 days. The full readiness gate, formats, costs and the cost-per-play worked example are in growth-and-marketing.md.
 
 ## Scaling, safety and matchmaking `[VS]`
 
@@ -247,7 +247,7 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 | PTR up, bounce up | Tile over-promises | Show the real first minute; judge on qualified PTR |
 | PTR low, retention fine | Weak or single thumbnail, unclear title | 3–5 distinct hooks, gameplay video, title pass |
 | Bounce < 60 s high on one platform | Crash, memory or slow join on that platform | Performance dashboard by platform and place version |
-| First-session curve drops at one minute mark | That onboarding step | Funnel event per step; fix the largest drop |
+| First-session curve drops at one minute mark | That onboarding step | Funnel event per step; fix the earliest step that loses twice its neighbours (tutorial-and-onboarding.md §14) |
 | D1 fine, D2–7 play days low | Nothing new on day 2: wall or no daily reason | Progression re-curve, timers, offline income |
 | Playtime per user far above 60 min for a few, low for most | Whales carry the average; cap hides it | Design for the median player's first 20 minutes |
 | Conversion fine, spend days low | Only one-time purchases | Cheap repeatable dev products |
@@ -270,16 +270,16 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 
 ## Sources
 
-Accessed 2026-11-10. Creator docs read from the `Roblox/creator-docs` GitHub mirror (commit dated 2026-11-07). Source text for the original sections: grep `references/knowledge-base.md` for `## 3.1`, `## 3.9`, `## 3.10` and `## 3.11`.
+Accessed 2026-11-10 and 2026-11-11. Creator docs read from the `Roblox/creator-docs` GitHub mirror (commit 7cbffff, 2026-11-10); engine signatures from `reference/engine/classes/AnalyticsService.yaml`. Source text for the original sections: grep `references/knowledge-base.md` for `## 3.1`, `## 3.9`, `## 3.10` and `## 3.11`.
 
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/discovery.md, discovery-faq.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/analytics-dashboard.md, acquisition.md, retention.md, engagement.md, monetization.md, performance.md, alerts.md, feedback.md, insights.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/analytics/analytics-dashboard.md, acquisition.md, retention.md, engagement.md, monetization.md, performance.md, alerts.md, feedback.md, insights.md, event-types.md, custom-events.md, economy-events.md, funnel-events.md, journey-events.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud/guides/analytics/index.md, metrics.md, benchmarks.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/configs.md, experiments.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/thumbnails.md, descriptions.md, publish-games-and-places.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/ads-manager.md, social-media-links.md (read)
 - https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
-- https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 (search summary)
+- https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575, /t/how-we-are-improving-home-this-year/4502571, /t/improved-discovery-measurement-in-creator-analytics/4930122, /t/4542233 (weekly recap, 27 Mar 2026), /t/4945086 (custom thumbnail required), /t/4879633 (YouTube embeds removed) (read, 2026-11-11)
 - https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)
 - https://devforum.roblox.com/t/thumbnail-personalization-now-remembers-your-existing-winning-thumbnails/3793665 (read, 2026-11-11)
 - https://devforum.roblox.com/t/introducing-exact-match-search-for-experiences/2425969, /t/improvements-to-game-search-ranking/673608 (search summaries)

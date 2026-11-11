@@ -40,6 +40,8 @@ Terms: *base lock* = a timed shield during which nothing can be stolen; *carry s
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn inside your own base with the lock active and its timer visible.
 2. 0:20 first cheap item bought or grabbed; it starts paying immediately.
 3. 1:30 second and third items; the rare-spawn countdown on the HUD gives a reason to stay.
@@ -77,6 +79,8 @@ Terms: *base lock* = a timed shield during which nothing can be stolen; *carry s
 - Offline: income accrues to a stated cap; the base is safe while you are away `[house]`.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: coin or reward burst, shield for the lock, aura for rare units.
 
 - HUD: cash, income per second, lock button with remaining time, rare-spawn countdown, "being raided" alert that is informative, not alarming (no siren loop, no screen shake).
 - Carry state: clear icon over the carrier, slow-down shown, a line to the home base on mobile.

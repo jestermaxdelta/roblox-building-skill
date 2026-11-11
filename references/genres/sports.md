@@ -35,6 +35,8 @@ Terms: *possession model* = while a player has the ball it is positioned at thei
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn in a practice area beside the pitch with a ball at your feet.
 2. 0:20 first shot at a target; charge-to-power taught by doing.
 3. 1:00 take over a bot's slot in a live casual match, or kick off a bot match if the server is empty `[lihfolk]`.
@@ -66,6 +68,8 @@ Terms: *possession model* = while a player has the ball it is positioned at thei
 - Celebrations are social currency; spectating and substitution keep waiting players engaged.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: heavy impact, shockwave for a goal, dash.
 
 - HUD: score, timer, stamina, a possession indicator, one context action button (shoots near goal, passes otherwise) plus sprint and tackle; five buttons is already the phone limit `[lihfolk]`.
 - Broadcast-style camera for team sports (side-on or behind the team) that keeps ball and goal in view; follow camera for individual sports.

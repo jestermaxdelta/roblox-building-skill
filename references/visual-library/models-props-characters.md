@@ -46,7 +46,7 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 16 | [Low poly car feedback](https://devforum.roblox.com/t/1367537), Hj_yuh, 2021 · `DF/4X/b/8/b/b8bb7d95698fd93c00444af157d2f1bf8bd127b5.png` | image | Weak: real-world proportions in untextured grey: narrow body, wheels too small, no bevels. Replies ask for bigger wheels and more width | viewed |
 | 17 | [Żuk van](https://sketchfab.com/models/bb4OJb5V4L0hgYjM3vtGvPB7ZMt), Lionsharp Studios, 2013, CC BY | image | The "too realistic" marker for a vehicle board: true proportions, rust and dirt maps, thin trim; 11,771 faces | viewed |
 | 18 | Row 49 in `environments-and-maps.md` (Kenney Starter Kit Racing) | image | The on-target marker: a pickup whose wheels are about a third of its height, cab and bed as two boxes, one body colour | viewed |
-| 19 | [Kenney Car Kit](https://kenney.nl/assets/car-kit), Kenney, CC0 per site | gallery | A vehicle family in one style, to study shared wheel and body proportions | search |
+| 19 | [Kenney Car Kit](https://kenney.nl/assets/car-kit), Kenney, CC0 per site | gallery | A vehicle family in one style: compare wheel diameter to body height and count the body colours across the set. Not re-checked: the site refused the link check (403) on 2026-11-11 and the previews were never viewed | search |
 
 ## E. Creatures and pets
 
@@ -107,6 +107,7 @@ Accessed 2026-11-11. All images are third-party and are linked, not stored.
 - Sketchfab models found through the public search API (`downloadable`, sorted by likes); licences as stated per row (CC BY or CC BY-NC). Listed to look at; never to be imported into a game.
 - 80.lv articles and images: copyright the named artists and 80 Level.
 - Game Developer article (Informa): images are Liz Edwards's posts as reproduced there.
+- Link check, 2026-11-11: every URL and image path answered (GitHub through `git ls-remote`, Sketchfab through its model API, which also confirmed each face count and licence) except kenney.nl (403, row 19).
 - Valve paper: read as text; its figures were not extracted.
 - GitHub: KayKit packs CC0 (`LICENSE.txt` checked). Their README previews are title banners, so the packs are marked `read`, not `viewed`. Kenney's asset pages were reachable but their previews were not extracted (`search`).
 - Rejected after viewing: a 2D character concept (not a model), a realistic sci-fi character render, material-graph and grading-panel screenshots, pack title banners.

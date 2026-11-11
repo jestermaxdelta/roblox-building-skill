@@ -5,7 +5,7 @@ What this is: 62 checked references for stylised game effects: annotated stills 
 How to use this file:
 - Pick the effect you are building, open two or three rows, and write down what you will copy as a number or a shape (frames of brightness, number of layers, where the dark sits) before opening Studio.
 - Evidence: `viewed` = the image was downloaded and looked at; for a GIF, six evenly spaced still frames were looked at, not the motion; `read` = the page or thread was read; `oembed` = the video exists with that title and creator, it was not watched, and the note comes from its title or the thread that led to it; `search` = not opened.
-- These are references to study, not assets to copy: every third-party image, clip, texture and mesh stays its owner's. Most are from Unity or Unreal; the shapes, values and timing transfer, the shaders do not (`vfx-and-juice.md` §5 maps each trick to Roblox). Accessed 2026-11-11.
+- These are references to study, not assets to copy: every third-party image, clip, texture and mesh stays its owner's. Most are from Unity or Unreal; the shapes, values and timing transfer, the shaders do not (`vfx-and-juice.md` §5 maps each trick to Roblox). Accessed 2026-11-11; every page and image link re-checked the same day (all respond).
 
 Image host prefixes: `RT` = `https://realtimevfx.com/uploads/default`, `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads`, `DOCS` = `https://prod.docsiteassets.roblox.com/assets`, `LV` = `https://cdn.80.lv/api/upload/content`. Thread links are `https://realtimevfx.com/t/<id>` and `https://devforum.roblox.com/t/<id>`.
 

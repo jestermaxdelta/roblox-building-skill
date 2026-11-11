@@ -1,6 +1,6 @@
 # Game Programming Patterns in Luau
 
-Distilled from knowledge-base section 2.12 (Nystrom's 19 patterns mapped to Roblox). Add a pattern only when the problem it solves is actually present. The Roblox mappings are the compiler's translation (general knowledge); snippets are unexecuted sketches. Tags: `[VS]` version-sensitive, `[house]` house rule or estimate.
+Distilled from knowledge-base section 2.12 (Nystrom's 19 patterns mapped to Roblox). Add a pattern only when the problem it solves is actually present. The Roblox mappings are the compiler's translation (general knowledge); API names in the sketches were checked against `Roblox/creator-docs` and the jecs repository on 2026-11-11. Snippets are unexecuted sketches. Tags: `[VS]` version-sensitive, `[house]` house rule or estimate.
 
 ## Start here by level
 
@@ -62,7 +62,10 @@ remote.OnServerEvent:Connect(function(player, name, args)
 	table.insert(list, command.execute(player, args))
 	if #list > 50 then table.remove(list, 1) end
 end)
+Players.PlayerRemoving:Connect(function(player) history[player] = nil end)
 ```
+
+`validate` here checks types only. A real command also checks ownership, cost, range and rate before `execute` (networking-and-security.md).
 
 Observer (Signal whose handlers run in their own threads):
 
@@ -85,6 +88,8 @@ end
 return Signal
 ```
 
+In production use RbxUtil `Signal` (adds `Once`, `Wait`, `DisconnectAll` and thread reuse); this sketch shows the shape.
+
 Singleton alternative: every service module exposes `Init` (internal state, no cross-calls) and `Start` (may call other services); one bootstrap requires all, calls every `Init`, then every `Start`. Each Actor has its own Luau environment and therefore its own module copies.
 
 Game Loop (fixed step inside `Heartbeat`):
@@ -98,7 +103,7 @@ RunService.Heartbeat:Connect(function(dt)
 		simulate(STEP)
 		accumulator -= STEP
 	end
-	render(accumulator / STEP)
+	render(accumulator / STEP) -- client only: blend the last two states by this fraction
 end)
 ```
 
@@ -113,7 +118,7 @@ local raw = {
 local resolved = {}
 local function resolve(name: string)
 	if resolved[name] then return resolved[name] end
-	local entry = raw[name]
+	local entry = assert(raw[name], `unknown breed {name}`) -- a misspelt parent fails at load, not in play
 	local result = if entry.parent then table.clone(resolve(entry.parent)) else {}
 	for key, value in entry do
 		if key ~= "parent" then result[key] = value end
@@ -132,7 +137,7 @@ Component via tags (attach behaviour and cleanup to every tagged instance, inclu
 local CollectionService = game:GetService("CollectionService")
 local cleanups: { [Instance]: () -> () } = {}
 local function onAdded(instance: Instance)
-	if instance:IsA("Model") then cleanups[instance] = attachSpinner(instance) end
+	if cleanups[instance] == nil and instance:IsA("Model") then cleanups[instance] = attachSpinner(instance) end
 end
 local function onRemoved(instance: Instance)
 	local cleanup = cleanups[instance]
@@ -143,7 +148,7 @@ CollectionService:GetInstanceRemovedSignal("Spinner"):Connect(onRemoved)
 for _, instance in CollectionService:GetTagged("Spinner") do onAdded(instance) end
 ```
 
-jecs (v0.11 API in the source; check the current version): `local world = jecs.world()`, `local Position = world:component() :: jecs.Id<Vector3>`, `world:set(e, Position, v)`, `for entity, position, velocity in world:query(Position, Velocity) do ... end`. Its "800,000 entities at 60 fps" is a benchmark claim; measure on your workload. ECS pays off at thousands of entities and is overkill for dozens.
+jecs 0.11.0 `[VS]` (API read in the repository's `how_to/` files): `local world = jecs.world()`, `local Position = world:component() :: jecs.Id<Vector3>`, `world:set(e, Position, v)`, `for entity, position, velocity in world:query(Position, Velocity) do ... end`. Its README's "iterate 800,000 entities at 60 frames per second" is the author's benchmark claim; measure on your workload. ECS pays off at thousands of entities and is overkill for dozens.
 
 Event Queue (per-frame drain with aggregation; requests made while handling go to the next frame):
 
@@ -187,11 +192,13 @@ function Stats:get(stat: string): number
 end
 ```
 
-Object Pool (park by CFrame far away rather than reparenting; reset reused state; pick an overflow policy: skip, steal oldest, or grow):
+Object Pool (park by CFrame far away rather than reparenting; reset reused state; pick an overflow policy: skip, steal oldest, or grow; move many at once with `workspace:BulkMoveTo(parts, cframes, Enum.BulkMoveMode.FireCFrameChanged)`):
 
 ```lua
 -- fragment (unexecuted sketch; add `--!strict` and types when adopting)
-local HIDDEN = CFrame.new(0, -10000, 0)
+local Pool = {}
+Pool.__index = Pool
+local HIDDEN = CFrame.new(0, 10000, 0) -- far above the map; below it, an unanchored part would hit FallenPartsDestroyHeight
 function Pool.new(template: BasePart, size: number, folder: Instance)
 	local self = setmetatable({ free = table.create(size), template = template }, Pool)
 	for i = 1, size do
@@ -235,4 +242,6 @@ Pushdown screen stack: `push(screen)` pauses the top and enters the new one; `po
 
 ## Sources
 
-- `references/knowledge-base.md` section 2.12 (grep `## 2.12`), which maps Robert Nystrom's *Game Programming Patterns* to Roblox and Luau; the jecs API line comes from the same section. No web sources were opened for this file; the Roblox mappings are general knowledge and unexecuted.
+- `references/knowledge-base.md` section 2.12 (grep `## 2.12`), which maps Robert Nystrom's *Game Programming Patterns* (https://gameprogrammingpatterns.com) to Roblox and Luau. The mappings are general knowledge and the sketches are unexecuted.
+- https://github.com/Ukendio/jecs at v0.11.0 (tag 2026-03-10; last commit 2026-10-22): `README.md`, `how_to/{001_hello_world,003_components,020_queries}.luau` (read; API line and benchmark claim)
+- https://github.com/Roblox/creator-docs at 7cbffff: `reference/engine/classes/{CollectionService,WorldRoot,ServerScriptService}.yaml` (read; `GetInstanceAddedSignal`, `GetPartBoundsInRadius`, `BulkMoveTo`, `LoadStringEnabled`)

@@ -37,12 +37,14 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn facing your plot's first station; one Blender-modelled prompt, no text wall.
 2. 0:10 first hand-made item; 0:30 first sale with a cash pop and sound.
 3. 1:00 first upgrade pad lights up with its price; the next locked pad is always visible.
 4. 2:00 first Hire pad; the worker visibly does the job you just did.
 5. 3:00 income per second appears on the HUD; 4:00 second station or room; 5:00 a silhouette of the next building tier with its cost.
-- No offer cards in this window (offer gate: 10 min of play and a first win). The first number-go-up moment must land before 180 s (vault launch checklist).
+- The first number-go-up moment must land before 180 s (vault launch checklist).
 
 ## Progression and economy shape
 
@@ -75,6 +77,8 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 - No streak-loss mechanics; a cumulative login calendar instead.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: coin or reward burst, level-up for a new room.
 
 - HUD: cash, income per second, one "next goal" chip. Prices live in the world on the pad (BillboardGui on a Blender pad), not in a menu.
 - Number ladder as identity: `$1/s → $9.8M/s`. Management thumbnails are mostly photoreal with no text, so a number-style tile stands out (vault).
@@ -164,10 +168,10 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/tycoon.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/plant-reference-project.md (read; official plant-and-sell reference project covering persistence, FTUE, networking)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud-services/data-stores/error-codes-and-limits.md (read)
-- https://devforum.roblox.com/t/unable-to-progress-tycoon-incremental-due-to-immense-physics-lag-on-low-end-devices/3587271 (search summary)
-- https://devforum.roblox.com/t/tycoon-optimization-and-architecture/4574342 (search summary)
-- https://devforum.roblox.com/t/best-practice-for-efficient-tycoon-droppers-and-moving-parts/339303 (search summary)
-- https://devforum.roblox.com/t/tycoon-saving-compression/3840092 (search summary)
+- https://devforum.roblox.com/t/unable-to-progress-tycoon-incremental-due-to-immense-physics-lag-on-low-end-devices/3587271 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/tycoon-optimization-and-architecture/4574342 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/best-practice-for-efficient-tycoon-droppers-and-moving-parts/339303 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/tycoon-saving-compression/3840092 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - https://github.com/evilbocchi/eternal-empire (read README; 17 stars, CC BY-NC 4.0, roblox-ts tycoon; reference only, non-commercial licence)
 - https://github.com/B-Ricey763/Roblox-Studio-Tycoon (search listing; 34 stars, no licence, 2022 tutorial code; reference only)

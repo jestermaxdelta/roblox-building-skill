@@ -1,6 +1,6 @@
 # Lighting and atmosphere: mood, readability and phone-safe light
 
-What this is: how Roblox lighting works after the unified-lighting change, how to build a mood from key, fill, colour, air and post-processing, how to budget local lights, how to switch looks per zone on the client, and how to keep the look alive on a phone with shadows off. Open it when choosing a look for a new game, lighting an interior or a night, adding zones or a day cycle, or when a live game looks flat, glows too much or is unreadable on phones (jump to §13 and §14). It extends the "Lighting" section of `art-pipeline-blender.md` (decision rule, property starting points, five house presets) and "Shadows and lights" in `performance.md`; it does not repeat them. Map layout is in `level-design-worldbuilding.md`. Reference images by mood (day, dusk, night, interior, cozy, horror, with before-and-after pairs) are in `visual-library/lighting-and-mood.md`; the whole-game art review that scores lighting beside the other disciplines is `art-direction-and-quality-bar.md` §8. Tags: `[official]` Roblox docs, `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (rules of thumb unless marked measured), `[VS]` version-sensitive, `[house]` house estimate. No preset in this file was run in the engine here: every number is a starting point to tune on a phone and a PC.
+What this is: how Roblox lighting works after the unified-lighting change, how to build a mood from key, fill, colour, air and post-processing, how to budget local lights, how to switch looks per zone on the client, and how to keep the look alive on a phone with shadows off. Open it when choosing a look for a new game, lighting an interior or a night, adding zones or a day cycle, or when a live game looks flat, glows too much or is unreadable on phones (jump to §13 and §14). It owns lighting, atmosphere and post-processing values for the skill (`art-pipeline-blender.md` only says how fixtures and shells are built); frame budgets are in `performance.md` ("Shadows and lights"). Map layout is in `level-design-worldbuilding.md`. Reference images by mood (day, dusk, night, interior, cozy, horror, with before-and-after pairs) are in `visual-library/lighting-and-mood.md`; the whole-game art review that scores lighting beside the other disciplines is `art-direction-and-quality-bar.md` §8. Tags: `[official]` Roblox docs, `[community]` forum practice, `[lihfolk]` adapted from LihFolk Vault V2 (rules of thumb unless marked measured), `[VS]` version-sensitive, `[house]` house estimate. Untested: no preset, keyframe or safe range in this file was run in the engine here. Every property named exists and every value is inside its documented range (checked 2026-11-11), but each number is a starting point to tune on a phone and a PC.
 
 ## Contents
 
@@ -23,23 +23,22 @@ What reaches a pixel, in order: direct sun or moon light (`Brightness`, tinted b
 | Fact | Detail |
 |---|---|
 | Two properties replaced `Technology` | `LightingStyle` (Realistic or Soft) is the artistic intent; `PrioritizeLightingQuality` chooses what scales down first on weak devices: `true` keeps shadows and shaders near the camera, `false` keeps view distance `[official]` |
-| Old mapping | Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off `[official announcement, via search summary]`. The docs confirm one case: Soft with the priority on "uses shadow maps rather than voxel lighting" `[official]` |
-| `Technology` | Deprecated and locked to Roblox scripts; a script that sets it errors `[official]` |
+| Old mapping | Future → Realistic + on; ShadowMap → Soft + on; Voxel → Soft + off, applied automatically to every place at full release on 2025-07-23. Realistic with the priority off is the Future path with a shorter shading distance `[official: staff post]` |
+| `Technology` | Deprecated and locked to Roblox scripts; a script that sets it errors. `LightingStyle` and `PrioritizeLightingQuality` are edit-time choices too: the announcement says neither is scriptable `[official]` |
 | Shading paths | Voxel path: light and shadow on a 4×4×4-stud grid, so thin walls leak and small props cast no believable shadow. Shadow-map path: crisp sun shadows from any geometry. Realistic: per-pixel local lights, local-light shadows, visible specular `[official, lihfolk]` |
-| Quality level | Shadow quality degrades as the level drops and shadows are disabled below level 4 `[official]`. Forum reports: Realistic-style shading needs level 4 or higher and is dropped when a device cannot hold 30 FPS; low settings fall back to the voxel path; lights look brighter there `[community]` |
+| Quality level | Shadow quality degrades as the level drops and shadows are disabled below level 4 `[official]`. Since 2026-11-05 the lowest level draws at least 500 studs (was 200); to pay for it, bloom now starts at a slightly higher level and very small objects are culled earlier `[official; staff replies]`. Forum reports: Realistic-style shading needs level 4 or higher and is dropped when a device cannot hold 30 FPS; low settings fall back to the voxel path; lights look brighter there `[community: search summary]` |
 | Ambient split | Needs `GlobalShadows` on. With it off, `Ambient` applies everywhere and `OutdoorAmbient` is ignored. If any `Ambient` channel exceeds the same `OutdoorAmbient` channel, it starts to apply outdoors too `[official]` |
 | `Brightness` | Scales the sun or moon only. It raises contrast, not visibility in shadow; ambient lifts shadows `[lihfolk]` |
 | `EnvironmentDiffuseScale` | Sky-coloured ambient that changes with sky and time. When raising it, lower `Ambient` and `OutdoorAmbient` or the scene washes out `[official]` |
 | `ExposureCompensation` | −5 to 5; +1 doubles exposure, −1 halves it, applied before tone mapping `[official]`. Use it to lift a dim set without changing ratios |
-| `ShadowSoftness` | 0 hard to 1 soft; Realistic only `[official]` |
+| `ShadowSoftness` | 0 hard to 1 soft; needs the shadow-map path (the guide page says Realistic only; the class page says any shadow-mapped mode on a capable device) `[official]`. Set it explicitly, 0.15–0.3: the class page gives a default of 0.2 and the API dump 0.5 |
 | Fog | `FogColor`, `FogStart`, `FogEnd` are hidden and ignored while `Lighting` contains an `Atmosphere` `[official]` |
 | Replication | Server writes to `Lighting` replicate to everyone; client writes stay local. `ClockTime` is tagged NotReplicated and never advances by itself `[official]` |
 | Dead ends | `ShadowColor` does nothing; light `Range` is clamped to 120 studs and `Brightness` does not extend it `[official]` |
 
-- Conflict: default style. The docs tutorials say "Studio begins every game with Soft"; LihFolk reads Realistic from the API dump. Both can be true (class default versus place template). Read your own place and set both properties explicitly.
-- Conflict: can scripts set `LightingStyle`? The class reference lists no script restriction; the light-sources guide says it is "modifiable only in the Properties window", and forum threads report `PrioritizeLightingQuality` unreachable from scripts and the style reverting in the live client `[community]`. Treat both as edit-time choices and never plan a runtime switch.
-- Conflict: `ShadowSoftness` default is 0.2 on the reference page and 0.5 in the API dump `[lihfolk]`. Set it explicitly (0.15–0.3 per `art-pipeline-blender.md`).
-- Decision rule (from `art-pipeline-blender.md`, restated in one line): Realistic for interiors, local lights, PBR metals and night; Soft for bright flat cartoon art; priority on for small dense worlds, off for large open maps. Ship Realistic only if the low-end capture still holds 30 FPS (`performance.md`).
+- Conflict: default style. The docs tutorials say "Studio begins every game with Soft"; the API dump's class defaults are Realistic with the priority on (read 2026-11-11). Both can be true (class default versus place template). Read your own place and set both properties on purpose.
+- Resolved: scripts cannot set `LightingStyle` or `PrioritizeLightingQuality`. The class reference lists no restriction, but the staff announcement and the light-sources guide ("modifiable only in the Properties window") say so, and forum threads report failed writes `[community]`. Never plan a runtime switch; threads from early 2025 also report Realistic reverting to Soft in live servers while the feature was a Studio beta, so check the published game once.
+- Decision rule: Realistic for interiors, local lights, PBR metals and night; Soft for bright flat cartoon art; priority on for small dense worlds, off for large open maps. Ship Realistic only if the low-end capture still holds 30 FPS (`performance.md`).
 
 ## 2. Key, fill and rim
 
@@ -75,7 +74,7 @@ A colour script is the plan for how colour and value change across the game. For
 
 Most games should pick one hour and tune it. Add a cycle only when night changes play (roleplay, survival, horror).
 
-Keyframes for a cycle (`[house]`, blended from the LihFolk recipes and the `art-pipeline-blender.md` presets). Interpolate every field, not only `ClockTime`, or midnight looks like a dim noon.
+Keyframes for a cycle (`[house]`, untested in engine, blended from the LihFolk recipes and the §12 presets). Interpolate every field, not only `ClockTime`, or midnight looks like a dim noon.
 
 | Moment | ClockTime | Brightness | OutdoorAmbient | Ambient | ColorShift_Top | Atmosphere Color / Haze | Grade saturation |
 |---|---|---|---|---|---|---|---|
@@ -85,7 +84,7 @@ Keyframes for a cycle (`[house]`, blended from the LihFolk recipes and the `art-
 | Dusk | 18.6 | 1.0 | (100,90,125) | (65,60,90) | (230,150,150) | (160,130,170) / 1.5 | 0 |
 | Night | 0 | 0.6 | (80,95,140) | (60,70,110) | (150,170,255) | (60,75,120) / 0.5 | −0.1 |
 
-- Night is shown by hue (blue-violet), lower saturation and lit windows, not by darkness. Keep night ambient around 15–25% brightness and tinted, so silhouettes read at 50 studs; moonlight is a weak, cool, clearly angled key `[lihfolk]`. Test on a phone at low screen brightness.
+- Night is shown by hue (blue-violet), lower saturation and lit windows, not by darkness. Keep night ambient tinted and well above black: the Night row runs from 60 to 140 per channel. LihFolk's rule of thumb is 15–25% brightness `[lihfolk]`; start from the table, darken until silhouettes stop reading at 50 studs on a phone at low screen brightness, then step back. Moonlight is a weak, cool, clearly angled key.
 - Gameplay objects get their own readability at night (outline, emissive accent, a small light). Do not brighten the whole world to rescue three objects.
 - The clock: the server publishes the cycle once as attributes; each client derives the hour from `workspace:GetServerTimeNow()`, so there is no per-frame traffic and late joiners are correct at once. Give day more than half the cycle (one production game used a 360 s cycle with 62% day) `[lihfolk]`. Apply the mood at 10–20 Hz.
 - Golden hour collapses to "orange" when shadows are off; the colour shift has to carry it. Long shadows across the playfield also hurt gameplay readability: lovely for a hub, risky for an arena `[lihfolk]`.
@@ -97,8 +96,11 @@ Keyframes for a cycle (`[house]`, blended from the LihFolk recipes and the `art-
 local DAY_SHARE = 0.62 -- fraction of the cycle between 06:00 and 18:00
 
 local function clockTime(): number
-	local length = workspace:GetAttribute("DayLength") :: number
-	local t = ((workspace:GetServerTimeNow() - (workspace:GetAttribute("DayEpoch") :: number)) % length) / length
+	local length, epoch = workspace:GetAttribute("DayLength"), workspace:GetAttribute("DayEpoch")
+	if typeof(length) ~= "number" or typeof(epoch) ~= "number" or length <= 0 then
+		return 14 -- attributes not published yet: hold the place's authored hour
+	end
+	local t = ((workspace:GetServerTimeNow() - epoch) % length) / length
 	if t < DAY_SHARE then
 		return 6 + 12 * t / DAY_SHARE
 	end
@@ -121,17 +123,17 @@ return clockTime
 - Tuning order `[lihfolk]`: `Density` until distant geometry fades where the "edge of interest" should be; `Offset` until the horizon silhouette is right and nothing ghosts; `Haze` and `Color` for mood; `Glare` and `Decay` last, looking toward the sun.
 - Ghosting: a low `Offset` with a high `Density` lets the skybox show through distant objects `[official]`. Raise `Offset`.
 - Density hides distance, it does not cull: hidden geometry still renders. Pair dense air with a smaller `StreamingTargetRadius` (`performance.md`) if the goal is performance.
-- Reference values `[official]`: the indoor tutorial uses `Density` 0.5 so sun shafts catch haze; the environmental-art curriculum uses 0.285 (preset in `art-pipeline-blender.md`).
-- Sky: six images that must be seamless at every shared edge `[official]`. The sky also feeds environment diffuse and specular light, so choose or paint one whose horizon colours match the palette. Author skies yourself (rendered from Blender or painted); keep faces at 1024² or less `[house]`. `SunAngularSize` defaults to 21° and clamps to 0–60; 0 hides the sun alone; `CelestialBodiesShown = false` hides sun, moon and stars `[official]`.
+- Reference values `[official]`: the indoor tutorial uses `Density` 0.5 so sun shafts catch haze; the environmental-art curriculum sample uses Density 0.285, Offset 0.65, Decay (254,254,254), Glare 0.3, Haze 2 with Ambient and OutdoorAmbient both (26,34,36), Realistic, ShadowSoftness 0.15 and GeographicLatitude −18.
+- Sky: six images that must be seamless at every shared edge `[official]`. The sky also feeds environment diffuse and specular light, so choose or paint one whose horizon colours match the palette. Author skies yourself (rendered from Blender or painted); keep faces at 1024² or less (Sky is not on texture streaming, so 4K does not apply `[official: staff post, VS]`). `SunAngularSize` defaults to 21° and clamps to 0–60; 0 hides the sun alone; `CelestialBodiesShown = false` hides sun, moon and stars `[official]`.
 - `SkyboxOrientation` rotates the six faces only (not the sun, moon, stars or clouds); wrap the angle with `% 360` `[official]`. A slow client-side spin (1–5° per second) makes a night or alien sky feel alive `[lihfolk]`.
 - Clouds render only when the `Clouds` object is parented under `Workspace.Terrain` `[official]`. That uses the Terrain container, not terrain voxels, so it does not touch the Terrain house rule. `Cover` 0–1, `Density` (thin and wispy to dark and stormy), `Color` (heavily influenced by Lighting and Atmosphere). Motion comes from `Workspace.GlobalWind`; changing the wind wakes physics assemblies, so do not animate it every frame.
 - For readable weather, tween cloud `Cover` and `Density` in step with `Atmosphere.Density` and `Haze`, taking 5–20 s `[lihfolk]`. Rain and snow emitters follow the camera; they are not spread over the map.
 
 ## 6. Post-processing: safe value ranges
 
-Effects in `Lighting` show to every player; effects in the `Camera` show to that player only `[official]`. Each one is a full-screen pass: keep 2–3 always on (`art-pipeline-blender.md`). Some effects do not render at a low Editor Quality Level, so author at the highest and test at the lowest `[official]`.
+Effects in `Lighting` show to every player; effects in the `Camera` show to that player only `[official]`. Each one is a full-screen pass: keep at most 2–3 always on and toggle Blur and DepthOfField by context `[house]`. Some effects do not render at a low Editor Quality Level, so author at the highest and test at the lowest `[official]`.
 
-| Effect | Engine default `[lihfolk: API dump]` | Safe range for world mood | Never |
+| Effect | Engine default (API dump 0.747, read) | Safe range for world mood `[house]` | Never |
 |---|---|---|---|
 | `ColorCorrectionEffect` | Brightness, Contrast, Saturation 0; TintColor white | Contrast 0 to +0.15; Saturation −0.2 to +0.2 (horror down to −0.45); Brightness within ±0.05; TintColor no darker than about (215,215,215) on any channel | Contrast above about 0.25: crushed blacks on a phone screen. Using Brightness to fix exposure (use `ExposureCompensation`). A strong tint as the permanent grade (it multiplies channels and removes colours) |
 | `BloomEffect` | Intensity 0.4, Size 24, Threshold 0.95 | Day scenes: Intensity 0.2–0.5, Threshold 1.1–2 so only emissive and effects glow. Night, neon, caves: Intensity 0.6–1.2, Threshold 0.9–1, Size 24–40 | Threshold under about 0.9 with white or pale surfaces in view: walls and snow glow. Gameplay information carried by glow alone: bloom is missing at low graphics `[community]` |
@@ -140,7 +142,8 @@ Effects in `Lighting` show to every player; effects in the `Camera` show to that
 | `BlurEffect` | Size 24 | Behind modal menus: tween Size 0 → 12–20, in the Camera | A blur whose lifetime is not tied to the menu's cleanup ("my screen is stuck blurry"); ignoring a reduce-motion setting |
 | `ColorGradingEffect` | TonemapperPreset Default | Default, or Retro for the pre-2019 look with all light Brightness at 1.0 or less | More than one: it must sit in `Lighting` and only the most recently parented applies `[official]` |
 
-- Conflict: the earlier house cap on `BloomEffect.Intensity` was 0.1–0.5 `[house]`; LihFolk's night and neon recipes use up to 1.2 `[lihfolk]`. Both hold: 0.5 is the day-scene cap with a threshold near 1; higher intensity is acceptable only with a threshold of 1.5 or more, or in dark scenes where emissive surfaces are the lighting.
+- Bloom intensity: 0.5 is the day-scene cap with a threshold near 1; LihFolk's night and neon recipes go to 1.2 `[lihfolk]`, acceptable only with a threshold of 1.5 or more or in dark scenes where emissive surfaces are the lighting. Official samples sit outside the house range on purpose (curriculum arena: Intensity 1.5, Size 56; volcano night scene: 0.75 / 80 / 0.85 "to allow more colors to glow") `[official]`: they are dark scenes built around glow.
+- `Threshold` above 1: the class page describes 0 to 1 ("1 = only pure white blooms"); values above 1 are used here on the understanding that Neon, emissive and effect brightness exceed white `[community]`. Confirm in Studio that the property accepts them before relying on a row.
 - Tune bloom and effect brightness together `[lihfolk]`: particles, beams and trails can be far brighter than 1, so a combat game sets Threshold around 1.5–2 and lets effect brightness cross it, while a stylised game that wants signs to glow sets Threshold near 1 and keeps white surfaces off-white.
 - Colour correction is reported to run after tone mapping while bloom and sun rays work on the HDR image `[community]`, which is why a contrast boost can rescue a "washy" bloom but cannot recover clipped highlights.
 - Ownership: the zone grade and bloom are named instances in `Lighting` with one writer (§10). Personal effects (low-health tint, hit flash, menu blur, ultimate grade) live in the Camera behind a small priority stack (zone base 0, low health 10, status 20, cutscene or ultimate 100): systems push and pop requests, and one function applies the winner. Without it, the last writer wins every frame `[lihfolk]`.
@@ -221,7 +224,7 @@ end)
 - A glowing object is up to three layers: an emissive surface, a bright trail or particles, and one small `PointLight` (Range 6–14) so the floor picks up the colour. When the budget is tight, drop the light first; the other two still read as glowing `[lihfolk]`.
 - Keep glow rare: emissive only on interactables, landmarks and light fixtures (style bible). Glow covering more than about a sixth of an object, or of the frame, dissolves shapes in bloom on high settings and looks flat on low ones `[lihfolk, measured]`.
 - Fake light that costs no lighting: a warmer palette swatch or vertex-colour tint baked around a fixture; a soft "light pool" disc mesh under a lamp (few of them: partial transparency is overdraw); `ColorShift_Bottom` in the lava colour so every underside glows without one local light `[lihfolk]`.
-- Bake what shadows would have given: vertex-colour AO and a darker contact band at the base of props (`bake_ao_to_vertex_colour` in `art-pipeline-blender.md`) keep objects seated when shadows are off.
+- Bake what shadows would have given: vertex-colour AO and a darker contact band at the base of props ("AO to vertex colour" under "Blender automation" in `art-pipeline-blender.md`) keep objects seated when shadows are off.
 - Test the brightest and the darkest effect in the brightest and the darkest zone. On one project, effects authored in daylight disappeared inside dark zones; the fix was a brighter re-author plus one small coloured light for each large piece `[lihfolk]`.
 
 ## 10. Per-zone lighting transitions (client-side)
@@ -294,7 +297,7 @@ task.spawn(function()
 		if character and not player:GetAttribute("LightingLocked") then -- cutscenes set this flag and take over
 			local name = zoneAt(character:GetPivot().Position)
 			if name and name ~= current then
-				apply(name, if current then 2 else 0) -- first apply and teleports are instant; walking blends
+				apply(name, if current then 2 else 0) -- first apply is instant, walking blends; a teleport calls apply(name, 0) under its fade
 			end
 		end
 	end
@@ -303,20 +306,21 @@ end)
 
 ## 11. Quality-level fallbacks for low-end phones
 
-Most phones run on automatic quality and many sit below level 4, where there are no shadows at all `[official]`. Design for that picture first and let higher levels add richness.
+Most phones run on automatic quality, and below level 4 there are no shadows at all `[official]`; how many players sit there is not published, so assume the weakest target phone does `[house]`. Design for that picture first and let higher levels add richness.
 
 - No-shadow test: set Studio's Editor Quality Level to 1–3 (or turn `GlobalShadows` off for a moment). If the scene goes flat and unreadable, move contrast into `ColorShift_Top`, ambient tint, material value and baked AO `[lihfolk]`.
 - Greyscale test: `ColorCorrectionEffect.Saturation = -1`. Player, enemies, pickups and the path must each sit at their own value.
-- Never encode gameplay in shadows, bloom or fine local-light shading: a dark doorway that means danger, or a glow that marks the objective, also needs shape, colour or motion.
+- Never encode gameplay in shadows, bloom or fine local-light shading: a dark doorway that means danger, or a glow that marks the objective, also needs shape, colour or motion. Bloom in particular now switches on later in the quality ramp (November 2026) `[community: staff reply]`.
+- Distance: every device now draws at least 500 studs, so fog no longer has to hide a 200-stud cut-off on weak phones; Roblox asks not to design around the exact figure `[official, VS]`.
 - `PrioritizeLightingQuality`: `false` for open maps keeps view distance (and far landmarks) as quality drops; `true` for interiors and dense small maps keeps the light.
 - Local lights can read brighter on the voxel fallback `[community]`: look at each lit interior at level 1 before shipping and trim brightness if it blows out.
-- Low-detail mode `[house]`, chosen by a settings toggle and automatically from measured frame time with hysteresis (`performance.md`), turns things off in this order: (1) SunRays and any DepthOfField; (2) shadows on local lights, then all but the nearest four decorative lights; (3) bloom to half, then off; (4) ambient particle emitters; (5) a slightly denser Atmosphere to hide the shorter view. It never changes anything that carries gameplay information.
-- Detection: `UserSettings():GetService("UserGameSettings").SavedQualityLevel` returns `Automatic` or `QualityLevel1`–`QualityLevel10` `[official]`. `Automatic` (the usual phone case) says nothing about the real level, so measured frame time is the signal that matters.
+- Low-detail mode `[house]`, chosen by a settings toggle (and offered, not forced, when measured frame time stays poor: hysteresis in `performance.md`), turns off only cost the game added and the engine cannot scale for it, in this order: (1) SunRays and any DepthOfField; (2) shadows on local lights, then all but the nearest four decorative lights; (3) bloom to half, then off; (4) ambient particle emitters; (5) a slightly denser Atmosphere to hide the shorter view. It never changes anything that carries gameplay information.
+- Detection: do not read `UserGameSettings.SavedQualityLevel`. Roblox asks developers not to change visual effects on it (it works against automatic scaling) and plans to deprecate it `[official: docs and staff post of 2026-11-05]`; it also says nothing when set to `Automatic`, the usual phone case. The real level is not readable from game scripts. Use the player's own toggle and measured frame time, and leave draw distance, shadows and post-effect scaling to the engine.
 - Test matrix: Editor Quality Level 1, 4 and maximum; the 3 GB Android phone; the same phone at low screen brightness for night presets.
 
 ## 12. Presets by genre
 
-Starting points `[house]`, adapted from the LihFolk recipes and earlier house presets (`art-pipeline-blender.md` keeps only an overcast and an interior-shop preset and defers to this file for everything else). Colours are RGB 0–255; `Ambient` never exceeds `OutdoorAmbient` on any channel. Atmosphere is Density / Offset / Haze / Glare then Color; Bloom is Intensity / Size / Threshold; Grade is the zone `ColorCorrectionEffect`. Apply, then run the §11 tests on the phone.
+Starting points `[house]`, untested in engine, adapted from the LihFolk recipes and earlier house presets. Every column is a real property and every value is inside its documented range; "Style, priority" is `LightingStyle` and `PrioritizeLightingQuality`, set in Studio, never by script. Colours are RGB 0–255; `Ambient` never exceeds `OutdoorAmbient` on any channel. Atmosphere is Density / Offset / Haze / Glare then Color; Bloom is Intensity / Size / Threshold; Grade is the zone `ColorCorrectionEffect`. Apply, then run the §11 tests on the phone.
 
 | Genre look | Style, priority | ClockTime | Brightness | Ambient / OutdoorAmbient | ColorShift Top / Bottom | Env diffuse / specular | Atmosphere | Bloom | Grade |
 |---|---|---|---|---|---|---|---|---|---|
@@ -328,6 +332,8 @@ Starting points `[house]`, adapted from the LihFolk recipes and earlier house pr
 | Dungeon or cave interior | Realistic, on | any | 0.3 | (50,45,70) / (60,55,85) | none | 0.1 / 0.5 | 0.45 / 0 / 1 / 0, (90,80,120) | 0.8 / 30 / 1.0 | Contrast 0.12, Saturation 0.1; ExposureCompensation +0.3 |
 | Roleplay town at night (readable) | Realistic, on | 0 | 0.6 | (60,70,110) / (80,95,140) | (150,170,255) / none | 0.2 / 0.4 | 0.3 / 0 / 0.5 / 0, (60,75,120) | 0.6 / 30 / 0.95 | Contrast 0.1, Saturation −0.1, tint (220,230,255); ExposureCompensation +0.2 |
 | Neon city or night racing | Realistic, on | 22 | 0.4 | (40,30,60) / (60,45,90) | none | 0.2 / 0.6 | 0.4 / 0 / 2 / 0, (90,50,120) | 1.0 / 36 / 0.9 | Contrast 0.15, Saturation 0.2 |
+| Overcast (any genre, flat soft day) | Realistic, on | 12 | 1.2 | (50,55,60) / (90,95,100) | none | 0.4 / 0.2 | 0.4 / 0.1 / 2.5 / 0, (190,195,205) | 0.2 / 24 / 1.5 | Contrast 0.1 |
+| Interior shop (sealed room, fixture-lit) | Realistic, on | any | 1.5 | (30,30,35) / (60,60,70) | none | 0.3 / 0.5 | 0.2 / 0.5 / 0 / 0, default | 0.3 / 24 / 1.2 | Contrast 0.05, Saturation 0.1; SurfaceLights on Blender fixtures |
 
 - Conflict: the simulator row uses a brighter ambient than the earlier house "Bright stylized day" preset ((70,70,80) / (120,120,130)) `[house]`. The darker pair gives bevelled palette art more form; the brighter pair is the "nothing is ever dark" simulator look. Decide with the white-cube test: lit faces 1.5–2.5× shadow faces.
 - Obby: no haze (the next stages must read), no sun rays, no depth of field; the kill colour is the only saturated emissive on the course. PvP: environment saturation slightly below zero leaves saturation for effects and team colours; light the fighting floor more than its surroundings. Horror: one warm light the player carries or follows; darkness hides the threat, never the counter. Bright cartoon cannot be made scary by darkening it: switch preset `[lihfolk]`.
@@ -340,7 +346,7 @@ Starting points `[house]`, adapted from the LihFolk recipes and earlier house pr
 | Everything glows, white walls included (over-bloom) | Bloom Threshold below about 1 with pale surfaces; high Intensity | Threshold 1.1–2; Intensity ≤ 0.5 by day; off-white instead of pure white |
 | Crushed blacks, detail lost in shadow on phones | Contrast pushed past about 0.25; near-black ambient; stacked grade and tint | Contrast ≤ 0.15; tinted ambient; lift with `ExposureCompensation` |
 | Flat, shapeless scene at noon | Overhead sun; ambient close to sun strength | Sun at 30–50°, a quarter turn off the travel direction; lower ambient or raise Brightness |
-| Night is black or unplayable | Ambient near zero | Blue-violet ambient at 15–25%; outlines and emissive accents on gameplay objects |
+| Night is black or unplayable | Ambient near zero | Blue-violet ambient from the §4 Night row; outlines and emissive accents on gameplay objects |
 | Washed out after raising environment diffuse | Ambient not lowered | Lower `Ambient` and `OutdoorAmbient` together with it |
 | Fog settings do nothing | An `Atmosphere` exists | Use `Density` and `Haze`, or remove the Atmosphere |
 | Changing Glare or Decay has no effect | `Haze` sits at 0 (for Decay, `Glare` is 0 as well) | Raise Haze first |
@@ -383,19 +389,23 @@ Starting points `[house]`, adapted from the LihFolk recipes and earlier house pr
 - [ ] Interiors sealed, ≥ 1 stud thick, with their own profile; checked for leaks at quality level 1.
 - [ ] Emissive only on interactables, landmarks and fixtures; nothing important is signalled by glow alone.
 - [ ] One client owner for `Lighting`, `Atmosphere` and the zone grade; the server writes no lighting after setup; cutscenes hand off by flag.
-- [ ] Low-detail mode exists and never removes gameplay information; captured on the 3 GB Android phone.
+- [ ] Low-detail mode exists and never removes gameplay information; nothing reads `SavedQualityLevel`; captured on the 3 GB Android phone.
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-10; platform facts re-checked on 2026-11-11.
 
-- https://github.com/Roblox/creator-docs (read, commit ccc2b01 of 2026-11-07), under `content/en-us/`: `environment/{lighting,atmosphere,skybox,clouds,post-processing-effects}.md`, `effects/light-sources.md`, `tutorials/use-case-tutorials/lighting/{enhance-indoor-environments,enhance-outdoor-environments,light-with-props}.md`, `performance-optimization/improve.md`, `reference/engine/classes/{Lighting,Atmosphere,Sky,Clouds,Light,BloomEffect,ColorCorrectionEffect,SunRaysEffect,DepthOfFieldEffect,BlurEffect,ColorGradingEffect,SurfaceAppearance,UserGameSettings,Workspace}.yaml`, `reference/engine/enums/{LightingStyle,SavedQualitySetting}.yaml`
+- https://github.com/Roblox/creator-docs (read; re-checked at commit 7cbffff of 2026-11-10), under `content/en-us/`: `environment/{lighting,atmosphere,skybox,clouds,post-processing-effects}.md`, `effects/light-sources.md`, `performance-optimization/design.md` (quality levels, `SavedQualityLevel`), `tutorials/curriculums/environmental-art/construct-your-world.md` and `tutorials/use-case-tutorials/vfx/create-volcanoes.md` (sample lighting values), `tutorials/use-case-tutorials/lighting/{enhance-indoor-environments,enhance-outdoor-environments,light-with-props}.md`, `performance-optimization/improve.md`, `reference/engine/classes/{Lighting,Atmosphere,Sky,Clouds,Light,BloomEffect,ColorCorrectionEffect,SunRaysEffect,DepthOfFieldEffect,BlurEffect,ColorGradingEffect,SurfaceAppearance,UserGameSettings,Workspace}.yaml`, `reference/engine/enums/{LightingStyle,SavedQualitySetting}.yaml`
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/07 Lighting VFX and Audio/{Lighting Technologies and Settings,Light Sources and Shadows,Lighting Mood and Time of Day,Stylized Lighting Recipes,Atmosphere Sky Clouds and Post-Processing}.md`; `54 Untextured Stylised Modelling/Lighting Untextured Art in Roblox.md`; `06 World Building and Art/Zone and Biome Art Direction.md`; `skills/lihfolk-worldbuilding/{SKILL.md,references/budgets.md}` (read)
-- https://devforum.roblox.com/t/let-there-be-unified-light-unified-lighting-is-fully-live/3401512 (search summary: Technology-to-style mapping)
-- https://devforum.roblox.com/t/prioritizelightingquality-not-accessible-in-scripts/3826475, https://devforum.roblox.com/t/lightingstyle-property-keeps-changing-to-soft-only-in-game/3437295, https://devforum.roblox.com/t/lightningstyle-gets-changed-to-soft-on-roblox-player/3590527 (search summary)
+- https://devforum.roblox.com/t/let-there-be-unified-light-unified-lighting-is-fully-live/3401512 (read; official, 2025-01-21, full release 2025-07-23: mapping, "neither of these properties are scriptable")
+- https://devforum.roblox.com/t/increasing-the-minimum-draw-distance-to-500-studs-and-other-auto-quality-level-improvements/4977292 (read; official, 2026-11-05, staff replies to 2026-11-10: draw distance, bloom, small-object culling, `SavedQualityLevel`)
+- https://devforum.roblox.com/t/introducing-texture-streaming/4144855 (read; official: Sky and UI textures not yet streamed)
+- Engine API dump, version 0.747 (https://github.com/MaximumADHD/Roblox-Client-Tracker, read 2026-11-11): post-effect, Atmosphere, Sky and Lighting class defaults
+- https://devforum.roblox.com/t/prioritizelightingquality-not-accessible-in-scripts/3826475, https://devforum.roblox.com/t/lightingstyle-property-keeps-changing-to-soft-only-in-game/3437295, https://devforum.roblox.com/t/lightningstyle-gets-changed-to-soft-on-roblox-player/3590527 (first two read, third a search summary)
 - https://devforum.roblox.com/t/roblox-lighting-modes-what-do-i-use-for-my-game/1687174, https://devforum.roblox.com/t/future-is-bright-on-android-is-fully-rolled-out-client-beta/3235808, https://devforum.roblox.com/t/future-lighting-looks-fine-on-pc-but-way-too-bright-on-mobile/1087420 (search summary: quality-level fallbacks, staff reply on level 4 and 30 FPS)
 - https://devforum.roblox.com/t/in-mobile-neon-part-doesnt-glow/2333429, https://devforum.roblox.com/t/bloom-vs-color-correction/494805, https://devforum.roblox.com/t/why-is-the-bloom-on-my-game-so-bright/518435 (search summary)
-- https://devforum.roblox.com/t/changing-lighting-on-the-client-side-when-stepping-into-different-zones/3597161, https://devforum.roblox.com/t/tweens-on-atmospheredensity-are-not-smooth/3216997, https://devforum.roblox.com/t/atmosphere-bugs-out-when-transitioning-using-tweens/2841565, https://devforum.roblox.com/t/choppy-rendering-when-tweening-properties-of-lighting-and-other-lighting-instances/4525441 (search summary)
+- https://devforum.roblox.com/t/changing-lighting-on-the-client-side-when-stepping-into-different-zones/3597161, https://devforum.roblox.com/t/tweens-on-atmospheredensity-are-not-smooth/3216997, https://devforum.roblox.com/t/atmosphere-bugs-out-when-transitioning-using-tweens/2841565, https://devforum.roblox.com/t/choppy-rendering-when-tweening-properties-of-lighting-and-other-lighting-instances/4525441 (second and fourth read; the others are search summaries)
 - https://devforum.roblox.com/t/compatibility-lighting-becomes-retro-tone-mapping-sunset-migration/3128560, https://devforum.roblox.com/t/ambient-occlusion-settings/4044364 (search summary)
 - https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033, https://devforum.roblox.com/t/guide-to-lighting/2764787 (search summary)
+- Not verified: whether `BloomEffect.Threshold` accepts values above 1 and what `Size` clamps to; every preset and keyframe (untested in engine); the share of players below quality level 4.
 - No evidence found: an official per-quality-level feature list; an official 2026 lighting feature announcement beyond unified lighting; community-agreed post-processing values (third-party "preset" pages were SEO mirrors and were ignored); a documented default for `LightingStyle` on the class page.

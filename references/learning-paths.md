@@ -230,7 +230,7 @@ Worked example: "a pet simulator with dragons" (`genres/pet-collection-hatching.
 | Week | Goal | Must be true at the end |
 |---|---|---|
 | 2 | The genre's first systems work, and nothing earned can be lost or duplicated | Systems 1–3 from "Make it your game" are playable; the save survives leave-and-rejoin and a server shutdown; every remote checks type, range and rate on the server |
-| 3 | It looks like a game and lasts 30 to 60 minutes | The remaining beginner systems; one style, one lighting preset; icon and three thumbnails drafted on day one of the week, not launch night `[lihfolk]`; maturity questionnaire done; played on a real phone |
+| 3 | It looks like a game and lasts 30 to 60 minutes | The remaining beginner systems; one style, one lighting preset; icon and three thumbnails drafted on day one of the week, not launch night `[lihfolk]` (Studio-only route: icons-thumbnails-and-store-page.md §8 route A); maturity questionnaire done; played on a real phone |
 | 4 | Other people play it | Early testers first, then a public release. A new game is shown to players who are age-checked 16 or older and to your trusted friends: that describes the audience, not you, and it is the same for a creator of any age `[official]` `[VS]`. Reaching younger players is a later, optional step with its own requirements (the under-16 box above; analytics-and-discovery.md). Fix the top three problems and nothing else; write a one-page postmortem |
 
 Shipped means: released; a save verified by rejoining; played on a phone; five people who are not you have played. Never cut: data safety, server validation, the phone layout, the maturity questionnaire `[lihfolk]`.
@@ -266,15 +266,15 @@ Climb in order. Each rung protects the ones above it: sending players, or money,
 | 2. Architecture | One server entry and one client entry; logic in modules; behaviour by tags; no scripts inside models; `--!strict` on new code | engineering-architecture.md, architecture-patterns-luau.md, `luau-mastery.md` |
 | 3. Data safety | ProfileStore, schema version, tested migration; a failed load never saves; shutdown and rejoin tests pass | data-and-purchases.md |
 | 4. Security | Written list of remotes; each one validated and rate-limited on the server; nothing secret in client-visible containers | networking-and-security.md |
-| 5. First session and core loop | First reward under 30 s, first upgrade under 2 min; loop scorecard at 7 of 10 or better; five strangers observed | design-foundations.md §7, core-loop-tuning.md |
+| 5. First session and core loop | First reward under 30 s, first upgrade under 2 min; tutorial rubric 16 of 20; loop scorecard at 7 of 10 or better; five strangers observed | `tutorial-and-onboarding.md`, core-loop-tuning.md §4, design-foundations.md §7 |
 | 6. Mobile and performance | 30 FPS or better on a 3 GB Android phone in the worst view; budgets table filled from MicroProfiler captures | performance.md |
-| 7. UI and controls | Touch, gamepad and keyboard all complete; safe areas respected; nothing reads as default UI | ui-input-crossplatform.md, ui-design-figma.md, `accessibility-and-player-qol.md` |
+| 7. UI and controls | Touch, gamepad and keyboard all complete; safe areas respected; nothing reads as default UI (UI rubric 8 of 10 per screen) | ui-input-crossplatform.md, ui-design-figma.md, `ui-screen-recipes.md`, `accessibility-and-player-qol.md` |
 | 8. Analytics | Onboarding funnel and economy events firing from the server; one weekly review habit | analytics-and-discovery.md, `templates/analytics-event-plan.md` |
 | 9. Economy | Balance sheet with numbers; sink ratio 0.95–1.05 modelled; costs are geometric and time-first | economy-and-progression.md, `templates/economy-balance-sheet.md` |
 | 10. Monetisation | Default product set trimmed to fit; offer gate in code; receipts tested live; policy gate passed | monetization-and-policy.md, checklists.md Gate 3 |
-| 11. Polish | Juice tiers on the core verb; mix, music and lighting preset; animation where the verb needs it | game-craft.md, `vfx-and-juice.md`, `audio-sfx-music.md`, `animation-and-rigs.md`, `lighting-and-atmosphere.md` |
+| 11. Polish | A written style bible and no engine defaults left; juice tiers on the core verb; UI motion on tokens; mix, music and lighting preset; animation where the verb needs it | `art-direction-and-quality-bar.md`, game-craft.md, `vfx-and-juice.md`, `vfx-recipes.md`, `ui-motion-and-feedback.md`, `audio-sfx-music.md`, `animation-and-rigs.md`, `lighting-and-atmosphere.md` |
 | 12. Retention and LiveOps | A reason to return tomorrow that is not a punishment; a weekly update day; a four-week plan | liveops-quests-retention.md |
-| 13. Discovery and launch | Thumbnails tested; metadata honest; launch checklist signed; growth only after the readiness gate | analytics-and-discovery.md, growth-and-marketing.md, market-scan-2026-11.md |
+| 13. Discovery and launch | Icon and thumbnails pass the store-page rubric and are tested; metadata honest; launch checklist signed; growth only after the readiness gate | `icons-thumbnails-and-store-page.md`, analytics-and-discovery.md, growth-and-marketing.md, market-scan-2026-11.md |
 
 The usual intermediate plateau `[community]`: forum threads asking "I know the basics, what next" get the same answers: modules and structure, a data library, source control, then tooling. That is rungs 1 to 3. The step people skip is rung 5: most stalled games have adequate code and an untested first five minutes.
 
@@ -300,43 +300,26 @@ How Claude works with an expert: ask for the number before the opinion; give the
 
 ## 6. Which reference do I open
 
-All paths are under `references/` unless they start with `templates/`. Files in the wave-2 list may not exist yet in an older copy of the skill: fall back to the neighbour named in brackets.
+The file map is `references/INDEX.md` (one row per job, every guide, template and visual-library file); standing rules are in `references/decision-rules.md` and the twelve build phases in `references/workflow-phases.md`. The rows below only translate the questions developers actually ask into that map. Paths are under `references/` unless they start with `templates/`.
 
-| Question | Open |
+| Question as asked | Open |
 |---|---|
 | What does this word mean? | glossary.md |
-| What should I build? What is trending or saturated? | market-scan-2026-11.md, genre-playbooks.md |
-| How does my genre work, and what breaks in it? | `genres/<genre>.md` |
+| What should I build? What is trending or saturated? | market-scan-2026-11.md, genre-playbooks.md, then `genres/<genre>.md` |
 | Is my idea fun? How do I write it down? | design-foundations.md, process-and-playtesting.md, `templates/game-one-pager.md` |
 | My game exists. What do I fix first? | audit-existing-game.md, `templates/game-audit-report.md` |
-| Players leave in the first minutes | core-loop-tuning.md, design-foundations.md §7 |
-| Players do not come back | liveops-quests-retention.md |
-| How do I price upgrades, XP, rebirths, luck? | economy-and-progression.md |
-| What do I sell, and what is allowed? | monetization-and-policy.md |
-| How do I structure my code? | engineering-architecture.md, architecture-patterns-luau.md |
-| A Luau language question (types, tables, metatables, performance idioms) | `luau-mastery.md` [engineering-architecture.md] |
-| How do I build system X (inventory, quests, pets, rounds, shops)? | `gameplay-systems-cookbook.md` [architecture-patterns-luau.md, the genre file] |
-| Remotes, exploits, bans, secrets | networking-and-security.md |
-| Saving, purchases, receipts, teleports, cross-server | data-and-purchases.md |
-| It lags, crashes or loads slowly | performance.md |
-| Something is broken and I cannot find why | `debugging-and-testing.md` [engineering-architecture.md §Testing, studio-workflow.md §2] |
-| Blender, export, import, collision, kits | art-pipeline-blender.md |
-| Lighting and mood | `lighting-and-atmosphere.md` [art-pipeline-blender.md §Lighting] |
-| Layout of levels and worlds | `level-design-worldbuilding.md` [game-craft.md §2] |
-| Characters, rigs, animation | `animation-and-rigs.md` [game-craft.md] |
-| Effects and juice; sound and music | `vfx-and-juice.md`, `audio-sfx-music.md` [game-craft.md §1, §4] |
-| Vehicles, constraints, physics | `physics-and-vehicles.md` [performance.md §Physics] |
-| Designing UI; building UI for every device | ui-design-figma.md; ui-input-crossplatform.md |
-| Accessibility, settings, quality-of-life | `accessibility-and-player-qol.md` [ui-input-crossplatform.md] |
-| What do I measure? How do I get recommended? | analytics-and-discovery.md |
-| How do I get players (ads, video, creators, community)? | growth-and-marketing.md |
-| Moderation, community rules, child safety | `community-moderation-safety.md` [monetization-and-policy.md §Policy] |
-| Team, contracts, payouts, DevEx, legal | `team-business-legal.md` [monetization-and-policy.md] |
-| Studio settings, testing, publishing, Team Create, Rojo migration, backups | studio-workflow.md |
+| Players leave in the first minutes | tutorial-and-onboarding.md (§14 repairs a live funnel), design-foundations.md §7 |
+| Players play once and do not come back | core-loop-tuning.md §5–6, liveops-quests-retention.md |
+| It looks generic, cheap or "AI-made" | art-direction-and-quality-bar.md, then the matching file in `visual-library/` |
+| My UI looks like a default template | ui-design-figma.md, ui-screen-recipes.md (one screen at a time), ui-motion-and-feedback.md |
+| My effects look weak; how do I build a slash, an explosion, a hatch reveal? | vfx-and-juice.md (principles), vfx-recipes.md (the build) |
+| I want an intro, a boss entrance or a trailer | cutscenes-and-cinematics.md |
+| Nobody clicks my game | icons-thumbnails-and-store-page.md, analytics-and-discovery.md |
+| How do I build system X (inventory, quests, pets, rounds, shops)? | gameplay-systems-cookbook.md, the genre file |
+| Something is broken and I cannot find why | debugging-and-testing.md, studio-workflow.md §2 |
 | Which AI tools, skills and MCP servers are safe to add? | ai-toolchain-skills.md |
-| How did successful games do it? | `case-studies-teardowns.md` [market-scan-2026-11.md] |
 | Am I ready to ship? | checklists.md, `templates/launch-checklist.md` |
-| Where do I start learning? | This file |
+| Anything else (code, data, security, performance, art pipeline, audio, money, team) | The matching row of `INDEX.md` |
 
 ## 7. Solo, small team, studio
 
@@ -381,7 +364,7 @@ Rules:
 | "It works but I am afraid to touch it" | No safety net, no structure | Ladder rungs 1 and 2 |
 | Answers from Claude feel too basic or too dense | Level misread | Re-rate with section 1; the user can simply say which domain they are strong in |
 | AI-written code breaks or uses old APIs | Unverified output | State the verification step; check the docs; never-do list |
-| Good code, players leave in two minutes | Rung 5 skipped | core-loop-tuning.md |
+| Good code, players leave in two minutes | Rung 5 skipped | tutorial-and-onboarding.md §14, then core-loop-tuning.md §5 |
 | Launched, got 200 visits, called it a flop `[community]` | No traffic plan and too little time; first-session quality unknown | analytics-and-discovery.md for the 250-play gate; fix the first session before buying traffic |
 | Strong developer from another engine writes client-trusting code | Platform gap, not skill gap | Client-server model in engineering-architecture.md; data and replication rules |
 | Team members overwrite each other | No ownership, shared place | studio-workflow.md §5 |
@@ -398,11 +381,11 @@ Rules:
 - [ ] Intermediate: the lowest failing rung was addressed before higher ones.
 - [ ] Expert: numbers were requested or cited with date; lower-risk and bold options were both stated.
 - [ ] Scope was checked against productive hours, with a written cut list.
-- [ ] Every routed reference exists, or the bracketed fallback was used.
+- [ ] Every routed reference exists (check against `references/INDEX.md`).
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-10; the under-16 box, early-tester and Team Create age bands, DevEx minimums and Studio requirements were re-read on 2026-11-11 (creator-docs commit 7cbffff of 2026-11-10) and still match.
 
 - Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `tutorials/index.md` and the `tutorials/curriculums/` and `tutorials/first-experience/` listings, `studio/setup.md`, `includes/studio/system-reqs.md`, `production/publishing/{publish-games-and-places,kids-and-select,account-verification}.md`, `production/monetization/developer-exchange.md`, `projects/collaboration.md`, `projects/place-files.md`, `projects/assets/packages.md`, `ai/coding-harness.md`, `assistant/guide.md` (read) — https://github.com/Roblox/creator-docs
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `00 Start Here.md`, `ROUTER.md`, `13 Production and Case Studies/{Ship a Game in 30 Days - Week-by-Week Plan for a Solo Dev, Planning and Scoping a Roblox Game, Scoping and Roles for Small Teams, Team Roles and Workflows}.md`, `15 AI Tools/{Prompting and Verifying AI Output, AI Pitfalls - Stale APIs and Luau}.md`, `52 Core Concepts/Core Concepts Start Here.md` (read)

@@ -22,10 +22,10 @@ Mode: <new game / level-up>. For a live game fill this from `LogEconomyEvent` da
 | Currency | Type (soft / hard / event / premium) | Earned by (faucets) | Spent on (sinks) | Tradeable? | Shown on HUD? | Analytics resource name |
 |---|---|---|---|---|---|---|
 | Cash | soft | deliveries, quests, offline | upgrades, cosmetics | no | yes | Cash |
-| Gems | hard (Robux only) | packs, rewarded video, rare drops | boosts, skips | no | yes | Gems |
+| Gems | hard (mainly Robux) | packs, rewarded video, rare drops | boosts, skips | no | yes | Gems |
 | Event tokens | event | event activities | event shop | no | during event | EventTokens |
 
-Limit: at most 5 currencies on the dashboard; 10 resource types in analytics.
+Limit: at most 5 currencies on the Economy dashboard; 10 resource types in analytics; a currency Robux can buy makes every random sink it pays for a paid random item.
 
 For each currency: its one job <>; what it buys that nothing else buys <>; what happens when players stop caring <>. Premium currency only: anchor (1 unit ≈ <> R$); price and pack unit <50>; `Paid` and `Free` buckets with spend order <free first / paid first>; target free share <under 50%>; conversions allowed (one way only) <>.
 
@@ -139,7 +139,7 @@ Pity and supply: rule <flat / ramp from roll N / hard cap K>; expected rolls per
 |---|---|---|---|---|---|
 
 - Kill switches: `trading_enabled`, `gifting_enabled` (Configs). Trade log location: <>. Dupe alert: one GUID in two inventories, or owned > minted.
-- Swap is one synchronous server step; both profiles saved immediately; same-server trades only.
+- Swap is one synchronous server step with no yield between check and swap; same-server trades only; persistence follows the two-profile commit protocol in references/data-and-purchases.md ("swap, then save both" leaves a dupe window on a crash).
 
 ## Sheet 13: Rebalance log (live games)
 

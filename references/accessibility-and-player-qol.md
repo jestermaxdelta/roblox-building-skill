@@ -28,13 +28,13 @@ What makes a Roblox game comfortable to play for people with different eyes, ear
 
 | Setting | Owner | What the game does |
 |---|---|---|
-| Graphics quality (Automatic or 1–10) | Roblox | Read `UserSettings():GetService("UserGameSettings").SavedQualityLevel`; cannot be set by script. Add game-only levers (§11 performance mode) `[lihfolk]` |
+| Graphics quality (Automatic or 1–10) | Roblox | Cannot be set by script, and do not read it: staff ask developers to "avoid modulating visual effects by reading `UserGameSettings.SavedQualityLevel`" and plan to deprecate the API (DevForum, 2026-11-05) `[official][VS]`. Add game-only levers driven by the player's own preset and measured frame time (§11 performance mode) |
 | Mouse and gamepad sensitivity, invert Y | Roblox (`UserGameSettings.MouseSensitivity`, `GamepadCameraSensitivity`, `GetCameraYInvertValue()`) | Custom cameras multiply by them; never add a second base slider `[lihfolk]` |
 | Shift lock, camera mode | Roblox, gated by `StarterPlayer.EnableMouseLockOption` | Allow it or explain why not |
 | Text size | Roblox: `GuiService.PreferredTextSize` (`Medium`, `Large`, `Larger`, `Largest`) `[official]` | Layouts that grow; no `TextScaled` content |
 | Reduce motion, background transparency | Roblox: `GuiService.ReducedMotionEnabled`, `PreferredTransparency` `[official]` | Follow them, listen for changes, allow a game override |
 | Block list, chat mute, report | Roblox | Honour blocks in every custom social system; open `StarterGui:SetCore("PromptBlockPlayer", player)` instead of a custom block button `[official]` |
-| Colour-blind filter | Nobody. Roblox staff said full-screen filters will not be supported and games should provide their own colour-blind-friendly options `[community: DevForum, search summary]` | Redundant cues plus palette modes (§3) |
+| Colour-blind filter | Nobody. Roblox staff: games "can and should implement their own colorblind-friendly options"; full-screen colour filters are "not a great solution, and so we don't intend to support them" (DevForum staff reply, 2023-11-29) `[official]` | Redundant cues plus palette modes (§3) |
 | FOV, shake, flashes, captions, volume groups, UI scale, keybinds, touch layout, assists | The game | This file |
 | Screen reader for in-game UI | Not documented by Roblox as of this pass `[VS]` | §9 |
 
@@ -49,7 +49,7 @@ Rules:
 - Rarity ladders: rarity name on every card, a pip count or frame shape per tier, lightness rising monotonically with tier.
 - Heal versus damage: sign (+/−), direction of motion, weight. Crits are bigger, not just yellower.
 - Telegraphs on the 3D floor must read in greyscale: a bright thick edge ring, a hatch or chevron pattern in the decal texture, one shape per attack type, and a fill that grows as the attack charges `[lihfolk]`. The telegraph mesh and its texture are Blender-authored like any other asset (house rule 1).
-- Contrast: 4.5:1 for text, 3:1 for large text and icons (`ui-input-crossplatform.md`). Check the palette's real colours in `ui-design-figma.md` tokens, not by eye.
+- Contrast (WCAG 2.x 1.4.3 and 1.4.11): 4.5:1 for text, 3:1 for large text (about 24 px, or 19 px bold) and for icons and control outlines. Compute it, never judge by eye: linearise each sRGB channel (`c ≤ 0.04045 → c ÷ 12.92`, else `((c + 0.055) ÷ 1.055)^2.4`), `L = 0.2126 R + 0.7152 G + 0.0722 B`, ratio = `(L_light + 0.05) ÷ (L_dark + 0.05)`. Mid-tone accents fail with white more often than they look: on the theme's mid-green `Primary` `#35B25D`, white is 2.7:1 (fails both thresholds) while its dark `OnAccent` `#1A1F2B` is 6.0:1; white reaches 5.4:1 only on the dark shade `#1F7A3D`; on the brighter green `#34C759` white is 2.2:1. Check every text-on-accent pair in the theme module (`ui-design-figma.md` tokens) this way.
 
 Measure the palette instead of eyeballing it `[lihfolk]`: convert each token to linear RGB, apply a protan, deutan and tritan simulation matrix (Machado et al. 2009), convert to Oklab, and compare the Euclidean distance of every pair that appears together on a real screen.
 
@@ -89,14 +89,13 @@ Why players feel sick `[lihfolk]`: the eyes report motion the inner ear does not
 
 | Effect | Comfortable default `[lihfolk]` | Under reduced motion |
 |---|---|---|
-| Light hit shake | Translation only, < 0.15 studs, < 0.2 s | Off; replace with a reticle hit marker or edge vignette pulse |
-| Explosion shake | Translation plus tiny pitch, decays in 0.4 s, never roll | Off; UI pulse |
+| Hit and explosion shake | Light hits: none. Heavier hits: a decaying envelope that ends at exactly 0 within about 0.4 s, at most 2° of pitch and yaw and 0.5 studs of offset at full strength, scaled by the player's shake slider. **Roll is always 0 in gameplay**: it is the strongest nausea trigger. Per-hit values are owned by `vfx-and-juice.md` §7 | Off (all rotation and offset); keep at most a 0.25× directional kick, or replace with a reticle hit marker or edge vignette pulse |
 | Head bob | None by default; first person only | Off |
 | Landing dip | 0.15 s downward offset | 30% or off |
 | Knockback | Camera follows the character, no added spin | Same |
 | FOV kick (sprint, dash) | Through one FOV owner; total change capped (the vault's reference game used 12°) | Halved, not removed: it carries information |
 | Scope zoom | Instant or under 0.15 s; slow zooms are worse | Same |
-| Cutscene camera | Constant-velocity paths, cuts over whip pans, always skippable | Cuts and fades only |
+| Cutscene camera | Constant speed between eased ends, cuts over whip pans, no roll while moving, always skippable. Limits, skip and repeat rules: `cutscenes-and-cinematics.md` §5 and §8 | Hold each shot at its final framing; cuts and fades only |
 | Screen wobble ("dizzy", "drunk") | Avoid | Off |
 | Vehicle camera | Follow yaw; optional damped pitch | Horizon-locked: never inherit roll |
 
@@ -106,7 +105,7 @@ Implementation:
 - Apply the shake scale once, at the point where all camera offsets get added up; scaling inside each effect lets a new effect forget it `[lihfolk]`.
 - FOV slider 60–100, default 70 (`Camera.FieldOfView` clamps 1–120 `[official]`). One owner writes the property; sprint, zoom and ultimates add named offsets to the player's base. Symptom of a missing owner: FOV resets after the first sprint.
 - Flashes are a **separate toggle** from reduced motion: some players want one and not the other (also requested on the DevForum `[community]`).
-- **Flash gate.** The WCAG 2.3.1 guideline is no more than three flashes in any one second. Roblox does not enforce it. Flashes come from many systems and many players at once, so route every large-area brightness change (impact frames, lightning, rarity strobes, other players' ultimates) through one limiter, and never use saturated red full-screen flashes `[lihfolk]`.
+- **Flash gate.** WCAG 2.3.1: nothing flashes more than three times in any one-second period (unless the flash is below the general and red flash thresholds). Roblox does not enforce it. Flashes come from many systems and many players at once, so route every large-area brightness change (impact frames, lightning, rarity strobes, other players' ultimates) through one limiter, and never use saturated red full-screen flashes `[lihfolk]`.
 
 ```lua
 --!strict
@@ -214,8 +213,8 @@ Difficulty is several dials, not one `[lihfolk]`. "Easy / Normal / Hard" may exi
 
 ## 9. Screen readers, localisation and RTL
 
-- **Screen readers:** no official documentation of screen-reader support for in-experience UI was found in `Roblox/creator-docs` or through search on 2026-11-10, and a DevForum reply asking whether Roblox supports them went unanswered in the results seen `[VS]`. Treat blind-accessible play as something the platform does not provide: do not claim it. What a game can do: full gamepad and keyboard navigation with a visible focus ring, distinct audio cues per menu and state, haptics, and optional spoken prompts.
-- **Keyboard navigation:** Roblox ships a keyboard-navigation setting next to Reduce Motion and Background Transparency `[community: DevForum announcement, search summary]`; the selection rules in `ui-input-crossplatform.md` §Gamepad make it work.
+- **Screen readers:** no documentation of screen-reader support for in-experience UI was found in `Roblox/creator-docs` (searched 2026-11-11) `[VS]`. Treat blind-accessible play as something the platform does not provide: do not claim it. What a game can do: full gamepad and keyboard navigation with a visible focus ring, distinct audio cues per menu and state, haptics, and optional spoken prompts.
+- **Keyboard navigation:** Roblox ships a toggle for the keyboard-navigation shortcut next to Reduce Motion and Background Transparency (staff announcement, 2023-11-29) `[official]`; the selection rules in `ui-input-crossplatform.md` §Gamepad make it work.
 - **Localisation:** capture and translation mechanics are in `growth-and-marketing.md` §9 and `ui-input-crossplatform.md` §Text. Accessibility adds: German, French and Portuguese run 20–35% longer and some short labels double `[lihfolk]`, so test the longest language at `Largest`; write short, verb-first sentences with digits (also the best reading level for a young audience); keep text out of images; `AutoLocalize = false` on player names.
 - **RTL:** Arabic is in Roblox's automatic translation list `[official]`. `TextLabel`, `TextButton` and `TextBox` have `TextDirection` (`Auto` default, which renders right-to-left scripts right-to-left; `LeftToRight` and `RightToLeft` force it) `[official][VS]`. Layouts do not mirror themselves: reversing a horizontal `UIListLayout` means reversing `LayoutOrder` `[official]`. House approach: keep the HUD layout fixed (thumb zones do not change with language), set `TextXAlignment` per locale on paragraph text, test numbers and mixed Latin/Arabic strings, and never build sentences by concatenating fragments.
 
@@ -261,7 +260,7 @@ end
 
 - Apply instantly on the client; debounce and send once when the menu closes; ride the profile's normal autosave. Never write a DataStore per slider tick.
 - Fetch settings **before** revealing the HUD (a `RemoteFunction` the client invokes avoids the race where the server fires before the listener exists), or the UI flashes default size then jumps `[lihfolk]`.
-- **Device buckets:** audio, comfort and palette follow the account; graphics preset and touch layout are stored per bucket chosen from `PreferredInput` (`touch`, `desktop`, `console`), or a phone inherits the PC's High preset `[lihfolk]`.
+- **Device buckets:** audio, comfort and palette follow the account; graphics preset and touch layout are stored per bucket (`touch`, `desktop`, `gamepad`) chosen from `UserInputService.PreferredInput` (`Touch`, `KeyboardAndMouse`, `Gamepad`) when the session starts, or a phone inherits the PC's High preset `[lihfolk]`.
 - Reset per section; "reset all" confirms; each control marks its default. Settings are reachable from the first second, including during the tutorial, with a gamepad, at maximum UI scale and `Largest` text.
 - Menu contents, in the order players look for them: **Audio** (Music, SFX, UI or Speech sliders; mute music) · **Graphics** (Auto / Low / Medium / High, VFX density, hide other players' effects) · **Camera** (FOV, shake 0–100%) · **Comfort** (reduced motion follow/on/off, flashes, damage numbers, hit-stop) · **Interface** (UI size, compact or focus HUD, palette, captions, tooltips, ping display) · **Controls** (hold/toggle, auto-sprint, keybinds, touch layout) · **Social** (ignore trades, duels or invites; hide others' pets) · **Assists**.
 
@@ -286,7 +285,7 @@ Each row: what players get, how to build it, the trap. Server validation and fai
 | Private servers | Detect with `game.PrivateServerId` / `PrivateServerOwnerId`; owner panel (kick from this server, toggle events, reset map); a "Private server" badge; state whether rewards match public servers. Pricing rules are in `monetization-and-policy.md` | Public event and idle-kick rules forced on owners |
 | Spectate | For round-based and permadeath modes: `Camera.CameraSubject` on a living player's Humanoid, next/previous buttons, target's name and health; with streaming, the server sets the spectator's `Player.ReplicationFocus` to the target `[VS]`. Spectators do not chat to the living in competitive modes (delivery rule in `community-moderation-safety.md` §4) | Dead players watching a wall for three minutes |
 | Respawn | Delay by genre `[lihfolk]`: obby and simulator 0–1 s; casual combat 2–4 s; team shooter 4–8 s. `Players.RespawnTime` defaults to 5 s `[official]`. "Respawn now" after a minimum; death recap; no shop or ad popup on death (house rule 3). Spawn protection as a server flag with an end time that ends on the first attack; a `ForceField` is ignored by code that sets `Health` directly | Protected players attacking freely |
-| Performance mode | Presets map levers the engine does not know `[lihfolk]`: VFX density 0.35 / 0.7 / 1.0 through one emit helper, decorative shadows, post effects (keep colour correction), ambient animation, other players' trails. Never hide gameplay telegraphs on Low. Auto maps quality 1–3 → Low, 4–7 → Medium, 8–10 → High, `Automatic` → Medium. A frame-time watchdog (median far above 33 ms for 30 s) **offers** Low once; never switch silently. `performance.md` owns budgets | A "render distance" slider when streaming radius is place-wide |
+| Performance mode | Presets map levers the engine does not know `[lihfolk]`: VFX density 0.35 / 0.7 / 1.0 through one emit helper, decorative shadows, post effects (keep colour correction), ambient animation, other players' trails. Never hide gameplay telegraphs on Low. The default preset comes from the device bucket (§10: touch → Medium, others → High `[house]`), never from Roblox's quality level (§2). The preset is a ceiling: under it a frame-time governor may lower VFX density by itself (`vfx-and-juice.md` §11). Changing the preset is only ever offered: a watchdog (median far above 33 ms for 30 s) **offers** Low once. `performance.md` owns budgets | A "render distance" slider when streaming radius is place-wide |
 | UI scale, compact HUD, hide HUD | §4 slider. Compact is a layout variant with fewer elements (3–4 icons plus a drawer), not a smaller scale; auto-suggest under about 500 px viewport height `[lihfolk]`. Hide-HUD keeps critical warnings and a faded restore button on touch | Mobile player stuck with no HUD |
 | FOV slider | §5 | — |
 | Mute and ignore | Music mute; per-player emote and sound mute (client); ignore trades, duels and invites (server rejects silently, never "you were blocked"); hide others' pets and effects (also a performance win). The block list comes from `StarterGui:GetCore("GetBlockedUserIds")` with retry until registered `[official][lihfolk]` | Blocked player still able to send trades |
@@ -343,7 +342,7 @@ Re-rank for the audience: phone-heavy games move presets, compact HUD and the to
 | Symptom (reviews, feedback dashboard, analytics) | Likely cause | Fix |
 |---|---|---|
 | "Can't tell teams / rarities apart" | Hue-only signals; small pips; equal lightness | Second channel, lightness gap, greyscale pass |
-| "Makes me dizzy / headache" | Roll, head bob, stacked FOV writers, flashes from many players | Motion budget table; one FOV owner; flash gate; follow `ReducedMotionEnabled` |
+| "Makes me dizzy / headache" | Camera roll in shake or dashes, head bob, stacked FOV writers, flashes from many players | §5 table (roll 0); one FOV owner; flash gate; follow `ReducedMotionEnabled` |
 | Mobile sessions far shorter than desktop | Text under 14 px rendered; hold-only sprint; no assist on touch; High VFX on a 3 GB phone | §4 audit; hold/toggle and "always" sprint; aim friction; preset offer from the watchdog |
 | Deaths cluster at one obstacle, then quits | Timing window or checkpoint spacing; hazard heard but not seen | Checkpoint; hint offer after 3 failures; visual cue |
 | "Sold / fused my best item by accident" | No lock, bulk action includes rares, confirm under the same thumb | Locks, rarity ceiling, tiered confirm, undo |
@@ -364,6 +363,8 @@ Re-rank for the audience: phone-heavy games move presets, compact HUD and the to
 - **UI scale range.** XAG-style guidance says text scalable to 200%; LihFolk caps a whole-UI slider at 1.3 because layouts overflow phones. Both hold: text grows through `PreferredTextSize` in growing layouts, while the whole-UI multiplier stays 0.8–1.3 with a fit clamp.
 - **AFK income.** LihFolk allows AFK zones with lower, capped income; `liveops-quests-retention.md` says prefer none and pay the same capped rate offline. The house position stands (no pay-to-idle servers); LihFolk's server-side activity model and warning rules are adopted.
 - **Colour-blind filter.** Some community posts ask for a platform filter; Roblox staff said it will not ship one. Build redundancy and palette modes.
+- **Shake roll.** LihFolk's camera module clamps roll at 4° and rolls on a dash, while its comfort note says no gameplay roll; the comfort note wins here and in `vfx-and-juice.md` §7: roll is 0 in gameplay. A static tilted cutscene frame is a composition choice, not shake (`cutscenes-and-cinematics.md` §5).
+- **Reading Roblox's quality level.** LihFolk and earlier versions of this skill mapped `SavedQualityLevel` to effect presets. Roblox staff asked developers to stop on 2026-11-05 and plan to deprecate the API; presets now start from the device bucket and the player's own choice.
 - **Auto features.** LihFolk treats auto-click as accessibility; many games sell auto passes. Resolution: hold-to-repeat is always free; unattended automation may be a pass, and the free loop must not be degraded to sell it.
 
 ## Review gate
@@ -371,8 +372,9 @@ Re-rank for the audience: phone-heavy games move presets, compact HUD and the to
 - [ ] Greyscale and muted-play passes done on the first ten minutes and the hardest fight; every failure has a second channel.
 - [ ] No colour-only signal; team, rarity, heal/damage and telegraphs each have shape, text or pattern.
 - [ ] Rendered text meets the house floors on the small phone; text-fit audit clean at `Largest` × maximum UI size × longest language.
-- [ ] `ReducedMotionEnabled`, `PreferredTextSize` and `PreferredTransparency` followed and re-read on change; no platform setting duplicated.
-- [ ] Camera never rolls in gameplay; one FOV owner; shake scaled at the sum point; flash gate holds ≤ 2 large flashes per second with several players' effects.
+- [ ] `ReducedMotionEnabled`, `PreferredTextSize` and `PreferredTransparency` followed and re-read on change; no platform setting duplicated; nothing reads `SavedQualityLevel`.
+- [ ] Every text-on-colour pair in the theme passes the computed WCAG ratio (4.5:1, or 3:1 for large text and icons).
+- [ ] Camera never rolls in gameplay (grep the shake and dash modules for a non-zero third `CFrame.Angles` argument); one FOV owner; shake scaled at the sum point; flash gate holds ≤ 2 large flashes per second with several players' effects.
 - [ ] Sustained actions have hold/toggle; no mash, long-hold or chord without an alternative; key labels from `GetStringForKeyCode`.
 - [ ] Settings: one schema, server-sanitised, overrides only, device buckets, reachable in the first second with every input.
 - [ ] Assists are server-side, locked in combat, flagged on leaderboards, never sold and never a condition for the best rewards.
@@ -384,12 +386,12 @@ Re-rank for the audience: phone-heavy games move presets, compact HUD and the to
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-11 unless dated. "(read)" = opened and read; "(search summary)" = seen only through web search result text on 2026-11-10 and not re-opened.
 
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `42 Accessibility and Inclusive Design/` (Accessibility Start Here; Colour-Blind Safe Design; Readable Text and UI Scale; Motion Sensitivity and Camera Comfort; Captions and Audio Accessibility; Input Remapping and One-Handed Play; Difficulty Options and Cognitive Load), `58 Player QoL and Game Tweaks/` (Top 25 QoL Wins by Effort; QoL Audit Checklist; Settings Menu Essentials and Persistence; AFK Detection Idle Kicks and AFK Reward Rules; Server Hop Rejoin and Server Lists with Ping; Joining Friends Parties and Private Servers; Confirmation and Undo Patterns; Inventory QoL; Feedback - Autosave Indicator Ping Display and Error Toasts; Graphics and Performance Toggles; Block and Mute Respecting Platform Rules; Purchase Receipts and Purchase History in UI; Quick Respawn and Spawn Protection; Notification Queues and Limits; Comfort Toggles; Camera Settings; Aim Assist and Generous Hitboxes; Hold vs Toggle; Skippable Tutorials; UI Scale HUD Hide and Compact Mode; Loading Screen Skip; Mobile Button Layout Editor; Colourblind Palettes Text Size and Tooltips) (read)
-- `Roblox/creator-docs` at commit of 2026-11-07, https://github.com/Roblox/creator-docs (read): `production/publishing/accessibility.md`; `production/localization/automatic-translations.md`; `ui/list-flex-layouts.md`; engine reference for `GuiService` (`PreferredTextSize`, `PreferredTransparency`, `ReducedMotionEnabled`), `Camera.FieldOfView`, `Player.Idled`, `Players.RespawnTime`, `Player:GetFriendsOnlineAsync`, `Player:GetNetworkPing`, `SocialService`, `StarterGui` core calls, `TextBox.TextDirection`, `AudioTextToSpeech`
-- https://devforum.roblox.com/t/introducing-accessibility-settings/2723187 (search summary: Reduce Motion, Background Transparency and keyboard navigation settings; staff position on colour-blind filters; requests for a separate reduced-flashing option and screen-reader support)
+- `Roblox/creator-docs` (commit of 2026-11-10), https://github.com/Roblox/creator-docs (read): `production/publishing/accessibility.md`; `production/localization/automatic-translations.md`; `ui/list-flex-layouts.md`; engine reference for `GuiService` (`PreferredTextSize`, `PreferredTransparency`, `ReducedMotionEnabled`), `UserInputService.PreferredInput`, `UserGameSettings`, `Camera.FieldOfView`, `Player.Idled`, `Players.RespawnTime`, `Player:GetFriendsOnlineAsync`, `Player:GetNetworkPing`, `TeleportOptions`, `SocialService`, `StarterGui` core calls, `TextLabel.TextDirection`, `HapticEffectType`, `AudioTextToSpeech`
+- Staff DevForum posts (read): Introducing Accessibility Settings, 2023-11-29, https://devforum.roblox.com/t/2723187 (the settings; staff reply 39 on colour-blind filters) · Increasing the Minimum Draw Distance to 500 Studs and Other Auto-Quality Level Improvements, 2026-11-05, https://devforum.roblox.com/t/4977292 (`SavedQualityLevel` planned for deprecation)
 - https://devforum.roblox.com/t/feedback-on-accessibility-guidelines/3819039, https://devforum.roblox.com/t/accessibility-text-to-speech-in-engine-captioning/1006734, https://devforum.roblox.com/t/making-accessible-games-for-the-disability-aware-era-a-not-fully-comprehensive-guide-by-an-actual-disabled-developer/1375919 (search summary)
-- WCAG 2.x success criterion 2.3.1 (three flashes) and Machado, Oliveira and Fernandes 2009 are cited as described in the LihFolk notes; not opened in this pass
-- `references/ui-input-crossplatform.md`, `references/liveops-quests-retention.md`, `references/monetization-and-policy.md` (read, for consistency)
-- Not reachable: reddit.com, devforum.roblox.com, create.roblox.com (blocked); no r/robloxgamedev thread on QoL or accessibility surfaced in search. Several "Roblox accessibility settings" pages on pages.dev mirror domains were ignored as SEO spam (they describe a colour-blind toggle that official sources do not).
+- WCAG 2.x: contrast formula and thresholds (1.4.3, 1.4.11) and the three-flash criterion (2.3.1) are stated from the standard as known, with the worked ratios computed on 2026-11-11; the W3C pages and Machado, Oliveira and Fernandes 2009 were not opened
+- `references/ui-input-crossplatform.md`, `references/liveops-quests-retention.md`, `references/monetization-and-policy.md`, `references/vfx-and-juice.md`, `references/cutscenes-and-cinematics.md` (read, for consistency)
+- Not read: reddit.com (not reachable). Several "Roblox accessibility settings" pages on pages.dev mirror domains were ignored as SEO spam (they describe a colour-blind toggle that official sources do not).

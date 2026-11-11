@@ -17,7 +17,7 @@ Terms: *host loop* = the loop that fills most minutes of play; *layer* = a syste
 1. **Start from the spine, then the verb.** Every 2025–26 mega-hit runs a stat or income per second → multipliers from a collection → rebirth, plus one new action or a visible journey (steal, grow, kick, throw, climb, bike, dig, roll, draw routes). Put originality in the verb, not the theme.
 2. **Read the status column below.** Rising or durable with an open pairing beats saturated. A clone wins only if it ships 2–8 weeks into the parent's rise; format clones get about two weeks of attention; remixes with a new action far outperform reskins.
 3. **Match the team to the content bill.** Every visible asset is a Blender model. Obby, +1, simulator and tycoon need tens of assets; RPG, roleplay and shooter need hundreds. Count the asset list before committing.
-4. **Match the audience and reach.** Younger players prefer exploration, experimentation and socialising over competition; older players (16+) invest more time and money and form communities `[official]`. Social beats solo. Moderate-rated content loses Kids and Select reach; social hangouts are 16+ `[official]` `[VS]`.
+4. **Match the audience and reach.** Younger players prefer exploration, experimentation and socialising over competition; older players (16+) invest more time and money and form communities `[official]`. Social beats solo. A Moderate label loses Roblox Kids (5–8) and keeps Select (9–15) and 16+; Content May Vary, social hangouts and free-form user creation are 16+; Restricted is 18+ `[official]` `[VS]`.
 5. **Check lifecycle against patience.** Mega-hits peak in 7–8 weeks and fall 90–99% within 6–12 months; single-gimmick format hits lose 90%+ in 1–4 months; durable games (co-op or skill play, real depth, weekly updates) hold for years.
 6. **Run the three-layer loop test** `[official]`: minute-to-minute interaction → most repeated action cycle → progression engine. Each layer must feed the next. Prototype loop, UI, rules and edge cases before art.
 7. **For a live game, classify by what players do most**, not by the title. If two files fit, the host loop (the one that fills most minutes) leads and the other is a layer; see hybrids below.
@@ -87,7 +87,7 @@ Most 2026 hits are hybrids: an idle core plus one borrowed system. Rules:
 
 - **One host, one layer.** The host loop fills most minutes and sets session shape, server size and UI. The layer adds a collection, a risk or a social frame. Two hosts (a full RPG inside a full tycoon) doubles the content bill and confuses the thumbnail.
 - **Read both files; the host file leads.** Take Core loop, First 5 minutes and Technical hot spots from the host; take the economy and compliance sections from the layer.
-- **Strictest rule wins.** If the layer adds PvP, the no-paid-power rule applies to everything that touches it. If the layer adds rolls, the paid-random-item rules apply to the whole purchase path. If the layer adds fear above Mild, the reach cost applies to the whole game.
+- **Strictest rule wins.** If the layer adds PvP, the no-paid-power rule applies to everything that touches it. If the layer adds rolls, the paid-random-item rules apply to the whole purchase path. If the layer raises the maturity label (fear or violence above Mild loses Kids; a hangout or free-form creation layer makes the game 16+), the reach cost applies to the whole game.
 - **The stat must become a place.** Hybrids that only add a number (a "+1" on an egg game) fail; hybrids that add a trip or an action (bike, climb, steal, draw) chart (vault).
 - **Check the pairing is open** by searching the first 40 results for both parents and counting games above 2K CCU.
 
@@ -126,7 +126,7 @@ Racing, fishing, sports, RNG, fashion, social deduction, party minigames and phy
 | Server lag grows with players or waves | Humanoid crowds, physical parts, per-frame replication | Data on the server, pooled visuals on clients | Genre file §Technical hot spots |
 | Exploiters ruin leaderboards or fights | Client-trusted amounts, hits or checkpoints | Intent-only remotes; server validation or server authority | `networking-and-security.md` |
 | Impressions fall after a clone wave | Near-duplicate title, art or place file | Distinct metadata, art and verb | `market-scan-2026-11.md` |
-| Under-16 audience missing | Maturity label or hangout classification | Redesign to Mild and a structured activity; retake the questionnaire | `genres/social-roleplay.md`, `genres/horror-coop-escape.md` |
+| Under-16 audience missing | Hangout or free-form-creation classification (16+), a label above Moderate, or the 250-play gate not yet passed; Kids (5–8) missing alone means a Moderate label | Redesign to a structured activity and the lowest honest label; retake the questionnaire; bring age-checked 16+ players first | `genres/social-roleplay.md`, `genres/horror-coop-escape.md`, `market-scan-2026-11.md` |
 
 ## Review gate
 

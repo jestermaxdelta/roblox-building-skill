@@ -5,7 +5,7 @@ What this is: 49 checked references for learning to make stylised effects and fo
 How to use this file:
 - Beginners: rows 1–3, then 20–23. Intermediate: rows 4–8 and 12–15, then build a recipe. Experts: rows 9–10 and the staff posts 26–29 before changing a pipeline.
 - Evidence: `read` = the page, thread, README or licence file was read; `oembed` = the video exists with that title and creator, it was not watched, and the note comes from its title or the page that led to it; `search` = not opened. `[VS]` = depends on an API or feature that can change.
-- These are references to study, not assets to copy. Tool rows state the licence that was read, or say "licence not verified". House rule 1 applies to anything a pack or plugin library contains: effect **meshes** that ship are modelled in Blender for the game; textures from a pack need a licence you have read; nothing AI-generated ships. Accessed 2026-11-11.
+- These are references to study, not assets to copy. Tool rows state the licence that was read, or say "licence not verified". House rule 1 applies to anything a pack or plugin library contains: effect **meshes** that ship are modelled in Blender for the game; textures from a pack need a licence you have read; nothing AI-generated ships. Accessed 2026-11-11; every link re-checked the same day (all respond; GitHub repositories checked with git, licences re-read).
 
 Thread links are `https://realtimevfx.com/t/<id>` and `https://devforum.roblox.com/t/<id>`.
 
@@ -36,7 +36,7 @@ Thread links are `https://realtimevfx.com/t/<id>` and `https://devforum.roblox.c
 | 16 | [The art of screenshake](https://www.youtube.com/watch?v=AJdEqssNZ-U), Jan Willem Nijman (Vlambeer), 2013 | video | Many small feel changes to one shooter; use the comfort rules in `vfx-and-juice.md` §12 as the counterweight | oembed |
 | 17 | [Secrets of Game Feel and Juice](https://www.youtube.com/watch?v=216_5nu4aVQ), Game Maker's Toolkit | video | A short overview to share with non-artists on the team | oembed |
 
-Camera-shake modules and "Juicing Your Cameras With Math" are in `cutscenes-and-cameras.md` (rows 31, 32, 57); the 12 principles of animation are in `animation.md`; spring libraries (spr, Ripple) are in `references/ui-motion-and-feedback.md` §6.
+Camera-shake modules (RbxCameraShaker, GG Camera Shake: study them, but keep roll off, `vfx-and-juice.md` §7) and "Juicing Your Cameras With Math" are in `cutscenes-and-cameras.md` §3 and its talks table; the 12 principles of animation are in `animation.md`; spring libraries (spr, Ripple) are in `references/ui-motion-and-feedback.md` §6.
 
 ## 3. Roblox: official pages and staff posts
 
@@ -46,13 +46,13 @@ Camera-shake modules and "Juicing Your Cameras With Math" are in `cutscenes-and-
 | 19 | [Beams](https://create.roblox.com/docs/effects/beams) and [Trails](https://create.roblox.com/docs/effects/trails), Roblox docs | tutorial | Curve control points, texture modes, segments; the advice to check both ends of Editor Quality Level | read |
 | 20 | [Create explosions with VFX](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/use-particles-for-explosions), Roblox docs | tutorial | A burst with numbers: Drag 10, Lifetime 0.2–0.6, Speed 20–40, SpreadAngle 180, emitter disabled and fired with `Emit` | read |
 | 21 | [Create volcanoes](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/create-volcanoes), Roblox docs | tutorial | Full property lists for ripples, embers, flipbook lava splashes, a three-beam lava flow and a smoke plume, plus the lighting and bloom around them | read |
-| 22 | [Create waterfalls](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/create-waterfalls), Roblox docs | tutorial | Beams for the cascade (`TextureSpeed`, `TextureLength`, Wrap) and five particle layers: splashes, white water, foam, mist | read |
+| 22 | [Create waterfalls](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/create-waterfalls), Roblox docs | tutorial | Beams for the cascade (`TextureSpeed`, `TextureLength`, Wrap) and particle layers with full values for splashes, white water, foam and mist | read |
 | 23 | [Create laser beams with VFX](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/laser-traps-with-beams), Roblox docs | tutorial | A beam between two attachments with an invisible collision box for the hit. It starts from a Creator Store blaster model: use your own Blender model instead | read |
 | 24 | [Textures and decals: animate textures](https://create.roblox.com/docs/parts/textures-decals), Roblox docs | tutorial | The documented scrolling method: tween `OffsetStudsU`/`OffsetStudsV` and `StudsPerTile` on `Texture` instances; the sample layers two fog textures | read |
 | 25 | [SurfaceAppearance](https://create.roblox.com/docs/art/modeling/surface-appearance), Roblox docs | tutorial | Alpha modes (Overlay, Transparency, Tint mask), colour tint and the emissive mask, strength and tint for glowing meshes `[VS]` | read |
 | 26 | [Particles' Flipbook Release](https://devforum.roblox.com/t/2029388), Roblox staff, 2022 (357 likes) | tutorial | Flipbook texture sizes from 8² to 1024², the enum rename to `Grid2x2/4x4/8x8`, border clipping fix | read |
 | 27 | [New Procedural Particle Emitter Shapes](https://devforum.roblox.com/t/1517642), JaapSuter (Roblox), 2021 (405 likes) | tutorial | `Shape`, `ShapeStyle`, `ShapeInOut`, `ShapePartial` explained by the engineer: cones from cylinders, rings from discs, inward emission | read |
-| 28 | [Hiding Avatar Particle Effects in First-Person](https://devforum.roblox.com/t/3136706), TheGamer101 (Roblox), 2024 (183 likes) | tutorial | Emitters, beams and trails parented in a character are hidden in first person; the post shows the welded helper-part workaround `[VS]` | read |
+| 28 | [Hiding Avatar Particle Effects in First-Person](https://devforum.roblox.com/t/3136706), TheGamer101 (Roblox), 2024 (183 likes) | tutorial | Emitters, beams and trails parented in a character are hidden in first person; the post's code shows the workaround: a helper part outside the character, welded to it `[VS]` | read |
 | 29 | [Scrollable textures for MeshParts](https://devforum.roblox.com/t/2820890) (feature request), Zomebody, 2024 | breakdown | Every current workaround and its limit in one post: SurfaceGui, Beam, texture swapping, `Texture` offsets, `EditableMesh:SetUV` | read |
 
 Staff posts on custom flipbook layouts and on quality levels are rows 46 and 51 of `vfx.md`.
@@ -94,7 +94,7 @@ Staff posts on custom flipbook layouts and on quality levels are rows 46 and 51 
 
 ## Sources and licences
 
-- Licences read on 2026-11-11: MIT for rows 38 and 43 (LICENSE files); GPL-3.0 for row 39; CC0 for rows 48 and 49. Rows marked "licence not verified" had no licence text on the page read. A licence on a plugin covers its code, not every asset in its library.
+- Licences read on 2026-11-11: MIT for rows 38 (`LICENSE.md`) and 43 (`LICENSE`); GPL-3.0 for row 39; CC0 for rows 48 and 49. Rows marked "licence not verified" had no licence text on the page read. A licence on a plugin covers its code, not every asset in its library.
 - Roblox documentation is CC BY 4.0 (https://github.com/Roblox/creator-docs, commit 7cbffff). Forum posts belong to their authors.
 - Videos were verified through YouTube oEmbed (title and channel) and were not watched; notes on them come from the linking page.
 - Not reachable: vfxapprentice.com (403: its blog summaries of the Riot style guide and its courses were seen only in search results), the Riot VFX style guide PDF (2017 links redirect to the League home page), artstation.com, reddit.com.

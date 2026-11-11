@@ -78,6 +78,17 @@ Things that changed in the baseline window (updates, thumbnails, title, ads, pri
 | 10 | Discovery and growth | | | |
 | | **Total / 50** | | | |
 
+Rubric scores behind dimensions 1, 2, 6, 7 and 10 (each rubric is defined in its guide; write the score and the lowest row, do not copy the criteria):
+
+| Rubric | Guide and pass mark | Score | Lowest row or discipline |
+|---|---|---|---|
+| Tutorial, from a fresh-account phone recording | `tutorial-and-onboarding.md` §13, 16/20, no zero in rows 1, 5, 8 | /20 | |
+| Loop scorecard | `core-loop-tuning.md` §4, 7/10 | /10 | |
+| UI, per screen (HUD, shop, inventory) | `ui-design-figma.md` §9, 8/10 | /10 each | |
+| Art review, twelve phone captures | `art-direction-and-quality-bar.md` §8; game score = lowest discipline | /10 | |
+| Store page, per active tile and the icon | `icons-thumbnails-and-store-page.md` §15, three gates then 8.5/10 | /10 each | |
+| Core-verb and reward effects (sub-check 2a) | `vfx-and-juice.md` §16, 16/20 | /20 | |
+
 Sub-checks (pass count out of 6; under 3 caps the parent at 2, 3–4 caps it at 4; a blocker item goes to section 3):
 
 | Sub-check | Parent | Passes / 6 | Failed items | Cap applied |
@@ -88,15 +99,16 @@ Sub-checks (pass count out of 6; under 3 caps the parent at 2, 3–4 caps it at 
 
 Timed first-session log (from the MCP play pass or a recording):
 
-| Moment | Seconds from join | Note |
-|---|---|---|
-| Playable (control of character) | | |
-| First reward | | |
-| First upgrade or purchase with soft currency | | |
-| Goal ladder first visible | | |
-| First prompt of any kind (offer, group, notification, invite) | | |
-| First Robux offer | | |
-| First moment worth a clip | | |
+| Moment | Target `[house]` | Seconds from join | Note |
+|---|---|---|---|
+| Playable (control of character) | ≤ 10 s on a 3 GB phone (15 s ceiling) | | |
+| First verb performed | ≤ 15 s after control | | |
+| First reward | ≤ 30 s after control | | |
+| First upgrade or purchase with soft currency | ≤ 2 min | | |
+| Goal ladder first visible | ≤ 5 min | | |
+| First prompt of any kind (offer, group, notification, invite) | After the first win | | |
+| First Robux offer | Not before the first win and minute 10 | | |
+| First moment worth a clip | Inside the first session | | |
 
 House-rule scan result (paste the output or "House-rule scan OK"):
 
@@ -118,7 +130,7 @@ Census highlights (instances, scripts by container, remotes, unique MeshIds, fla
 
 Priority = Impact (1–5) × Confidence (0.2 / 0.4 / 0.7 / 1.0) ÷ Effort (hours of the owner's real time, min 2; write "h / weeks at the weekly budget", for example "30 h / 3 wk"). Only blockers are listed first regardless of score: data loss, ungranted purchases, exploits, policy violations, walk-through geometry on the main path, invasive or non-compliant offers. Other house-rule violations go in the debt track below. In the Evidence column start with the grade: Measured, Observed, Static (not measured) or Inferred. Code findings add P0–P3.
 
-| Rank | Action | Dimension | Evidence | Metric it should move | I | C | E | Priority | Flag or experiment | Reference to open |
+| Rank | Action | Dimension | Evidence | Metric it should move | I | C | E | Priority | Flag or experiment | Reference to open (audit §10) |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | | | | | | | | | | |
 | 2 | | | | | | | | | | |

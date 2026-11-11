@@ -1,6 +1,6 @@
 # Luau mastery: first script to expert idioms
 
-What this is: a Luau language reference in three tiers (beginner, intermediate, expert) plus game-math essentials, a deprecated-to-modern API table and style conventions. Open it when writing or reviewing any script, when a developer asks "how do I do X in Luau", or when modernising an old codebase. Language facts were checked on 2026-11-10 against `Roblox/creator-docs` (commit ccc2b01), `luau-lang/site` (luau.org source), `luau-lang/rfcs` and `luau-lang/luau` (commit 12a6ba7). Snippets are unexecuted sketches. Tags: `[official]` Roblox docs or luau.org, `[community]`, `[VS]` version-sensitive, `[house]`, `[lihfolk]` adapted from LihFolk Vault V2.
+What this is: a Luau language reference in three tiers (beginner, intermediate, expert) plus game-math essentials, a deprecated-to-modern API table and style conventions. Open it when writing or reviewing any script, when a developer asks "how do I do X in Luau", or when modernising an old codebase. Language facts were re-checked on 2026-11-11 against `Roblox/creator-docs` (commit 7cbffff), `luau-lang/site` (luau.org source, eaf5519), `luau-lang/rfcs` (5fcbb5a) and `luau-lang/luau` (f46d879), and tool support against the StyLua, Selene and luau-lsp changelogs. Snippets are unexecuted sketches. Tags: `[official]` Roblox docs or luau.org, `[community]`, `[VS]` version-sensitive, `[house]`, `[lihfolk]` adapted from LihFolk Vault V2.
 
 It extends, and does not repeat: `engineering-architecture.md` (project layout, loader, naming, toolchain), `architecture-patterns-luau.md` (Signal, pool, FSM and other pattern sketches), `performance.md` (profiling, `--!native` limits, Parallel Luau basics), `debugging-and-testing.md` (errors, retries, tests).
 
@@ -25,7 +25,7 @@ Where code runs:
 | Script kind | Runs on | Put it in | Use for |
 |---|---|---|---|
 | `Script` | Server | `ServerScriptService` | Rules, data, anything players must not fake |
-| `LocalScript` | One player's client | `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, `ReplicatedFirst` (it does nothing in `Workspace` or `ReplicatedStorage`) | Input, camera, UI |
+| `LocalScript` | One player's client | `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, `ReplicatedFirst` (it does nothing in `ReplicatedStorage`, or in `Workspace` outside a player's character) | Input, camera, UI |
 | `Script` with `RunContext = Client` | Client | `ReplicatedStorage` (not a Starter container: it would run twice) | A single client entry point |
 | `ModuleScript` | Whichever side calls `require` on it | `ReplicatedStorage` (shared), `ServerScriptService` or `ServerStorage` (server only) | All reusable code |
 
@@ -64,7 +64,7 @@ The `task` library `[official]`:
 |---|---|---|
 | `task.wait(seconds?)` | Yields; resumes on the first `Heartbeat` after the time; returns the real elapsed time. Never shorter than one frame (about 0.017 s at 60 FPS) | Timers, pacing loops |
 | `task.spawn(fn, ...)` | Runs `fn` **now** until it first yields, then your code continues | Start background work |
-| `task.defer(fn, ...)` | Runs `fn` after the current code finishes, later this frame | Avoid re-entrancy; batch changes |
+| `task.defer(fn, ...)` | Runs `fn` at the end of the current resumption cycle, still in this frame | Avoid re-entrancy; batch changes |
 | `task.delay(seconds, fn, ...)` | Runs `fn` on the first `Heartbeat` after the delay | One-shot timers |
 | `task.cancel(thread)` | Stops a thread from ever resuming | Cancel timers and loops on cleanup |
 
@@ -178,16 +178,16 @@ One thread runs at a time per VM and nothing pre-empts it: code between two yiel
 - `task.spawn(fn, a, b)` instead of `task.spawn(function() fn(a, b) end)`: no closure. Errors in spawned threads print to Output but do not reach the spawner. `coroutine.resume` returns `false, err` instead of throwing: ignoring its result hides errors.
 - Do not `coroutine.resume` a thread the engine yielded (inside `task.wait`, `WaitForChild`, a web call): it will be resumed twice. Resume only threads you yielded with `coroutine.yield`, using `task.spawn(thread, ...)` `[lihfolk]`.
 - Every loop thread has an exit condition or is stored and `task.cancel`led by its owner. You cannot yield inside a metamethod, a `table.sort` comparator or a `string.gsub` callback.
-- `coroutine.finally(co, callback)` runs `callback("finished" | "error" | "cancelled", ...)` when the coroutine ends `[official][VS]`: the hook for structured cleanup.
+- `coroutine.finally(co, callback)` runs `callback("finished" | "error" | "cancelled", ...)` once when the coroutine ends, last registered first; `"cancelled"` covers `coroutine.close` and `task.cancel`. It errors on a dead coroutine, and a coroutine made with `coroutine.wrap` cannot run these callbacks `[official][VS]`. Use it for structured cleanup.
 - Signals, deferred-event pitfalls and Trove ownership: `engineering-architecture.md`; a Signal sketch: `architecture-patterns-luau.md`.
 
 What cleanup does and does not do:
 
 | Action | Disconnects | Leaves alive |
 |---|---|---|
-| `instance:Destroy()` | Every connection on it and its descendants; locks `Parent` | Your variables and tables still pointing at it; connections you made on **other** objects |
+| `instance:Destroy()` | Every connection on it and its descendants; locks `Parent` | Your variables and tables still pointing at it; connections you made on **other** objects. Handlers already queued under deferred signals still run once `[official]` |
 | `instance.Parent = nil` | Nothing | Everything: fine for pooling, a leak otherwise |
-| `connection:Disconnect()` | That handler, including queued deferred calls | The handler's upvalues until the function itself is unreferenced |
+| `connection:Disconnect()` | That handler, including queued deferred calls `[official]` | The handler's upvalues until the function itself is unreferenced |
 | `task.cancel(thread)` | That thread | Whatever it already created |
 | `trove:Destroy()` | Everything added to it | Things you forgot to add |
 
@@ -214,18 +214,18 @@ Arrays with holes: `#t` is unreliable once a middle element is `nil`. A cleanup 
 
 ### Language and type-system status `[VS]`
 
-| Feature | Status on 2026-11-10 (re-check before relying on a row) | Guidance |
+| Feature | Status on 2026-11-11 (re-check before relying on a row) | Guidance |
 |---|---|---|
-| New type solver | General release announced on the DevForum, with the beta toggle scheduled for removal on 7 January 2026 `[community: search summary]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, set in Studio, not scriptable) selects it per place `[official]`. Fixes still land in release notes, and Roblox acknowledged slower analysis and higher Studio memory in some cases | Use it for new code. Keep type shapes simple; test surprising errors against the other solver before rewriting code. Prefer simple shapes because fixes continue (`engineering-architecture.md` holds the same position) |
-| `const` bindings | Documented by Roblox and luau.org: `const X = 1`, `const function f()`; reassignment and `+=` are errors; the binding is immutable, the value is not (`table.freeze` for that); contextual keyword `[official]` | Fine in Studio. In a Rojo project first confirm your StyLua, Selene and luau-lsp versions parse it (not verified here) |
+| New type solver | General release announced 2025-11-20; the Studio beta toggle was removed on 7 January 2026 `[official: DevForum announcement, read]`. `Workspace.UseNewLuauTypeSolver` (a `RolloutState`, not scriptable; `Default` follows the engine rollout) selects it per place `[official]`. Staff state it is still slower in some cases and can use a lot of Studio memory; it runs only in Studio and never affects a live game | Use it for new code. Keep type shapes simple; test a surprising error against the other solver before rewriting code |
+| `const` bindings | Documented by Roblox and luau.org: `const X = 1`, `const function f()`; reassignment and `+=` are errors; the binding is immutable, the value is not (`table.freeze` for that) `[official]` | Fine in Studio. In a Rojo project it needs StyLua 2.5.0, Selene 0.31.0 and luau-lsp 1.64.0 or later (their changelogs, read) |
 | `type function` and the `types` library | Implemented (RFC); new solver only. Environment: `types`, `math`, `table`, `string`, `bit32`, `utf8`, `buffer` and a few globals; no runtime values, no Roblox APIs `[official: luau.org]` | Library-level types only (`Readonly<T>`, `Pick<T, K>`). Each use re-runs analysis; errors surface at every use site |
 | `keyof`, `rawkeyof`, `index`, `rawget`, `setmetatable`/`getmetatable` type functions; default type parameters, `never`, `unknown` | Implemented (RFCs) | `keyof<typeof(Config)>` for "one of the config keys" |
 | Explicit instantiation `f<<T>>(...)` | Implemented (RFC); documented on luau.org | Useful for `makeList<<number>>()`; confirm in your Studio version |
 | `read` / `write` property modifiers | In the luau.org grammar (`{ read name: string }`); new solver | Read-only parameters accept subtypes: fixes "`{Sword}` is not `{Item}`" |
 | `@native`, `@deprecated`, `@[deprecated { use = "newApi()", reason = "..." }]` | luau.org attribute reference; attributes are not user-definable | Mark old internal APIs so the linter warns callers |
 | `--!optimize 0\|1\|2` | Level 1 is the default in Studio testing, level 2 in live games `[official]` | Leave it alone in game code; use `--!optimize 2` in benchmark scripts |
-| `vector` library, `math.lerp`, `math.map`, `math.isnan`/`isinf`/`isfinite`, `math.tau`, `buffer.readbits`/`writebits`, `vector.lerp`, `coroutine.finally` | In the Roblox library reference | Use freely |
-| `class` syntax, `export` for values, 64-bit `integer` type, cyclic requires | RFC only (no "Implemented" status in `luau-lang/rfcs`) | Do not write; do not promise |
+| `vector` library, `math.lerp`, `math.map`, `math.isnan`/`isinf`/`isfinite`, `math.tau`, `buffer.readbits`/`writebits`, `vector.lerp`, `coroutine.finally` | In the Roblox library reference (the `coroutine.finally` RFC has no "Implemented" line yet, but the function is documented by Roblox) | Use freely |
+| `class` syntax, `export` for values, 64-bit `integer` type, cyclic requires, `if local x = f() then` bindings | Not available. RFCs without an "Implemented" status, or experimental parser flags in `luau-lang/luau` (`DebugLuauUserDefinedClasses`, `LuauExportValueSyntax`, `LuauIntegerType2`, `LuauExperimentalIfLocalSyntax`); absent from the Roblox docs. StyLua 2.6 and Selene 0.32 already parse `if local`, which does not make it usable | Do not write; do not promise |
 | Bounded generics (`<T: Instance>`), `__gc` finalizers, ephemeron tables | Not in Luau | Take a capability function instead of a bound; clean up explicitly |
 
 Type-system behaviour that surprises experts `[lihfolk]`:
@@ -241,7 +241,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 | Mechanism | Consequence |
 |---|---|
 | Imports: global chains such as `math.floor` resolve at load | `local floor = math.floor` buys nothing |
-| Fastcalls: builtins called directly skip the call frame (`math.*` except `noise` and `random`, `bit32.*`, `type`, `typeof`, `rawget`, `tonumber`, some `string` and `table`) | `string.byte(s, i)` is fast; the method form `s:byte(i)` is not |
+| Fastcalls: builtins called directly skip the call frame (`math.*` except `noise`, `random` and `randomseed`; `bit32.*`; `type`, `typeof`, `rawget`, `tonumber`; `string.byte`/`char`/`len`/`sub`; `table.insert`/`unpack`; `buffer` reads and writes; `vector.*`) | `string.byte(s, i)` is fast; the method form `s:byte(i)` is not |
 | Inline caching on `t.field`, fast method calls on `obj:Method()` | Keep fields directly on the object; do not cache methods in locals; `__index` should be a table |
 | Table templates | Build an object in **one literal with every field**; keep one shape per kind of object |
 | Specialised iteration; cached `#t` | `for k, v in t` equals `pairs`/`ipairs` in speed; `for i = 1, #t` is slightly slower; `#t` is effectively constant time on real arrays |
@@ -261,7 +261,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 
 - The collector is incremental (mark, a short atomic step, paged sweep), not generational. Allocation pays for "assists" inside your script, so churn shows up in your own timings `[official]`.
 - Heap size is a sawtooth: the troughs are live data, the teeth are garbage. Rising troughs mean a leak; tall fast teeth mean churn.
-- No finalizers and no forced collection: `collectgarbage` only supports `"count"`; `gcinfo()` reads the heap in KB. Cleanup is always an explicit call.
+- No finalizers and no forced collection: `collectgarbage` only supports `"count"` and is marked deprecated; `gcinfo()` reads the heap in KB `[official]`. Cleanup is always an explicit call.
 - No ephemerons: in a weak-keyed table, a value that references its own key keeps the entry forever. Adding `s` to `__mode` lets a weak table shrink during collection, at the risk of missed keys if it resizes mid-iteration `[official: luau.org]`.
 - Capacity is sticky: clearing a table that once held 100,000 entries keeps the memory. Reuse scratch tables with `table.clear`; drop one-off giants by assigning a new table.
 
@@ -271,7 +271,7 @@ Type-system behaviour that surprises experts `[lihfolk]`:
 
 ```lua
 --!strict
-local TAU = 2 * math.pi
+local TAU = math.tau
 local function packMove(position: Vector3, yaw: number): buffer
 	local b = buffer.create(14)
 	buffer.writef32(b, 0, position.X); buffer.writef32(b, 4, position.Y); buffer.writef32(b, 8, position.Z)
@@ -280,12 +280,12 @@ local function packMove(position: Vector3, yaw: number): buffer
 end
 ```
 
-Native code generation (`--!native`, `@native`): server scripts and Android clients only; identical behaviour, faster numeric code `[official]`. Rules beyond `performance.md`: annotate parameters, above all `Vector3`, or the compiler assumes tables and adds checks; a breakpoint disables native execution for that function; `@native` does not apply to inner functions; calling a typed function with the wrong types forces fallbacks; total native code is capped per game and each script costs start-up time and memory, so never add it "just in case"; `debug.dumpcodesize()` in the Server view shows sizes; the Script Profiler marks `<native>`. Limits: 64K instructions per block, 32K blocks per function, 1M instructions per module. LihFolk describes native code as server-only; the docs now include Android clients.
+Native code generation (`--!native`, `@native`): server scripts and Android clients only; identical behaviour, faster numeric code `[official]`. Rules beyond `performance.md`: annotate parameters, above all `Vector3`, or the compiler assumes tables and adds checks; a breakpoint disables native execution for that function; `@native` does not apply to inner functions; calling a typed function with the wrong types forces fallbacks; total native code is capped per game and each script costs start-up time and memory, so never add it "just in case"; `debug.dumpcodesize()` in the Server view shows sizes; the Script Profiler marks `<native>`. Limits: 64K instructions per block, 32K blocks per function, 1M instructions per module. The docs give no number for the total-size cap: read it from `debug.dumpcodesize()`.
 
 Parallel Luau beyond the basics in `performance.md`:
 
 - Every Actor is its own VM: a module required by 64 Actors runs 64 times and holds 64 copies of its data; a "global" registry module is per Actor. This is the most common design error `[lihfolk]`.
-- Messages are copied; send ids and small parameters. `SharedTable` avoids the copy but each access is synchronised: a staff reply put it near 10× slower than a table `[community]`. Read what you need into locals at the start of a job and write results once at the end. `SharedTable.increment` is atomic and much faster than `update`; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure; a plain read-then-write is a race `[official]`.
+- Messages are copied; send ids and small parameters. `SharedTable` avoids the copy but each access is synchronised: one developer's benchmark put a read near 10× slower than a table read, about the cost of an Instance property read `[community: one report]`. Read what you need into locals at the start of a job and write results once at the end. `SharedTable.increment` is atomic and much faster than `update`; `SharedTable.update(st, key, fn)` may call `fn` several times under contention, so `fn` must be pure; a plain read-then-write is a race `[official]`.
 - Shape every system as read (parallel), compute (parallel), write (serial, one place). If the serial write phase grows, parallelism is a net loss: measure in the MicroProfiler.
 
 ### Performance idioms with measured rules
@@ -310,8 +310,8 @@ Cost per frame = cost per item × items × times per second ÷ frame rate. Frequ
 | No `io`; `os` has only `clock`, `date`, `difftime`, `time` | `[official: luau.org]` |
 | `loadstring` | Off unless `ServerScriptService.LoadStringEnabled`; never available on clients; cannot load bytecode. Keep it off |
 | Security levels and capabilities | Game scripts cannot call plugin or core APIs; the error names a missing capability |
-| 200 active locals per function (the main chunk counts), 255 registers, 200 upvalues per closure | Compile errors "Out of local registers…", "Out of registers…", "Out of upvalue registers…" (texts verified in `luau-lang/luau`; values `[lihfolk][VS]`). Fix by splitting into modules, grouping values in a table, or scoping with `do … end` |
-| Script `Source` about 200,000 characters `[lihfolk][VS]` | Split generated modules early |
+| 200 active locals per function (the main chunk counts), 255 registers, 200 upvalues per closure | Compile errors "Out of local registers…", "Out of registers…", "Out of upvalue registers…" (values and texts read in `luau-lang/luau`: `kMaxLocalCount`, `kMaxRegisterCount`, `kMaxUpvalueCount`). Fix by splitting into modules, grouping values in a table, or scoping with `do … end` |
+| Script `Source` about 200,000 characters `[lihfolk][VS]` (not in the docs; `StringValue` documents the same figure) | Split generated modules early |
 | Integers exact to 2^53 | Above that `x + 1 == x`; idle-game currencies need a mantissa and exponent pair (`economy-and-progression.md`) |
 
 ## Game math essentials
@@ -322,10 +322,10 @@ Cost per frame = cost per item × items × times per second ÷ frame rate. Frequ
 |---|---|---|
 | Face a point | `CFrame.lookAt(from, target)` | Degenerate when the direction is parallel to the up vector: pass another `up` |
 | Move in its own space; in world space | `cf * CFrame.new(0, 0, -5)`; `cf + Vector3.new(0, 5, 0)` | `A * B` means "B relative to A"; order matters |
-| Rotate | `cf * CFrame.Angles(0, math.rad(90), 0)` | Radians. `Angles` applies X, Y, Z; `fromOrientation` uses Y, X, Z like the `Orientation` property |
+| Rotate | `cf * CFrame.Angles(0, math.rad(90), 0)` | Radians. `Angles(x, y, z)` is `Rx * Ry * Rz`; `fromOrientation(x, y, z)` is `Ry * Rx * Rz`, the order the `Orientation` property uses `[official]` |
 | World to local | `a:ToObjectSpace(b)`, `a:PointToObjectSpace(p)`, `a:VectorToObjectSpace(v)` | Vectors ignore position |
 | Keep a fixed offset | Store `offset = parent.CFrame:ToObjectSpace(child.CFrame)` once; each frame `child.CFrame = parent.CFrame * offset` | The same identity as weld `C0`/`C1` |
-| Blend two frames | `a:Lerp(b, t)` | Position linearly, rotation along the shortest arc |
+| Blend two frames | `a:Lerp(b, t)` | Position linearly, rotation by slerp along the shortest arc |
 | Move a model | `model:PivotTo(cf)` | Supersedes `SetPrimaryPartCFrame` |
 
 **Vectors.** `a:Dot(b)` is `|a||b|cos θ`. In front of me: `look:Dot(toTarget) > 0`. Inside a view cone: `look:Dot(toTarget.Unit) > math.cos(math.rad(halfAngle))`. Left or right: the sign of `look:Cross(toTarget).Y` (verify the sign once in your scene). Project onto a direction: `dir * v:Dot(dir)` with `dir` unit length. `.Unit` of a zero vector is NaN, and one NaN in a CFrame makes a part or the camera vanish: guard with `if v.Magnitude > 1e-4`.
@@ -352,7 +352,7 @@ end
 
 **Easing.** An easing curve is a shape applied to `t`. `TweenService:GetValue(alpha, style, direction)` samples the engine's curves for your own loops (one loop writing 300 CFrames instead of 300 Tweens). Responses to input ease **Out** (fast start); In reads as input lag; two InOut moves chained stop visibly in the middle. `Back` Out overshoots by about 10% of the distance at about 58% of the duration: budget it on long moves and check hinges for clipping `[lihfolk]`. Effects such as shake and FOV kicks are envelopes with an explicit end time that reach exactly zero; sum them, then cap.
 
-**Random.** `Random.new(seed)` per system (loot, spawns, cosmetics) so one system cannot shift another's sequence and bugs replay from a logged seed. `NextInteger(min, max)` is inclusive; `NextNumber()` is 0 to 1; `Shuffle(t)` shuffles in place; `NextUnitVector()` gives a direction `[official]`. Anything of value rolls on the server, and displayed odds come from the same flattened table the server rolls (`monetization-and-policy.md`; the statistical test is in `debugging-and-testing.md`). Weighted choice (unexecuted sketch):
+**Random.** `Random.new(seed)` per system (loot, spawns, cosmetics) so one system cannot shift another's sequence and bugs replay from a logged seed. `NextInteger(min, max)` is inclusive; `NextNumber()` is 0 to 1 inclusive; `Shuffle(t)` shuffles in place; `NextUnitVector()` gives a direction `[official]`. Anything of value rolls on the server, and displayed odds come from the same flattened table the server rolls (`monetization-and-policy.md`; the statistical test is in `debugging-and-testing.md`). Weighted choice (unexecuted sketch):
 
 ```lua
 --!strict
@@ -381,14 +381,15 @@ end
 | `Humanoid:LoadAnimation` | `Animator:LoadAnimation`, tracks cached | Deprecated |
 | `FindPartOnRay*`, `FindPartsInRegion3*` | `workspace:Raycast`, `Blockcast`/`Spherecast`/`Shapecast`, `GetPartBoundsInBox`/`Radius`, `GetPartsInPart` | Deprecated |
 | `BodyVelocity`, `BodyPosition`, `BodyGyro`, `BodyForce` | `LinearVelocity`, `AlignPosition`, `AlignOrientation`, `VectorForce` | Deprecated |
-| `PhysicsService:RegisterCollisionGroup`, `CollisionGroupSetCollidable`, `SetPartCollisionGroup` | `workspace:RegisterCollisionGroup`, `workspace:CollisionGroupSetCollidable`, `part.CollisionGroup = "Name"` | Deprecated |
-| `TeleportService:Teleport`, `TeleportPartyAsync`, `TeleportToPlaceInstance`, `TeleportToPrivateServer`, `ReserveServer(Async)` | Server-side `TeleportAsync(placeId, players, options)`; reserved servers via `TeleportOptions.ReservedServerId = HttpService:GenerateGUID(false)` | Deprecated |
+| `PhysicsService:SetPartCollisionGroup` | `part.CollisionGroup = "Name"` | Deprecated |
+| `PhysicsService:RegisterCollisionGroup`, `CollisionGroupSetCollidable` | `workspace:RegisterCollisionGroup`, `workspace:CollisionGroupSetCollidable`, or the Collision Groups editor at edit time | Superseded: the collisions guide uses the `workspace` methods; the `PhysicsService` ones are not marked deprecated |
+| `TeleportService:TeleportPartyAsync`, `TeleportToPlaceInstance`, `TeleportToPrivateServer`, `ReserveServer(Async)` | Server-side `TeleportAsync(placeId, players, options)`; reserved servers via `TeleportOptions.ReservedServerId = HttpService:GenerateGUID(false)` | Deprecated. `TeleportService:Teleport` is not tagged deprecated, but its page says not to use it for new work |
 | `Player:LoadCharacter`, `BadgeService:AwardBadge`, `UserHasBadge`, `Player:IsInGroup`, `MarketplaceService:GetProductInfo`, `PlayerOwnsAsset` | The same name with `Async`, inside `pcall` | Deprecated (the yielding-method rename; LihFolk dates it January 2026) |
 | `Player:GetRankInGroup(Async)` | `GroupService:GetRolesInGroupAsync` | Deprecated |
-| `Player.MembershipType`, `MarketplaceService:PromptPremiumPurchase` | `Player.HasRobloxSubscription` (prompt: see `monetization-and-policy.md`) | Deprecated |
+| `Player.MembershipType`, `MarketplaceService:PromptPremiumPurchase` | `Player.HasRobloxSubscription`, `MarketplaceService:PromptRobloxSubscriptionPurchase` (rules: `monetization-and-policy.md`) | Deprecated |
 | `TextFilterResult:GetChatForUserAsync`, legacy `Chat` | `TextChatService`; `GetNonChatStringForBroadcastAsync` / `ForUserAsync` for names and signs | Deprecated |
-| `getfenv`, `setfenv` | Modules and explicit parameters | Deprecated; they also de-optimise |
-| `Model:SetPrimaryPartCFrame` | `Model:PivotTo` | Superseded (drift-free) |
+| `getfenv`, `setfenv`; `collectgarbage` | Modules and explicit parameters; `gcinfo()` | Deprecated; the first two also de-optimise |
+| `Model:SetPrimaryPartCFrame` | `Model:PivotTo` (drift-free) | Deprecated |
 | `RunService.RenderStepped`, `Stepped` | `PreRender`, `PreSimulation` (and `PreAnimation`, `PostSimulation`) | Superseded: the old events are not marked deprecated |
 | `tick()` | `os.clock()` for durations, `os.time()` for timestamps, `workspace:GetServerTimeNow()` for clocks shared with clients | House standard. Conflict: the knowledge base lists `tick` with removed APIs, but it is not marked deprecated at this commit: avoid it, do not call it deprecated |
 | `CFrame.new(position, lookAt)`, `Vector3.new(0, 0, 0)`, `math.random` (one shared generator) | `CFrame.lookAt`, `Vector3.zero`, `Random.new(seed)` per system | Style |
@@ -430,19 +431,18 @@ Naming, the `Async` suffix and tooling are in `engineering-architecture.md`. In 
 - [ ] No per-frame allocation in hot loops; objects built in one literal; arrays presized where the size is known.
 - [ ] `buffer`, `@native` and Actors only with a before-and-after measurement at the live optimisation level on the target device.
 - [ ] Springs clamp `dt` and reject non-finite values; remaps clamp; randomness for anything of value is server-side and seeded per system.
-- [ ] `[VS]` features (`const`, type functions, explicit instantiation, `coroutine.finally`) confirmed in the current Studio and toolchain before adoption.
+- [ ] `[VS]` features (`const`, type functions, explicit instantiation, `coroutine.finally`) confirmed in the current Studio and in the pinned StyLua, Selene and luau-lsp versions before adoption.
 
 ## Sources
 
-Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07); `luau-lang/site` at c0eb09d (2026-10-20); `luau-lang/rfcs` at 5fcbb5a (2026-10-16); `luau-lang/luau` at 12a6ba7 (2026-11-07).
+Accessed 2026-11-11. `Roblox/creator-docs` at commit 7cbffff (2026-11-10); `luau-lang/site` at eaf5519 (2026-11-10); `luau-lang/rfcs` at 5fcbb5a (2026-10-16); `luau-lang/luau` at f46d879 (2026-11-10).
 
-- https://github.com/Roblox/creator-docs: `content/en-us/luau/{variables,scope,functions,comments,type-checking,native-code-gen}.md`, `scripting/multithreading.md`, `reference/engine/libraries/{task,coroutine,math,vector,buffer,table,debug}.yaml`, `reference/engine/globals/{LuaGlobals,RobloxGlobals}.yaml`, `reference/engine/datatypes/Random.yaml`, `reference/engine/enums/LuauTypeCheckMode.yaml`, `reference/engine/classes/{Workspace,Player,BadgeService,Humanoid,Model,WorldRoot,TeleportService,TeleportOptions,PhysicsService,Instance,RunService,TextFilterResult}.yaml` (read)
-- https://github.com/luau-lang/site: `src/content/docs/guides/{performance,sandbox}.md`, `getting-started/{syntax,compatibility}.md`, `reference/{attributes,grammar,types-library}.md`, `types/{generics,type-functions,object-oriented-programs}.md`, `src/content/news/2025-12-19-luau-recap-runtime-2025.md` (read)
-- https://github.com/luau-lang/rfcs: `docs/{const-keyword,explicit-type-parameter-instantiation,user-defined-type-functions,keyof-type-operator,index-type-operator,metatable-type-functions,syntax-attribute-functions-deprecated,function-math-lerp,function-math-map,math-isnan-isfinite-isinf,function-buffer-bits,vector-library,function-vector-lerp,syntax-classes,export-keyword,type-long-integer,support-for-cyclic-requires,function-coroutine-finally,property-readonly}.md` (read; status lines)
-- https://github.com/luau-lang/luau: `Compiler/src/Compiler.cpp` (read; register and upvalue limit error texts)
+- https://github.com/Roblox/creator-docs: `content/en-us/luau/{variables,scope,functions,comments,type-checking,native-code-gen}.md`, `scripting/{multithreading,locations,scheduler}.md`, `workspace/collisions.md`, `reference/engine/libraries/{task,coroutine,math,vector,buffer,table,string,debug}.yaml`, `reference/engine/globals/{LuaGlobals,RobloxGlobals}.yaml`, `reference/engine/datatypes/{Random,CFrame,SharedTable}.yaml`, `reference/engine/classes/{Workspace,Player,BadgeService,Humanoid,Model,WorldRoot,TeleportService,TeleportOptions,PhysicsService,MarketplaceService,Instance,RunService,TextFilterResult}.yaml` (read)
+- https://github.com/luau-lang/site: `src/content/docs/guides/{performance,sandbox}.md`, `getting-started/{syntax,compatibility}.md`, `reference/{attributes,grammar,types-library}.md`, `types/{generics,type-functions,object-oriented-programs}.md` (read)
+- https://github.com/luau-lang/rfcs: status lines of `docs/{const-keyword,explicit-type-parameter-instantiation,user-defined-type-functions,keyof-type-operator,index-type-operator,metatable-type-functions,syntax-attribute-functions-deprecated,syntax-property-access-modifiers,function-math-lerp,function-math-map,math-isnan-isfinite-isinf,function-buffer-bits,vector-library,function-vector-lerp}.md` ("Implemented") and of `docs/{syntax-classes,export-keyword,type-long-integer,support-for-cyclic-requires,function-coroutine-finally,property-readonly}.md` (no status line) (read)
+- https://github.com/luau-lang/luau: `Bytecode/include/Luau/BytecodeBuilder.h` (limits), `Compiler/src/Compiler.cpp` (error texts), `Common/include/Luau/Bytecode.h` (fastcall builtin list), `Ast/src/Parser.cpp` (experimental syntax flags), `VM/src/lcorolib.cpp` (read)
+- Changelogs (read): https://github.com/JohnnyMorganz/StyLua (2.5.0 `const`, 2.6.0 `if local`), https://github.com/Kampfkarren/selene (0.31.0, 0.32.0), https://github.com/JohnnyMorganz/luau-lsp (1.64.0)
+- https://devforum.roblox.com/t/4084991 (read; new type solver general release 2025-11-20, beta toggle removed 2026-01-07, known slowness)
+- https://devforum.roblox.com/t/4762719 (read; one developer's SharedTable read benchmark, no staff reply)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/02 Luau Scripting/{Luau Language Essentials, Task Library Coroutines and Yielding, Events Signals and Connections, Luau Performance Patterns with Benchmarks, Luau Performance and Native Codegen, Parallel Luau and Actors, Math Vectors and CFrames}.md`; `35 Advanced Luau/{Advanced Types - Generics and Type Functions, Luau Garbage Collection and the Memory Model}.md`; `40 Game Math/Interpolation Easing and Curves Math.md`; `56 Field Notes/Springs That Survive Long Frames - dt Clamps and NaN Guards.md`; `SYMPTOMS.md` (read)
-- https://devforum.roblox.com/t/general-release-luau%E2%80%99s-new-type-solver/4084991 (search summary; general release, beta toggle removal, known slowness)
-- https://create.roblox.com/docs/updates/2026-08-24.md (search summary; solver fixes continuing)
-- https://devforum.roblox.com/t/release-notes-for-711/4473831 and https://devforum.roblox.com/t/feedback-on-variables/4590572 (search summary; `const` arrival and early documentation gap)
-- https://devforum.roblox.com/t/parallel-luau-version-2-release/2399970 and https://devforum.roblox.com/t/are-frozen-sharedtable-reads-faster-than-standard-sharedtable-reads/4762719 (search summary; SharedTable about 10× slower)
-- Not reachable: devforum.roblox.com, create.roblox.com and reddit.com directly; the GitHub REST API (release notes not read first-hand). No evidence found: StyLua, Selene or luau-lsp release notes confirming `const` support; an official statement of the 200,000-character `Source` limit; whether user-defined type functions can be exported across modules.
+- Not verified: an official statement of the 200,000-character `Source` limit; whether user-defined type functions can be exported across modules; the native-code size cap as a number (the docs give none: read it with `debug.dumpcodesize()`).

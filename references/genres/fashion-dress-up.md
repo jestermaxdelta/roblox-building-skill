@@ -36,6 +36,8 @@ Terms: *judged round* = a round whose winner is decided by other players' rating
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 join a server already cycling; if mid-round, land in Freeplay or spectate the runway with a timer to the next round.
 2. 0:30 theme appears; arrows to the racks; many items free from the start `[lihfolk]`.
 3. 1:00–5:00 dress: equip by walking to racks and tapping; undo and "clear" always visible; a three-item minimum hint so nobody walks out bare.
@@ -68,6 +70,8 @@ Terms: *judged round* = a round whose winner is decided by other players' rating
 - Collaborations and creator events are multipliers on a healthy base, not a rescue.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: coin or reward burst for the payout, level-up for a rank gained.
 
 - Theme and timer pinned at the top for the whole dressing phase.
 - Racks in the world with tap-to-equip; a compact outfit panel (worn items, colour and material pickers, undo, clear, save outfit).

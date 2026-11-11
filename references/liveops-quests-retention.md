@@ -1,6 +1,6 @@
 # LiveOps, quests, retention and social design
 
-Distilled from knowledge-base sections 1.7, 1.8, 3.3 and 3.4, plus a 2026-11-10 research pass on retention systems, notifications and LiveOps practice. Use it when planning onboarding, quests, season passes, events, update cadence and social features, and when a live game's D7, D30 or play days sit below benchmark. Loop-level diagnosis (first session, session time, D1) is in core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum, press or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its "reference project" is one anonymised production game, its other figures are rules of thumb dated October 2026), `[VS]` version-sensitive, `[house]` house estimate.
+Distilled from knowledge-base sections 1.7, 1.8, 3.3 and 3.4, plus a 2026-11-10 research pass on retention systems, notifications and LiveOps practice. Use it when planning quests, daily rewards, season passes, events, notifications, update cadence and social features, and when a live game's D7, D30 or play days sit below benchmark. The first session is owned by tutorial-and-onboarding.md; loop-level diagnosis (session time, D1) by core-loop-tuning.md. Tags: `[official]` Roblox docs, `[community]` forum, press or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its "reference project" is one anonymised production game, its other figures are rules of thumb dated October 2026), `[VS]` version-sensitive, `[house]` house estimate.
 
 ## Start here by level
 
@@ -8,69 +8,42 @@ Terms: **LiveOps** = everything done to a game after launch (updates, events, of
 
 | Level | Do this | Leave for later |
 |---|---|---|
-| Beginner | The onboarding blueprint. One cumulative daily calendar, 3 daily quests and capped offline earnings from the toolkit. One fixed update day you can keep. An in-game What's New panel. Real end dates on everything | Season passes, admin events, notifications, staged rollouts |
+| Beginner | The first-session script in tutorial-and-onboarding.md §2 first. Then one cumulative daily calendar, 3 daily quests and capped offline earnings from the toolkit. One fixed update day you can keep. An in-game What's New panel. Real end dates on everything | Season passes, admin events, notifications, staged rollouts |
 | Intermediate | The calendar method: measure throughput, plan mostly config and reskin events, one buffer week a month, a one-page brief per event. Notifications at warranted moments. The T-10 to T+7 timeline. Read each update's curve | Per-flag percentage rollouts; seasonal resets |
 | Expert | Calendar and patch notes as validated Config data; staged rollout with written abort criteria; season XP budget with 15–20% slack and boundary-purchase rules; notification scheduling when no server is running; lazy season rollover; reviews that feed the next quarter's capacity numbers | — |
 
-Contents: Onboarding · Social rewards · Benchmarks · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table Related (implementation): gameplay-systems-cookbook.md §6 Quests and achievements, §7 Daily rewards and playtime rewards, §8 Codes, §24 Server-wide events and boosts.
+Contents: Onboarding (pointer) · Social rewards · Reading retention · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table. Related (implementation): gameplay-systems-cookbook.md §6 Quests and achievements, §7 Daily rewards and playtime rewards, §8 Codes, §24 Server-wide events and boosts.
 
 ## Onboarding (first session)
 
-Three goals: teach the loop, make it fun fast, make the player want to return.
-
-Blueprint:
-
-1. Spawn directly into the loop. No lobby, no wall of text.
-2. First reward in under 30 seconds; first upgrade within 1–2 minutes.
-3. One verb at a time. Introduce the second mechanic only after the first has paid off.
-4. Contextual, show-once tutorials. Visual guidance (arrows, glowing targets, signs) is modelled in Blender, not drawn with primitive Parts. If a hint is timed, fire it at about 11 seconds, because most players who will act have done so by 10 seconds.
-5. Log every step with `AnalyticsService:LogOnboardingFunnelStepEvent(player, step, stepName)` and watch the funnel for the step with the largest drop.
-6. A visible goal ladder (next upgrade, next zone) is on screen from the first minute.
-7. Ask for notification opt-in only at a warranted moment (after a win, before a timed event), never on join.
-8. No offers, starter packs or purchase prompts during onboarding (house rule).
+Moved to tutorial-and-onboarding.md: first-minute script (§2), teaching patterns (§3), funnel logging and reading (§9). What this file adds for the first session: no automatic pop-up of any retention system (daily reward, group card, event, offer) while onboarding runs, offline earnings start only after it ends, and the notification opt-in prompt waits for a warranted moment (§Notifications).
 
 ## Social rewards (group join, like, favourite, friend join)
 
-Every 2025–26 hit rewards them (Steal An Egg gives 10K free Speed for like + favourite + group join; Climb For Animals Eggs the same). They are part of the house default set. The creator docs do not cover in-game rewards for them; what the docs do penalise is *metadata* that leads with giveaways, Robux or "like for rewards" and thumbnails that do not match the game `[VS]`. Build them like this:
+Every 2025–26 hit rewards them (Steal An Egg gives 10K free Speed for like + favourite + group join; Climb For Animals Eggs the same). They are part of the house default set. The creator docs do not cover in-game rewards for them; what they do penalise is *metadata* that implies a monetary reward ("leading with giveaways") or does not match the content `[official]` `[VS]`. Build them like this:
 
 - **Bonus, never a gate.** The reward is a one-time boost or cosmetic (a 10–15 min 2× boost, a starter cash bump, a badge, a skin), never progress, a zone, a product or a core feature. A player who never joins loses nothing they need.
 - **Timing.** Show the "Join our group" card after the first win and after the 600 s grace, as one of the rate-limited cards from the offer gate (it counts toward the ≤ 3 cards per session). A permanent small "Rewards" button in the HUD lets the player claim later.
-- **Group join is the only one Roblox can verify.** Check it on the server with `Player:IsInGroupAsync(groupId)` in a `pcall` `[VS]` (`IsInGroup` without `Async` is deprecated; role checks use `GroupService:GetRolesInGroupAsync`); the result is cached per session, so after the player joins the group offer a "Check again" button that calls `GroupService:GetGroupsAsync(player.UserId)` (not cached, rate-limited; `pcall` it and retry once). Grant once, save the flag in the profile.
-- **Likes and favourites cannot be verified** (no API returns them). Treat the "I liked it" claim as honour-based: grant a small reward once per account via the same claim flow, and accept that it is a thank-you, not a verified action. Never block anything on it.
+- **Group join is the only one Roblox can verify** `[official]` `[VS]`. Let the player join without leaving: a LocalScript calls `GroupService:PromptJoinAsync(groupId)` (native modal; returns an `Enum.GroupMembershipStatus`). Then verify on the server with `Player:IsInGroupAsync(groupId)` in a `pcall` (`IsInGroup` without `Async` is deprecated; role checks use `GroupService:GetRolesInGroupAsync`). The result is cached per peer and the prompt clears only that client's cache, so a server that already answered "no" this session keeps saying no: re-check with `GroupService:GetGroupsAsync(player.UserId)` behind a throttled "Check again" button (`pcall`, one retry). Grant once, save the flag in the profile.
+- **Likes cannot be verified** (no in-game API returns them). Treat the "I liked it" claim as honour-based: grant a small reward once per account via the same claim flow, and accept that it is a thank-you, not a verified action. Never block anything on it. Not verified: Roblox's Community Standards are reported to prohibit artificially inflating likes and visits, and no official statement on like-for-reward cards was found (help centre not reachable, 2026-11-11). If the owner wants no policy risk, reward only the group join `[VS]`.
 - **Friend join and invites** are verified: `Player:GetJoinData().ReferredByPlayerId` for invites, friend presence for co-play. Pay the friend bonus (10–20%) to both players while they are in the same server; never require invites to progress.
 - **Copy.** The card says what the reward is and that it is optional. No countdown, no "limited", no fake scarcity. Nothing about it in the title, thumbnail or description.
 - **Instrument it.** Funnel: RewardsOpened → GroupPromptShown → GroupVerified → Claimed. If GroupVerified is below about 15% of shown, the reward is too small or shown too early.
 
-## Retention benchmarks `[VS]`
+## Reading retention
 
-Use Creator Analytics' similar-game benchmark first, then these published figures:
+Benchmarks: the game's own similar-games range in Creator Analytics first (100+ DAU). Published figures, with samples and trust levels, are in the one table in analytics-and-discovery.md §Benchmarks; this file carries no copy. Do not set targets from genre "D1 20–35%" ranges or the "20% good, 40% excellent" rule: they sit far above every measured median.
 
-| Source | D1 | D7 | D30 | Notes |
-|---|---|---|---|---|
-| gstack (classic mobile) | 40% | 15% | 5% | Not Roblox-specific; aspirational |
-| GameAnalytics 2025, Roblox median | 4.3% (sessions under 3 min) to 11.5% (sessions 19–24 min) | 1.6% median, 8.5% at P98 | — | Session length predicts retention |
-| RoWatcher, July 2026 | Obby 25–35; tycoon 20–28; shooter 22–30; roleplay 15–22 | — | — | Genre D1 ranges for games with traffic |
-| Creator Analytics | 50th–90th percentile shown per genre (docs example D1 12.11–18.73%; a DevForum announcement example shows 12.4–24.1%) | — | — | Needs 100+ DAU; illustrative, each game gets its own range |
-| GameAnalytics 2026, 500+ titles above 1M MAU (Aug 2025–Jul 2026) | Median 10.3%; P25 8.4%; P75–P90 12.9–15.9%; P99 22.2% | Median 1.6%; P25 1.0%; P99 9.1% | Median 0.5%; top 1% 4.7% | `[community]`, read through search summaries; large titles only |
-
-The sources disagree because they measure different populations. Treat them as ranges, and compare yourself to your own genre benchmark in Creator Analytics. Conflict: the RoWatcher genre ranges (20–35% D1) and the common "20% is good, 40% is excellent" rule sit far above the GameAnalytics medians; the 2026 report attributes such figures to small samples of already-promoted games. Do not set targets from them.
-
-Reading the retention pages `[official]` `[VS]`:
-
-- Break D1, D7 and D30 down by **Source** (added October 2025). Judge design changes on the Home Recommendations cohort; ad and external-link cohorts retain differently, and a dip after a large influx is normal.
-- The cohort table shows daily cohorts over their first 10 days and weekly cohorts over 10 weeks, with 7-day playtime, 7-day payer conversion and 7- and 30-day revenue per user. Use it to compare players who first joined during an event or update with those before it.
-- Recommended For You reads signals in stages: first session (play-through rate, bounce), then D1, D2–7 (play days out of 6), D8–28. A strong D8–28 with a weak D1 is very unlikely, so fix in that order.
-
-Diagnosis rules: low D1 means core loop, onboarding or performance; session time at benchmark with low D1 means there is no stated reason to return; low D7 means a progression wall or empty mid-game; low D30 means no endgame or social reason to stay. Fix retention before adding monetization. The metric-by-metric table with experiments is in core-loop-tuning.md §6.
+Read D1, D7 and D30 by **Source** and judge design changes on the Home Recommendations cohort; use the daily (10 days) and weekly (10 weeks) cohort table to compare players who first joined during an event or update with those before it `[official]`. Chart order and the metric-by-metric table with experiments are in core-loop-tuning.md §5–6. Diagnosis in one line: low D1 is core loop, onboarding or performance; session time at benchmark with low D1 means no stated reason to return; low D7 is a progression wall or empty mid-game; low D30 is no endgame or social reason to stay. Recommended For You reads the windows in order (first session, D1, D2–7, D8–28), so fix in that order, and fix retention before adding monetization.
 
 ## Retention toolkit (no punishment anywhere)
 
-Order of work: the loop first, then these. `[community]` Developers who post results say reward layers amplify a working loop and do not rescue a weak one: a game with 4-minute sessions reported no change from adding daily rewards, and a DevForum reply argues that "most of the D1 retention is solely based on your core loop", with daily rewards as secondary amplifiers. No published before/after data was found for indexes, rebirth pacing, season passes or notification opt-in; those rows rest on market pattern and house reasoning.
+Order of work: the loop first, then these. `[community]` Developers who post results say reward layers amplify a working loop and do not rescue a weak one: a game with 4-minute sessions reported no change from adding daily rewards, and a DevForum reply argues that "Most of the D1 retention is solely based on your core loop", with daily rewards as amplifiers. No published before/after data was found for indexes, rebirth pacing, season passes or notification opt-in; those rows rest on market pattern and house reasoning.
 
 | System | Done right | Evidence | Limits `[VS]` |
 |---|---|---|---|
-| Daily reward | Cumulative calendar counting days played; never resets. One-tap claim inside the HUD, not a join pop-up. The reward feeds the player's current goal (a boost, upgrade material), with marquee items on day 7 and day 28 anyone can reach. A consecutive-day streak that resets or drops tiers on a miss is rejected (house rule: no punishment) | `[community]` Opinion on streaks is split; one unsourced Reddit case claims about 3× D7; the "30–50% D7 lift" figures on script-seller pages have no source | The Engagement Rewards package's `Daily` type is a login streak; handle a missed day yourself. No guilt or "streak ends soon" notifications |
-| Playtime reward | A ladder at about 5, 10, 20 and 40 minutes that accumulates per day, not per session, so leaving loses nothing. Stop at 60 min. Pay on active play | `[community]` Holds players in a session; does not by itself bring them back | Playtime beyond 60 min per user per day adds nothing to ranking `[official]`. `Player.Idled` (client-only) fires about 2 min after input stops, then every 30 s; Roblox disconnects after 20 min idle `[official]` |
+| Daily reward | Cumulative calendar counting days played; never resets. One-tap claim inside the HUD, not a join pop-up. The reward feeds the player's current goal (a boost, upgrade material), with marquee items on day 7 and day 28 anyone can reach. A consecutive-day streak that resets or drops tiers on a miss is rejected (house rule: no punishment) | `[community]` Forum opinion on streaks is split and nobody posts measurements; an unverified Reddit-mirror claim of about 3× D7 and the "30–50% D7 lift" figures on script-seller pages have no usable source | The Engagement Rewards package's `Daily` type is a login streak; handle a missed day yourself. No guilt or "streak ends soon" notifications |
+| Playtime reward | A ladder at about 5, 10, 20 and 40 minutes that accumulates per day, not per session, so leaving loses nothing. Stop at 60 min. Pay on active play | `[community]` Developer opinion only: holds players in a session; players hooked only on it do not return | Playtime beyond 60 min per user per day adds nothing to ranking `[official]`. `Player.Idled` (client-only) fires about 2 min after input stops, then every 30 s; Roblox disconnects after 20 min idle `[official]` |
 | Quests | 3–5 daily across at least three categories; process goals ("deliver 10") beside outcome goals; the quest nearest completion feeds the next-goal line; unclaimed rewards auto-granted | `[official]` quest and season-pass guides | Never require hard currency |
 | Collection index | Silhouettes for undiscovered entries; completion % visible; small set bonuses; a diegetic Blender index board | Market pattern (every 2025–26 hit); no measured evidence found | No entry obtainable only through paid random items; odds shown; `PolicyService` gate |
 | Rebirth and soft resets | First rebirth at 15–25 min; a preview of what is kept and gained before confirming; collection and cosmetics always kept | `[community]` generic guidance: a first requirement set too high means players never meet the mechanic; resetting too much reads as punishment | None found |
@@ -86,7 +59,7 @@ Order of work: the loop first, then these. `[community]` Developers who post res
 
 Saturdays and December are the peak weeks for Recommended For You traffic; schedule big updates for them.
 
-Which hook serves which window `[lihfolk]`: D1 is a great first session plus one unfinished goal or a timer that resolves tomorrow. D7 is weekly quests, walls with a visible next step, collections and the calendar's day 7. D30 is updates, live events, friends, trading, leaderboards and seasons. Combine three or four hook families (calendar, timer, goal, accumulation, social, content, collection) so that every join has **at least one thing ready**, and never more than one automatic pop-up at a time (the pop-up gate in core-loop-tuning.md §3).
+Which hook serves which window `[lihfolk]`: D1 is a great first session plus one unfinished goal or a timer that resolves tomorrow. D7 is weekly quests, walls with a visible next step, collections and the calendar's day 7. D30 is updates, live events, friends, trading, leaderboards and seasons. Combine three or four hook families (calendar, timer, goal, accumulation, social, content, collection) so that every join has **at least one thing ready**, and never more than one automatic pop-up at a time (the pop-up gate in tutorial-and-onboarding.md §8).
 
 ### Building a daily reward that cannot be exploited or resented
 
@@ -122,13 +95,13 @@ The channels are not interchangeable `[official]` `[lihfolk]` `[VS]`:
 
 | | Experience notification | Update announcement | Event notification |
 |---|---|---|---|
-| Content | Your personalised string with parameters (keep it under about 99 characters `[lihfolk]`) | 60 characters of free text | Generated from the event |
-| Audience | Opted-in players aged 13+ | Everyone who enabled notifications for the game, under-13s included `[lihfolk]` | Players who tapped Notify Me |
+| Content | Your personalised string with parameters, at most 99 characters `[official]` | 60 characters of free text | Generated from the event |
+| Audience | Opted-in players aged 13+ | Everyone who enabled notifications for the game `[official]`; LihFolk says this includes under-13s, which the docs do not confirm | Players who tapped Notify Me (or accepted an in-game RSVP prompt) |
 | Frequency | 1 per user per day per game, plus the user's cross-game cap | Once every 3 days | When the event starts |
 | Sent by | Server code or Open Cloud | You, from the dashboard | Roblox |
 | Lands the player | Wherever the launch data says | The start place | The event's place, with `EventId` in the join context |
 
-For a young audience most players cannot receive personal notifications at all, so in-game communication and update announcements carry the load.
+Under-13 players cannot receive experience notifications at all, so for a young audience the in-game What's New panel and update board carry the load.
 
 The scheduling problem `[lihfolk]`: "your egg hatched" must be sent hours later, possibly when no server holds that player. Options: (1) send from the server where the trigger happens, which only works for social triggers (a friend online beats the record); (2) a shared due-time queue in MemoryStore that any running server polls and sends from, which needs at least one live server and respects MemoryStore's maximum item lifetime `[VS]`; (3) an external scheduler calling the Open Cloud notification API, for games with quiet hours. Whichever is used, keep at most one queued notification per user and let the priority order below decide which survives. Show one line of context before the system prompt ("We can tell you when it hatches") so the fixed-text prompt makes sense.
 
@@ -162,7 +135,7 @@ Build one only when the game can carry it `[lihfolk]`. A pass multiplies retenti
 
 Do not build one before launch or in the first month (the retention curve is unknown), under a few hundred daily players, for session games where nobody cares about cosmetics, or when the team already misses update dates: a season is a promise made in public, and it ends on a fixed date.
 
-`[official]` starting values: about one month, at least a week of rest between seasons, about 10 tiers, automatic enrolment in the free track, daily missions across three or more categories that never need hard currency, premium as a superset, mid-season upgraders receive premium rewards for every tier already reached, claim by button with unclaimed rewards granted at season end, a retired final reward shown as a 3D model in the world (a Blender showcase piece), double XP in the final week.
+`[official]` starting values (season-pass design guide): about one month, at least a week of rest between seasons, automatic enrolment in the free track, daily missions across three or more categories that never need hard currency, premium as a superset, mid-season upgraders receive premium rewards for every tier already reached, claim by button with unclaimed rewards granted at season end, a retired final reward shown as a 3D model in the world (a Blender showcase piece), double XP in the final week. About 10 tiers is a `[house]` starting count; the guide gives none.
 
 XP budget. Tune for a named target player, then leave slack:
 
@@ -190,8 +163,7 @@ Selling and edge cases `[lihfolk]` (implementation in data-and-purchases.md):
 
 ## Update and event cadence
 
-- Content updates should take under 3 weeks of effort each. Weekly is ideal, monthly is the minimum. Expansions take months; plan them separately.
-- Roblox retention guidance: a small update every 2–4 weeks, a big one every 2–3 months.
+- `[official]` A content-cadence update should take under three weeks of effort; many games ship one every two weeks to a month, and a common rhythm is small updates every 2–4 weeks with bigger ones every 2–3 months. Anything that needs a new system is an expansion: plan it separately. Weekly is what the current top games do `[community]`, not a requirement.
 - Each event has exactly one KPI and a unique event currency with its own sinks.
 - Seasonal multipliers (market snapshot 2026-11-07 `[VS]`):
 
@@ -229,7 +201,7 @@ A live game runs on two clocks: what players see on each day, and what the team 
 
 **6. Write the overlap rules so they can be checked.** At most one headline event live at a time. Multipliers stack with a headline only by design, with a cap on the combined value. No major publish in a headline event's first 48 hours (fix by Config or kill switch). A season end and the next season's start never share a day. Event store offers end when the event ends and never return under another name.
 
-**7. Respect the platform limits.** At most 10 ongoing or upcoming Experience Events, so public events are for beats worth an RSVP, not every rotation. The Off-Platform Featuring programme needs the event submitted at least 7 days before it starts, public and accurate, and the docs say the best featured events run 7–30 days `[official]`; put "submit for featuring" on the calendar as its own dated line. Trending Events needs 1,000 RSVPs, so publish headline events about a week ahead to collect Notify Me taps. Update announcements: 60 characters, one per 3 days.
+**7. Respect the platform limits.** At most 10 ongoing or upcoming Experience Events, so public events are for beats worth an RSVP, not every rotation. The Off-Platform Featuring programme needs the event submitted at least 7 days before it starts, public and accurate, and the docs say the best featured events run 7–30 days `[official]`; put "submit for featuring" on the calendar as its own dated line. Trending Events needs 1,000 RSVPs and an event that started within the last 7 days, so publish headline events about a week ahead and collect RSVPs in the game: a LocalScript gets the event id from `SocialService:GetUpcomingExperienceEventsAsync()` and calls `SocialService:PromptRsvpToEventAsync(eventId)` when the player walks up to the countdown board (before the event starts only; never on join) `[official]` `[VS]`. Update announcements: 60 characters, one per 3 days.
 
 **8. Durations and clocks.** Headline events 7–14 days (two weekends reach weekly players as well as daily ones), multipliers 2–3 days, seasons about a month. Long events get a mid-point beat (a second phase, a reward unlocking on day 5) rather than more days. All times are entered in UTC (daylight saving shifts hand-converted local times by an hour twice a year); the start lands in the afternoon or early evening of the largest region and outside its school hours.
 
@@ -278,7 +250,8 @@ local function apply(raw: any)
 	for _, e in source do
 		if typeof(e) == "table" and typeof(e.id) == "string" and typeof(e.startsAt) == "number" and typeof(e.endsAt) == "number" then
 			local kind = if typeof(e.kind) == "string" then e.kind else "rotation"
-			table.insert(list, { id = e.id, kind = kind, startsAt = e.startsAt, endsAt = e.endsAt, boosts = e.boosts })
+			local boosts = if typeof(e.boosts) == "table" then e.boosts else nil
+			table.insert(list, { id = e.id, kind = kind, startsAt = e.startsAt, endsAt = e.endsAt, boosts = boosts })
 		end
 	end
 	local problem = problemWith(list)
@@ -357,7 +330,7 @@ To step off the content treadmill, let an occasional update be a system rather t
 
 ### The update-day ritual as top games run it (and a solo version)
 
-What current hits do `[community]` (press and fan coverage, 2025–26; times and frequency vary by source): Grow a Garden ships on Saturdays, and its lead developer runs an "admin abuse" session in public servers for roughly the hour before the update goes live (special weather, shop stock, NPC spawns); it is sometimes skipped when an update is mostly backend work. The August 2025 admin events of Grow a Garden and Steal a Brainrot coincided with the platform's concurrency record. Cautions from the same coverage: peaks are not sustained; one analysis reports games jumping from about 20K to over 100K players during events and losing those players when the server resets, and argues that weekly spectacle teaches players to wait for giveaways; Rogueblox's developers said a weekly schedule kept them from building large features and burned the team out.
+What current hits do `[community]` (press and fan coverage, 2025–26; times and frequency vary by source): Grow a Garden ships on Saturdays, and its lead developer runs an "admin abuse" session in public servers for roughly the hour before the update goes live (special weather, shop stock, NPC spawns); it is sometimes skipped when an update is mostly backend work. The August 2025 admin events of Grow a Garden and Steal a Brainrot coincided with the platform's concurrency record. Cautions from the same coverage: peaks are not sustained; one opinion piece says games that "barely touched twenty thousand" peaked above one hundred thousand players when an admin event went live, and argues that weekly spectacle makes ordinary play between events feel pointless; Rogueblox's developers said a weekly schedule kept them from building large features and burned the team out.
 
 Platform tools `[official]` `[VS]`: Experience Events (at most 10 ongoing or upcoming; players tap Notify Me and get a stream notification at start, with optional push; the event can spawn joiners into a chosen place; `player:GetJoinData().GameJoinContext.EventId` identifies who came for it). Update announcements (60 characters, once every 3 days, sent to opted-in players; describe what is new, not "bug fixes"). Performance alerts with a webhook for the hour after publishing (crash rate, session time, concurrent users; 100+ DAU). Configs can start timed content at a set moment without a publish.
 
@@ -434,7 +407,7 @@ Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared 
 - Griefing controls: build-zone ownership, personal plots, report buttons, cooldowns on destructive actions; all user-visible text is filtered (community-moderation-safety.md).
 - Social friction audit: for every social feature, list how a stranger could ruin it and what stops them.
 - Server Luck or server-wide gifts show a thank-you banner naming the buyer (a social reward that costs nothing).
-- Social service APIs: `SocialService:CanSendGameInviteAsync` → `PromptGameInvite(player, ExperienceInviteOptions)` with `LaunchData` up to 200 characters read through `GetJoinData()`; referrals through `ReferredByPlayerId`; `ExperienceNotificationService:CanPromptOptInAsync()` / `PromptOptIn()` with a 30-day re-prompt lockout; notifications need 100+ visits, one per user per day, 13+ opted-in users `[VS]`.
+- Social service APIs: `SocialService:CanSendGameInviteAsync` → `PromptGameInvite(player, ExperienceInviteOptions)` with `LaunchData` up to 200 characters read through `GetJoinData()`; referrals through `ReferredByPlayerId` `[official]` `[VS]`. Notification APIs and limits: §Notifications.
 
 ## Level-up: retention symptoms → likely cause → fix
 
@@ -463,8 +436,7 @@ Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared 
 
 ## Review gate
 
-- [ ] First reward under 30 seconds, first upgrade under 2 minutes, onboarding funnel logged.
-- [ ] Goal ladder visible from minute one.
+- [ ] First session passes the review gate in tutorial-and-onboarding.md; no retention pop-up appears during onboarding.
 - [ ] Every toolkit system in use has its "done right" form; no streak wipes, no absence loss, no pay-to-idle.
 - [ ] Daily, weekly and seasonal content with real end dates.
 - [ ] Event currency per event; one KPI per event.
@@ -484,16 +456,15 @@ Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared 
 
 ## Sources
 
-Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror at commit ccc2b01; "(search summary)" = seen only through web search result text. Older sections come from `references/knowledge-base.md` sections 1.7, 1.8, 3.3 and 3.4 (grep `## 1.7`, `## 1.8`, `## 3.3`, `## 3.4`), which list their own sources.
+Accessed 2026-11-10; docs and DevForum threads re-checked 2026-11-11. "(read)" = opened (docs in the `Roblox/creator-docs` mirror, threads through the DevForum JSON endpoint); "(search summary)" = seen only through web search result text. Older sections come from `references/knowledge-base.md` sections 1.7, 1.8, 3.3 and 3.4 (grep `## 1.7`, `## 1.8`, `## 3.3`, `## 3.4`), which list their own sources.
 
-- Roblox/creator-docs (read), https://github.com/Roblox/creator-docs/tree/main/content/en-us/ : production/analytics/retention.md and engagement.md; discovery.md and discovery-faq.md; production/promotion/experience-notifications.md with includes/experience-notifications/{eligibility,guidelines,delivery-system}.md; production/promotion/experience-events.md; production/analytics/alerts.md and production/configs.md; production/game-design/design-for-roblox.md; reference/engine/classes/Player.yaml (`Idled`, 20-minute disconnect); production/promotion/experience-events.md (Off-Platform Featuring eligibility)
-- DevForum threads (search summary): https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157, https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030, https://devforum.roblox.com/t/do-daily-rewards-actually-keep-players-retention/3556728, https://devforum.roblox.com/t/low-engagement-on-new-game/3778071, https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644, https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566
-- https://www.gameanalytics.com/reports/2026-roblox-report and https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
-- https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summary of an r/robloxgamedev post via a third-party mirror; the 3× D7 claim)
+- Roblox/creator-docs (read), https://github.com/Roblox/creator-docs/tree/main/content/en-us/ : production/analytics/retention.md and engagement.md; discovery.md and discovery-faq.md; production/promotion/experience-notifications.md with includes/experience-notifications/{eligibility,guidelines,delivery-system,implementation-create-notification-string}.md; production/promotion/experience-events.md; production/analytics/alerts.md, production/configs.md and production/experiments.md; production/game-design/season-pass-design.md and content-updates.md; production/publishing/badges.md; resources/feature-packages/; reference/engine/classes/GroupService.yaml (`PromptJoinAsync`), SocialService.yaml (`PromptRsvpToEventAsync`), ConfigSnapshot.yaml; production/game-design/design-for-roblox.md; reference/engine/classes/Player.yaml (`Idled`, 20-minute disconnect); production/promotion/experience-events.md (Off-Platform Featuring eligibility)
+- DevForum threads (read): https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157, https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030, https://devforum.roblox.com/t/do-daily-rewards-actually-keep-players-retention/3556728, https://devforum.roblox.com/t/low-engagement-on-new-game/3778071, https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644, https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566
+- https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search-result text of an r/robloxgamedev post on a third-party mirror, not opened; the 3× D7 claim is unverified)
 - https://www.sportskeeda.com/roblox-news/when-admin-abuse-start-grow-garden and https://www.gamepressure.com/newsroom/new-admin-abuse-date-in-grow-a-garden-you-get-to-decide-when-this/z78663 (search summary; admin-event timing)
 - https://consolepcgaming.com/roblox-smashes-ccu-record-during-admin-war-between-grow-a-garden-and-steal-a-brainrot (search summary)
-- https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (search summary)
-- https://roonby.com/2025/09/24/why-rogueblox-was-closed-full-explanation-whats-next/ (search summary)
+- https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (read 2026-11-11; opinion piece, 13 Jan 2026)
+- https://roonby.com/2025/09/24/why-rogueblox-was-closed-full-explanation-whats-next/ (read 2026-11-11; a blog's summary of the developers' statement)
 - https://www.psu.com/news/the-cheap-trick-roblox-devs-use-to-keep-dead-games-alive/ (search summary; milestone codes)
 - https://jens.substack.com/p/gamification-of-user-engagement and https://gag.gg/guides/seed-restock-and-values (search summary; offline growth, restock timer)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/38 Live Ops Deep Dive/Event Calendars and Content Planning.md`, `…/Battle Pass and Season Design.md`, `…/Feature Flags and Staged Rollouts.md`, `…/Patch Notes and Player Communication.md`, `…/Economy Resets and Seasonal Wipes.md`, `…/Limited-Time Offers - Design and Ethics.md`, `LihFolk Vault V2/10 Game Design and Genres/Retention and Return Hooks.md`, `…/Core Loops and Session Design.md`, `…/Social Design and Multiplayer Play.md`, `…/Ethical Design and Player Trust.md`, `LihFolk Vault V2/27 Marketing and Growth/Update Cadence and Hype Cycles.md`, `LihFolk Vault V2/49 Roblox Platform Features/Experience Notifications and Return Prompts.md` (read). Ideas adapted and rewritten; code is our own.

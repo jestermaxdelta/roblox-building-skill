@@ -1,6 +1,6 @@
 # Blender modelling craft for Roblox
 
-How to make a model that looks designed at phone size: the numbers behind readability, shape, proportion, edges, triangle spending and colour, then recipes, a concept-to-model workflow, a 0–10 quality rubric and a first-kit walkthrough. Open it before modelling, when reviewing an asset, or when a live game "looks cheap" and nobody can say why. Getting the finished model into Roblox (export, upload, collision flags, lighting, style-bible template) is `references/art-pipeline-blender.md`; rigs and animation are `references/animation-and-rigs.md`. House rule 1 applies throughout: every asset is authored in Blender, by hand or by script. Tags: `[official]`, `[community]`, `[lihfolk]` (adapted from LihFolk Vault V2, CC BY 4.0), `[house]`, `[VS]`.
+How to make a model that looks designed at phone size: the numbers behind readability, shape, proportion, edges, triangle spending and colour, then recipes, a concept-to-model workflow, a 0–10 quality rubric and a first-kit walkthrough. Open it before modelling, when reviewing an asset, or when a live game "looks cheap" and nobody can say why. The style the numbers serve (three-decisions line, style bible, whole-game review) is `references/art-direction-and-quality-bar.md`; getting the finished model into Roblox (export, upload, collision flags) is `references/art-pipeline-blender.md`; rigs and animation are `references/animation-and-rigs.md`. House rule 1 applies throughout: every asset is authored in Blender, by hand or by script. Tags: `[official]`, `[community]`, `[lihfolk]` (adapted from LihFolk Vault V2, CC BY 4.0), `[house]`, `[VS]`.
 
 ## Start here by level
 
@@ -22,18 +22,18 @@ On-screen size, with the default 70° vertical field of view `[official]`: `pixe
 |---|---|---|---|---|
 | 8 | Held tool, shop counter, pet | 0.016 studs | 0.05 | 64 |
 | 15 | Own character, nearby props | 0.03 | 0.09 | 34 |
-| 40 | Enemies at range, buildings | 0.08 | 0.25 | 13 |
+| 40 | Enemies at range, buildings | 0.08 | 0.23 | 13 |
 | 100 | Landmarks across a zone | 0.19 | 0.6 | 5 |
 | 300 | Skyline | 0.58 | 1.75 | 2 |
 
 Rules that fall out of it:
-- One phone pixel covers about `d / 520` studs. Under 2 px a feature flickers or vanishes, so the floor is `d / 260`; aim for `d / 170` on anything that matters `[lihfolk]`.
+- One phone pixel covers about `d / 520` studs (`1.40 × d / 720` = `d / 514`). Under 2 px a feature flickers or vanishes, so the floor is `d / 260`; aim for `d / 170` on anything that matters `[lihfolk]`.
 - A 0.1-stud window bar at 40 studs is 1.3 px: invisible however well it is modelled. A 40-stud tower at 300 studs and an 8-stud enemy at 60 studs both land near 69 px, which is why landmarks can be simple.
 - Text on a model needs letter height of at least `d / 25` studs; an icon shape reads further than letters `[lihfolk]`.
 - Aspect changes the view: horizontal field of view is about 86° at 4:3, 102° at 16:9 and 113° on a 19.5:9 phone. A facade that ends just off-screen on a monitor shows its unfinished side on a phone `[lihfolk]`.
 - The follow camera starts about 12.5 studs behind the character and looks down 10–40° `[lihfolk]`. Tops of things are on screen more than fronts.
 
-Player scale `[lihfolk]`, in avatar heights (classic avatar about 5 studs; taller body types about 6.5; default jump 7.2 studs and walk speed 16 studs/s `[official]`):
+Player scale `[lihfolk]`, in avatar heights (classic avatar about 5 studs; taller body types about 6.5). Avatar metrics (doors, stairs, jumps, cover) are owned by `level-design-worldbuilding.md` §2; where a row here differs, that table wins:
 
 | Element | Avatar heights | Studs (5-stud avatar) |
 |---|---|---|
@@ -41,7 +41,7 @@ Player scale `[lihfolk]`, in avatar heights (classic avatar about 5 studs; talle
 | Corridor width | 1.6–2.4 | 8–12 (room for the camera) |
 | Indoor ceiling | 2–3 | 10–15 (real-world ceilings push the camera into the roof) |
 | Table or counter top | 0.5–0.6 | 2.5–3 |
-| Step rise / tread | 0.2–0.3 | 1–1.5 rise, 2–3 tread |
+| Step rise / tread | at most 0.2 / 0.4–0.6 | rise ≤ 1, tread 2–3, with one ramp as the collision (`_COL`); taller steps need a jump or snag |
 | See-over wall | under 0.6 | under 3 |
 
 Size openings for the largest avatar the game allows, not the classic one.
@@ -132,7 +132,7 @@ A razor-sharp edge catches no light, so the form reads as a flat cut-out. A beve
 | 40 | about 0.15 | 0.15–0.3 |
 | 100 | about 0.4 | 0.4–0.8 |
 
-Conflict: the knowledge base and earlier versions of the pipeline file gave one bevel width per size class (0.05 studs for props, 0.15 for architecture); LihFolk sizes by viewing distance and the pixel table agrees. Trust distance: a 0.05-stud bevel on a prop seen from 40 studs is under 1 px and only costs triangles. As a sanity band, 1–2% of the object's size reads crisp and manufactured, 3–6% soft and toy-like, over 8% pillow-like, under 0.5% invisible `[lihfolk]`.
+Size bevels by viewing distance, not by asset class (the knowledge base's 0.05 for props and 0.15 for architecture is superseded): a 0.05-stud bevel on a prop seen from 40 studs is under 1 px and only costs triangles. As a sanity band, 1–2% of the object's size reads crisp and manufactured, 3–6% soft and toy-like, over 8% pillow-like, under 0.5% invisible `[lihfolk]`.
 
 | Type | Segments | Cost on a box (measured, Blender 5.2.3) | Use |
 |---|---|---|---|
@@ -163,7 +163,7 @@ Segments for a round cross-section so the outline is within one phone pixel of a
 
 Only the silhouette needs that count; interior loops can be half. Practical bands: rivets 4–6 sides, grips 6–8, barrels and posts 8–12, large visible curves 12–24. A deliberate hexagon with chamfers often scores better than a "round" prop stuck at 16 uneven steps `[lihfolk]`: make the polygon a decision.
 
-Delete: bottom faces and the bottom bevel ring of grounded props (up to a fifth of a small prop), faces buried in other meshes, interior faces (Select All by Trait > Interior Faces), backs against map edges the camera cannot reach, and anything under 1 px at its closest normal distance. Add: the top silhouette and one focal feature.
+Delete: bottom faces and the bottom bevel ring of grounded props (up to a fifth of a small prop), faces buried in other meshes, interior faces (Select All by Trait > Interior Faces), backs against map edges the camera cannot reach, and anything under 1 px at its closest normal distance. At low quality levels the engine also skips whole objects that cover very few pixels, and did so more aggressively from November 2026 `[community: staff reply, VS]`: hand-sized clutter as separate meshes can vanish on weak phones, so merge it into its parent prop or enlarge it. Add: the top silhouette and one focal feature.
 
 Measure it instead of guessing: `scripts/blender/check_asset.py` prints, per asset, the share of triangle area facing up, down and sideways (a grounded prop should show about 0% down; a size-2 cube with a one-segment bevel reports 44 triangles at 19/19/62), open edges, class-budget overruns and, with `--symmetric <name>`, the mirror-symmetry error (0.0 for a half-plus-mirror build). The same functions (`spend_report`, `symmetry_error`) are importable from `scripts/blender/modeling_helpers.py`.
 
@@ -245,10 +245,12 @@ Budgets are target / ceiling per asset, counted after modifiers. Going over targ
 
 | Tier | What changes | New meshes |
 |---|---|---|
-| Common tiers (for example Common, Uncommon) | Palette or material variant of the base mesh. Change value or pattern, not only hue, so the tiers differ in greyscale | 0 |
+| Common tiers (for example Common, Uncommon) | Palette or material variant of the base mesh. The variant must change value or pattern, not only hue, so tiers differ in greyscale | 0 |
 | Mid tiers (Rare, Epic) | The base mesh plus one accessory from a shared set (crown, saddle, wing pair, halo) that breaks the outline from the high three-quarter view, and optionally a scale step of about 1.15–1.3× | 0 per pet; the shared accessories are modelled once |
 | Top tier (Legendary, event exclusives) | Its own mesh with an outline-changing feature (crest, extra wings, floating piece), plus effects | 1 per pet |
 | Merge or fuse tiers (golden, rainbow) | Material variant of whatever the pet already is | 0 |
+
+Rarity colours (card plates, frames, name bars, and any tier tint on the model or its effect) come from the rarity ramp in `ui-design-figma.md` §3, which keeps the order players already read (grey, green, blue, purple, gold); this guide sets no tier colours of its own. A pet's own palette stays free: the tier is carried by the accessory, the outline and the UI plate.
 
 Worked count: 4 dragons across 5 rarities is 20 collectables. A mesh per collectable is 20 meshes. The ladder needs 4 base meshes, 4 legendary meshes and a shared set of about 3 accessories: 11 meshes, with the other 16 collectables defined as data (mesh id, palette, accessory, scale). Adding golden and rainbow merge tiers makes 60 collectables on the same 11 meshes. Run the roster sheet on one pet's full ladder: every step must read at 64 px, and the legendary must pass against its own base.
 
@@ -257,7 +259,7 @@ Mechanical gates for scripted or generated-by-script assets `[lihfolk]`, run aft
 ## Concept to model
 
 1. **Brief** (five lines): role and gameplay job, viewing band, size in studs with the origin position, class budget, style words plus the one exaggerated feature.
-2. **Reference board**: three images marked on target, too realistic and too blocky `[lihfolk]`, plus the golden sample from the style bible. Use references for shape and mood; never trace or lift another game's asset. Board method (how many, from where, labels, avoiding one source): `art-direction-and-quality-bar.md` §5; viewed examples with strong, weak and too-realistic markers: `visual-library/models-props-characters.md`.
+2. **Reference board**: three images marked on target, too realistic and too blocky `[lihfolk]`, plus the golden sample from the style bible (`art-direction-and-quality-bar.md` §6). Use references for shape and mood; never trace or lift another game's asset. Board method (how many, from where, labels, avoiding one source): `art-direction-and-quality-bar.md` §5; viewed examples with strong, weak and too-realistic markers: `visual-library/models-props-characters.md`.
 3. **Concept sheet**: orthographic front, side and back at one scale so proportions can be measured, one three-quarter view for feel, the size in studs written on it, part names exactly as they will appear in Studio, one flat colour per part. Remember the sheet shows eye level; the game shows the model from above and behind.
 4. **Blockout** in Blender at final scale beside the proxies, big then medium then small shapes, grey. Export it and look at it in the place before any detail: a silhouette fix costs minutes here and hours later.
 5. **Mid pass**: final shapes and rough colour, no bevels. **Final**: bevels, detail, technical cleanup.
@@ -386,7 +388,8 @@ Which pet a player has equipped is server state (an attribute or a profile field
 Accessed 2026-11-10.
 
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `55 Modelling Nuance and Readability/` (Modelling to the Roblox Camera and Player Scale; Proportion Exaggeration and Gameplay Distance; Shape Language and Silhouette Testing; Spending Triangles Where the Camera Looks; Bevels Chamfers and Edge Highlights Without Textures; Style Bibles for Consistent Models; Critiquing a Model - Paintovers and Iteration; Art-Direction Nitpicks - The Principles Behind Them), `54 Untextured Stylised Modelling/` (Flat Colour vs Gradient Atlas vs Vertex Colour; The Gradient Palette Texture Workflow; Colour Scripts and Value Structure for Untextured Art; Faceted Low-Poly - Flat Normals and Facet Size; Clean Stylised Shading - Weighted and Custom Normals), `53 Voxel Modelling Deep Dive/` (scale grids, palettes, shading, meshing, characters, props and tiles), `14 3D Modeling/` (Modeling Fundamentals for Games; Low-Poly and Stylized Modeling; Topology and Edge Flow; Hard-Surface Modeling; Modeling Weapons and Props; Organic and Creature Modeling; Mesh Optimization for Mobile; Modular Environment Kits; Procedural Model Kits - Lessons; Mesh Gates for Generated Models), `45 Procedural Blender Assets/` (worked-example notes only; no `.blend`, `.fbx`, `.glb` or renders used), `19 Concept Sheets/Concept Sheets.md`, `skills/roblox-blender-modeling/SKILL.md` and `references/quality-research.md` (read; tables and headings skimmed, wording rewritten)
-- https://github.com/Roblox/creator-docs (read, commit of 2026-11-07): `reference/engine/classes/Camera.yaml` (FieldOfView default 70, vertical), `Humanoid.yaml` (jump height 7.2, walk speed 16), `art/modeling/specifications.md` (20,000 triangles)
-- Blender 5.2.3 LTS `bpy` (ran: bevel triangle costs, the shipped `scripts/blender/` tools, Remesh Blocks plus planar dissolve). The pixel, field-of-view and sagitta tables were recomputed from the formulas, and match LihFolk's to rounding.
+- https://github.com/Roblox/creator-docs (read; re-checked at commit 7cbffff of 2026-11-10): `reference/engine/classes/Camera.yaml` (FieldOfView default 70, vertical), `art/modeling/specifications.md` (20,000 triangles), `tutorials/curriculums/environmental-art/construct-your-world.md` (stairs 1 high on 2.5 treads)
+- https://devforum.roblox.com/t/increasing-the-minimum-draw-distance-to-500-studs-and-other-auto-quality-level-improvements/4977292 (read; staff reply of 2026-11-10 on small-object culling at low quality levels)
+- Blender 5.2.3 LTS `bpy` (ran: bevel triangle costs, the shipped `scripts/blender/` tools, Remesh Blocks plus planar dissolve). The pixel, field-of-view and sagitta tables were recomputed from the formulas on 2026-11-11 (one cell corrected: 3 px at 40 studs is 0.23 studs, not 0.25) and match LihFolk's to rounding.
 - Not verified in Studio: the Luau measuring snippet, LihFolk's follow-camera distance and pitch figures, and its 720 px phone render height (all rules of thumb there too).
 - Rejected from LihFolk: anything relying on its Asset Pack or bundled rigs, voxel authoring outside Blender, Part-based blockouts in the shipping place, and non-colliding decoration as a default (see the conflict notes in art-pipeline-blender.md).

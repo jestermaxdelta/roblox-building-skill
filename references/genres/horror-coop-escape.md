@@ -19,7 +19,7 @@ Terms: *tension director* = server logic that decides when threats appear based 
 - Volatility: Animal Hospital (Anomaly) won Best New Game and still fell about 90% (564K → 21.5K). "Anomaly × job sim" is now crowded (vault).
 - Open gap (vault): fishing or deep-sea horror; nothing above 2K (It Hears The Water 1.5K, Scary Fishing 37).
 - Audience: older than the platform average and friend-group driven; durable hits share co-op or skill play, real depth and weekly updates.
-- Maturity decides reach `[official]` `[VS]`: mild fear fits a Mild label, moderate fear needs Moderate. Only Minimal and Mild games are eligible for Roblox Kids (5–8) and Select (9–15), and accounts without an age check see nothing above Mild (vault), so a Moderate label removes most under-16 reach.
+- Maturity decides reach `[official]` `[VS]`: mild fear fits a Mild label, moderate fear needs Moderate. Minimal and Mild games are eligible for Roblox Kids (5–8) and Select (9–15); Moderate is eligible for Select and 16+ but not Kids, so a Moderate label costs the 5–8 audience only. Content May Vary is 16+ and Restricted 18+ age-verified: heavy realistic blood lands there. (Corrected 2026-11-11: an earlier vault note said Moderate also removed Select reach; the content-maturity doc says otherwise.)
 
 ## Core loop with timings
 
@@ -38,13 +38,15 @@ Terms: *tension director* = server logic that decides when threats appear based 
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 lobby with a visible "start" spot for parties; solo queue starts inside 30 s.
 2. 0:45 inside the first space; one interaction teaches the core verb (hide, close, check).
 3. 2:00 first sign of the threat, with no damage possible yet.
 4. 3:30 first real encounter, tuned so nearly everyone survives.
 5. 5:00 first safe room or end of shift, with a visible count of how far the run goes.
 - Lobby time is the bounce risk: get a new player into the first room in under a minute.
-- Cutscenes are skippable after a moment. One project's 27 s intro inside the first minute proved too long even with a 3 s skip and was removed `[lihfolk]`.
+- Any intro follows `cutscenes-and-cinematics.md` (length budgets; first-session intros). Horror's version: mood through the first room itself, not a film before it; one project's 27 s intro inside the first minute was removed even with a 3 s skip `[lihfolk]`.
 
 ## Progression and economy shape
 
@@ -62,7 +64,7 @@ Terms: *tension director* = server logic that decides when threats appear based 
 - Delete: 2× Cash permanents, Auto-Collect, extra storage, Luck (unless loot rolls exist with odds shown).
 - **Conflict (market vs house rule 3):** asymmetric leaders sell points packs (vault: Forsaken 40 R$ for 100 points up to 7,600 R$ for 20K) and packs that raise the chance of playing the killer. Role-chance for money is a paid advantage in a competitive mode; do not sell it. Sell cosmetics and earnable-roster shortcuts that carry no stat edge.
 - Revive rules: capped per run, fairly priced, offered on the death screen after the chase ends, with a free alternative (team revive, rewarded video).
-- Rewarded video `[official]` (survival playbook): Second Chance, pre-round power-up, streak saver, daily kit; deterministic consumables, daily cap. Benchmark opt-in 13%+, frequency 2.5+. Evade uses Second Chance plus Streak Saver.
+- Rewarded video `[official]` (survival playbook): Second Chance, pre-round power-up, daily kit; deterministic consumables only, daily cap. Benchmark opt-in 13%+, frequency 2.5+. The playbook's fourth placement, Streak Saver (Evade uses it), is restricted by the house rules: see the Conflict note in `survival-crafting.md` §Monetisation.
 - Paid chapters work only when the free content is substantial `[lihfolk]`; discovery-driven games should keep the first full chapter free.
 
 ## Retention and social hooks
@@ -74,9 +76,11 @@ Terms: *tension director* = server logic that decides when threats appear based 
 
 ## UI patterns
 
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: environmental ambience, fire; light and fog in `lighting-and-atmosphere.md`.
+
 - Minimal HUD; diegetic where possible (battery on the flashlight, stamina on the hand). Nothing that explains the threat in advance.
 - Spectate on death with a team view and a calm death recap; purchase options appear here, small and dismissible.
-- Accessibility toggles: reduce flashes, reduce camera shake, subtitle critical audio cues.
+- Settings this genre cannot ship without: reduce flashes, reduce camera shake, captions for the audio cues that carry threat information (`accessibility-and-player-qol.md`).
 - Mobile: hide and interact on large context buttons; a sprint toggle rather than hold.
 
 ## Systems to build, in order
@@ -136,7 +140,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enem
 | 3 | Two runs differ (seeded rooms, rotating entities, modifiers) | Add a seed and at least three variable systems |
 | 4 | Tension graph has quiet stretches and safe rooms | Remove stacked threats; add a director |
 | 5 | Works for 2–4 friends with party teleport and private servers | Add party flow and reserved servers |
-| 6 | Maturity label matches intent; Mild if the design allows | Remove needless intensity; retake the questionnaire |
+| 6 | Maturity label matches intent: Mild keeps Kids (5–8), Moderate keeps Select (9–15) and 16+ | Remove needless intensity; retake the questionnaire |
 | 7 | Holds frame rate on a 3 GB phone in the darkest, busiest room | Cut shadowed lights; client-only flashlight |
 | 8 | Scene reads on a phone at 50% brightness | Raise ambient floor; use fog and silhouette |
 | 9 | Entity state is replicated only when perceivable | Move seeds and answers to the server |
@@ -165,10 +169,10 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/contextual-purchases.md (read; DOORS lobby and pre-run shop)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/survival.md (read)
-- https://devforum.roblox.com/t/guide-to-making-better-horror-experiences/2212571 (search summary)
-- https://devforum.roblox.com/t/very-poor-performance-with-future-lighting-technology/1439704 (search summary)
-- https://devforum.roblox.com/t/severe-fps-drops-due-to-aggressive-shadow-recalculations-during-object-movementappearance/3875739 (search summary)
-- https://devforum.roblox.com/t/pointlight-no-longer-always-follows-humanoidrootpart-in-future-lighting/3620431 (search summary)
+- https://devforum.roblox.com/t/guide-to-making-better-horror-experiences/2212571 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/very-poor-performance-with-future-lighting-technology/1439704 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/severe-fps-drops-due-to-aggressive-shadow-recalculations-during-object-movementappearance/3875739 (read 2026-11-11)
+- https://devforum.roblox.com/t/pointlight-no-longer-always-follows-humanoidrootpart-in-future-lighting/3620431 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://endsights.com/horror-game-design (search summary; host not reachable for a full read)
 - https://github.com/ahmicy/simplepath (search listing; 70 stars, MIT; pathfinding wrapper, reference only)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Horror and Story.md`, `43 Genre Systems End to End/Horror Monster Chase AI End to End.md` (read)

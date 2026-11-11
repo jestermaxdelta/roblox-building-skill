@@ -1,6 +1,6 @@
 # Monetization and policy
 
-What to sell, at what price, when to offer it, and what Roblox policy forbids. Open it when you write a product plan for a new game, or when a live game has a monetisation symptom (jump to "Level-up"). Distilled from knowledge-base sections 3.6–3.8 and 1.6.5, re-verified against `Roblox/creator-docs` and extended with 2025–2026 benchmarks on 2026-11-10. The house rule is "push microtransactions heavily, but never invasively"; non-invasive wins every conflict. Tags: `[official]` Roblox docs, `[community]` forum/press/third-party (heuristic), `[VS]` version-sensitive (re-check https://create.roblox.com/docs), `[house]` house estimate, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; rules of thumb from its reference project unless stated).
+What to sell, at what price, when to offer it, and what Roblox policy forbids. Open it when you write a product plan for a new game, or when a live game has a monetisation symptom (jump to "Level-up"). Distilled from knowledge-base sections 3.6–3.8 and 1.6.5; platform facts re-read on 2026-11-11 in `Roblox/creator-docs` (commit of 2026-11-10), the live docs, the staff DevForum announcements and the Roblox Community Standards. The house rule is "push microtransactions heavily, but never invasively"; non-invasive wins every conflict. Tags: `[official]` Roblox docs, `[community]` forum/press/third-party (heuristic), `[VS]` version-sensitive (re-check https://create.roblox.com/docs), `[house]` house estimate, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; rules of thumb from its reference project unless stated).
 
 ## Start here by level
 
@@ -23,18 +23,18 @@ Related: economy-and-progression.md (currency design, sinks, the paid-multiplier
 | Game pass | One-time, non-transferable. 5-day payout hold. Owned forever; check on the server. Regional pricing on by default. | Permanent perks: 2× Cash, Auto-Collect, VIP, extra slots |
 | Developer product | Repeatable, 1–1,000,000,000 R$. Grant only inside the receipt callback. Roblox's own guide: "Dev Products generally monetize better, as they can be repeatedly purchased" `[official]`. | Boosts, currency packs, revives, skips, Gift versions of passes |
 | Robux subscription | At least 49 R$ per month, single tier (no mutually exclusive Bronze/Silver/Gold), price change at most every 60 days and increases need 30 days' notice, 50 subscriptions per game, no refunds, forced regional pricing. Gate on `IsEligibleToPurchaseSubscription`. | VIP monthly |
-| Local-currency subscription | $2.99 / $4.99 / $7.99 / $9.99 / $14.99; creator receives 70% in month one then 100%; 30-day hold; web, App Store and Google Play only; unavailable in 12 countries. | VIP monthly on supported platforms |
-| Paid access | 25–1,000 R$, or $9.99 / $29.99 / $49.99 in local currency with a 50 / 60 / 70% share. Not available on Xbox; local currency is bought on desktop and web only. Cannot be combined with private servers. | Premium games only; not for discovery-driven titles |
+| Local-currency subscription | $2.99 / $4.99 / $7.99 / $9.99 / $14.99; creator receives 70% in month one then 100%; 30-day hold; web, App Store and Google Play only; unavailable in 12 countries; creator account verified by ID or phone; the price cannot be edited (delete and recreate). | VIP monthly on supported platforms |
+| Paid access | 25–1,000 R$, or $9.99 / $29.99 / $49.99 in local currency with a 50 / 60 / 70% share (held at least 60 days, paid monthly through Tipalti). Not available on Xbox; local currency is bought on desktop and web only. Cannot be combined with private servers. | Premium games only; not for discovery-driven titles |
 | Private servers | Free or a monthly Robux fee. Changing the price cancels every active subscription. Plus subscribers get paid servers free; you still earn up to 100 R$ per subscriber per month for 60+ minutes of play. | Groups of friends; co-play signal |
 | Roblox Plus | Subscribers pay 10% less (20% from month three) on passes, products, subscriptions and paid access; Roblox funds the discount, you still receive 70% of list. `PromptRobloxSubscriptionPurchase` pays 250 R$ a month for three months (750 R$) per new subscriber; 60-day hold. | One quiet "Plus members save 10–20% here" line in the shop footer |
 | Robux transfers | Plus subscribers only, 10–500 R$ per transfer via `PromptRobuxTransferAsync`; the game receives 10% (DevEx-eligible), the recipient 90% (not DevEx-eligible). | Player-to-player tipping |
 | Roblox Shop | Platform storefront generated for every game: all passes plus "Listed" developer products, personalised ranking, Top Picks, Robux packages. Global Shop button is off by default (Creator Hub ⟩ Monetization ⟩ Shop). `MarketplaceService:OpenShop(player)`. | A second, zero-effort storefront; Listed products can surface outside the game |
 | Avatar items | 40% affiliate share on items sold in-experience | Shop surfaces |
-| Rewarded video | Reward is a fixed developer product worth 3–10 R$; 2,000+ monthly visitors, publisher 13+, ID verification and 2FA, public game with no free-form user creation | Free alternative to paid boosts |
+| Rewarded video | Reward is a fixed developer product worth 3–10 R$; 2,000+ unique monthly visitors, publisher 13+, ID verification and 2FA, public unrestricted game with no free-form user creation | Free alternative to paid boosts |
 | Immersive ads | Image, video and portal ad units. An `AdGui` must sit on a block `Part` 8×4.5 to 32×18 studs `[official]`; same eligibility as rewarded video; paid on the 25th of the following month. House rule 1 tension: the Part is the flat screen only, set inside a Blender-modelled billboard frame. | Lobby walls, never in the play path |
-| Creator Rewards | Daily Engagement: 5 R$ per Active Spender ($9.99+ platform spend in 60 days) per day, only if your game is one of the first three they play for 10+ minutes. Audience Expansion: 35% of a new or reactivated user's first $100 in 60 days (needs an average of 100+ DAU). 60-day hold. | Income you influence through daily return reasons and 10-minute sessions |
+| Creator Rewards | Daily Engagement: 5 R$ per Active Spender ($9.99+ platform spend in 60 days) per day, only if your game is one of the first three they play for 10+ minutes. Audience Expansion: 35% of a new or reactivated user's first $100 in 60 days (needs an average of 100+ DAU and an ID-verified account). 60-day hold. Bots, alt-account farming and manipulated teleports forfeit rewards. | Income you influence through daily return reasons and 10-minute sessions |
 
-Other facts `[VS]`: the creator share on Robux sales is 70%. Cross-game sales of passes and developer products have been disabled since 30 May 2026. The DevEx rate is $0.0038 per Robux (from 5 September 2025; legacy $0.0035), and $0.0054 for US 18+ sales from 8 June 2026, which requires R15-only avatars. Per 100 R$ sold you keep 70 R$, worth about $0.266 (or $0.378 at the 18+ rate). Managed Pricing (regional pricing plus price optimization) scales prices to 30–100% of base; new games and new items are enrolled by default, and price tests need roughly 60,000 transactions in 30 days and rerun at least every 90 days.
+Other facts `[VS]`: the creator share on Robux sales is 70%. Cross-game sales of passes and developer products have been disabled since 30 May 2026. The DevEx rate is $0.0038 per Robux (from 5 September 2025; legacy $0.0035), and $0.0054 from 8 June 2026 for pass, product, subscription and private-server sales to age-verified US 18+ players, in games where no player character can ever be R6 (platform avatars set to R15 Only, or custom characters that meet the articulation rules in `18-plus-devex-rate.md`). Per 100 R$ sold you keep 70 R$, worth about $0.266 (or $0.378 at the 18+ rate). Managed Pricing (regional pricing plus price optimization) sets regional prices at 30–100% of base; new games and new items are enrolled by default (item-level opt-out), and price tests need roughly 60,000 transactions in 30 days and rerun at least every 90 days.
 
 Never hard-code prices in UI: regional cohorts, price-test cohorts and Plus subscribers are all charged a different amount from the list price. Read `PriceInRobux` through `MarketplaceService:GetProductInfoAsync(id, Enum.InfoType.Product or GamePass)` (`GetProductInfo` is deprecated) and cache it per session only. `RankProductsAsync` is throttled to 10 calls a minute; call it once at join. `RecommendTopProductsAsync` returns up to 50 products, and an empty list when the game has had no sale in the past 28 days.
 
@@ -54,24 +54,24 @@ end
 
 ## What the numbers say (benchmarks, 2025–2026)
 
-All third-party figures were seen only through search summaries; treat them as orders of magnitude and compare against your own Creator Hub ⟩ Monetization ⟩ Overview (conversion = paying users ÷ DAU; ARPDAU = conversion × ARPPU).
+Each row says whether its source was read. The GameAnalytics sample is 500+ games with 1M+ MAU, so its medians describe large games; compare against your own Creator Hub ⟩ Monetization ⟩ Overview (conversion = paying users ÷ DAU; ARPDAU = conversion × ARPPU).
 
 | Metric | Figure | Source and scope |
 |---|---|---|
-| Players who pay at all | 3.8% over a year (4.2% two years earlier) | GameAnalytics 2026 report, 500+ games with 1M+ MAU, Aug 2025–Jul 2026 `[community]` |
-| ARPPU per game | Median $0.70; p25 $0.32, p75 $1.25, p90 $2.33, p95 $4.80 | Same report `[community]` |
-| Spend per paying player | Median $0.81; top 10% $8.88, top 5% $20.31, top 1% $86.36 | Same report `[community]` |
-| Daily payer conversion, platform-wide | About 1.25% of DAU; daily bookings per user $0.14 | Newzoo, Roblox as a platform in 2025 `[community]` |
-| Session length vs spend | Games with median sessions under 6 min: D1 about 6%, ARPPU under $1. Top tier: ARPPU above $6, average transaction $3–4 | GameAnalytics 2025 report, secondary summary `[community]` |
-| Price optimization | Median +4% earnings for eligible creators who ran a test; many tests recommended lower prices; one creator reported "over 15%" | Roblox announcements and press `[official]`/`[community]` |
-| Regional pricing for passes | Paying users +17% Mexico, +26% Brazil, +52% Philippines in early tests (a later post: +13.8 / +22.4 / +44.8%) | Roblox announcements `[official]` |
-| Starter pack | "Roughly 2–10% average revenue gains" (industry benchmark quoted by Roblox) | Roblox starter-pack design guide `[official]`, search summary only |
-| Subscriptions | Creators who add them "increase their revenue by 7%" | Roblox announcement, 2024 `[official]` |
-| Rewarded video | Expected to be about 3% of creator earnings at first; targets: opt-in 10–20%+, 2–4+ views per viewer per day, 0.5+ impressions per DAU (incremental sims: 13%+ opt-in, 2.8 views) | Roblox DevForum Aug 2025 and playbooks `[official]` |
+| Players who pay at all | 3.8% over a year (4.2% two years earlier, per a digest of the report) | GameAnalytics 2026 report, 500+ games with 1M+ MAU, Aug 2025–Jul 2026 (read) `[community]` |
+| ARPPU per game | Median $0.70; p75 $1.25, p90 $2.33, p95 $4.80, p99 $55.31 | Same report (read) `[community]` |
+| Spend per paying player | Median $0.81; p75 $2.75, p90 $8.88, p95 $20.31, p99 $86.36 | Same report (read) `[community]` |
+| Daily payer conversion, platform-wide | About 1.25% of DAU; daily bookings per user $0.14 | Newzoo, Roblox as a platform in 2025, through a digest (read) `[community]` |
+| Session length vs spend | Games with median sessions under 6 min: D1 about 6%, ARPPU under $1. Top tier: ARPPU above $6, average transaction $3–4 | GameAnalytics 2025 report, one secondary summary, not re-read `[community]` |
+| Price optimization | Eligible creators grew earnings 4% on average; Slap Battles "over a 15% increase" by lowering some prices | Managed Pricing announcement, 2026-06-15 (read) `[official]` |
+| Regional pricing | Share of users spending up about 17% in Mexico, 26% in Brazil, 52% in the Philippines in early tests with top games (newsroom, April 2025). Later: 4–10% more Robux spent overall, 1–6% more players and playtime, 43–52% more pass purchases in discounted regions (Managed Pricing announcement) | Roblox (read) `[official]` |
+| Starter pack | "An increase in revenue of 2-10% on average" (industry benchmark quoted by Roblox) | Roblox starter-pack design guide (read) `[official]` |
+| Subscriptions | Creators who add them "increase their revenue by 7%" | Roblox announcement, 2024-05-09 (read) `[official]` |
+| Rewarded video | Expected to be "up to 3%" of earnings in the first months, with a 5–10% long-term goal for all ads products; targets: opt-in 10–20%+, 2–4+ views per viewer per day (incremental sims: 13%+ opt-in, 2.8 views) | Roblox DevForum 2025-07-24 and the optimisation docs (read) `[official]` |
 
 What follows from them `[house]`: the median payer spends less than one dollar, so the first rung must sit under 100 R$ and there must be something cheap to buy again tomorrow (repeat spend days are also a Recommended For You signal; see market-scan-2026-11.md). The top 1% spend about 100 times the median, so the ladder needs a real top end. Spend follows session length: fix retention before pricing. No published revenue-per-visit benchmark was found; do not quote one.
 
-Payer segments, from minnow to whale (spend figures are the GameAnalytics 2026 percentiles above `[community]`; the design column is `[house]` with `[lihfolk]` where marked):
+Payer segments, from minnow to whale (spend figures are the GameAnalytics 2026 percentiles above `[community]`; segment names and the design column are `[house]`, with `[lihfolk]` where marked):
 
 | Segment | Size and spend | Buys | Design for them |
 |---|---|---|---|
@@ -137,7 +137,7 @@ Observed live prices `[community]` `[VS]` (wikis, guides and the owner's 2026-11
 | +1 / Evolution format | Pads ×8 / ×15 / ×30 / ×99 at 79 / 199 / 499 / 1,299; 2× Wins 90–99; size packs 10 / 41 / 86 / 167; idle pad 69; Robux egg 79 |
 | Obbies (DevForum anecdotes) | Skip stage 5–20; one reply argues 19–49 |
 
-Conflict: the default Starter Pack is 49–99 R$. A DevForum poll thread (older, anecdotal) argues for about 198 R$ with contents under 30% off their combined value, and top-tier games average $3–4 per transaction. Keep 49–99 as the first-purchase rung and add a second, larger value pack at 199–399 for the second purchase; test rather than replace.
+Conflict (starter-pack price): the house default is 49–99 R$. Roblox's starter-pack guide names 99, 199 and 299 R$ as common points, "anything less than 399" as reasonable, and recommends a discount of around 90% against the contents' value `[official]`. Keep 49–99 as the first-purchase rung (the median payer spends under a dollar) and add a second, larger value pack at 199–399 for the second purchase; test rather than replace. Whatever discount is shown is computed from the contents' real shop prices.
 
 ### Ladder arithmetic and tests
 
@@ -182,7 +182,7 @@ Offer gate rules (implement as Configs so you can tune them live):
 - Passive surfaces (shop button, shop shelves, HUD boost pill, a starter-pack tile inside the shop) are unlimited and may exist from the first minute.
 - Always show a free alternative next to a paid one (rewarded video, wait, or earn in play).
 
-Conflict: Roblox's starter-pack guide (search summary) recommends making the pack available as soon as new players spawn, because gating it shrinks the audience, and the glossary defines it as shown "within the first few minutes". House rule 3 overrides the popup timing. Resolution: the pack is visible passively in the shop from minute one; the popup still waits for the gate.
+Conflict (starter-pack timing): Roblox's starter-pack guide recommends making the pack available as soon as new players spawn, a 24-hour to 3-day availability timer, a HUD button showing the countdown, and popups "sparingly", including after a lost match `[official]`. House rule 3 overrides three of those. Resolution: the pack is visible passively in the shop from minute one; the popup waits for the gate and fires on wins only; a personal timer is allowed only as a real window written once to the profile when the offer is first shown, at least 24 hours long, never restarted.
 
 Conflict (popup cadence): LihFolk's reference project allows a new pop-up 8 seconds after the last, caps first-session non-payers at one unprompted offer, and treats near-miss rolls and boss losses as valid moments for small dismissible offers (while calling the near-miss "the most ethically loaded") `[lihfolk]`. The house rule is stricter and wins: 8 minutes, three a session, nothing before the first win, popups on wins only. Loss and near-miss offers exist only as inline buttons. Adopted from it: one server-side engine decides every unprompted offer (the client never does), and it also blocks during roll animations, cutscenes and while any panel is open.
 
@@ -210,16 +210,19 @@ One row per loop moment. "Inline" means a button on a screen the player already 
 
 Friction and loss rows are inline only. "Positive triggers only" governs popups; a quiet button on a screen the player already sees is a passive surface, and Roblox's rewarded-video playbook names out-of-currency and end-of-run moments as the best opt-in placements `[official]`.
 
-Gate sketch (server-side, unexecuted sketch; read the numbers from `ConfigService`):
+Gate sketch (server-side, unexecuted fragment of an `OfferGate` module; `num(key)` reads a number from the game's config snapshot; the caller records `sessionShown`, `lastShownAt` and dismissals in the same step that fires the offer, with no yield in between):
 
 ```lua
---!strict
 -- Defaults: offer_grace_seconds = 600, offer_min_gap_seconds = 480, offer_max_per_session = 3,
 -- offer_dismiss_limit = 2, offer_dismiss_cooldown = 86400
-function OfferGate.canShow(state, offerId: string): boolean
+type OfferState = {
+	hadFirstWin: boolean, lifetimeSeconds: number, busy: boolean, -- busy = combat, roll animation, cutscene or any open panel
+	sessionShown: number, lastShownAt: number, dismissals: { [string]: { count: number, at: number } },
+}
+function OfferGate.canShow(state: OfferState, offerId: string): boolean
 	local now = os.time()
 	if not state.hadFirstWin or state.lifetimeSeconds < num("offer_grace_seconds") then return false end
-	if state.inCombat then return false end
+	if state.busy then return false end
 	if state.sessionShown >= num("offer_max_per_session") then return false end
 	if now - state.lastShownAt < num("offer_min_gap_seconds") then return false end
 	local d = state.dismissals[offerId]
@@ -234,6 +237,7 @@ Boosts module sketch (unexecuted sketch; personal boosts are `{ [boostId]: remai
 
 ```lua
 --!strict
+local Boosts = {}
 local MAX_STACK_SECONDS = 6 * 60 * 60
 function Boosts.add(state: { [string]: number }, boostId: string, seconds: number)
 	state[boostId] = math.min((state[boostId] or 0) + seconds, MAX_STACK_SECONDS)
@@ -249,11 +253,12 @@ end
 function Boosts.multiplier(state: { [string]: number }, boostId: string): number
 	return if Boosts.remaining(state, boostId) > 0 then 2 else 1
 end
+return Boosts
 ```
 
 ## Price elasticity and experiments
 
-Elasticity = % change in units sold ÷ % change in price. Below −1 a price cut raises revenue; between −1 and 0 a rise does. Roblox reports that many price tests recommend lower prices `[official]`, so expect many products to sit on the elastic side.
+Elasticity = % change in units sold ÷ % change in price. Below −1 a price cut raises revenue; between −1 and 0 a rise does. Roblox's showcase result (Slap Battles, over 15% more earnings) came from lowering some prices, and the test report counts the products it recommends cutting `[official]`, so expect some products to sit on the elastic side.
 
 | Situation | Method |
 |---|---|
@@ -268,7 +273,7 @@ Guards `[lihfolk]`: per-player metrics, never per-day (a few large purchases mov
 ## Rewarded video
 
 - Opt-in, 6–30 seconds, rewards a fixed developer product worth 3–10 R$ that is normally sold in the shop; never a gate, never random, never Robux; pause gameplay damage while it plays. The reward must not inflate currency or unbalance the economy `[official]`.
-- Eligibility: 2,000+ monthly visitors, publisher 13+, ID verification and 2FA, public game with no free-form user creation, questionnaire approved `[VS]`.
+- Eligibility: the catalogue row above, plus a questionnaire reviewed and approved by Roblox `[VS]`.
 - API: `AdService:GetAdAvailabilityNowAsync(Enum.AdFormat.RewardedVideo)` (call it when the menu opens, not at join), `AdService:CreateAdRewardFromDevProductId`, `AdService:ShowRewardedVideoAdAsync`, `AdService:RegisterAdOpportunityAsync`.
 - Placement `[official]`: visible within one or two taps of the triggering moment (end-of-level bonus, low-resource HUD button, welcome-back doubler), reward shown before the player commits, more than one reward type, a cap of at least 2–3 a session. A "Watch Ad" button three menus deep is the documented failure.
 - Turn on "Exclude your most likely purchasers" only when the same reward is also sold; leave it off for ad-only rewards `[official]`.
@@ -286,8 +291,8 @@ Game passes cannot be transferred, so a gift is a developer product that writes 
 | Developer product; extras granted alongside a pass | Your save data | Nothing changes in game; removing the benefit is your job |
 | Subscription | Roblox | Separate "Subscription Refunded" notification |
 
-- Roblox can post a "Transaction Refunded" webhook (products, passes, private servers, paid access) to an HTTPS endpoint set in Creator Hub. Verify `roblox-signature` (HMAC-SHA256 over `timestamp.body`, Base64, 300-second window). After five failed deliveries Roblox stops sending, so monitor the endpoint `[official]`. The game cannot receive webhooks: the receiver appends a record through Open Cloud to a per-user key that the server reads at join (data-and-purchases.md).
-- Keep a purchase log: Roblox stores no per-user product history for you. Record `PurchaseId`, product key, Robux actually spent, the exact grant and the time; the webhook amount is the list price, not what the buyer paid `[lihfolk]`.
+- Roblox can post a "Transaction Refunded" webhook (products, passes, private servers, paid access) to an HTTPS endpoint set in Creator Hub. Verify `roblox-signature` (HMAC-SHA256 over `timestamp.body`, Base64, 300-second window). After five failed deliveries Roblox stops sending, so monitor the endpoint; for a group-owned game only the group owner can configure webhooks `[official]`. The game cannot receive webhooks: the receiver appends a record through Open Cloud to a per-user key that the server reads at join (data-and-purchases.md).
+- Keep a purchase log: Roblox stores no per-user product history for you. Record `PurchaseId`, product key, Robux actually spent, the exact grant and the time; the webhook amount is the product's original price, not what the buyer paid `[official]`.
 - Clawback policy, decided before coding `[lihfolk]`: unspent granted currency is removed (floor at zero); an item still owned and untraded is removed; a consumed boost or revive, and an item already traded on, are written off (the receiver traded in good faith); a one-time-pack flag is cleared.
 - Conflict: LihFolk suggests a negative balance repaid from future income when refunded currency was already spent. House position: write it off. Most refunds are a parent reversing a child's purchase, and a debt punishes the child; flag repeat refunders for review instead.
 - Support `[lihfolk]`: answer "paid and got nothing" from the log using date, time and product name, never account details. Product keys are permanent; retire a product by taking it off sale and keeping its grant code for pending receipts; announce content changes and let earlier buyers keep what they bought. Enforce one-per-account limits when prompting, not in the receipt handler, and honour a receipt that arrives after an offer expired: refusing a paid receipt charges the player for nothing.
@@ -302,26 +307,30 @@ Game passes cannot be transferred, so a gift is a developer product that writes 
   - When `PolicyService:GetPolicyInfoForPlayerAsync(player).ArePaidRandomItemsRestricted` is true, offer a free earnable path, a fixed disclosed order, direct sale at expected value, or hide or block the feature; never sell the random item.
   - `IsPaidItemTradingAllowed` gates trading of paid items. Rewarded-video rewards cannot be random.
   - Random rewards earned without Robux or Robux-bought currency need no odds disclosure, but showing them anyway is the house default.
+  - Every outcome must give the buyer something: "there cannot be a possible outcome which results in the user simply losing their payment" (Community Standards). House reading: a paid upgrade or fusion that can fail still returns value (a pity point, part of the paid currency, a consolation item), and that outcome is listed in the odds.
+  - A pack or single transaction that contains any random item makes the whole bundle a paid random item (Community Standards).
   - Audit the money paths first `[lihfolk]`: direct (Robux egg), indirect (a currency Robux can buy), modifier (paid luck, pity, drop-rate boosts), a bundle containing any random item, a premium season-pass tier that grants a crate. All are covered.
   - Flatten tier odds into per-outcome odds with the same function the server rolls from; never show a non-zero chance as 0%; for pity disclose the rule and the effective rate (economy-and-progression.md). A modifier card states multiplier, duration, scope and a before/after for the tier players care about `[lihfolk]`.
 - Other PolicyService gates: `AreAdsAllowed` (immersive and independent ads; never infer eligibility from age yourself), `IsEligibleToPurchaseSubscription`, `IsEligibleToPurchaseCommerceProduct`.
 - Subscriptions `[official]`: same benefits on every platform, benefits honoured for the full term, no extra tasks required after payment (a subscription battle pass is the stated exception), no directing players to buy on another platform. Deleting an active subscription refunds everyone and pays you nothing; take it off sale instead.
 - Season pass arithmetic `[lihfolk]`: tune to a target player (say 5 days a week, 25 minutes). XP for the last tier ≈ 80–85% of days × share of days played × XP per play day (30 × 0.71 × 600 ≈ 12,600, so about 10,300). Give premium extra tiers on the same bar rather than only faster XP; premium tiers hold fixed items only; sell premium as one developer product recorded per season id; never re-release a reward sold as exclusive. Fewer than half of target players finishing the free track means the season was too long. Mission design is in liveops-quests-retention.md.
-- Advertising `[official]`: disclose ads as ads, no third-party ad servers or SDKs, no bots or misclassified metadata.
-- Content maturity labels: Minimal and Mild are available to Kids and Select audiences; Moderate to Select and 16+; Content May Vary to 16+; Restricted (18+) is unplayable in Korea, Saudi Arabia and Türkiye. Free-form social hangouts are 16+; private spaces (bedrooms, bathrooms) 18+. Playable gambling is banned. Resubmitting the questionnaire pauses ad eligibility.
-- Thumbnails and video: no spoken audio, no real footage, no ad text in video thumbnails.
-- Notifications: no dark patterns, never gate gameplay on opting in.
-- Filter all user text with `TextService:FilterStringAsync`.
-- Rewards for group joins, likes, favourites and friend joins are in the house default set as bonuses only (one-time boost, cash bump, badge or skin), never as a gate on progress, products or content, and never mentioned in the title, thumbnail or description (leading with giveaways or Robux is the exposure penalty). See liveops-quests-retention.md §social rewards for the verification rules.
+- Advertising `[official]`: disclose ads as ads; no third-party ad servers, SDKs or measurement calls; brand content and promotion of off-platform products is registered as an ad integration (`team-business-legal.md` §16).
+- Community Standards, Roblox Economy section (read 2026-11-11) `[official]`: no contests, games of chance or competitions with Robux or anything of real-money value as the prize; no prompts to donate to a charity or cause, and no claim that sales go to one (a tip jar is allowed when it is clear the player receives nothing in return); no off-platform sale of in-game items or perks; no removing paid functionality from buyers without proper notice; no "indirect benefits for purchasing content or packages in other Roblox properties" (listed under circumventing payment systems or fees). Contests are barred "without Roblox's direct involvement".
+- Content maturity: paid random items and paid-item trading are declared in the questionnaire; playable gambling, including simulated, is banned; resubmitting the questionnaire pauses ad eligibility. Labels and the design choices that move them are in `community-moderation-safety.md` §3.
+- Video thumbnails `[official]`: no spoken audio or lyrics, no real-life footage, no advertising or promotional text (`growth-and-marketing.md`).
+- Notifications: never gate gameplay or rewards on opting in `[house]`.
+- Player-written text is filtered and rate-limited (`community-moderation-safety.md` §4).
+- Rewards for group joins, likes, favourites and friend joins are in the house default set as bonuses only (one-time boost, cash bump, badge or skin), never as a gate on progress, products or content, and never mentioned in the title, thumbnail or description. What Roblox's rules say, as read on 2026-11-11: **no rule naming in-game rewards for likes or favourites was found** in the Community Standards or the creator docs, and no staff statement was found on the DevForum. The nearest written rules are the Community Standards ban on "deceptive, sensational, duplicative, or otherwise misleading content or metadata … used to drive discoverability, monetization, or engagement" and one creator-reported moderation note (DevForum t/4776239, August 2026) that lists "artificially inflating experience statistics" as prohibited; that game rewarded joining its off-platform server, and forum replies (not staff) read like-for-reward as covered too. The Terms of Use page could not be opened. Risk reading `[house]`: a group-join reward is verifiable on-platform and widely used; a reward for joining any off-platform space is out; a like or favourite reward is unverifiable (no API) and is the one most exposed to that rule, so keep it small, word it as a thank-you rather than a trade, and drop it if Roblox publishes a rule. Mechanics are in liveops-quests-retention.md §Social rewards.
 
-Policy module sketch (unexecuted sketch; cache per player, 3 retries, fail closed):
+Policy module sketch (unexecuted sketch; fetch on the server with `pcall`, cache per player, 3 retries; when every try fails pass an empty table, so each check fails closed):
 
 ```lua
 --!strict
-local function canBuyRandomItems(info): boolean return info.ArePaidRandomItemsRestricted == false end
-local function canTradePaidItems(info): boolean return info.IsPaidItemTradingAllowed == true end
-local function canSeeAds(info): boolean return info.AreAdsAllowed == true end
-local function canSubscribe(info): boolean return info.IsEligibleToPurchaseSubscription == true end
+type PolicyInfo = { [string]: any }
+local function canBuyRandomItems(info: PolicyInfo): boolean return info.ArePaidRandomItemsRestricted == false end
+local function canTradePaidItems(info: PolicyInfo): boolean return info.IsPaidItemTradingAllowed == true end
+local function canSeeAds(info: PolicyInfo): boolean return info.AreAdsAllowed == true end
+local function canSubscribe(info: PolicyInfo): boolean return info.IsEligibleToPurchaseSubscription == true end
 ```
 
 ## Anti-patterns and the reason each is banned
@@ -343,8 +352,8 @@ local function canSubscribe(info): boolean return info.IsEligibleToPurchaseSubsc
 | Prompt on join or on the first loading screen | House rule 3; docs say no starter pack on the first load `[official]` | Offer gate after the first win |
 | Hard-coded price text | Wrong price for regional, test and Plus cohorts; blocks Managed Pricing `[official]` | `GetProductInfoAsync` at runtime |
 | Pass label that over-promises ("VIP" that is mostly decoration) | Buyer's remorse drives dislikes and refund requests `[community]` | State exact effects on the card |
-| Stat power sold in competitive modes | House rule 3; players downvote monetisation they disapprove of `[official]` | Cosmetics, convenience, season pass |
-| Timers whose only purpose is to be paid away | Roblox: unpopular with its audience `[official]` | Timers as return reasons, with a free path |
+| Stat power sold in competitive modes | House rule 3; pay-to-win reads as unfair and costs ratings `[house]` | Cosmetics, convenience, season pass |
+| Timers whose only purpose is to be paid away | The player pays to remove a problem the game made `[house]` | Timers as return reasons, with a free path |
 | Tasks required after paying for a subscription; mutually exclusive tiers; off-platform purchase links | Subscription guidelines `[official]` | Distinct benefit sets, delivered in full |
 | Paid-item trading or gifting without `IsPaidItemTradingAllowed` and price levels | Policy; regional-price arbitrage `[official]` | Gate both, fail closed |
 | Granting from a client signal or `PromptProductPurchaseFinished` | Spoofable; double grants | Receipt handler only, idempotent |
@@ -353,7 +362,7 @@ local function canSubscribe(info): boolean return info.IsEligibleToPurchaseSubsc
 | Duplicate products at different prices to test price on players | Fairness and trust risk; Managed Pricing exists for this `[lihfolk]` | Managed Pricing, or a sequential test |
 | Selling a currency that expires; wiping paid value in a reset | Destroys what was paid for; refund requests follow `[lihfolk]` | Sell the track, not the tokens; paid value survives every reset |
 | Bonus or "% off" label typed by hand | Drifts from the grant and becomes a false claim `[lihfolk]` | Compute from the grant table; assert at server start |
-| Re-releasing an item sold as "exclusive" or "never again" | The scarcity claim was untrue `[official]` | Call it "Season 3 reward" and leave the future open |
+| Re-releasing an item sold as "exclusive" or "never again" | The scarcity claim was untrue (misleading users is banned `[official]`) | Call it "Season 3 reward" and leave the future open |
 | Refusing a paid receipt because a limit or timer lapsed | The player is charged for nothing and the receipt sticks `[lihfolk]` | Check limits when prompting; always honour the receipt |
 | Comeback discounts as a habit | Teaches players to leave and wait `[lihfolk]` | A welcome-back gift, not a price cut |
 
@@ -365,16 +374,16 @@ Read Creator Hub ⟩ Monetization ⟩ Overview for 28 days first. Compare agains
 |---|---|---|
 | Low payer conversion (under about 1% of DAU; the platform-wide daily figure is about 1.25% `[community]`) | No rung under 100 R$; shop hard to find; offers fire before the player understands value; list prices too high for the regions that play | Add 25–79 R$ products and a starter pack after the first win; enable the Shop button and Listed products; enable Managed Pricing |
 | Good conversion, low ARPPU | Only one-time passes; nothing to buy twice; ladder stops at 399 | Add consumables, ×3 / ×10 bundles, 999 and 2,499 rungs, a season pass, seasonal items |
-| High ARPPU, low ARPDAU | Revenue rests on a few big spenders `[official]` | Widen the entry rungs; welcome offer for first-time buyers; rewarded video for non-payers |
+| High ARPPU, low ARPDAU | Revenue rests on a few big spenders | Widen the entry rungs; welcome offer for first-time buyers; rewarded video for non-payers |
 | Payers buy once and never again | No reason to spend on day 2+ | Timed boosts, restocks, rotating Featured tab, weekly limited bundle; show the complementary pass |
 | Starter pack is seen but rarely bought | Contents hidden or not valued; shown before the loop makes sense | List contents and their shop value; move the popup to the first rebirth; A/B the price |
-| Timed boosts sell poorly, passes sell well | Boost outlasts the session (median Roblox session 6.6 min) or its value is abstract | Count boost time only while playing; add a 5-min rung; show the gain in the game's unit |
+| Timed boosts sell poorly, passes sell well | Boost outlasts the session (median session 6.6 min platform-wide in GameAnalytics 2025; 9.8 min per game among 1M+ MAU games in 2026 `[community]`) or its value is abstract | Count boost time only while playing; add a 5-min rung; show the gain in the game's unit |
 | D1 or rating drops after a monetisation update | Offers too early, too often or too large | Check offer-gate logs; restore grace and caps; cut popups to inline surfaces |
 | Dislike, complaint or refund-request spike | Label does not match delivery; accidental prompts; grants failing | Rewrite card copy; remove path pads and thumb-zone buttons; audit receipt errors and idempotency |
 | Currency-pack sales decay week over week | Inflation: a pack buys fewer minutes of progress than it used to | Scale packs to the player's stage; add sinks (economy-and-progression.md) |
 | Paid eggs sell in some regions and nothing in others | Restricted players see a hidden or dead feature | Direct sale at expected value or a fixed-order track for them |
 | Rewarded-video opt-in under 10% | Button buried, reward unclear, one reward type | Move to HUD or results screen; show the reward; add a second reward |
-| Price test recommends lower prices | List price above what your audience pays | Accept it; many tests recommend reductions `[official]` |
+| Price test recommends lower prices | List price above what your audience pays | Accept it; the test applies a price only when total revenue rises `[official]` |
 | Subscription churn after month one | Value was front-loaded | Monthly drop with clear contents; keep the one-time VIP as the alternative |
 | Revenue falls after an event | Event paid out main currency | Event currency with expiring sinks |
 | One rung of a ladder sells almost nothing | Worse value per Robux than the rung below, or priced too close to it | Monotone-value test; widen the gap `[lihfolk]` |
@@ -388,7 +397,7 @@ Read Creator Hub ⟩ Monetization ⟩ Overview for 28 days first. Compare agains
 
 The compliance ship gate. Every box is ticked before products go live and again after any monetisation update.
 
-- [ ] Every paid random item shows full numeric odds (summing to 100%) before purchase, including boosted odds.
+- [ ] Every paid random item (including any bundle that contains one) shows full numeric odds (summing to 100%) before purchase, including boosted odds; no outcome leaves the buyer with nothing.
 - [ ] `PolicyService` gates random items, paid-item trading, ads and subscriptions; failures fail closed.
 - [ ] No fake discounts, restarting countdowns or false scarcity anywhere; every limited offer has one real end time.
 - [ ] No offers in the first 10 minutes, on loading, or before the first win; rate limits in place; no purchase pads or thumb-zone buy buttons.
@@ -399,6 +408,7 @@ The compliance ship gate. Every box is ticked before products go live and again 
 - [ ] Every offer in the timing map names its trigger, surface and free alternative.
 - [ ] Content maturity questionnaire answered truthfully; features that raise the rating (free-form creation, private spaces) are deliberate.
 - [ ] All user-generated text filtered on the server.
+- [ ] No contest or giveaway with Robux or real-money-value prizes, no donation or charity claim, no reward for joining an off-platform space; like and favourite thank-yous are small, optional and absent from the title, thumbnail and description.
 - [ ] Gift and trade flows check price levels.
 - [ ] A free alternative exists next to every paid shortcut.
 - [ ] Each sized ladder passes the monotone-value and diminishing-bonus tests; every bonus, discount and timer shown is computed from server data.
@@ -410,19 +420,19 @@ For the full source text, grep `references/knowledge-base.md` for `## 3.6`, `## 
 
 ## Sources
 
-Accessed 2026-11-10. "(read)" = opened in the `Roblox/creator-docs` mirror (commit of 2026-11-07); "(search summary)" = seen only through web search result text.
+Accessed 2026-11-11 unless dated. "(read)" = opened and read; "(search summary)" = seen only through web search result text on 2026-11-10 and not re-opened.
 
-- https://github.com/Roblox/creator-docs `content/en-us/production/monetization/`: `index.md`, `passes.md`, `developer-products.md`, `subscriptions.md`, `managed-pricing.md`, `price-optimization.md`, `regional-pricing.md`, `paid-random-items.md`, `roblox-plus.md`, `robux-transfers.md`, `shop.md`, `private-servers.md`, `immersive-ads.md`, `developer-exchange.md`, `18-plus-devex-rate.md` (read)
-- Same repo: `content/en-us/creator-rewards.md`, `get-started/monetization.md`, `production/analytics/monetization.md`, `production/game-design/monetization-foundations.md`, `contextual-purchases.md`, `subscription-design.md`, `production/promotion/rewarded-video-ads.md`, `rewarded-video-optimization.md`, `rewarded-video-playbooks/incremental-sim.md`, `comply-with-advertising-standards.md`, `resources/feature-packages/bundles.md`, `reference/engine/classes/PolicyService.yaml`, `MarketplaceService.yaml` (read)
-- https://create.roblox.com/docs/production/game-design/starter-pack-design (search summary; not in the mirror)
-- https://www.gameanalytics.com/reports/2026-roblox-report and https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
-- https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox and https://gamedevreports.substack.com/p/newzoo-roblox-as-a-platform-in-2025 (search summary)
-- https://devforum.roblox.com/t/introducing-regional-pricing-for-passes/3621382, https://devforum.roblox.com/t/managed-pricing-one-system-for-better-pricing-and-earnings-growth/4684738, https://devforum.roblox.com/t/introducing-price-optimization-find-the-best-prices-for-in-experience-items-and-passes/3186081 (search summary)
-- https://corp.roblox.com/newsroom/2025/04/roblox-launches-regional-pricing-for-in-experience-items (search summary)
-- https://devforum.roblox.com/t/more-creators-can-now-use-rewarded-video-ads/3838678, https://devforum.roblox.com/t/increased-payouts-for-subscriptions-within-experiences/2963619, https://devforum.roblox.com/t/introducing-roblox-plus/4567894 (search summary)
-- https://devforum.roblox.com/t/poll-starter-pack-price-points/397653, https://devforum.roblox.com/t/how-can-i-get-people-to-purchase-my-starter-pack/4032577, https://devforum.roblox.com/t/is-it-a-good-strategy-to-constantly-show-the-player-gamepasses/1090505, https://devforum.roblox.com/t/monetization-benchmarks-are-not-accurate/3006968, https://devforum.roblox.com/t/whats-the-best-price-for-a-skip-stage-devproduct/3364893 (search summary)
+- `Roblox/creator-docs` (commit of 2026-11-10), `content/en-us/production/monetization/`: `index.md`, `passes.md`, `developer-products.md`, `subscriptions.md`, `managed-pricing.md`, `price-optimization.md`, `regional-pricing.md`, `paid-random-items.md`, `paid-access-robux.md`, `paid-access-local-currency.md`, `roblox-plus.md`, `robux-transfers.md`, `shop.md`, `private-servers.md`, `immersive-ads.md`, `developer-exchange.md`, `18-plus-devex-rate.md` (read)
+- Same repo: `creator-rewards.md`, `get-started/monetization.md`, `production/game-design/monetization-foundations.md`, `contextual-purchases.md`, `subscription-design.md`, `production/promotion/rewarded-video-ads.md`, `rewarded-video-optimization.md`, `rewarded-video-playbooks/incremental-sim.md`, `comply-with-advertising-standards.md`, `content-maturity.md`, `production/publishing/thumbnails.md`, `resources/feature-packages/bundles.md`, `cloud/webhooks/webhook-notifications.md`, `production/experiments.md`, `reference/engine/classes/PolicyService.yaml`, `MarketplaceService.yaml` (read)
+- https://create.roblox.com/docs/production/game-design/starter-pack-design (read on the live site, last updated 2026-08-04; not in the mirror)
+- Roblox Community Standards, https://about.roblox.com/community-standards (read: Roblox Economy, Paid Random Items, Contests, Repetitive and Misleading Content, Directing Users Off-Platform)
+- Staff DevForum posts (read): Managed Pricing, 2026-06-15, https://devforum.roblox.com/t/4684738 · Price Optimization, 2024-10-07, https://devforum.roblox.com/t/3186081 · Regional Pricing for Passes, 2025-04-21, https://devforum.roblox.com/t/3621382 · Rewarded Video Ads, 2025-07-24, https://devforum.roblox.com/t/3838678 · Subscription payouts, 2024-05-09, https://devforum.roblox.com/t/2963619
+- https://corp.roblox.com/newsroom/2025/04/roblox-launches-regional-pricing-for-in-experience-items (read: the per-country figures)
+- https://www.gameanalytics.com/reports/2026-roblox-report (read, last updated 2026-09-01); https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox and https://gamedevreports.substack.com/p/newzoo-roblox-as-a-platform-in-2025 (read; digests). The GameAnalytics 2025 report was not re-read.
+- https://devforum.roblox.com/t/4776239 (read; a creator's report of a moderation note, with non-staff replies), https://devforum.roblox.com/t/4810765 and /t/4524009 (read; feature requests confirming no API returns a player's like or favourite)
+- https://devforum.roblox.com/t/introducing-roblox-plus/4567894 (search summary; the Plus facts above come from `roblox-plus.md`)
+- https://devforum.roblox.com/t/how-can-i-get-people-to-purchase-my-starter-pack/4032577, https://devforum.roblox.com/t/is-it-a-good-strategy-to-constantly-show-the-player-gamepasses/1090505, https://devforum.roblox.com/t/monetization-benchmarks-are-not-accurate/3006968, https://devforum.roblox.com/t/whats-the-best-price-for-a-skip-stage-devproduct/3364893 (search summary; anecdotes)
 - https://techraptor.net/gaming/news/roblox-scammers-are-abusing-controller-bindings, https://rowatcher.com/news/the-roblox-free-to-play-illusion-what-players-think-they-bought (search summary)
 - Live prices: https://pet-simulator.fandom.com/wiki/Gamepasses_(Pet_Simulator_99), https://blox-fruits.fandom.com/wiki/Shop, https://bloxodes.com/wiki/brookhaven-rp/gamepasses, Grow a Garden guides on beebom.com and deltiasgaming.com (search summary); +1 format from `references/market-scan-2026-11.md`
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/11 Monetization Publishing and Live Ops/` (`Robux Price Points and Offer Design`, `Pricing and Store Design`, `Unit Economics - ARPDAU, Payer Conversion, LTV and Ad Payback`, `Refunds Chargebacks and Purchase Support`, `Paid Random Items and Odds Disclosure in Practice` headings, `Subscriptions and Premium Payouts` headings), `38 Live Ops Deep Dive/Limited-Time Offers - Design and Ethics.md`, `Battle Pass and Season Design.md`, `Skill - Roblox Monetization Compliance.md`, `skills/roblox-monetization-compliance/SKILL.md` (read). Ideas adapted in our words; its offer-engine, ladder and webhook code was not imported.
-- Wave-2 verification in the docs mirror: `cloud/webhooks/webhook-notifications.md`, `production/experiments.md`, `production/analytics/event-types.md` (read)
-- Not reachable: reddit.com (no r/robloxgamedev or r/roblox thread surfaced in any search), direct fetches of devforum.roblox.com, create.roblox.com, gameanalytics.com and substack.com.
+- Not read: the Roblox Terms of Use and Advertising Standards on en.help.roblox.com (HTTP 403); reddit.com (not reachable).

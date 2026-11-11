@@ -38,6 +38,8 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *ra
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00–0:30 driving a free starter car; no garage menu before the first drive `[lihfolk]`.
 2. 1:00 first corner taken well: the first minute is a handling test, and players who like the starter car stay `[lihfolk]`.
 3. 2:00 first signposted activity (a short race or delivery) with a quick first payout.
@@ -71,6 +73,8 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *ra
 - Weekly limited events with honest end dates.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: footstep and landing dust reused as tyre dust, dash for boost, shockwave for a finish.
 
 - Race HUD: position, lap, split delta, speedometer, minimap driven from replicated data (not from car models, which may be streamed out) `[lihfolk]`.
 - Chase camera with speed-based field of view, look-back and optional first person; engine pitch by RPM, tyre squeal, collision sounds `[lihfolk]`.
@@ -161,9 +165,9 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/templates.md (read; Racing template)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/sports.md (read)
-- https://devforum.roblox.com/t/how-to-get-physics-to-chill-out-when-handing-over-network-ownership/2152568 (search summary)
-- https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (search summary)
-- https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (search summary)
+- https://devforum.roblox.com/t/how-to-get-physics-to-chill-out-when-handing-over-network-ownership/2152568 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
 - https://github.com/Astrophsica/Racing-Kit-Roblox (read README; 2 stars, MIT; go-kart kit distributed as a toolbox model; reference only, never ship)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

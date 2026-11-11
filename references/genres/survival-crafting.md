@@ -14,11 +14,11 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **durable**. 99 Nights in the Forest 221K CCU (launched Mar 2025; 11.2–14.2M peak in 2025; 2.17M tracked on 17 Oct 2026; "the most durable 2025 hit": weekly updates, friend co-op, an older audience), Survive Your Ideas 41K, co-op chase Evade 64K. Survival was the fastest-growing genre in the week of 28 Sep–4 Oct 2026 (+45.4%).
+- Market position (vault, 2026-11-07): **durable**. 99 Nights in the Forest 221K CCU (began as a jam in Mar 2025, launched Jun 2025 per Roblox's creator spotlight; 11.2–14.2M peak in 2025; 2.17M tracked on 17 Oct 2026; "the most durable 2025 hit": weekly updates, friend co-op, an older audience), Survive Your Ideas 41K, co-op chase Evade 64K. Survival was the fastest-growing genre in the week of 28 Sep–4 Oct 2026 (+45.4%).
 - Durable games share co-op or skill play, real depth and weekly updates (vault lifecycle model); survival fits all three.
-- The 99 Nights team is small: three leads for design and art, programming, and building, per a Roblox creator spotlight; they describe building a feature, then scaling it "to the thousands" `[community]`.
+- The 99 Nights team is small: three leads (design and art direction, programming, building and modelling) plus an artist and an animator; they describe building a feature, then scaling it "to the thousands", and keeping part, vertex and instance counts low across the map for phones (Roblox creator spotlight, 2025-10-31) `[official]`.
 - Audience: older than average, plays with friends, long sessions. Roblox's doc example for the genre is round-based hazard survival (Natural Disaster Survival) `[official]`.
-- Rating: fear and violence levels set the label; night-horror framing can push to Moderate, which removes Kids and Select reach `[official]` `[VS]`.
+- Rating: fear and violence levels set the label; night-horror framing can push to Moderate, which removes Roblox Kids (5–8) reach but stays eligible for Select (9–15) `[official]` `[VS]`.
 
 ## Core loop with timings
 
@@ -34,6 +34,8 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 - Pick two or three pressure systems, not all `[lihfolk]`: needs (force trips but become tedious if drain is fast), day and night (rhythm), other players (highest tension, most toxicity), decay (keeps the world clean but players hate losing builds offline). A casual co-op game for young players can use only day/night and creatures.
 
 ## First 5 minutes
+
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
 
 1. 0:00 spawn beside a resource and a campfire or bench; one prompt: gather.
 2. 0:30 first craft (a tool that visibly speeds gathering).
@@ -61,7 +63,8 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 - Add: cosmetic building themes, tool and campfire skins, emotes, a daily kit claim, class unlocks at a fixed price.
 - Delete: permanent 2× Cash unless a cash economy exists; Auto-Collect; Luck unless loot rolls with odds shown.
 - House rule 3: no pay-to-skip raids and no paid weapons or armour in PvP survival. In PvE co-op, paid convenience must not make the team's free players irrelevant.
-- Rewarded video `[official]`: Second Chance (revive near the point of death), Pre-Round Power-Up (shield, speed or tool for one round), Streak Saver (keep a survival streak after dying), Daily Survival Kit (one consumable per 24 h). Rules: deterministic rewards, consumables only, daily cap. Benchmark opt-in 13%+, frequency 2.5+. Examples: Evade (Second Chance plus Streak Saver), Natural Disaster Survival (Pre-Round Power-Up).
+- Rewarded video `[official]`: Second Chance (revive near the point of death), Pre-Round Power-Up (shield, speed or tool for one round), Daily Survival Kit (one consumable per 24 h), Streak Saver (keep a survival streak after dying; restricted below). Rules: deterministic rewards, consumables only, daily cap. Benchmark opt-in 13%+, frequency 2.5+. Examples: Evade (Second Chance plus Streak Saver), Natural Disaster Survival (Pre-Round Power-Up).
+- **Conflict (playbook vs house rules), resolved:** the playbook sells Streak Saver on loss aversion ("the threat of losing one is a strong opt-in trigger"), which is selling a loss back. House answer `[house]`: (1) never a Robux product, never a pop-up, never with a countdown: only a quiet rewarded-video or earned-token button on the results screen after the threat has passed, at most once per streak and once per day; (2) only for an in-run skill streak (rounds or nights survived in a row), never for a login or daily streak, which this skill does not build at all; (3) only where the streak is a score: it feeds a badge, a title or a leaderboard, never a reward multiplier, so losing it costs no progress; (4) the best streak is saved permanently and shown beside the current one; (5) saved streaks are flagged or excluded on any competitive board. If the streak multiplies rewards, do not offer a saver: cap the multiplier and let the streak end.
 - Offer timing: at camp, at dawn, on the death screen after the threat has passed. Never mid-attack.
 
 ## Retention and social hooks
@@ -69,9 +72,11 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 - Friend co-op is the engine: shared camp, revives, role synergy, private servers. Intentional co-play feeds discovery.
 - Daily shop with limited stock and a weekly update on a fixed day (vault norms for the genre leader).
 - Records: nights survived per server and per friend group; badges at milestones.
-- Streaks are part of the fantasy in round survival; soften them with a streak saver rather than a hard reset.
+- Streaks are part of the fantasy in round survival and end on death by design (a run loss, capped to the run). Keep the best streak as a permanent record so ending one erases nothing; a saver is optional and bound by the Conflict note in §Monetisation.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: fire, hit spark for gathering, environmental ambience.
 
 - HUD: needs bars, day/night clock, hotbar, a compact objective line. Crafting opens at stations with the craftable items first and missing inputs highlighted.
 - Build mode: ghost preview, snap grid, rotate, valid/invalid tint, one-tap confirm on mobile.
@@ -96,7 +101,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §18 Crafting, §
 ## Technical hot spots
 
 - **Hordes**: enemies as server data with simple steering, rendered and animated on clients; no per-enemy Humanoid at scale; pathfinding recomputed on a timer and shared between enemies heading to the same target.
-- **Building**: grid-snapped Blender pieces validated on the server (`GetPartBoundsInBox` overlap, support rules, distance from player, ownership zone). Structures save as `{id, grid position, rotation}`; quantise and pack into a `buffer` or compact string. A developer reports cutting a build from 14.6% to about 0.9% of the key limit by rounding and compressing `[community]`.
+- **Building**: grid-snapped Blender pieces validated on the server (`GetPartBoundsInBox` overlap, support rules, distance from player, ownership zone). Structures save as `{id, grid position, rotation}`; quantise and pack into a `buffer` or compact string (rounding and packing is the standard forum answer to key-size problems `[community]`; an earlier figure quoted here could not be found in the cited threads and was removed).
 - **Storage limits** `[official]` `[VS]`: 4,194,304 characters per key; total storage 500 MB + 1 MB × lifetime users. Voxel-scale worlds and large bases need chunked keys and incremental saves (save changed chunks, not the world).
 - **Resource nodes**: tagged Blender models with real collision; state (depleted until T) kept in a table, respawn by timestamp, not one thread per node.
 - **Day/night**: `Lighting.ClockTime` driven from server time; clients tween locally. Night lighting must stay readable on a phone (see `horror-coop-escape.md` for light budgets).
@@ -164,10 +169,8 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/survival.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud-services/data-stores/error-codes-and-limits.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://devforum.roblox.com/t/creator-spotlight-the-story-behind-99-nights-in-the-forest/4036940 (search summary)
-- https://devforum.roblox.com/t/datastores-access-and-storage-updates/3597255 (search summary)
-- https://devforum.roblox.com/t/saving-thousands-of-parts-to-datastores/938866 (search summary)
-- https://devforum.roblox.com/t/data-store-size-limit-question/4026178 (search summary)
+- https://devforum.roblox.com/t/creator-spotlight-the-story-behind-99-nights-in-the-forest/4036940 (read 2026-11-11)
+- https://devforum.roblox.com/t/datastores-access-and-storage-updates/3597255 (read 2026-11-11; the post's first figure was 100 MB + 1 MB per lifetime user, the current docs say 500 MB), https://devforum.roblox.com/t/saving-thousands-of-parts-to-datastores/938866 and https://devforum.roblox.com/t/data-store-size-limit-question/4026178 (read; packing advice only)
 - https://github.com/Zyn-ic/Stoway (read README; 13 stars, MIT; inventory and hotbar system; reference only)
 - GitHub search for open survival frameworks (2026-11-10): only small personal projects without licences found.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Survival and Crafting.md` (read)

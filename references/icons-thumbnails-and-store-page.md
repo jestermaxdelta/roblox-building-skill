@@ -14,7 +14,7 @@ Modes: for a new game go §2 → §8 → §13 round 1 before launch. For a live 
 
 Terms: **tile** the image a player sees on Home; **qPTR** qualified play-through rate, plays that last ÷ impressions; **RFY** Recommended For You; **key / fill / rim** the main light, the shadow-softening light and the edge light behind the subject; **focal length** the Blender camera's zoom (long = narrow view, flatter faces); **wordmark** the game name drawn as a logo; **plate** a background image a character is composited onto.
 
-Related: `lighting-and-atmosphere.md` (in-game key, fill, rim and presets) · `ui-design-figma.md` (logo, tokens, Figma export) · `blender-modeling-craft.md` (silhouette test) · `growth-and-marketing.md` §3–4 (ad creatives, short-form clips, capture rules) · `accessibility-and-player-qol.md` (contrast).
+Related: `art-direction-and-quality-bar.md` (the style bible the tiles must match; its §8 review scores icons and thumbnails as one discipline) · `lighting-and-atmosphere.md` (in-game key, fill, rim and presets) · `ui-design-figma.md` (logo, tokens, Figma export) · `blender-modeling-craft.md` (silhouette test) · `cutscenes-and-cinematics.md` §16 (video recorder settings, free-camera controls, trailer shot list) · `growth-and-marketing.md` §3–4 (ad creatives, short-form clips, capture-place rules) · `accessibility-and-player-qol.md` (contrast).
 
 Contents: 1 Three images, three jobs · 2 The promise · 3 Composition recipes · 4 Colour and value on the Home grid · 5 Icon craft and the 150/64/32 test · 6 Text, numbers and the brand system · 7 Character renders in Blender · 8 Procedure: a thumbnail set from Studio and Blender · 9 Gameplay video · 10 Title and description · 11 Low-effort and generated tells · 12 Clickbait and policy lines · 13 Test plan · 14 Refreshes · 15 Critique rubric · Level-up table · Review gate · Sources.
 
@@ -24,7 +24,7 @@ Contents: 1 Three images, three jobs · 2 The promise · 3 Composition recipes �
 |---|---|---|---|
 | Icon (1:1) | Recognition: "that game again". One shape and one colour pair the player learns | Continue, Favorites, Search, Charts | Square, 512×512 or larger; shown down to 150×150; one icon per locale; auto-generated on first publish (replace it) |
 | Thumbnails (16:9) | The promise: "this is what you do in the first minute". One promise per image | Home RFY tile (slot 1, or the personalised pick), the detail-page gallery, Sponsored tiles | 1920×1080; `.jpg .gif .png .tga .bmp`; other ratios are stretched, not cropped; up to 10 images or videos on the page; 2–5 active on Home, each under 3 MB; alt text per image |
-| Gameplay video | Proof: "it really looks and moves like this" | First item on the detail page; autoplays inside the RFY tile | 3 uploads a month and rejections count; not shown on Xbox, PlayStation or VR; docs state no length or file-size limit |
+| Gameplay video | Proof: "it really looks and moves like this" | First item on the detail page; autoplays inside the RFY tile | 3 uploads a month and rejections count; not shown on Xbox, PlayStation or VR; docs state no length or file-size limit. Uploaded video is the only kind: YouTube embeds were removed from details pages on 30 Sep 2026 |
 | Title, description | Search match and the second line of the promise | Under every tile, the detail page, search | §10 |
 
 - A custom thumbnail is required for any Home impression since 19 Oct 2026; the auto-generated image does not count. Staff wording: upload up to five "to showcase different gameplay elements".
@@ -112,9 +112,7 @@ What survived when the 62 chart icons were reduced (`[house]` viewed):
 - **Colour identity**: pick the hue pair once and keep it through every refresh; change the prop, not the palette (§14).
 - **Icon and thumbnails share anchors**: same hero, same two colours, same wordmark shape, so the Home tile and the Continue icon read as one game.
 
-Tile test (executed 2026-11-11, Python 3 with Pillow). Icon at 150, 64 and 32 px on both themes; each thumbnail at 320×180, 160×90, greyscale, blurred and with the bottom 20% hidden:
-
-Run `scripts/images/tile_test.py icon.png thumb1.png [thumb2.png ...]` (shipped with this skill; needs Pillow). It writes `tile_test.png`, one contact sheet to judge.
+Tile test: run `scripts/images/tile_test.py icon.png thumb1.png [thumb2.png ...]` (shipped with this skill; Python 3 with Pillow; executed 2026-11-11). It writes `tile_test.png`, one contact sheet: the icon at 150, 64 and 32 px on both themes, and each thumbnail at 320×180, 160×90, greyscale, blurred and with the bottom 20% hidden.
 
 Pass marks: at 32 px a stranger names the subject; at 64 px they name the genre; in greyscale the subject separates; with the bottom hidden nothing is lost; in the blur the focal shape is still the first thing seen. Then look once on a real small phone.
 
@@ -201,12 +199,12 @@ Budget: route A is about half a day for five images once the PhotoStudio place e
 
 ## 9. Gameplay video `[official][VS]`
 
-- An approved video plays inside the RFY tile: fully rolled out by the staff post of 31 Aug 2026 (the vault dates the start to 29 Jul). Two cited games gained 30% and 41% more RFY plays and 31% and 39% more RFY playtime while a video was present (test window 7–26 June 2026; Roblox calls the lifts directional).
+- An approved video plays inside the RFY tile (on hover on desktop, when scrolling stops on mobile): started 29 July 2026, fully rolled out by the staff post of 31 Aug 2026. It does not change ranking. Two cited games gained 30% and 41% more RFY plays and 31% and 39% more RFY playtime while a video was present (test window 7–26 June 2026; Roblox calls the lifts directional).
 - Allowed: real, current footage of the core loop; varied camera angles; minor brightness and contrast; curated non-linear clips; in-game UI text; the game's logo; Roblox-catalogue music without lyrics.
 - Rejected: cinematic trailers and dramatised gameplay; graphics better than a player gets; real-life footage; voice-over, narration, voice chat or lyrics; promotional or subjective text ("50% off", "Free UGC!").
 - Structure for a tile that autoplays muted and small: the core verb inside the first 3 seconds, no logo card first, 3–5 shots of real play, 20–30 s total as a loop `[lihfolk]`. One of the cited teams chose clips that showed the pacing change from stealth to action, which a still could not.
 - The HUD stays on if it helps reading the loop; the Superstar Baseball example keeps it on. Hide other players' names (`growth-and-marketing.md` §4 capture rules).
-- Spend the three monthly uploads last: cut the clip, show it off-platform or to testers, then upload. Capture settings and clip structure for social video are in `growth-and-marketing.md` §4.
+- Spend the three monthly uploads last: cut the clip, show it off-platform or to testers, then upload. Recorder settings and repeatable camera takes are in `cutscenes-and-cinematics.md` §16; clip structure for social video is in `growth-and-marketing.md` §4.
 - A video is also the strongest answer to distrust of polished stills: developers in the staff thread asked for more videos precisely because many front-page thumbnails no longer look like the game `[community]`.
 
 ## 10. Title and description (brief)
@@ -279,6 +277,7 @@ Method, interval formula, verdict table and the bandit's behaviour are in `analy
 - **Always keep the current winner in the new set.** Since 1 July 2025 a new test that includes the existing winner leaves most traffic on it while the newcomers are measured (21% fewer impressions on non-winners in Roblox's test) `[official]`.
 - **Do not restart inside 7 days**; staff call this the first rule. Start with an update, then leave the set alone `[official]`.
 - **Sample size.** Roblox's own illustrative table shows qPTR of 1.4–2.1%. At a 1.8% baseline, telling a +30% relative lift from noise needs about 10,000 impressions per thumbnail, and +15% needs about 39,000 (`n ≈ 16(1 − p) ÷ (p × L²)`, same approximation as the owner file). Two thumbnails at 2.1% and 2.0% on 9,000 impressions each are a tie. Under about 1,000 DAU, test only round 1.
+- **Which rate**: the Thumbnail Performance table and the personalisation bandit use qualified PTR; ranking itself has used plain PTR plus first-play bounce since 15 June 2026, and staff said they would test moving personalisation to PTR `[official][VS]`. Read whichever the table shows, always beside bounce.
 - **Reading it**: judge on qPTR and average playtime per qualified play together; a "loser" that wins one age segment stays active. A dip right after a traffic surge is normal `[official]`.
 - **Fatigue is real**: one developer reported a tile falling from about 2% to 0.6% over time while the trend it rode faded `[community]`. Plan a new round each update instead of hunting for a permanent winner.
 - **The icon has no A/B tool.** Change it only with an update, one element at a time (prop, expression or ground, never all three), and compare the same weekdays before and after on Search and Continue traffic. A sponsored campaign's even split across up to 10 creatives is the quick way to compare thumbnail ideas, not icons.
@@ -369,7 +368,7 @@ Accessed 2026-11-11. Images marked (viewed) were downloaded and looked at; entri
 
 - Creator docs (CC BY 4.0), GitHub mirror `Roblox/creator-docs`: `production/publishing/thumbnails.md`, `experience-icons.md`, `cloud/guides/experience-icons-and-thumbnails.md`, `workspace/camera/free-camera.md`, `discovery.md`, `discovery-faq.md`, `production/promotion/ads-manager.md`, `experience-events.md` (read); example images on the icon and thumbnail pages (viewed).
 - Roblox Community Standards, https://about.roblox.com/community-standards (read; searched for misleading-metadata, off-platform and AI wording).
-- Staff posts on DevForum (read): /t/3257233 thumbnail personalisation launch · /t/3471689 five tips · /t/3793665 personalisation keeps the winner · /t/2875237 16:9 tiles on Home (mock-ups viewed) · /t/4945086 custom thumbnail required (and developer replies on AI art) · /t/4842601 gameplay videos on Home (two example captures viewed) · /t/4068103 video previews · /t/4984692 image translation beta · /t/3105942 icon and thumbnail translation experiment · /t/4880208 Creator Roadmap Fall 2026.
+- Staff posts on DevForum (read): /t/3257233 thumbnail personalisation launch · /t/3471689 five tips · /t/3793665 personalisation keeps the winner · /t/2875237 16:9 tiles on Home (mock-ups viewed) · /t/4945086 custom thumbnail required (and developer replies on AI art) · /t/4842601 gameplay videos on Home (two example captures viewed) · /t/4068103 video previews · /t/4984692 image translation beta · /t/3105942 icon and thumbnail translation experiment · /t/4880208 Creator Roadmap Fall 2026 · /t/4502571 Home improvements (29 July 2026 update: video in RFY) · /t/4879633 YouTube embeds removed · /t/4684575 June 2026 ranking signals.
 - Community threads on DevForum (read; images viewed where listed in the library): /t/1264771 soft GFX lighting · /t/1249194 GFX advertisement in Blender · /t/2723897 capturing screenshots and video in Studio · /t/662756 and /t/890782 beginner GFX guides · /t/991540 GFX course · /t/1774810 icon colour research · /t/4858140, /t/4158217, /t/3231984, /t/3797919, /t/3876094, /t/3187495, /t/4882870, /t/4960366, /t/4820075 critique and feedback threads · /t/4927362 mobile carousel covering the image · /t/4346638 reactions to a generated-art tool · /t/3274267 icon A/B request · /t/156111 and /t/3134162 artist portfolios.
 - Live sample: icons (512 px) and the first three thumbnails (768×432) of 62 Top Playing Now games, and the 98 chart titles, fetched from Roblox's public `explore-api`, `games` and `thumbnails` endpoints on 2026-11-11 (viewed; measurements by script in the session, not shipped).
 - The owner's vault: `references/market-scan-2026-11.md` rules 1–13 and feed statistics (read).

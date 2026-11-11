@@ -38,6 +38,8 @@ Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn with a default character in a low-traffic corner; a training dummy within reach.
 2. 0:20 M1 chain lands on the dummy with hit-stop, shake (toggleable) and sound.
 3. 1:00 first ability and the block prompt, taught by doing.
@@ -74,6 +76,8 @@ Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after
 
 ## UI patterns
 
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, melee slash, heavy impact, dash, shield, aura.
+
 - HUD: health, ultimate bar, 4 ability buttons with cooldown sweeps, block and dash, kill feed, streak counter. Nothing else during a fight.
 - Mobile: abilities in the right-thumb arc, M1 as the largest button, auto-face or soft lock toward the nearest target, optional auto-block off by default.
 - Character select: full-screen only outside combat; one tap to respawn as the same character.
@@ -100,7 +104,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §12 Combat, §14
 - **Where the hitbox runs is the central trade-off.** DevForum practice is split `[community]`: client-side hitboxes with server plausibility checks feel responsive and are the commonly reported choice for battlegrounds games; server-side hitboxes are safest but feel delayed above about 100 ms ping. One thread's claim that a leading battlegrounds game uses client hitboxes with a ping-based server check is unverified.
 - **House default**: the attacker's client detects the hit and sends attacker state, target and timestamp; the server checks cooldown, attack state, range from its own positions with a ping-scaled tolerance, line of sight and per-target debounce, then applies damage and status. The client never sends damage.
 - **Ping compensation** `[community]`: offset target position by velocity × ping, or keep a short server position history and rewind; clamp `Player:GetNetworkPing()` to a maximum so a faked high ping buys no reach. Ping is near zero in Studio, so test on live servers.
-- **Server authority model** `[official]` `[VS]`: `Workspace.AuthorityMode = Server` with prediction and rollback is documented for combat games; it needs the Input Action System, fixed simulation and streaming, and core logic inside `RunService:BindToSimulation`. Evaluate it for new projects; retrofitting a live fighter is a rewrite.
+- **Server authority model** `[official]` `[VS]`: `Workspace.AuthorityMode = Server` with prediction and rollback is documented for combat games; fully released for all games on 9 July 2026; it needs next-generation replication, the Input Action System, deferred signals, fixed simulation and streaming, and core logic inside `RunService:BindToSimulation`. Evaluate it for new projects; retrofitting a live fighter is a rewrite.
 - **Hit detection shape**: spatial queries (`GetPartBoundsInBox`, shapecasts) per active frame, not `Touched`. The open ShapecastHitbox library is the stated successor to RaycastHitbox (last pushed 2025-08).
 - **State machine on the server**: stun, block, i-frames, combo counter and cooldowns are server state replicated as attributes; animations and VFX play on clients from a single small event and are pooled.
 - **Exploit surface**: reach and kill-aura (range and rate checks), cooldown skipping (server timers), speed and fling (movement sanity or server authority), animation-cancel packets (validate state transitions), teleport-behind (rewind limit).
@@ -166,12 +170,12 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md and `techniques.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/shooter.md and `sports.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://devforum.roblox.com/t/better-way-to-do-hitbox-validation/3520770 (search summary)
-- https://devforum.roblox.com/t/how-do-combat-games-achieve-no-lag/3371389 (search summary)
-- https://devforum.roblox.com/t/how-to-get-network-latency-for-server-compensation-logic/3501679 (search summary)
-- https://devforum.roblox.com/t/ways-to-fix-server-hitbox-delay/3820669 (search summary)
-- https://devforum.roblox.com/t/client-sided-hitbox-or-server-sided-hitbox-for-this-combat/2910826 (search summary)
-- https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993 (search summary)
+- https://devforum.roblox.com/t/better-way-to-do-hitbox-validation/3520770 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/how-do-combat-games-achieve-no-lag/3371389 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/how-to-get-network-latency-for-server-compensation-logic/3501679 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/ways-to-fix-server-hitbox-delay/3820669 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/client-sided-hitbox-or-server-sided-hitbox-for-this-combat/2910826 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993 (read 2026-11-11; staff announcement, 9 Jul 2026)
 - https://github.com/TeamSwordphin/ShapecastHitbox (read README and licence; 22 stars, MIT)
 - https://github.com/Swordphin/raycastHitboxRbxl (search listing; 69 stars, MIT; predecessor)
 - https://rowatcher.com/news/the-10-highest-earning-roblox-games-in-2026-and-what-they-mean-for-the-platform (search summary; third-party estimates)

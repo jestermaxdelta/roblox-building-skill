@@ -1,6 +1,6 @@
 # Studio workflow: setup, testing, publishing, collaboration, sync, AI agents, backups
 
-How to run Roblox Studio as a production tool: the settings worth changing, every test mode and what it does not prove, places and universes, publishing and rollback, Team Create, packages, plugins, the three ways to keep code (Studio only, Script Sync, Rojo), working with Claude through the Studio MCP, several agents on one place, and backups. Open it when setting up a machine or a project, when a workflow problem costs time (lost work, "works in Studio only", agents colliding), or when moving a Studio-only game to files and git. Toolchain versions, CI and the MCP tool list live in `references/engineering-architecture.md`; third-party tool trust tiers in `references/ai-toolchain-skills.md`. Tags: `[official]` creator docs (commit of 2026-11-07), `[lihfolk]` adapted from LihFolk Vault V2, `[community]`, `[house]`, `[VS]` version-sensitive: Studio changes weekly, re-check at create.roblox.com/docs.
+How to run Roblox Studio as a production tool: the settings worth changing, every test mode and what it does not prove, places and universes, publishing and rollback, Team Create, packages, plugins, the three ways to keep code (Studio only, Script Sync, Rojo), working with Claude through the Studio MCP, several agents on one place, and backups. Open it when setting up a machine or a project, when a workflow problem costs time (lost work, "works in Studio only", agents colliding), or when moving a Studio-only game to files and git. Toolchain versions, CI and the MCP tool list live in `references/engineering-architecture.md`; third-party tool trust tiers in `references/ai-toolchain-skills.md`. Tags: `[official]` creator docs (mirror commit 7cbffff of 2026-11-10, re-read 2026-11-11), `[lihfolk]` adapted from LihFolk Vault V2, `[community]`, `[house]`, `[VS]` version-sensitive: Studio changes weekly, re-check at create.roblox.com/docs.
 
 ## Start here by level
 
@@ -156,11 +156,11 @@ Plugins run with more rights than game scripts: they can rewrite any script and 
 
 Rules: install from known authors only; grant script injection only to code tools; question any building tool that asks for an HTTP domain; keep an approved list with the reason for each; after installing anything, diff the scripts (git, or Script History) for edits you did not make.
 
-| Category | Worth knowing | Status on 2026-11-10 | House-rule limit |
+| Category | Worth knowing | Status on 2026-11-11 (last commit on the default branch, by shallow clone) | House-rule limit |
 |---|---|---|---|
-| Built in, no install | Explorer search (`is:`, `tag:`), the Tags section of Properties, 3D Importer, Asset Manager, Device Simulator, Controller Emulator, Network Simulator, MicroProfiler (`Ctrl F6`), Developer Console (`F9`), Visualization Options, Version History, Script Sync, Assistant | First-party `[official]` | Assistant mesh, texture and procedural generation and its asset search stay off for anything that ships |
-| Code sync and language | Rojo plugin; Luau Language Server Companion | Rojo last commit 2026-10-30; luau-lsp 2026-11-06 (read) | None |
-| UI storybooks | UI Labs; Flipbook; Hoarcekat | UI Labs 2026-08-13 and Flipbook 2026-10-04 active; Hoarcekat 2025-11-21, quiet (read) | None: UI is native instances (ui-design-figma.md) |
+| Built in, no install | Explorer search (`is:`, `tag:`), the Tags section of Properties, 3D Importer, Asset Manager, Device Simulator, Controller Emulator, Network Simulator, MicroProfiler, Developer Console (`F9`), Visualization Options, Version History, Script Sync, Assistant | First-party `[official]` | Assistant mesh, texture and procedural generation and its asset search stay off for anything that ships |
+| Code sync and language | Rojo plugin; Luau Language Server Companion | Rojo 7.7.1, last commit 2026-10-30; luau-lsp 1.70.1, 2026-11-10 (read) | None |
+| UI storybooks | UI Labs; Flipbook; Hoarcekat | UI Labs v1.6.1, 2026-08-13 and Flipbook v2.5.0, 2026-10-04: active; Hoarcekat 2025-11-21, quiet (read) | None: UI is native instances (ui-design-figma.md) |
 | Animation | Built-in Animation Editor; Moon Animator 2 | Moon Animator status not verified here: check its Creator Store "updated" date `[community]` | Rigs and meshes still come from Blender (`references/animation-and-rigs.md`) |
 | Part-building tools (gap fill, resize align, building suites, terrain brushes) | Common in tutorials | Not assessed | Do not adopt: they produce primitive-Part geometry, which never ships. Throwaway blockout places only |
 | Generators and marketplace inserters (AI model, texture, "free asset" browsers) | — | — | Banned for shipped content |
@@ -207,7 +207,7 @@ Setup, the tool list and the nine working rules are in engineering-architecture.
 
 **Stage 0: connect and confirm.** Assistant > … > Manage MCP Servers > Enable Studio as MCP server, then quick-connect Claude Code `[official]`. First calls: `list_roblox_studios` (pass its `studio_id` on every call; re-list after a Studio restart, a cached id goes stale), then `get_studio_state`. Say which place and which mode you are in before doing anything else.
 
-**Stage 1: read-only.** Use only `search_game_tree`, `inspect_instance`, `script_read`, `script_search`, `script_grep`, `get_console_output` and `screen_capture`. Allow-list these in the client so they run without prompts and leave `multi_edit`, `execute_luau`, `start_stop_play` and the asset tools on ask. `execute_luau` can change anything, so in this stage run scans that only read, and say so. In Studio's MCP Permissions tab (per person, per game, starts at Balanced) choose Safe: Open Cloud calls are then limited to low-risk scopes `[official]`. Deliver findings before proposing edits.
+**Stage 1: read-only.** Use only `search_game_tree`, `inspect_instance`, `script_read`, `script_search`, `script_grep`, `get_console_output` and `screen_capture`. Allow-list these in the client so they run without prompts and leave `multi_edit`, `execute_luau`, `start_stop_play` and the asset tools on ask. `execute_luau` can change anything, so in this stage run scans that only read, and say so. In Studio's MCP Permissions tab (per person, per published game, starts at Balanced; an unpublished local place cannot store permissions) choose Safe: Open Cloud calls are then limited to low-risk scopes `[official]`. The server's `http_get` (Roblox documentation URLs only) and `skill` tools are read-only as well. Deliver findings before proposing edits.
 
 **Stage 2: edit mode, with checkpoints.** Before each batch of edits:
 
@@ -282,8 +282,8 @@ Windows keys; on macOS use `⌘` for `Ctrl` and `⌥` for `Alt`. All `[official]
 | Quick-open a script; find in all scripts; function list | `Ctrl P`; `Ctrl Shift F`; `Alt F` |
 | Clear Output | `Ctrl K` |
 | Developer Console (in a test or in the client) | `F9` |
-| MicroProfiler; detailed mode | `Ctrl F6`; `Ctrl Alt F6` |
-| Performance Summary overlay; debug stats in the client | `Ctrl Shift F5`; `Shift F5` |
+| MicroProfiler | `Ctrl F6` on the MicroProfiler page; `Ctrl Alt F6` on two other docs pages: the docs disagree, try both `[VS]` |
+| Performance stats bar; debug stats overlays (graphics, physics, network, FPS); debug stats in the client | `Ctrl Alt F7`; `Shift Ctrl F1`–`F5`; `Shift F5` |
 | New comment on an object (Team Create) | `C` |
 
 The same key changes meaning with focus: `Ctrl D` duplicates in the viewport and adds a cursor in the Script Editor. When a shortcut misbehaves, check which panel has focus `[lihfolk]`.
@@ -326,11 +326,11 @@ The same key changes meaning with focus: `Ctrl D` duplicates in the viewport and
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-10; release requirements, Team Create age bands, Script Sync limits and status, MCP tools and permissions, test modes and shortcuts re-read on 2026-11-11 at commit 7cbffff (2026-11-10).
 
-- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{setup,testing-modes,device-simulator,controller-emulator,network-simulator,mcp,mcp-open-cloud,plugins,output,explorer,overview}.md`, `includes/studio/{playtest-modes,system-reqs}.md`, `includes/place-size-limit.md`, `projects/{collaboration,version-history,activity-history,place-files,update-games,external-tools}.md`, `projects/assets/packages.md`, `production/publishing/{publish-games-and-places,kids-and-select}.md`, `cloud/guides/usage-place-publishing.md`, `cloud-services/data-stores/index.md`, `scripting/sync.md`, `ai/coding-harness.md`, `assistant/{guide,skills,mcp}.md`, `reference/engine/classes/{Studio,ChangeHistoryService}.yaml`, `performance-optimization/` (shortcut mentions) (read) — https://github.com/Roblox/creator-docs
+- Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{setup,testing-modes,device-simulator,controller-emulator,network-simulator,mcp,mcp-open-cloud,plugins,output,explorer,overview}.md`, `includes/studio/{playtest-modes,system-reqs}.md`, `includes/place-size-limit.md`, `projects/{collaboration,version-history,activity-history,place-files,update-games,external-tools}.md`, `projects/assets/packages.md`, `production/publishing/{publish-games-and-places,kids-and-select}.md`, `cloud/guides/usage-place-publishing.md`, `cloud-services/data-stores/index.md`, `scripting/sync.md`, `ai/coding-harness.md`, `assistant/{guide,skills,mcp}.md`, `reference/engine/classes/{Studio,ChangeHistoryService}.yaml`, `performance-optimization/{identify,microprofiler/index,microprofiler/use-microprofiler}.md` (shortcuts) (read) — https://github.com/Roblox/creator-docs
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `01 Studio and Workflow/{Studio Settings and Shortcuts, Testing Modes - Play Run and Multi-Client, Team Create and Collaboration, Version History and Backups, Places Universes and Experience Settings, Packages and Asset Reuse, Plugins - Using and Writing, External Tooling - Rojo Wally Selene StyLua, Git and Source Control for Roblox, Studio Assistant and AI Tools, Command Bar and Studio Scripting}.md`, `16 MCP and Agents/{Safety Rules for AI Agents in Studio, Multiple Agents in One Studio, Roblox Studio MCP Server, Built-In Studio MCP vs Community MCP Servers - Migration Guide}.md`, `39 Studio Plugins and Tooling/{Undo and ChangeHistoryService Done Right, Plugin Security and Permissions}.md`, `13 Production and Case Studies/{Safe Changes in a Shared Place, Disaster Recovery for a Roblox Game - Places, Code, Assets, Data and Accounts, Release Process and Rollbacks}.md` (read)
-- Last-commit dates from shallow clones: https://github.com/rojo-rbx/rojo, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/PepeElToro41/ui-labs, https://github.com/flipbook-labs/flipbook, https://github.com/Kampfkarren/hoarcekat, https://github.com/rojo-rbx/rbxlx-to-rojo (read: commit metadata only)
+- Last-commit dates and latest tags from shallow clones (2026-11-11): https://github.com/rojo-rbx/rojo, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/PepeElToro41/ui-labs, https://github.com/flipbook-labs/flipbook, https://github.com/Kampfkarren/hoarcekat, https://github.com/rojo-rbx/rbxlx-to-rojo (read: commit metadata only)
 - https://devforum.roblox.com/t/early-preview-studio-script-sync/3257548 and https://devforum.roblox.com/t/do-i-need-rojo/3776851 (search summary)
 - https://newreleases.io/project/github/rojo-rbx/rojo/release/v7.7.0 (search summary: `rojo syncback`, `syncbackRules`)
 - https://devforum.roblox.com/t/age-checks-to-access-chat-studio-team-create-and-links-on-roblox/4079702 (search summary)

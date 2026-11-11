@@ -18,7 +18,7 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 - Roblox's own genre table calls action "less popular on Roblox than elsewhere" (example: Arsenal) `[official]`; the audience exists but concentrates in a few polished games.
 - One tracker reports D1 22–30% for shooters with traffic `[community]`.
 - Audience: older, competitive, PC-heavy but increasingly mobile and console; sessions are chains of short matches.
-- Platform shift `[official]` `[VS]`: Roblox now ships a server authority model (`Workspace.AuthorityMode`), documented for "FPS, racing, sports, and combat", with client prediction and rollback. A 2026 DevForum announcement is titled "Full Release" while its summary still calls the feature an opt-in beta available to all experiences; check the current release status before committing.
+- Platform shift `[official]` `[VS]`: Roblox now ships a server authority model (`Workspace.AuthorityMode`), documented for "FPS, racing, sports, and combat", with client prediction and rollback. Full release for all games was announced on 9 July 2026 ("Server Authority is now available for all creators"); it is enabled in Workspace properties and switches on next-generation replication, the Input Action System, deferred signals, fixed simulation and streaming with it.
 - Official starting points `[official]`: the Laser Tag template (blaster system with damage, ammo capacity, recoil and spread attributes; a round system; an arena), the FPS System template, and the Weapons Kit (projectile-based, over-the-shoulder; Limited Use License).
 
 ## Core loop with timings
@@ -38,6 +38,8 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 - TTK sets identity `[lihfolk]`: fast (0.2–0.4 s for a rifle up close) rewards first-shot aim and positioning; slow (0.8–1.5 s) rewards tracking and makes fights reversible, which is kinder to touch and controller players.
 
 ## First 5 minutes
+
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
 
 1. 0:00 into a bot or low-stakes warm-up within 20 s of joining; default loadout, no menus.
 2. 0:30 first elimination against a bot or dummy; hit markers and sound confirm.
@@ -75,6 +77,8 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 - No punishment for losing beyond rank points; no loss of items.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, projectile, explosion.
 
 - HUD: crosshair, ammo, health, round score, minimal kill feed. Hit markers and damage direction indicators are mandatory feedback.
 - Settings: FOV, per-scope sensitivity, aim assist options, crosshair editor, controller dead zones, colour-blind enemy outline.
@@ -171,10 +175,10 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/shooter.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read; genre table)
 - https://about.roblox.com/newsroom/2026/07/creating-responsive-cheat-resistant-games-roblox-server-authority (search summary)
-- https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993 (search summary)
-- https://devforum.roblox.com/t/server-authority-instance-stitching-for-fast-projectile-has-werid-rollbacks/4738369 (search summary)
-- https://devforum.roblox.com/t/server-side-hit-detection/1295976 (search summary)
-- https://devforum.roblox.com/t/server-sided-hit-detection-with-lag-compensation/3322386 (search summary)
+- https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993 (read 2026-11-11; staff announcement, 9 Jul 2026)
+- https://devforum.roblox.com/t/server-authority-instance-stitching-for-fast-projectile-has-werid-rollbacks/4738369 (read 2026-11-11)
+- https://devforum.roblox.com/t/server-side-hit-detection/1295976 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/server-sided-hit-detection-with-lag-compensation/3322386 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://github.com/easy-games/chickynoid (read README; 266 stars, MIT, last pushed 2024-05)
 - https://github.com/1Axen/Secure-Cast (read README; 30 stars, MIT, archived)
 - https://github.com/weenachuangkud/FastCast2 (search listing; 30 stars, licence unclear; not used)

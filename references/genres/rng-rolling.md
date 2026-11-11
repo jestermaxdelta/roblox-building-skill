@@ -36,6 +36,8 @@ Terms: *luck* = a modifier that raises the chance of rarer outcomes; *pity* = a 
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 the roll button is the largest thing on screen; first roll inside 5 s.
 2. 0:10 even a common result plays an animation with its "1 in N" shown large `[lihfolk]`.
 3. 1:00 auto-roll unlocks; the numbers start to flow.
@@ -71,6 +73,8 @@ Terms: *luck* = a modifier that raises the chance of rarer outcomes; *pity* = a 
 - Offline or AFK rolling with a stated cap; discovery credits at most 60 minutes of play per user per day `[VS]`.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hatch or open reveal, aura, lightning strike for top tiers.
 
 - A giant central roll button with an AUTO toggle; standing luck readout ("1.00×") on the HUD `[lihfolk]`.
 - Result card: tier colour first, banner, item name, "1 in N"; world burst for rare tiers.

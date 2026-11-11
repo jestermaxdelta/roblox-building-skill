@@ -1,15 +1,15 @@
 # Analytics event plan: <Title>
 
-All events are logged on the server, after the action succeeds, in a published place (a test place first). Limits and API signatures are in references/analytics-and-discovery.md: 120 + 20 × CCU events per minute; 10 funnels × 100 steps; 10 resource types; 20 transaction types; 100 SKUs; 100 custom event names; 3 custom fields; 8,000 field-value combinations. Prefer one event name with fields over many names.
+All events are logged on the server, after the action succeeds, in a published place (a test place first). Limits and API signatures are in references/analytics-and-discovery.md §Event API: 120 + 20 × CCU requests per minute; 10 funnels × 100 steps; 10 resource types; 100 custom event names; 3 custom fields. Past 20 transaction types, 100 SKUs or 8,000 combined custom-field values the extra values are grouped as "Other". Prefer one event name with fields over many names. Funnel design and reading: references/tutorial-and-onboarding.md §9.
 
 ## KPIs and targets
 
 | KPI | Launch target | Source |
 |---|---|---|
-| PTR | ≥ genre median | Creator Analytics |
-| Bounce under 60 s | < <x>% | Creator Analytics |
-| D1 / D7 / D30 | <x / y / z>% | Creator Analytics vs similar games |
-| Median session | <n> min | Creator Analytics |
+| PTR (after 12 Oct 2026 only) | ≥ dashboard benchmark P50 | Acquisition → Home Recommendations |
+| Bounce under 60 s, and 61–180 s | ≤ dashboard benchmark P50 | Acquisition → Home Recommendations |
+| D1 / D7 / D30 | <x / y / z>%: dashboard P50, or the "Drives triage" rows of the one benchmark table (D1 10.3%, D7 1.6%, D30 0.5%) under 100 DAU | Retention |
+| Average session | <n> min (house target 19+) | Engagement |
 | Co-play days | | |
 | Conversion, ARPPU, ARPDAU | | Monetization dashboard |
 | Crash rate | < 2–3% | Performance Dashboard |
@@ -78,6 +78,8 @@ Always pass `endingBalance`. Keep SKUs under 100 and transaction types under 20.
 | TradeCompleted | item count | | | |
 | ServerLowMemoryWarning | memory MB | | | |
 | RemoteGuardViolations | count at threshold | remote name | | |
+| FtueBeat | seconds since control | beat name (first_verb, first_reward, …) | | |
+| TutorialHint / TutorialSkip | 1 | step id | | |
 
 ## Configs keys (tunables)
 
@@ -92,10 +94,10 @@ List every tunable the game reads from `ConfigService` with its code default: of
 | Boost price (sequential change of one product, or Managed Pricing; never duplicate products at two prices) | 29 then 49 R$ | revenue per DAU | conversion | 14 days each side |
 | Starting currency | 0 vs 100 | D1 | sink ratio | 14 days |
 
-Under 1,000 DAU statistical power is weak; run fewer, bigger tests.
+Each experiment: 14–60 days, up to 2 variants plus control, nothing editable once scheduled; the Custom metric set adds up to 3 metrics built from the events above (for example per-user conversion on onboarding step 5). Write the hypothesis and the sample size first (references/analytics-and-discovery.md §Test design). Under 1,000 DAU power is weak: run fewer, bolder tests or dated before/after cohorts.
 
 ## Dashboard review cadence
 
 - Daily during launch week: PTR, bounce, D1, crash rate, errors.
-- Weekly: funnel drop-offs, economy sink ratio, offer funnel conversion, RV opt-in (target 10–20%+), top SKUs.
+- Weekly: funnel drop-offs, economy sink ratio, offer funnel conversion, RV opt-in rate, top SKUs; the eight-line review in references/analytics-and-discovery.md.
 - Monthly: D30, LTV, cohort comparison, experiment results.

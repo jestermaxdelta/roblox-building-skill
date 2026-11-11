@@ -1,8 +1,8 @@
 # VFX and juice: principles, particles, beams, meshes, timing, shake, replication, budgets, safety
 
-What this is: the build-level reference for visual effects and game feel on Roblox: what makes a stylised effect readable, every effect instance and its traps, texture and mesh authoring, timing in milliseconds, hit-stop and camera work, the client-only replication pattern, pooling, budgets for a 3 GB Android phone, and motion and flash safety. Open it when building an effect or auditing why a game feels flat, laggy, unreadable or generic. Effect-by-effect builds are in `vfx-recipes.md`; viewed reference images and tutorials are in `visual-library/vfx.md` and `visual-library/vfx-learning.md`. It extends `game-craft.md` §1 (tier table, trauma-shake module, reward pop sketch) and `core-loop-tuning.md` §8 (juice ordered by build cost); neither is repeated here. Sound is in `audio-sfx-music.md`; frame budgets in `performance.md`; animation markers in `animation-and-rigs.md` §6.
+What this is: the build-level reference for visual effects and game feel on Roblox: what makes a stylised effect readable, every effect instance and its traps, texture and mesh authoring, timing in milliseconds, hit-stop and camera work, the client-only replication pattern, pooling, budgets for a 3 GB Android phone, and motion and flash safety. Open it when building an effect or auditing why a game feels flat, laggy, unreadable or generic. Effect-by-effect builds are in `vfx-recipes.md`; viewed reference images and tutorials are in `visual-library/vfx.md` and `visual-library/vfx-learning.md`. It extends `game-craft.md` §1 (feedback tiers; §1.3 holds the shake module) and `core-loop-tuning.md` §8 (juice ordered by build cost); neither is repeated here. UI pops and reward sequences are in `ui-motion-and-feedback.md`; sound in `audio-sfx-music.md`; comfort settings in `accessibility-and-player-qol.md`; frame budgets in `performance.md`; animation markers in `animation-and-rigs.md` §6.
 
-Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10) and staff posts, `[community]` practice from named artists on realtimevfx.com, 80.lv and the DevForum (named in Sources), `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers come from one production combat game and are starting points, not laws), `[VS]` version-sensitive, `[house]` house estimate. Terms: *VFX* = visual effects; *juice* = small non-gameplay responses that confirm an action; *emitter* = `ParticleEmitter`; *additive* = colours add to what is behind (glow); *value* = how light or dark a colour is, ignoring hue; *overdraw* = the same pixel drawn several times by stacked transparent layers; *telegraph* = a warning drawn before an attack lands; *block-in* = a first version built from plain white shapes.
+Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10; re-checked 2026-11-11) and staff posts, `[community]` practice from named artists on realtimevfx.com, 80.lv and the DevForum (named in Sources), `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; its numbers come from one production combat game and are starting points, not laws), `[VS]` version-sensitive, `[house]` house estimate. Terms: *VFX* = visual effects; *juice* = small non-gameplay responses that confirm an action; *emitter* = `ParticleEmitter`; *additive* = colours add to what is behind (glow); *value* = how light or dark a colour is, ignoring hue; *overdraw* = the same pixel drawn several times by stacked transparent layers; *telegraph* = a warning drawn before an attack lands; *block-in* = a first version built from plain white shapes.
 
 ## Contents
 
@@ -61,23 +61,23 @@ An effect has three jobs **in this order**: communicate gameplay without clutter
 | A designed silhouette: crescent, shock ring, dome, pillar, shards, telegraph disc | Blender mesh (`MeshPart`) tweened on the client (§5) | House rule 1: authored in Blender |
 | Light on the scene from the effect | `PointLight` in an Attachment, `Shadows = false`, one per effect | Particles never light the world, even at `LightEmission = 1` `[official]` |
 | Whole-screen response | GUI overlay or a post effect on the Camera (§8) | Post effects on `Workspace.CurrentCamera` show for that player only `[official]` |
-| Runtime-generated images or meshes | Avoid: bake offline and upload | `EditableImage`/`EditableMesh` need an experience permission and have tight memory budgets `[lihfolk]` `[VS]` |
+| Runtime-generated images or meshes | Avoid: bake offline and upload | Loading an existing asset into `EditableImage`/`EditableMesh` needs asset permission, and clients have strict memory budgets for them `[official]` `[VS]` |
 
-**ParticleEmitter.** Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachment` (spawn at a point; rotate the attachment rather than using `EmissionDirection`). With the default camera scripts, emitters, beams and trails parented inside a character are hidden for that player in first person (since September 2024); parent them to a part welded to the character to keep them visible `[official]` `[VS]`.
+**ParticleEmitter.** Parent to a `BasePart` (particles spawn in its box or `Shape`) or to an `Attachment` (spawn at a point; rotate the attachment rather than using `EmissionDirection`). With the default camera scripts, emitters, beams and trails (also `Fire`, `Smoke`, `Sparkles`, `Explosion`) parented inside a character are hidden for that player in first person (since September 2024). To keep one visible, put it on a helper part parented **outside** the character model and welded to it (`WeldConstraint`, `Massless`, `CanCollide`/`CanQuery` false) `[official]` `[VS]`.
 
 | Property | What it does | Trap or tip |
 |---|---|---|
 | `Texture` | Sprite. Transparent PNG, or greyscale on black with `LightEmission = 1` `[official]` | Author white and grey; tint with `Color` so one texture serves every element (§5) |
 | `Color`, `Transparency`, `Size` | Sequences over each particle's life (at most 20 keypoints `[VS]`); a number-sequence keypoint envelope randomises `Size` or `Transparency` per particle `[official]` | `Color` multiplies the whole sprite: it cannot recolour light and dark areas separately. Punchy growth reaches about 80% of final size by 35% of life `[lihfolk]` |
-| `Squash` | Above 0 thinner and taller, below 0 wider and shorter `[official]` | With `VelocityParallel`: embers, rain streaks, speed lines |
+| `Squash` | Above 0 thinner and taller, below 0 wider and shorter `[official]` | With `VelocityParallel`: embers, rain streaks, speed lines. The docs' rain recipe uses a **negative** value there to stretch along the direction of travel `[official]`; confirm with an arrow texture |
 | `LightEmission` | 0 normal blend, 1 additive; with additive, darker colours look more transparent `[official]` | Additive layers sum to white. Dense matter (water, smoke, debris) stays at 0 |
 | `LightInfluence` | 0 ignores scene light, 1 lit like a part. Defaults to 1 when inserted in Studio but 0 from `Instance.new` `[official]` | Set 0 explicitly or the effect goes black in caves and grey in shade |
 | `Brightness` | Scales emitted light when `LightInfluence = 0` `[official]` | Bigger sprite on screen = lower brightness; tiny specks need several times more `[lihfolk]`. Official volcano values: embers 20, ripples 15 |
 | `Orientation` | `FacingCamera`, `FacingCameraWorldUp`, `VelocityParallel`, `VelocityPerpendicular` `[official]` | Flat card in any plane: `VelocityPerpendicular`, `Speed` 0.01, `SpreadAngle` 0 `[official]` (volcano ripples, waterfall foam) |
 | `ZOffset` | Moves the sprite toward (+) or away from the camera in studs without resizing `[official]` | Sort layers: flash in front (+), dark layer behind (−) |
 | `Shape`, `ShapeStyle`, `ShapeInOut`, `ShapePartial` | Box, Sphere, Cylinder or Disc of the parent's size; volume or surface; outward, inward or both. `ShapePartial`: cylinder top radius (0 = cone), disc inner radius (1 = rim only), sphere hemisphere angle `[official]` | Charge-up = Sphere, Surface, Inward. Ring burst = Disc with `ShapePartial` near 1. Sphere and Cylinder do not display correctly on an Attachment `[official]` |
-| `Rate`, `Enabled` | Continuous emission. Cap 400/s per emitter, 100/s on mobile `[official]` | Scaled down by graphics level; one forum test measured `Rate × level / 10` `[community]` |
-| `:Emit(n)` | Instant burst; works with `Enabled = false` | Forum reports and one production measurement say bursts are not thinned by graphics level (one report disagrees) `[community]` `[lihfolk]`: scale `n` yourself (§11) |
+| `Rate`, `Enabled` | Continuous emission. Cap 400/s per emitter, 100/s on mobile `[official]` | Scaled down at low quality levels `[official]`; one developer's workaround assumes `Rate × level / 10` `[community]`. Staff say this scaling will be made less aggressive (2026-11-05) `[VS]` |
+| `:Emit(n)` | Instant burst; works with `Enabled = false` | Forum replies and one production measurement say bursts are not thinned by quality level (one reply disagrees; no official statement) `[community]` `[lihfolk]`: scale `n` yourself (§11) |
 | `Lifetime` | Per-particle age range; values above 20 s are capped (the official volcano tutorial's 50–60 s smoke plume is clamped to 20); 0 emits nothing `[official]` | Alive particles ≈ `Rate × Lifetime.Max`: this is the cost |
 | `Speed`, `SpreadAngle`, `Acceleration`, `Drag` | Launch speed and cone; `Acceleration` is world space; `Drag` decays speed exponentially, higher is stronger (official examples: 0.8 for drifting embers, 10 for sparks that stop almost at once) `[official]` | High speed with strong drag = a streak that stops at a fixed distance (official spark burst: Speed 20–40, Drag 10, Lifetime 0.2–0.6) |
 | `LockedToPart`, `VelocityInheritance` | Particles glued to the emitter, or given the parent's velocity at birth | Locked for auras on a moving body; inherited for dust shed by a foot |
@@ -104,12 +104,12 @@ An effect has three jobs **in this order**: communicate gameplay without clutter
 
 | Property | Tip |
 |---|---|
-| `Segments` (default 10) | Straight pieces. A sequence with n keypoints needs at least n − 1 segments; 40–80 for a smooth arc `[lihfolk]`. Since November 2026 beams keep their segment count at every quality level `[official]` `[VS]` |
+| `Segments` (default 10) | Straight pieces. A sequence with n keypoints needs at least n − 1 segments; 40–80 for a smooth arc `[lihfolk]`. Since November 2026 low quality levels no longer aggressively cut the segment count `[official]` `[VS]`; still check a curved beam at Editor Quality Level 1 |
 | `Texture`, `TextureMode`, `TextureLength`, `TextureSpeed` | `TextureSpeed` is texture cycles per second from Attachment0 to Attachment1 (negative reverses). Unset, invalid or **not yet loaded** textures draw as a solid ribbon `[official]`: preload when the owner equips, or hold `Transparency` at 1 until loaded |
-| `:SetTextureOffset(0..1)` | Sets where the texture cycle is `[official]`. With `TextureSpeed = 0`, stepping the offset from a script plays one controlled wipe along the beam |
+| `:SetTextureOffset(0..1)` | Sets where the texture cycle is `[official]`. With `TextureSpeed = 0`, stepping the offset from a script plays one controlled wipe along the beam. Raising the offset moves the texture the opposite way to a positive `TextureSpeed` (toward Attachment0) `[official]` |
 | `Width0`, `Width1` | Linear taper. Wide to 0 gives a crescent or comet |
 | `FaceCamera` | True for slash arcs and lasers; false when the ribbon must lie on a surface (waterfall, ground line) |
-| `ZOffset`, `LightEmission`, `LightInfluence`, `Brightness` | As for emitters; `ZOffset` separates stacked beams on the same attachments `[official]` |
+| `ZOffset`, `LightEmission`, `LightInfluence`, `Brightness` | As for emitters, except that beam and trail `Brightness` (0–10,000) applies whenever `LightInfluence` is below 1; `ZOffset` separates stacked beams on the same attachments `[official]` |
 
 - Depth from layers: stack two or three beams on one path with different textures, lengths and speeds (official lava flow: base colour, crust at `TextureSpeed` 0.01, second crust reversed at −0.008). The same idea, one texture over itself at a different speed, is how League trails get their shimmer `[community]` (McSheehan).
 - Exact arc: a cubic approximates a circular arc of angle θ with handle length `4/3 × tan(θ/4) × r`; a semicircle is `1.333 × r`. Two semicircle beams sharing end attachments make a ring whose line width stays constant at any radius: the right tool for telegraph outlines `[lihfolk]`.
@@ -183,7 +183,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 | Secondary (sparks, shards, debris) and ground (rings, cracks, dust) | 300–800 ms; they outlast the glow and the trail | `[lihfolk]` `[community]` |
 | Tail or linger (haze, embers, scorch) | 600–2,000 ms at very low brightness; cap whole effects near 1.4 s, ground pieces 2.2 s | `[lihfolk]` |
 | Shake start | When the hit-stop releases, not during it | `[lihfolk]` |
-| UI pop return | 120–180 ms Back Out (`game-craft.md`) | `[house]` |
+| UI pop on a counter or icon | `emphasis` token, Back Out: `ui-motion-and-feedback.md` §2 | owner guide |
 | Sound against picture | 0–30 ms late fuses; 20 ms early is noticed; 80+ ms late reads as lag (`audio-sfx-music.md` §5) | `[lihfolk]` |
 | Server round trip to hide | 80–250 ms typical: cover it with an anticipation loop of 0.3–0.6 s minimum that holds until the reply | `[lihfolk]` |
 
@@ -204,7 +204,7 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 
 ## 7. Hit-stop, camera shake and FOV kicks
 
-This section owns the hit-stop and shake numbers for the whole skill; `game-craft.md` §1 holds the shake module sketch and defers here for values. Give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
+This section owns the hit-stop and shake numbers for the whole skill; `game-craft.md` §1.3 holds the shake module sketch and defers here for values. Give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
 
 | Tier | Strength | Hit-stop | Trauma added | Directional kick (% of screen height) |
 |---|---|---|---|---|
@@ -219,9 +219,10 @@ Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. Conflict: the knowledge-b
 - **Frame maths.** A 50 ms stop is 3 frames at 60 FPS but 1 or 2 at 30 FPS, so it reads as inconsistency on phones. A stop that must be felt needs at least 66 ms; cap any stop at 200 ms `[lihfolk]`.
 - **Budgets** `[lihfolk]`: at most 140 ms of hit-stop per rolling 0.6 s; under 15% of a move's duration; reserve room for the finisher; one stop per swing however many targets it hits; trauma grows with `1 + 0.35 × log2(targets)`; visible shake under about 10% of combat time.
 - **Catch-up hit-stop**: slow the track to 0.12× for `d`, then play at 1.88× for `d`; after `2d` the animation is back on the wall clock, so effects scheduled at cast time still line up `[lihfolk]`.
-- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation for impacts and translation only for "the ground moved". Cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
+- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation (pitch and yaw) for impacts and translation only for "the ground moved". Cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
 - **Directional kick**: one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake. Others' hits: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]`.
-- **FOV and offsets.** Every effect is a finite envelope that ends at exactly 0 (exponential decays leave residue). Sum envelopes per channel and clamp: FOV +12°, offset 1.6 studs, roll 4°. One module owns `Camera.FieldOfView`; two systems tweening it fight every frame. Reference dash: +9° in 60 ms, out over 250 ms `[lihfolk]`. First person: FOV only.
+- **Shake amplitude and roll.** At trauma 1: at most 2° of pitch and yaw (2.5% of screen height at FOV 70) and 0.5 studs of offset `[house]`. **No roll in gameplay**: roll is the strongest nausea trigger, and `accessibility-and-player-qol.md` §5 forbids it. Conflict: LihFolk's camera module clamps roll at 4° and rolls 2.5° on a dash, while its comfort note says "no gameplay roll"; the comfort note wins. A static tilted frame belongs to cutscenes (`cutscenes-and-cinematics.md` §5).
+- **FOV and offsets.** Every effect is a finite envelope that ends at exactly 0 (exponential decays leave residue). Sum envelopes per channel and clamp: FOV ±12°, offset 1.6 studs. One module owns `Camera.FieldOfView`; two systems tweening it fight every frame. Reference dash: +9° in 60 ms, out over 250 ms `[lihfolk]`. First person: FOV only.
 - **Impact frames**: one high-contrast full-screen frame (the anime version inverts the scene to black and white with radial streaks). Conflict: LihFolk counts rendered frames (remove after 2 `PreRender` callbacks); at 240 FPS that is 8 ms and invisible. Time flashes on the real clock: about 33–50 ms and at least one rendered frame `[house]`. Flash limits in §12.
 
 ```lua
@@ -249,21 +250,21 @@ end
 - Incoming-damage effects wait for the server-confirmed event and carry the attacker's position for a directional arc; outgoing hit feedback may be predicted `[lihfolk]`.
 
 **Number popups** (damage, +coins).
-- Motion `[house]`: pop 1.3 → 1 in 120 ms, rise 40–60 px over 600–800 ms, fade during the last 30%, random sideways drift; crits by size and colour, never by flashing.
+- Motion: the floating-number row of `ui-motion-and-feedback.md` §5 (rise 24–40 px, fade over 0.6–1.2 s) with the `emphasis` pop. Combat additions `[house]`: random sideways drift so stacked hits separate; crits by size and colour, never by flashing.
 - Clutter `[lihfolk]`: merge hits on one target within 150 ms into one number; cap about 12 on screen and drop the oldest; default to "mine only" in multiplayer; abbreviate (12.4K).
-- Cost: BillboardGuis carry real overhead and hidden or fully transparent ones still cost `[community]` (`Pass3dAdorn` in `performance.md`). Pool them, set `Enabled = false` when idle, or draw labels in one ScreenGui placed with `Camera:WorldToViewportPoint`; measure both on a phone `[house]`. The server sends the damage fact; the client draws the number.
+- Cost: staff confirm that neither text nor billboard rendering is cheap (one report: 20 visible BillboardGuis took a desktop from 240 to 130 FPS) `[community]`; the MicroProfiler tag is `Prepare/Pass3dAdorn`, fixed by fewer visible adorned objects `[official]`. Pool them, set `Enabled = false` when idle, or draw labels in one ScreenGui placed with `Camera:WorldToViewportPoint`; measure both on a phone `[house]`. The server sends the damage fact; the client draws the number.
 
 ## 9. Tween or spring
 
 | Tool | Behaviour | Use for | Avoid for |
 |---|---|---|---|
 | `TweenService:Create` | Fixed duration and easing curve; client only | One-shot moves with a known end: UI pops, mesh scale and fade, FOV envelopes | Targets that change mid-flight (it restarts and looks stiff); world objects on the server |
-| `TweenService:GetValue(alpha, style, direction)` | Easing as a pure function | Driving many layers or a `NumberSequence` from one loop | — |
-| `TweenService:SmoothDamp(current, target, velocity, smoothTime, maxSpeed?, dt?)` | Critically damped spring: no overshoot; returns new value and velocity `[official]` `[VS]` | Followers and retargeting: camera offsets, health bars, counters chasing a value, magnet pull | Bouncy pops (it never overshoots) |
+| `TweenService:GetValue(alpha, style, direction)` | Easing as a pure function | Driving many layers or a `NumberSequence` from one loop | `Enum.EasingStyle.Spring` and `Bezier`: it and `TweenInfo.new` raise an error for them `[official]` `[VS]` |
+| `TweenService:SmoothDamp(current, target, velocity, smoothTime, maxSpeed?, dt?)` | Critically damped spring: no overshoot; returns new value and velocity (feed the velocity back in); number, Vector2, Vector3 or CFrame `[official]` `[VS]` | Followers and retargeting: camera offsets, health bars, counters chasing a value, magnet pull | Bouncy pops (it never overshoots) |
 | Spring (stiffness or frequency, damping) | Overshoot, interruptible, keeps velocity. Hand-rolled, or an MIT library such as spr or Ripple (`ui-motion-and-feedback.md` §6) | Squash and stretch, button presses, hits landing on an object that is still settling | Timed sequences that must end on a beat |
 | `1 − exp(−rate × dt)` lerp | Cheapest smoothing, frame-rate independent | Camera follow (`game-craft.md` §3) | Anything needing overshoot |
 
-- Squash and stretch `[lihfolk]`: preserve area or volume (height 0.8 → width 1.25 in 2D); set the extreme pose instantly and spring back (tweening into it adds 50–100 ms of mush); damping ratio 0.4–0.6 gives one visible overshoot; squash the art layer, never the text; sub-step stiff springs to about 120 Hz so 30 FPS phones stay stable. Depth: 3–5% sober UI, 8–15% cartoon UI, 15–30% collectibles. Rigid R15 parts cannot squash, so use pose; single-mesh props can through `MeshPart.Size` `[lihfolk]`. Easing choices are in `game-craft.md` §1; UI motion rules in `ui-input-crossplatform.md`.
+- Squash and stretch `[lihfolk]`: preserve area or volume (height 0.8 → width 1.25 in 2D); set the extreme pose instantly and spring back (tweening into it adds 50–100 ms of mush); damping ratio 0.4–0.6 gives one visible overshoot; squash the art layer, never the text; sub-step stiff springs to about 120 Hz so 30 FPS phones stay stable. Depth: 3–5% sober UI, 8–15% cartoon UI, 15–30% collectibles. Rigid R15 parts cannot squash, so use pose; single-mesh props can through `MeshPart.Size` `[lihfolk]`. Easing tokens and UI motion rules: `ui-motion-and-feedback.md` §2–3.
 
 ## 10. Replication: the server says what happened, each client draws it
 
@@ -305,12 +306,10 @@ function FxPool.play(template: BasePart, cf: CFrame, gameplay: boolean?)
 	local bucket = free[template] or {}
 	free[template] = bucket
 	local count = live[template] or 0
-	local root = table.remove(bucket)
-	if not root then
-		if count >= MAX_LIVE and not gameplay then return end -- decoration is droppable, information is not
-		root = template:Clone()
-		root.Parent = workspace
-	end
+	local pooled = table.remove(bucket)
+	if not pooled and count >= MAX_LIVE and not gameplay then return end -- decoration is droppable, information is not
+	local root: BasePart = pooled or template:Clone()
+	root.Parent = workspace
 	live[template] = count + 1
 	root.CFrame = cf
 	local longest = 0
@@ -356,7 +355,7 @@ local RunService = game:GetService("RunService")
 local FxPool = require(script.Parent.FxPool)
 local CEILING = { Low = 0.4, Medium = 0.7, High = 1 }
 local ceiling = CEILING.High -- set from your settings module when the player changes "Effects"
-local TARGET = 1 / 60
+local TARGET = 1 / 60 -- use 1 / 30 where the device or your own frame cap holds 30 FPS, or detail sits at the floor
 local average, overFor, okFor = TARGET, 0, 0
 FxPool.detail = math.min(ceiling, 0.7)
 RunService.PreRender:Connect(function(dt: number)
@@ -378,14 +377,14 @@ end)
 
 | System | Under reduced motion |
 |---|---|
-| Camera shake, roll, offsets | Off; keep a 0.25× directional kick if any confirmation is wanted |
+| Camera shake and offsets | Off; keep a 0.25× directional kick if any confirmation is wanted |
 | FOV changes | 0.5× |
 | Hit-stop | Off or shortened; keep the sound and spark |
 | Impact frames, blur, full-screen flashes | Off; replace with a steady edge vignette and a directional indicator |
-| UI motion | Snap or fade (`ui-input-crossplatform.md`) |
+| UI motion | Snap or fade (`ui-motion-and-feedback.md` §7) |
 
-- Settings to ship with any shake, flash or FOV juice (tier 2 in `core-loop-tuning.md` §8): shake slider (default 60–80%), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
-- Flash safety: no more than 3 full-screen flashes in any second (WCAG 2.3.1); avoid saturated red full-screen flashes; rapid hits merge into one sustained tint; prefer reducing contrast, frequency and area over a warning screen (Xbox Accessibility Guideline 118). No Roblox-specific rule was found, so this is the developer's job. Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`. Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
+- Settings to ship with any shake, flash or FOV juice (tier 2 in `core-loop-tuning.md` §8): shake slider 0–100% (schema and default in `accessibility-and-player-qol.md` §10; tune the values in §7 so that 100% is comfortable), screen-effects intensity slider (0 removes tint, blur and vignette), flashes toggle, hit-stop toggle, damage numbers (All, Mine, Off).
+- Flash safety: nothing flashes more than three times in any one second (WCAG 2.3.1); Xbox Accessibility Guideline 118 counts a flash as a luminance change of 10% or more over about 20% or more of the screen and has a separate, stricter test for saturated red. So: no saturated red full-screen flashes; rapid hits merge into one sustained tint; reduce contrast, frequency and area instead of adding a warning screen. Every large flash from every player's effects passes one limiter (the flash gate in `accessibility-and-player-qol.md` §5, set to 2 per second). No Roblox-specific rule was found, so this is the developer's job. Comfort: unrequested camera rotation, especially roll, is the strongest nausea trigger; keep camera motion player-driven and decoration optional `[lihfolk]`. Keep the information, remove the motion: with everything off the player must still know they hit, were hit and from where.
 
 ## 13. Juice ladder ordered by frame cost
 
@@ -422,7 +421,7 @@ What makes an effect look like every other Roblox game `[house]`, from the DevFo
 | Glow comes from Bloom | Disappears on low quality levels and differs per device | Glow painted into the texture, plus `Brightness` |
 | Friend and foe effects identical | Team fights cannot be parsed | Allegiance hue and shape on the primary layer (§1) |
 
-**Engineering mistakes that sink good art:** effects built or tweened on the server, or a caster waiting for the echo · `LightInfluence` left at the Studio default · clone and destroy per hit, or destroying an emitter right after `Emit` · a Highlight created per flash · a trail left on through the whole swing or enabled without `Clear()` · trusting the engine to thin bursts, or reading `SavedQualityLevel` · tuning on a desktop, close up, in daylight, alone · a telegraph drawn from different numbers than the server hit test, or culled on low settings · a state replicated as a one-time event · per-frame random shake, exponential FOV decay, two writers of `FieldOfView` · a flipbook as the whole effect · a unique 1024² texture per effect · no shake slider, flash toggle or reduced-motion path.
+**Engineering mistakes that sink good art:** effects built or tweened on the server, or a caster waiting for the echo · `LightInfluence` left at the Studio default · clone and destroy per hit, or destroying an emitter right after `Emit` · a Highlight created per flash · a trail left on through the whole swing or enabled without `Clear()` · trusting the engine to thin bursts, or reading `SavedQualityLevel` · tuning on a desktop, close up, in daylight, alone · a telegraph drawn from different numbers than the server hit test, or culled on low settings · a state replicated as a one-time event · per-frame random shake, camera roll, exponential FOV decay, two writers of `FieldOfView` · a flipbook as the whole effect · a unique 1024² texture per effect · no shake slider, flash toggle or reduced-motion path.
 
 ## 15. Level-up: symptom → cause → fix
 
@@ -434,7 +433,7 @@ What makes an effect look like every other Roblox game `[house]`, from the DevFo
 | Solid coloured slab instead of a slash | Beam texture not loaded | Preload on equip; hold transparent until loaded; wait out fresh uploads |
 | Streak across the body, or a sheet around the character | Trail not cleared; trail window too wide | `Clear()` before enabling; marker window; crescent for sweeps over 120° |
 | Outline stopped showing | Slot limit or a leftover Highlight on the model | Destroy unused; one arbiter per object |
-| Own aura or trail missing in first person | Effects parented inside the character are hidden there | Parent to a welded helper part |
+| Own aura or trail missing in first person | Effects parented inside the character are hidden there | Parent to a welded helper part outside the character model |
 | Fine alone, lags in a full server | No onlooker share or per-client cap | Others at half or less; global particle cap; distance and view culling for strangers |
 | Hitch a few seconds after big moments | Instance churn | Pools with a cap |
 | Phones lag only when the effect is near the camera | Large see-through pieces causing overdraw | Make them smaller, stack fewer layers, raise transparency along the camera line |
@@ -476,14 +475,14 @@ Asking for critique `[community]`: give the context (game, camera, device, the r
 - [ ] An importance sheet (0–10 per ability and viewer) and an element and allegiance colour script exist; friend and foe differ by more than hue.
 - [ ] `LightInfluence` set explicitly; emitters fire with `Emit`; streams at mobile rates; no per-frame emitter property writes; nothing reads `SavedQualityLevel`.
 - [ ] Beam and trail textures preloaded; trails cleared and windowed; arcs over 120° drawn as crescents; Highlights persistent with one owner per object; VFX meshes are Blender kit pieces, non-colliding, pooled, with a 2–3 layer low version; textures greyscale, painted or CC0, shared and counted.
-- [ ] Hit-stop is client-only, budgeted, one per swing; shake starts after the stop; FOV has one owner and returns to exactly 0.
+- [ ] Hit-stop is client-only, budgeted, one per swing; shake starts after the stop and never rolls the camera; FOV has one owner and returns to exactly 0.
 - [ ] Pools capped; per-cast, per-caster and per-client budgets written; gameplay information never culled; detail scales from the player's Effects setting and measured frame time.
-- [ ] Shake slider, screen-effects intensity, flash toggle, hit-stop toggle and reduced-motion path exist; at most 3 full-screen flashes per second.
+- [ ] Shake slider, screen-effects intensity, flash toggle, hit-stop toggle and reduced-motion path exist; large flashes pass one gate (at most 2 per second, under the three-per-second limit).
 - [ ] Scored 16+ on §16 from a hot 3 GB Android phone, in slow motion, at game distance, on the brightest and darkest floor, with 8 casters at one spot.
 
 ## Sources
 
-Accessed 2026-11-10 and 2026-11-11. "(read)" = opened; "(viewed)" = images looked at; "(search summary)" = seen only through web search result text. Full annotated list with image links: `visual-library/vfx.md`, `visual-library/vfx-learning.md`.
+Accessed 2026-11-10 and 2026-11-11. "(read)" = opened; "(viewed)" = images looked at. Nothing here rests on search summaries any more. Full annotated list with image links: `visual-library/vfx.md`, `visual-library/vfx-learning.md`.
 
 - Roblox/creator-docs at commit 7cbffff (read): `effects/particle-emitters.md`, `effects/beams.md`, `effects/trails.md`, `effects/highlighting.md`, `parts/textures-decals.md`, `art/modeling/surface-appearance.md`, `performance-optimization/design.md`, `tutorials/use-case-tutorials/vfx/` (explosions, volcanoes, waterfalls); reference classes `ParticleEmitter`, `Beam`, `Trail`, `Texture`, `SurfaceAppearance`, `MeshPart`, `Highlight`, `TweenService`, `UserGameSettings`, `GuiService`, `UnreliableRemoteEvent`. https://github.com/Roblox/creator-docs
 - Roblox staff posts (read): custom flipbook layouts, 2025-10-13 https://devforum.roblox.com/t/4005128 · flipbook release and texture sizes, 2022-10-21 https://devforum.roblox.com/t/2029388 · quality levels, beam segments and `SavedQualityLevel`, 2026-11-05 https://devforum.roblox.com/t/4977292 · procedural emitter shapes, 2021-10-20 https://devforum.roblox.com/t/1517642 · hiding avatar effects in first person, 2024-08-27 https://devforum.roblox.com/t/3136706
@@ -493,5 +492,5 @@ Accessed 2026-11-10 and 2026-11-11. "(read)" = opened; "(viewed)" = images looke
 - Mesh and timing threads (read, viewed): Mesh Soulercoasters https://realtimevfx.com/t/1987 · How do I make my timing better https://realtimevfx.com/t/17547 · Modular Approach to AOE VFX https://realtimevfx.com/t/31540 · On Asking for Feedback https://realtimevfx.com/t/7159 (read)
 - DevForum community (read, viewed): Crecent Sword Slash Effect https://devforum.roblox.com/t/1113871 · VFX Tutorial (Blender modifiers) https://devforum.roblox.com/t/872437 · Scrollable textures for MeshParts https://devforum.roblox.com/t/2820890 · What are Mesh Flipbooks https://devforum.roblox.com/t/2656999 · Stoic Bomb workflow overview https://devforum.roblox.com/t/3608056 · Client Replication 101 https://devforum.roblox.com/t/1789487 · critique threads https://devforum.roblox.com/t/2898977, https://devforum.roblox.com/t/4824974, https://devforum.roblox.com/t/3114938
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault, commit 43ba05d) (read): `07 Lighting VFX and Audio/` (particle emitters, beams and trails, highlights, VFX design playbook, budgets and culling, replication, telegraphs, projectiles, screen damage, textures and flipbooks, readability and value, escalation, kid-friendly hit feedback), `47 Game Feel and Juice/`, `08 Animation/05 Systems/`, `45 Procedural Blender Assets/Mesh VFX Packs Built in Blender`, `58 Player QoL and Game Tweaks/Comfort Toggles`, `42 Accessibility and Inclusive Design/Motion Sensitivity and Camera Comfort`.
-- Earlier pass, search summary only: `Emit` and `Rate` versus graphics level https://devforum.roblox.com/t/474762, https://devforum.roblox.com/t/2657543 · BillboardGui overhead https://devforum.roblox.com/t/3889210, https://devforum.roblox.com/t/3542255 · https://learn.microsoft.com/en-ie/gaming/accessibility/xbox-accessibility-guidelines/118 · https://www.w3.org/WAI/WCAG21/Understanding/three-flashes-or-below-threshold.html (cited through LihFolk; not opened)
+- Read 2026-11-11: `Rate` and `Emit` versus quality level https://devforum.roblox.com/t/474762, https://devforum.roblox.com/t/2657543 (developer replies, no staff answer) · BillboardGui cost, with staff replies https://devforum.roblox.com/t/3542255 · https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/118 · https://www.w3.org/WAI/WCAG21/Understanding/three-flashes-or-below-threshold.html · `performance-optimization/microprofiler/tag-table.md`, `production/publishing/accessibility.md`, `environment/post-processing-effects.md` in the docs mirror
 - Not reachable or not found: the Riot VFX style guide PDF (the 2017 nexus.leagueoflegends.com links now redirect to the home page); vfxapprentice.com (403); an official statement on whether `Emit` bursts are thinned by graphics level; a documented rule for how `Texture` maps onto custom meshes; an official flash-rate rule.

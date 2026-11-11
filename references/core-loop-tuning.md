@@ -138,32 +138,23 @@ Reading the curve around an update `[lihfolk]` (daily users from about a week be
 
 Above 1,000 DAU the weekly AI analytics report flags outlier segments (for example retention falling only on iOS) `[official]` `[VS]`. Alerts on session time, crash rate and concurrent users can post to a Discord webhook `[official]`.
 
-Benchmarks. Use the similar-games range in Creator Analytics first (shown as 50th–90th percentile, 100+ DAU needed).
-
-| Metric | Figures | Tag |
-|---|---|---|
-| D1 similar-games range | Docs example 12.11–18.73%; DevForum announcement example 12.4–24.1%. Both illustrative; every game gets its own range | `[official]` |
-| D1 / D7 / D30, large titles | Median 10.3% / 1.6% / 0.5%. D1 P25 8.4%, P75–P90 12.9–15.9%, P99 22.2%. D7 P25 1.0%, P99 9.1%. D30 top 1% 4.7%. GameAnalytics 2026 report: 500+ titles with 1M+ MAU, Aug 2025–Jul 2026 | `[community]` third-party, read through search summaries |
-| Session | Median 9.8 min and 1.56 sessions per player per day (secondary write-up of the same 2026 report). GameAnalytics 2025: half of tracked games under 6 min, P95 near 30 min; games with 0–6 min sessions sit below 10% D1 | `[community]` |
-| Folk targets (D1 20% "good", 40% "excellent") | The 2026 report says these circulating figures come from small samples of already-promoted games | `[community]` |
-
-Conflict: design-foundations.md and market-scan-2026-11.md quote the GameAnalytics 2025 figures (median session 6.6 min, P90 about 26 min; D1 4.3% for sessions under 3 min, 11.5% for 19–24 min). The 2026 report samples only titles above 1M MAU, so its medians are higher. Both stand; neither is a target. The target is the game's own P50, then P90, in Creator Analytics.
+Benchmarks. Use the similar-games range in Creator Analytics first (shown as 50th–90th percentile; 100+ DAU needed; a comparison aid, not a ranking input `[official]`). Published figures, with their samples and which of them may drive triage, are in the one table in analytics-and-discovery.md §Benchmarks. Folk targets ("D1 20% is good, 40% excellent") come from small samples of already-promoted games; do not set targets from them. The target is the game's own P50, then P90.
 
 ## 6. Level-up: metric symptom → likely loop cause → experiment → expected movement
 
-"Reported" figures are single self-reported cases from forum or Reddit posts seen through search summaries. They show direction, not a guarantee.
+"Reported" figures are single self-reported cases. They show direction, not a guarantee; the one marked unverified could not be opened at its source.
 
 | Symptom | Likely loop cause | Experiment (one variable) | Expected movement |
 |---|---|---|---|
-| Under-60 s bounce high; first-session curve loses 30%+ in minute 1 | Arrival: slow join, crash on low-memory phones, a menu or play button, spawn far from the verb, tile promises something else | Check Performance (crash rate, out-of-memory exits) by device type first. Then: spawn at the verb with one prompt and no menu, against the current flow | Under-60 s bounce falls within days; D1 follows. Reported: 45% → 18% leaving in the first 30 s after the spawn got one clear first action. Instance streaming cut join times by at least 20% according to a Roblox DevForum streaming thread `[VS]` |
-| 61–180 s bounce high, under-60 s fine | Verb found, no payoff: first reward late or weak, first upgrade too expensive, tutorial text in the way | `loop_first_upgrade_cost` or `ftue_start_coins` at two values; or the tutorial at 3 steps against 5 | `FirstUpgrade` conversion up, then 61–180 s bounce down. Reported tutorial cases, in both directions, are in tutorial-and-onboarding.md §0 and §15 |
+| Under-60 s bounce high; first-session curve loses 30%+ in minute 1 | Arrival: slow join, crash on low-memory phones, a menu or play button, spawn far from the verb, tile promises something else | Check Performance (crash rate, out-of-memory exits) by device type first. Then: spawn at the verb with one prompt and no menu, against the current flow | Under-60 s bounce falls within days; D1 follows. Reported, unverified (search-result text of a Reddit mirror only): 45% → 18% leaving in the first 30 s after the spawn got one clear first action. Instance streaming reduces join times by at least 20% (Roblox staff post, March 2023) `[official]` `[VS]` |
+| 61–180 s bounce high, under-60 s fine | Verb found, no payoff: first reward late or weak, first upgrade too expensive, tutorial text in the way | `loop_first_upgrade_cost` or `ftue_start_coins` at two values; or the tutorial at 3 steps against 5 | `FirstUpgrade` conversion up, then 61–180 s bounce down. Reported tutorial cases, in both directions, are in tutorial-and-onboarding.md §0 |
 | One funnel step loses over twice its neighbours | That step is hard to find or not fun | Timed hint at (time most players need + 1 s); move the target into line of sight; `ftue_hint_delay_s` 5 against 10 | Per-user funnel conversion at that step up; D1 only if the step is early |
 | Session time 3–6 min; curve cliff at 4–6 min | No meso goal, or the first wall comes too soon | Lower early thresholds (`xp_curve_early`, `cost_growth_early`); add the goal ladder HUD | Survival from minute 5 to 10 up; session time up; D1 with a lag |
 | Session time at benchmark, D1 low | A consumable session: nothing changes while away, no stated reason to return | End-of-session return hook: capped offline earnings, tomorrow's calendar day, a timer that completes overnight, opt-in notification | D1 and D1 play days up; session time flat |
 | D1 fine, D7 low | Progression wall or content exhausted by day 3–5 | Find the pile-up level; `cost_growth_mid` at two values; add a second verb or a three-category quest board | D2–7 play days up over 2 weeks |
 | D7 fine, D30 low | No endgame or social reason | Small content every 2–4 weeks; long collection goals; trading, parties, leaderboards | Weekly cohort table improves over 4–8 weeks; slow to read |
 | Playtime per user high, play days low | Marathon sessions with no daily reason; playtime above 60 min a day adds nothing to ranking | Move rewards from duration to days: daily quest board, cumulative calendar | D2–7 play days up; session time may fall, which is acceptable |
-| Daily rewards or playtime rewards added, nothing moved | The loop, not the reward layer. Reported: a game with 4-min sessions saw no change from daily rewards; playtime rewards hold players in a session but do not bring them back | Stop adding reward systems; return to rows 1–4 | — |
+| Daily rewards or playtime rewards added, nothing moved | The loop, not the reward layer. Reported: a game with 4-min sessions saw no change from adding daily rewards; a developer's opinion in another thread is that players hooked only on playtime rewards do not return `[community]` | Stop adding reward systems; return to rows 1–4 | — |
 | Phone session time far below PC | Touch controls, HUD size, frame rate or memory | Phone-only playtest; fix; compare by platform filter | Phone session time converges on PC |
 | D1 falls during an ad burst or a viral spike | Cohort mix | None. Read D1 by source | Home Recommendations D1 unchanged |
 | Metrics fall the day an update ships | Regression: crash, memory, a new onboarding step, a broken reward | Performance by place version; first-session curve current against previous; roll back or fix | Returns to baseline within 2 cohorts |
@@ -221,8 +212,8 @@ function Tunables.get(player: Player, key: string): number
 		local ok, result = pcall(function()
 			return ConfigService:GetConfigForPlayerAsync(player)
 		end)
-		if not ok then
-			return DEFAULTS[key]
+		if not ok or not player:IsDescendantOf(Players) then
+			return DEFAULTS[key] -- failed, or the player left during the yield: do not cache
 		end
 		snapshot = result
 		snapshots[player] = snapshot
@@ -241,6 +232,9 @@ end
 Players.PlayerAdded:Connect(function(player)
 	joinedAt[player] = os.clock()
 end)
+for _, player in Players:GetPlayers() do -- players who joined before this module loaded
+	joinedAt[player] = joinedAt[player] or os.clock()
+end
 Players.PlayerRemoving:Connect(function(player)
 	snapshots[player] = nil
 	joinedAt[player] = nil
@@ -275,22 +269,14 @@ Rules: juice scales with the size of the event (game-craft.md tier table) and ne
 
 ## Sources
 
-Accessed 2026-11-10. "(read)" = content opened in the `Roblox/creator-docs` mirror at commit ccc2b01 (2026-11-07); "(search summary)" = seen only through web search result text.
+Accessed 2026-11-10; docs and DevForum threads re-checked 2026-11-11. "(read)" = content opened (docs in the `Roblox/creator-docs` mirror, threads through the DevForum JSON endpoint); "(search summary)" = seen only through web search result text.
 
 - Roblox/creator-docs (read), https://github.com/Roblox/creator-docs/tree/main/content/en-us/ : `production/analytics/retention.md`; `production/analytics/engagement.md`; `production/analytics/index.md`; `production/analytics/funnel-events.md`; `production/analytics/performance.md`; `production/analytics/alerts.md`; `production/analytics/insights.md`; `production/analytics/analytics-dashboard.md`; `production/experiments.md`; `production/configs.md`; `production/game-design/core-loops.md`; `production/game-design/onboarding.md`; `production/game-design/onboarding-techniques.md`; `production/game-design/ui-ux-design.md`; `discovery.md` and discovery-faq.md; `performance-optimization/improve.md`; `reference/engine/classes/HapticEffect.yaml`; `reference/engine/classes/AnalyticsService.yaml` (read; progression events)
-- https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157 (search summary)
-- https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030 (search summary)
-- https://devforum.roblox.com/t/analytics-new-user-first-session-retention-new-and-returning-users/2890832 (search summary)
-- https://devforum.roblox.com/t/whats-next-for-streaming-we-need-your-feedback/2218024 and https://devforum.roblox.com/t/updates-to-streaming-enabled/2391960 (search summary; the "join times at least 20% lower" figure was attributed to a Roblox streaming thread, exact thread not confirmed)
-- https://www.gameanalytics.com/reports/2026-roblox-report and https://www.gameanalytics.com/reports/2025-roblox-report (search summary)
-- https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-roblox (search summary)
-- https://blog.rrqworld.com/roblox-game-retention/ (search summary; session and sessions-per-day figures)
-- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z and https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search summaries of r/robloxgamedev posts via a third-party mirror, not opened; the 45% → 18% case)
+- Staff posts (read 2026-11-11): https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157 (16 Oct 2025), https://devforum.roblox.com/t/analytics-track-new-user-retention-by-daily-and-weekly-cohort/3817030, https://devforum.roblox.com/t/analytics-new-user-first-session-retention-new-and-returning-users/2890832, https://devforum.roblox.com/t/whats-next-for-streaming-we-need-your-feedback/2218024 (14 Mar 2023: "Streaming reduces join times by at least 20%")
+- Benchmarks: see the sources of analytics-and-discovery.md §Benchmarks
+- https://reddit.sentinel-team.org/subreddits/robloxgamedev/snapshots/2026-04-03T05%3A12%3A52.21453Z and https://reddit.sentinel-team.org/posts/1sakqj4/snapshots/2026-04-03T05%3A12%3A52.21453Z (search-result text of r/robloxgamedev posts on a third-party mirror; not opened; the 45% → 18% case is unverified)
 - https://devforum.roblox.com/t/improving-onboarding-for-our-zombie-shooter/3323657 (read 2026-11-11; the tutorial case is told in tutorial-and-onboarding.md §0)
-- https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (search summary; daily rewards did not help)
-- https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (search summary)
-- https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566 (search summary)
-- https://devforum.roblox.com/t/my-day-1-retention-is-awful-23-losing-half-my-players-in-under-2-minutes-what-am-i-doing-wrong-with-onboarding/4186434 (search summary)
-- https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (search summary)
+- https://devforum.roblox.com/t/low-engagement-on-new-game/3778071 (read; 4-minute sessions, daily rewards did not help), https://devforum.roblox.com/t/how-effective-are-playtime-reward/3652644 (read; opinions only), https://devforum.roblox.com/t/suggestions-on-how-to-improve-d1-retention/4369566 (read)
+- https://beebom.com/admin-abuse-might-save-dying-roblox-games-but-hurts-them-in-the-long-run (read 2026-11-11; opinion piece)
 - https://dubit.io/blog/how-we-build-hit-roblox-games (search summary)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/10 Game Design and Genres/Core Loops and Session Design.md`, `…/First-Time User Experience and Onboarding.md`, `LihFolk Vault V2/11 Monetization Publishing and Live Ops/Measuring Onboarding - Funnels, Drop-off and A-B Tests.md`, `LihFolk Vault V2/27 Marketing and Growth/Update Cadence and Hype Cycles.md` (read). Ideas adapted and rewritten; no code or text copied.

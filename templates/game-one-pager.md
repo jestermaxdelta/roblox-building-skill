@@ -1,6 +1,6 @@
 # Game one-pager: <Working title>
 
-Fill every field before any code or art. Keep it to one page. If a field is hard to fill, that is a design gap, not a formatting problem. See references/process-and-playtesting.md for the six forcing questions and references/design-foundations.md for the loop rubric.
+Fill every field before any code or art. Keep it to one page. If a field is hard to fill, that is a design gap, not a formatting problem. See references/process-and-playtesting.md for the six forcing questions, references/design-foundations.md §3 for the paper loop rubric (pass 7/10) and references/tutorial-and-onboarding.md §2 for the first-minute script.
 
 ## Pitch
 
@@ -32,9 +32,10 @@ Fill every field before any code or art. Keep it to one page. If a field is hard
 
 ## First five minutes (FTUE sketch)
 
-- 0:00 <spawn into the loop>
+- 0:00 <spawn into the loop, facing the verb target; control within 10 s>
+- 0:15 <first verb>
 - 0:30 <first reward>
-- 1:30 <first upgrade>
+- 1:30 <first upgrade (by 2:00 at the latest)>
 - 3:00 <second verb introduced>
 - 5:00 <goal ladder visible; first "I want to come back" hook>
 
@@ -62,7 +63,8 @@ Fill every field before any code or art. Keep it to one page. If a field is hard
 
 ## Art direction
 
-- Style bible headline: <palette, shape language, bevel standard, texel density, trim set>.
+- Style bible headline: <the three decisions, palette, shape language, bevel width, texel density> (references/art-direction-and-quality-bar.md §3–6).
+- References chosen (3–5 from references/visual-library/, with what to take from each): <>.
 - Grid: <5 / 8 / 16 studs>. Kit list (first 20 pieces): <>.
 - Everything in Blender; collision plan per asset class.
 

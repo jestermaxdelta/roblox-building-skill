@@ -38,6 +38,8 @@ Terms: *hidden information* = state some clients must not be able to read; *team
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 join mid-round as a spectator with a clear timer to the next round (under 60 s typical) and a lobby toy to play with.
 2. 0:45 first role reveal: innocent by default for a first round `[house]`, with a one-line goal.
 3. 1:00 first round: survive, hear the cues, see a body marker.
@@ -70,6 +72,8 @@ Terms: *hidden information* = state some clients must not be able to read; *team
 - Collection status visible in every round (the weapon in hand is the showcase).
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, environmental ambience.
 
 - Role reveal card with a single goal line; role-chance display in the lobby.
 - Readability without chat `[lihfolk]`: body-discovery sound and marker, directional footsteps and throw sounds, a visible gun pickup, accuse and vote buttons with quick phrases in discussion variants.

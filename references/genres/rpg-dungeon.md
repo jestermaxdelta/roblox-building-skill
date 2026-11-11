@@ -36,6 +36,8 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn with a weapon equipped facing the first enemy; movement and attack prompts only.
 2. 0:30 first kill, first loot drop that is visibly better than the starter.
 3. 1:30 first quest giver; quest tracker pins one objective.
@@ -76,6 +78,8 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 - Trading and a visible gear identity (transmog) are long-term status loops.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark, melee slash, projectile, AoE telegraph, heal, level-up.
 
 - HUD: health and resource, hotbar with cooldown sweeps, pinned quest, minimal damage numbers (pooled, capped).
 - Inventory: grid with rarity frames, compare-on-select, bulk sell, lock toggle. On phones, one-tap equip-best.
@@ -166,8 +170,8 @@ Accessed 2026-11-10.
 - https://github.com/Ukendio/jecs (search listing; 484 stars, MIT; Luau ECS)
 - https://github.com/prooheckcp/RoQuest (read README; 20 stars; quest-system library, licence listed as Apache-2.0 by GitHub and MIT in the README; reference only)
 - https://github.com/EgoMooseOldProjects/Dungeon-generator (search listing; 19 stars, MIT, 2016)
-- https://devforum.roblox.com/t/script-planning-questions-for-performance/2815331 (search summary)
-- https://devforum.roblox.com/t/devas-of-creations-npc-replication-idea-smoothness/3151754 (search summary)
+- https://devforum.roblox.com/t/script-planning-questions-for-performance/2815331 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/devas-of-creations-npc-replication-idea-smoothness/3151754 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Combat and RPG.md` (read)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

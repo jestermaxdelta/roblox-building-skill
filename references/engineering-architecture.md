@@ -1,6 +1,6 @@
 # Engineering architecture, Luau standards and tooling
 
-What this is: the client-server model, project architecture, Luau standards, toolchain, testing, CI and Studio MCP working rules. Open it when setting up a project or choosing tools, or jump to "Level-up audit" to assess and untangle an existing codebase. Distilled from knowledge-base sections 4.1, 4.2, 4.3 and 4.10; tool versions and MCP tools re-checked on 2026-11-10 (GitHub repos, `Roblox/creator-docs`). Snippets are unexecuted sketches to adapt. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
+What this is: the client-server model, project architecture, Luau standards, toolchain, testing, CI and Studio MCP working rules. Open it when setting up a project or choosing tools, or jump to "Level-up audit" to assess and untangle an existing codebase. Distilled from knowledge-base sections 4.1, 4.2, 4.3 and 4.10; tool versions, MCP tools and Open Cloud limits re-checked on 2026-11-11 (GitHub repositories and their changelogs, `Roblox/creator-docs`, create.roblox.com). Snippets are unexecuted sketches to adapt. Tags: `[official]`, `[community]`, `[VS]` version-sensitive, `[house]`.
 
 Contents: Start here by level · Client-server model essentials · Project architecture · Luau standards · Toolchain · Testing · CI/CD with Open Cloud · Runbook: shipping an update to a live game · AI agents and the Studio MCP · Level-up audit · Review gate · Sources
 
@@ -68,7 +68,7 @@ Typed loader sketch (server; mirror it on the client with `Controllers/`):
 local Players = game:GetService("Players")
 type Service = { Init: ((self: any) -> ())?, Start: ((self: any) -> ())?, PlayerAdded: ((self: any, player: Player) -> ())? }
 local services: { [string]: Service }, order: { string } = {}, {}
-for _, child in script.Parent:WaitForChild("Services"):GetChildren() do
+for _, child in (script.Parent :: Instance):WaitForChild("Services"):GetChildren() do
 	if child:IsA("ModuleScript") then services[child.Name] = require(child) :: any; table.insert(order, child.Name) end
 end
 table.sort(order) -- prefix names ("10_Data") for explicit ordering
@@ -125,33 +125,33 @@ Declare remotes in the project file (or create them on the server at boot) so th
 - Naming: PascalCase for services, modules, types and instances; camelCase for locals and functions; SCREAMING_SNAKE_CASE constants; `_private`; `is/has/can` booleans; **`Async` suffix on every yielding function**.
 - Errors: `pcall` every yielding call to a web service (DataStores, MemoryStores, MessagingService, MarketplaceService, TeleportAsync, HttpService). `xpcall(fn, debug.traceback)` when you need a trace. `assert` for programmer errors only. Never swallow errors silently; `warn` with context. Retries use exponential backoff with jitter.
 - Scheduling: `task.wait`, `task.spawn`, `task.defer`, `task.delay`, `task.cancel`. Never `wait`, `spawn`, `delay`. Per-frame work on `RunService.Heartbeat` (server), `PreRender` (client camera and visuals), `PreSimulation`/`PostSimulation` (physics-adjacent).
-- Deferred events `[VS]`: set `SignalBehavior = Deferred` now. Pitfalls: fire-then-read returns stale state; disconnect does not cancel already-queued invocations (use `:Once()`); `Destroying` handlers run after the instance is destroyed; re-entrancy capped at 10.
+- Deferred events `[VS]`: set `SignalBehavior = Deferred` now. Pitfalls `[official]`: fire-then-read returns stale state; several invocations can queue before a handler runs (`Disconnect()` drops the pending ones, `Destroy()` disconnects but still runs them, so use `:Once()` for one-shot handlers); `Destroying` handlers run after the instance is destroyed; re-entrancy capped at 10.
 - Cleanup: every object with a lifetime owns a Trove (RbxUtil `Trove`; Maid and Janitor are older equivalents). Per-player tables are cleared on `PlayerRemoving`. Use RbxUtil `Signal` instead of `BindableEvent` for module-to-module events (BindableEvent deep-copies tables and strips metatables).
 - Promises (evaera) are useful for fan-out with timeouts, cancellation and retries; otherwise plain yielding code with `Async` naming is clearer.
-- Performance: `--!native` or `@native` only on measured hot server (or Android client) code `[VS]`; `buffer` for compact binary data; cache services and functions in locals; avoid closures and tables per frame in hot loops. The 2025 runtime added `vector`, `math.lerp`, `math.map`, `math.isnan`, `math.isinf`, `math.isfinite`, `buffer.readbits`, `buffer.writebits`.
+- Performance: `--!native` or `@native` only on measured hot server (or Android client) code `[VS]`; `buffer` for compact binary data; fetch each service once into a local (caching `math.floor` in a local buys nothing, see luau-mastery.md); avoid closures and tables per frame in hot loops. The 2025 runtime added `vector`, `math.lerp`, `math.map`, `math.isnan`, `math.isinf`, `math.isfinite`, `buffer.readbits`, `buffer.writebits`.
 
 ## Toolchain `[VS]`
 
-Latest tags and dates read from the GitHub repos on 2026-11-10. Pin exact versions; upgrade one tool at a time.
+Latest tags, tag dates and changelogs read from the GitHub repositories on 2026-11-11. Pin exact versions; upgrade one tool at a time.
 
 | Tool | Latest (tag date) | Role and notes |
 |---|---|---|
 | Rokit | 1.2.0 (2025-09) | Pins every CLI in `rokit.toml` (supersedes Aftman and Foreman) |
-| Rojo | 7.7.1 (2026-10) | Filesystem ↔ Studio sync; `rojo build`, `serve`, `sourcemap`. 7.7 adds `rojo syncback` (pull an existing place into project files, with `syncbackRules`) and a WebSocket sync transport `[community: release notes via search]`; upgrade the CLI and the Studio plugin together. Never `rojo upload --cookie` in CI |
+| Rojo | 7.7.1 (2026-10) | Filesystem ↔ Studio sync; `rojo build`, `serve`, `sourcemap`. 7.7 adds `rojo syncback [project] --input <file>` (pulls an existing place into project files, controlled by `syncbackRules`), a WebSocket link between server and plugin, and `Host`/`Origin` checks on `rojo serve` (changelog, read); upgrade the CLI and the Studio plugin together. Never `rojo upload --cookie` in CI |
 | Studio Script Sync | Built in | Scripts and folders only; 10,000 scripts per synced root, 128 roots; works with Team Create; no sourcemap. It ignores attributes and tags on scripts (data loss if you rely on them) `[official]`. Conflict: `scripting/sync.md` treats it as a standard feature, `ai/coding-harness.md` still says to enable it under Beta Features |
 | Wally | 0.3.2 (2023-06) stable; 0.4.0-alpha.1 (2026-10) | Packages; commit `wally.lock`; CI runs `wally install` then `git diff --exit-code wally.lock`. Stay on the stable line |
-| Selene | 0.32.0 (2026-10) | Lint, `std = "roblox"` |
-| StyLua | 2.6.0 (2026-10) | Format, `stylua --check src` |
+| Selene | 0.32.0 (2026-10) | Lint, `std = "roblox"`. Parses `const` from 0.31.0 |
+| StyLua | 2.6.0 (2026-10) | Format, `stylua --check src`. Parses `const` from 2.5.0 |
 | luau-lsp | 1.70.1 (2026-09) | `luau-lsp analyze` with a fresh `sourcemap.json`; with its companion Studio plugin it is also the editor language server Roblox recommends for Script Sync `[official]` |
 | Lune | 0.11.1 (2026-10) | Standalone Luau runtime for build scripts (asset upload, codegen, unit tests). Pre-1.0: minor versions break APIs |
-| Jest Roblox | `roblox/jest` 3.20.0 on Wally; repo active 2026-11 | Port of Jest 27; runs in Studio and through Open Cloud Luau Execution `[official README]`. Default for new in-engine tests |
-| TestEZ | 0.4.2; last commit 2023-01 | Legacy. Keep existing suites; write new ones in Jest Roblox (its docs include a TestEZ migration guide). `jsdotlua/jest-lua` (last commit 2024-12) is a stale community mirror |
+| Jest Roblox | 3.21.0 (2026-11-09), on Wally as `roblox/jest` and `roblox/jest-globals` since 3.20.0 | Port of Jest 27.4.7; runs in Studio and through Open Cloud Luau Execution `[official README]`. Default for new in-engine tests. The repository's git tags stop at v3.8.0: read the version from `CHANGELOG.md` or the Wally index |
+| TestEZ | 0.4.2; last commit 2023-01 | Legacy. Keep existing suites; write new ones in Jest Roblox (its docs include a TestEZ migration guide). `jsdotlua/jest-lua` (3.10.0, last commit 2024-12) is a stale community mirror |
 | rbxcloud | 0.17.0; last commit 2025-03 | Open Cloud CLI; fine for simple publish and messaging calls |
 | Mantle | 0.11.18 (2025-03) | README: no longer maintained. Do not adopt; use Open Cloud calls from Lune or CI |
 | Zap, Blink | Zap 0.6.29 (2026-06); Blink active (2026-09) | Generated networking, see networking-and-security.md |
 
 ```toml
-# rokit.toml (versions verified 2026-11-10; the docs' own example still shows rojo 7.6.1 and lune 0.10.4)
+# rokit.toml (versions verified 2026-11-11; the docs' own example still shows rojo 7.6.1 and lune 0.10.4)
 [tools]
 rojo = "rojo-rbx/rojo@7.7.1"
 wally = "upliftgames/wally@0.3.2"
@@ -167,14 +167,14 @@ Rojo when the filesystem is the source of truth (git, CI, AI agents, non-script 
 
 - Pure logic (economy maths, damage formulas, migrations, validators) lives in Instance-free modules tested under Lune.
 - In-engine tests use Jest Roblox (TestEZ only where a suite already exists) and run in a test place via the Studio CLI (`RobloxStudioBeta.exe --task RunScript --placeId <id> --universeId <id> --runScriptFile tests.luau --outputFile out.log --quitAfterExecution`) or Open Cloud Luau Execution.
-- Data code runs against `ProfileStore.Mock`.
-- Multi-client tests: `StudioTestService` (`ExecuteMultiplayerTestAsync`, `AddPlayers`) and `UserInputService:CreateVirtualInput()`.
+- Data code runs against the store's mock (`PlayerStore.Mock:StartSessionAsync(key)`), which never touches DataStores.
+- Multi-client tests: `StudioTestService` (`ExecuteMultiplayerTestAsync` with 1–8 clients, `AddPlayers`; plugin security) and `UserInputService:CreateVirtualInput()` (check the result for `nil`) `[official]`.
 - Leak audit: respawn 20 times and rejoin repeatedly; memory and connection counts return to baseline.
 - What to test, cheapest first `[lihfolk, adapted]`: pure logic and migrations against fixture saves (data-and-purchases.md); remote handlers with the fuzz corpus and race test (networking-and-security.md); time-based features (daily rewards, boosts, cooldowns) through an injectable clock instead of `os.time()` calls scattered in code; streaming bugs by forcing stream-out (`StreamingTargetRadius = 64`); long sessions with a soak loop (performance.md, procedure B). Harness design and worked examples: debugging-and-testing.md.
 
 ## CI/CD with Open Cloud `[VS]`
 
-Luau Execution API: `POST /cloud/v2/universes/{universeId}/places/{placeId}/luau-execution-session-tasks` with `{ "script": "...", "timeout": "300s" }`; poll until `COMPLETE` or `FAILED`. Limits: 4 MB script, 5 minutes, 4 MB return JSON, 450 KB logs, 100 MiB binary input valid 15 minutes. No physics, no auto-run scripts, DataModel changes not persisted; DataStores work.
+Luau Execution API: `POST /cloud/v2/universes/{universeId}/places/{placeId}/luau-execution-session-tasks` with `{ "script": "...", "timeout": "300s" }`; poll until `COMPLETE` or `FAILED`. Limits `[official]`: 4 MB script, 5 minutes, 4 MB return JSON, 450 KB of logs (older lines dropped), 100 MiB binary input valid 15 minutes, 10 unfinished tasks per place (then HTTP 429), 5 task creations a minute per key owner, results kept 24 hours. No physics and no auto-run scripts. DataModel changes stay local to the task unless the script calls `AssetService:SavePlaceAsync` (the page's summary says this; its task description still says changes cannot be persisted, so test it). DataStore calls hit real data: point CI at a test universe.
 
 Place publishing: `PATCH https://apis.roblox.com/assets/v1/assets/{placeId}` with `request={"assetId":<placeId>,"assetType":"Place","published":true}` and `fileContent` (`.rbxl` as `application/octet-stream`); poll `GET /assets/v1/operations/{id}`. Key needs assets Read and Write.
 
@@ -191,9 +191,9 @@ Publishing does not move players: old and new servers run side by side until old
 3. **Cross-place messages are versioned contracts.** Teleport data, MemoryStore tickets and MessagingService payloads carry a `v` field; receivers accept the current and previous version.
 4. **Features ship dark** behind a Configs flag and are switched on after the restart completes.
 5. **Multi-place order:** publish the receiving place (match, dungeon) first and restart its outdated servers with a short delay (5–10 minutes); then publish the sender (lobby) with a longer bleed-off (15–30 minutes); then flip the flag; drop the old version next release.
-6. **Restart** from Creator Hub (or Open Cloud): "Restart only servers with outdated versions", plus "Delay server restart" of 1–60 minutes. Roblox stops matchmaking into those servers (invites and teleports can still enter), waits, then teleports each old server's players together to a new one `[official]`.
+6. **Restart** from Creator Hub > Configurations > Server management (or Open Cloud): "Restart only servers with outdated versions", plus "Delay server restart" of 1–60 minutes. Roblox stops matchmaking into those servers (invites and teleports can still enter), waits, then teleports each old server's players together to a new one `[official]`.
 7. **Drain** when `game.ServerRestartScheduled(restartTime, source, attributes)` fires `[official]`: warn players with a countdown, save everyone once early, refuse new trades, stop enqueuing matchmaking tickets, and start no round that cannot finish before `restartTime`. `source` is `DeveloperUpdate` for your restarts and `RobloxMaintenance` (with empty attributes) for Roblox's, so the handler needs a default policy.
-8. **Watch** error report, load-failure counters and the performance dashboard for an hour; compare session length and next-day return of players moved by the update with a normal day `[lihfolk]`.
+8. **Watch** the Error Report ("New errors since" this version), load-failure counters and the Performance dashboard for an hour, with a crash-rate alert set beforehand (performance.md); compare session length and next-day return of players moved by the update with a normal day `[lihfolk]`.
 9. **Emergency.** A bad update with no data impact: revert in Version History, publish, restart outdated servers with a 1–5 minute delay. If the bad build wrote data, rolling code back does not roll data back: fix forward, or ship the rollback build with a reader that tolerates the new fields (incident runbook in data-and-purchases.md).
 
 ```lua
@@ -215,13 +215,13 @@ A single-place game with no schema change and no long activities can simply publ
 
 ## AI agents and the Studio MCP `[VS]`
 
-Studio has a built-in MCP server `[official]`: Assistant > … > Manage MCP Servers > "Enable Studio as MCP server"; stdio transport; quick connect for Claude Code, Claude Desktop, Cursor, VS Code, Codex CLI, Gemini CLI and Antigravity. Commands: Windows `cmd.exe /c %LOCALAPPDATA%\Roblox\mcp.bat`, macOS `/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP`. If tools do not appear, restart Studio and the client and check the config JSON (the port-13469 conflict note in the earlier version of this file is not in the current docs). The older open-source `Roblox/studio-rust-mcp-server` is no longer developed (its README points to the built-in server). Every call takes a `studio_id` from `list_roblox_studios`.
+Studio has a built-in MCP server `[official]`: Assistant > … > Manage MCP Servers > "Enable Studio as MCP server"; stdio transport; quick connect for Claude Code, Claude Desktop, Cursor, VS Code, Codex CLI, Gemini CLI and Antigravity. Commands: Windows `cmd.exe /c %LOCALAPPDATA%\Roblox\mcp.bat`, macOS `/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP`. If tools do not appear, restart Studio and the client, check the command path and the config JSON, and look for the green connected-clients indicator under "Enable Studio as MCP server". The older open-source `Roblox/studio-rust-mcp-server` is no longer developed (its README points to the built-in server). Every call takes a `studio_id` from `list_roblox_studios`.
 
 | Group | Tools (docs, 2026-11) |
 |---|---|
 | Scripts | `script_read` (whole or line range), `multi_edit` (several edits in one call; creates the script if the path is missing), `script_search` (fuzzy name, 10 results), `script_grep` (50 matches at most) |
 | DataModel | `search_game_tree`, `inspect_instance`, `execute_luau` (`datamodel_type` Edit, Client or Server) |
-| Playtest | `get_studio_state`, `start_stop_play`, `get_console_output`, `screen_capture` (optional camera position), `character_navigation`, `user_keyboard_input`, `user_mouse_input` |
+| Playtest | `get_studio_state`, `start_stop_play`, `get_console_output`, `screen_capture` (optional camera position), `character_navigation`, `user_keyboard_input`, `user_mouse_input`. A paused MicroProfiler capture and `SceneAnalysisService` data are also readable through the server `[official]` |
 | Delegation and docs | `subagent` (`explore`, `playtest`), `http_get` (allow-listed Roblox docs), `skill` |
 | Assets | `upload_image`, `store_image`, `insert_asset`, `search_asset`, `generate_mesh`, `generate_material`, `generate_procedural_model`, `wait_job_finished` |
 | Open Cloud | `open_cloud_invoke`: calls Open Cloud with no API key, limited to the scopes the user enabled for this game (levels Safe, Balanced, Full access; each game starts at Balanced) |
@@ -238,7 +238,7 @@ Working rules:
 8. Verify APIs with `http_get`, `https://create.roblox.com/docs/llms.txt` or the `.md` page versions; do not guess.
 9. Permissions are per person and per game. Ask the user to enable a scope; never work around a refusal. "Save & load data" makes `execute_luau` hit live DataStores, and publishing, monetisation, ban and secret scopes act on the live game: use a test universe.
 
-OpenGameEval (Roblox's agent benchmark) ties failures to under-exploration and to fixing one copy when several exist; best core Pass@1 was about 50% at time of reading.
+OpenGameEval (Roblox's agent benchmark, `Roblox/open-game-eval`): the best Pass@1 on its 87-task set was 50.3% at the 2026-10-05 leaderboard (read), so half of first attempts at a Studio task fail; rules 2 and 4 address the usual causes, under-exploration and fixing one copy of several `[house reading]`.
 
 ## Level-up audit: how to check an existing game
 
@@ -256,7 +256,7 @@ Sketch F, code inventory (unexecuted sketch; read-only; command bar or Studio MC
 local ScriptEditorService = game:GetService("ScriptEditorService")
 local LEGACY = {
 	{ "wait(", "[^%.%w_]wait%(" }, { "spawn(", "[^%.%w_]spawn%(" }, { "delay(", "[^%.%w_]delay%(" },
-	{ "BodyMover", "Body[VGPFAT]%a+" }, { "Humanoid:LoadAnimation", "[Hh]umanoid:LoadAnimation" },
+	{ "BodyMover", "Body[VGPFAT][eyohn][lrsg]%a+" }, { "Humanoid:LoadAnimation", "[Hh]umanoid:LoadAnimation" },
 	{ "FindPartOnRay", "FindPartOnRay" }, { "InvokeClient", "InvokeClient" }, { "while true do", "while%s+true%s+do" },
 }
 local byPlace: { [string]: number }, legacy: { [string]: number }, copies: { [string]: number } = {}, {}, {}
@@ -296,7 +296,7 @@ print(byPlace, legacy) -- Workspace/Script above zero means scripts inside model
 | Works in Studio, errors live ("attempt to index nil", infinite yield) | Streaming and load-order races; client indexes Workspace paths directly | `WaitForChild` with timeout or tags; loop existing players and characters |
 | Start-up errors that come and go | Many auto-running Scripts racing each other | One entry point per side and the Init/Start loader |
 | Memory grows with every respawn or rejoin | Connections and per-player tables never cleaned | Trove per character and per player; leak audit |
-| New nil errors after `SignalBehavior = Deferred` | Code reads state in the same frame it fires an event | Fix per the deferred-events pitfalls above |
+| New nil errors after `SignalBehavior = Deferred` | Code reads state right after firing an event, or a handler runs for an instance already destroyed | Fix per the deferred-events pitfalls in "Luau standards" |
 | Studio edits vanish | Rojo is serving and the filesystem wins | Decide the owner; `rojo syncback` or edit the files |
 | Scripts lose attributes or tags after syncing | Script Sync ignores them | Keep config in ModuleScripts; do not sync those scripts |
 | Collaborators overwrite each other | Several people syncing or live-editing the same scripts | Git with reviews; Team Create Drafts mode; one place-file owner |
@@ -325,13 +325,12 @@ Grep `references/knowledge-base.md` for `## 4.1`, `## 4.2`, `## 4.3` and `## 4.1
 
 ## Sources
 
-Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
+Accessed 2026-11-11. `Roblox/creator-docs` at commit 7cbffff (2026-11-10).
 
-- https://github.com/Roblox/creator-docs: `content/en-us/studio/{mcp,mcp-open-cloud,cli}.md`, `scripting/sync.md`, `ai/coding-harness.md`, `projects/{external-tools,collaboration,server-authority/index}.md`, `production/analytics/error-report.md` (read)
+- https://github.com/Roblox/creator-docs: `content/en-us/studio/{mcp,mcp-open-cloud,cli}.md`, `scripting/{sync,locations}.md`, `ai/coding-harness.md`, `projects/{external-tools,collaboration,update-games,server-authority/index}.md`, `production/analytics/error-report.md`, `cloud/guides/usage-place-publishing.md`, `reference/engine/classes/{DataModel,StudioTestService,VirtualInput,UserInputService,ScriptEditorService}.yaml` (read)
+- https://create.roblox.com/docs/cloud/reference/features/luau-execution.md (read; limits, task states, `SavePlaceAsync` note)
+- Tags, tag dates and changelogs (read via git): https://github.com/rojo-rbx/rojo, https://github.com/rojo-rbx/rokit, https://github.com/UpliftGames/wally, https://github.com/UpliftGames/wally-index, https://github.com/Kampfkarren/selene, https://github.com/JohnnyMorganz/StyLua, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/lune-org/lune, https://github.com/Roblox/jest-roblox, https://github.com/jsdotlua/jest-lua, https://github.com/Roblox/testez, https://github.com/Sleitnick/rbxcloud, https://github.com/blake-mealey/mantle, https://github.com/Sleitnick/Knit, https://github.com/Sleitnick/RbxUtil, https://github.com/MadStudioROBLOX/ProfileStore, https://github.com/red-blox/zap, https://github.com/1Axen/blink, https://github.com/Ukendio/jecs
+- READMEs (read): https://github.com/Roblox/studio-rust-mcp-server, https://github.com/Roblox/jest-roblox, https://github.com/blake-mealey/mantle, https://github.com/Sleitnick/Knit
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `LihFolk Vault V2/41 Multiplayer Services/Server Shutdowns Soft Updates and Migration.md`, `03 Architecture and Networking/{Project Structure and Bootstrapping, Server Lifecycle and Shutdown, Frameworks - Knit Matter and Others, Interest Management and Per-Player Replication}.md`, `04 Data and Persistence/Data Loss Prevention and Recovery.md`, note titles in `12 Performance Testing and Debugging/` (read)
-- `Roblox/creator-docs` `projects/update-games.md`, `reference/engine/classes/DataModel.yaml` (`ServerRestartScheduled`) (read)
-- Tags and last commits (read via git): https://github.com/rojo-rbx/rojo, https://github.com/rojo-rbx/rokit, https://github.com/UpliftGames/wally, https://github.com/Kampfkarren/selene, https://github.com/JohnnyMorganz/StyLua, https://github.com/JohnnyMorganz/luau-lsp, https://github.com/lune-org/lune, https://github.com/Roblox/jest-roblox, https://github.com/jsdotlua/jest-lua, https://github.com/Roblox/testez, https://github.com/Sleitnick/rbxcloud, https://github.com/blake-mealey/mantle, https://github.com/Sleitnick/Knit, https://github.com/red-blox/zap, https://github.com/1Axen/blink, https://github.com/Ukendio/jecs
-- READMEs (read): https://github.com/Roblox/studio-rust-mcp-server, https://github.com/Roblox/jest-roblox, https://github.com/blake-mealey/mantle
-- Rojo 7.7 release notes, seen through https://newreleases.io/project/github/rojo-rbx/rojo/release/v7.7.0-rc.1 and a release mirror (search summary)
-- https://devforum.roblox.com/t/studio-script-sync-now-in-beta/4065468, https://devforum.roblox.com/t/studio-mcp-server-updates-and-external-llm-support-for-assistant/4415631 (search summary)
-- Not reachable: the GitHub REST API for these repos (blocked in this session), so release notes were not read first-hand; versions come from `git ls-remote --tags` and tag commit dates.
+- https://github.com/Roblox/open-game-eval `LLM_LEADERBOARD.md` (read, 2026-10-05)
+- Not verified: Flamework's current status; GitHub release pages (the REST API is blocked, so versions come from tags, tag commit dates and in-repository changelogs).

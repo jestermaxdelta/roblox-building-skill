@@ -10,7 +10,7 @@ Distilled from knowledge-base sections 1.10 to 1.13 and 2.13. Use this during th
 | Intermediate | Lean GDD parts 1–9 (§3); the right slice for the question, not a vertical slice first (§4); milestone exit criteria (§6); five-tester think-aloud sessions with a written hypothesis (§7); the review rubrics (§8); a postmortem after every launch and major update (§9) | Experiments on small traffic |
 | Expert | Pre-registered weekly experiments with guardrail metrics and a rollback owner (§7, sample sizes in analytics-and-discovery.md); triangulated telemetry, observation and interviews; one-way-door decision records (§5); cross-checking rubrics against churn points (§8) | — |
 
-Related: templates/game-one-pager.md, templates/lean-gdd.md and templates/playtest-plan.md are the fill-in forms for §1, §3 and §7; core-loop-tuning.md owns the first-10-minutes script and the loop scorecard; audit-existing-game.md is the process for a game that is already live.
+Related: templates/game-one-pager.md, templates/lean-gdd.md and templates/playtest-plan.md are the fill-in forms for §1, §3 and §7; tutorial-and-onboarding.md owns the first-minute script (§2) and the tutorial critique rubric (§13); core-loop-tuning.md owns the loop spec, the loop scorecard (§4) and the experiment procedure (§7); audit-existing-game.md is the process for a game that is already live.
 
 ## 1. Concept one-pager
 
@@ -22,7 +22,7 @@ Write one page before building anything. Fields and their tests:
 | Core loop | Verb → feedback → reward → repeat | Is the core a single strong verb? |
 | Twist | What is mechanically new | Would one screenshot look different from competitors? |
 | Audience | Primary, secondary, and who it is NOT for | Names a Quantic Foundry cluster |
-| Platform and session | Devices; target session length | Fits Roblox sessions (median about 6.6 min) |
+| Platform and session | Devices; target session length | Fits Roblox sessions (median about 6.6 min; analytics-and-discovery.md §Benchmarks) |
 | Comp set | 3 comparable games, what you take and where you differ | Honest comps |
 | Nested loops | 30 s, 5 min, session, meta | A reason to stop and a reason to return |
 | Iceberg | Validation evidence from context to external proof | Intuition counts least |
@@ -46,7 +46,7 @@ A living body of knowledge (wiki, board, sheets), not a monolith. Parts:
 1. One-pager and pillars.
 2. Loops: every system records the loop it serves, the behaviour it changes, its feedback, its validation metric and its deletion condition.
 3. Progression and economy sheet (see economy-and-progression.md).
-4. FTUE script, second by second.
+4. FTUE script, beat by beat (format in tutorial-and-onboarding.md §2).
 5. Monetisation plan: products, placement moments, rate limits, ethics checks.
 6. Art bible: Blender kit list, palette, shape language, texel density, polygon budgets, and a collision plan per model class.
 7. Telemetry plan: every metric names the decision it informs.
@@ -134,7 +134,7 @@ Interpreting: triangulate observation, metrics and interviews (one source is a h
 
 Walkthrough personas: Casual Newcomer, Interested Returner, Dedicated, Hardcore Optimiser, Streamer ("would I clip this?"), Lapsed Returner, Genre Critic. Healthy emotion arc: Curious → Confused → Aha → Empowered. Unhealthy: death spiral, no relief valve, content wall, pay-to-win moment, social decay, complexity cliff, plateau.
 
-On Roblox: test in a private place in the same universe with Team Test or a private server; use Studio's local multi-client server for social mechanics. Recruit adult or 16+ testers through age-appropriate channels; never collect personal data from in-game players or move minors off-platform; use `PolicyService` before showing external links `[VS]`. For in-game A/B tests hash the `UserId` into stable buckets and log the bucket on every event. Discovery responds to signal changes only after a few days `[VS]`; play-through rates changed meaning after the 12 Oct 2026 measurement change, so never compare across that date `[VS]`.
+On Roblox: test in a private place in the same universe with Team Test or a private server; use Studio's local multi-client server for social mechanics. Recruit adult or 16+ testers through age-appropriate channels; never collect personal data from in-game players or move minors off-platform; use `PolicyService` before showing external links `[VS]`. For in-game A/B tests use Experiments with one Config key (core-loop-tuning.md §7); if you assign variants yourself, hash the `UserId` into stable buckets and log the bucket on every event. Discovery responds to signal changes only after a few days `[VS]`; play-through rates changed meaning after the 12 Oct 2026 measurement change, so never compare across that date `[VS]`.
 
 Weekly experiment SOP: Monday freeze the variant, Tuesday ship, Wednesday quality gates, Thursday check, Friday–Sunday collect, next Monday decide (amplify, iterate, observe, roll back, kill). Pre-register primary, secondary and negative metrics, decision date and rollback owner; one variable per variant; segment by new/returning/existing; rollback is a config switch. A win from misleading UI or anxiety timers, or D1 up with complaints up, is a kill regardless of uplift.
 
@@ -167,9 +167,9 @@ After every jam, launch and major update: goal and hypothesis with pre-set thres
 - Scarcity: only genuine, disclosed limits ("until Dec 31"); never fake stock counts.
 - Engagement psychology: BlackBook's manipulation toolkit is banned; use only its analytical audits.
 - "Each extra click costs 10% conversion" and "30% randomness": unverified; measure your own funnel.
-- Retention benchmarks: Creator Analytics similar-game benchmarks first, GameAnalytics percentiles second; generic F2P targets (D1 40%) are not Roblox norms.
+- Retention benchmarks: Creator Analytics similar-game benchmarks first, then the one table in analytics-and-discovery.md §Benchmarks; generic F2P targets (D1 40%) are not Roblox norms.
 - Pacing: compress PC/console milestones 5–10× for Roblox.
-- Retention mechanics: cumulative calendars (never a login streak that resets), announced timers, no absence punishment.
+- Retention mechanics: cumulative calendars (never a login streak that resets), announced timers, no absence punishment (liveops-quests-retention.md).
 
 ## Review gate
 
@@ -185,5 +185,5 @@ After every jam, launch and major update: goal and hypothesis with pre-set thres
 
 ## Sources
 
-- `references/knowledge-base.md` sections 1.10–1.13 (concept, prototyping, scope, playtesting, source conflicts) and 2.13 (jam workflow); grep `## 1.10` to `## 1.13` and `## 2.13`. Those sections list their own upstream repositories and the owner's vault notes. No web sources were opened for this file.
+- `references/knowledge-base.md` sections 1.10–1.13 (concept, prototyping, scope, playtesting, source conflicts) and 2.13 (jam workflow); grep `## 1.10` to `## 1.13` and `## 2.13`. Those sections list their own upstream repositories and the owner's vault notes. No web sources were opened for this file: its sample sizes, timeboxes and rubric thresholds are practitioner rules of thumb, not measurements.
 - Market facts tagged `[VS]` (250-play gate, wave length, thumbnail and video figures) come from `references/market-scan-2026-11.md`, a 2026-11-07 snapshot.

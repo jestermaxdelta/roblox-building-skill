@@ -36,6 +36,8 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn on a dock with the rod equipped (auto-equip) `[lihfolk]`.
 2. 0:15 first cast with a two-line prompt; put the same two lines in the store description `[lihfolk]`.
 3. 0:45 first catch: size, a small variant chance, bestiary entry 1 of N.
@@ -70,6 +72,8 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 - Seasonal waters with secret fish and honest end dates.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: water splash, hatch or open reveal for the catch card, coin or reward burst.
 
 - Reel minigame centred and large; one input on touch. Optional "perfect reel" bonus keeps skill for older players `[lihfolk]`.
 - Catch card: species art, size, variant, "1 in X", new-entry stamp, sell or keep.

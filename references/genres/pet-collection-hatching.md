@@ -36,6 +36,8 @@ Terms: *paid random item* = any random reward bought with Robux or with currency
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 the host loop pays immediately; the first egg stands in view with price and an odds button.
 2. 1:00–2:00 first hatch; the pet appears beside the player and the stat multiplier visibly jumps.
 3. 3:00 second and third hatch; a duplicate teaches merge or "equip best".
@@ -76,6 +78,8 @@ Terms: *paid random item* = any random reward bought with Robux or with currency
 - Rare-hatch server announcement gives the shareable clip; keep it a toast, not a full-screen takeover.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hatch or open reveal, aura, coin or reward burst.
 
 - Egg stand: price, "Odds" button with label, E / tap to hatch, auto-hatch toggle. Odds panel lists each pet, rarity and percentage summing to 100%.
 - Inventory: grid with rarity frame, equip-best, multi-select delete with a lock toggle on favourites, merge progress "2/3".
@@ -165,12 +169,12 @@ Accessed 2026-11-10.
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read; 2026-11-07 snapshot).
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read; questionnaire item on `ArePaidRandomItemsRestricted`)
-- https://devforum.roblox.com/t/should-i-restrict-egg-opening-based-on-arepaidrandomitemsrestricted-policy/3278299 (search summary)
-- https://devforum.roblox.com/t/update-on-paid-random-items-restriction-for-uk-users-under-18/3072183 (search summary)
-- https://devforum.roblox.com/t/optimize-pet-follow/3166935 (search summary)
-- https://devforum.roblox.com/t/my-pet-script-is-so-laggy-and-i-cant-figure-out-why/3495202 (search summary)
-- https://devforum.roblox.com/t/preventing-duping-methods-in-trading/2688896 (search summary)
-- https://devforum.roblox.com/t/making-a-secure-trading-system-without-external-database/4043236 (search summary)
+- https://devforum.roblox.com/t/should-i-restrict-egg-opening-based-on-arepaidrandomitemsrestricted-policy/3278299 (read 2026-11-11)
+- https://devforum.roblox.com/t/update-on-paid-random-items-restriction-for-uk-users-under-18/3072183 (read 2026-11-11)
+- https://devforum.roblox.com/t/optimize-pet-follow/3166935 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/my-pet-script-is-so-laggy-and-i-cant-figure-out-why/3495202 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/preventing-duping-methods-in-trading/2688896 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/making-a-secure-trading-system-without-external-database/4043236 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://github.com/MadStudioRoblox/ProfileStore (search listing; 352 stars, Apache-2.0; session locking)
 - https://www.metaversemarcom.io/post/inside-the-monetization-playbook-of-roblox-s-biggest-hit (search summary; third-party, Pet Simulator X premium egg price)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `32 Case Studies of Top Roblox Games/Case Study - Adopt Me.md`, `Case Study - Pet Simulator 99.md`, `10 Game Design and Genres/Genre Playbook - Simulators.md` §Pets and eggs, `skills/roblox-trend-game/references/trend-games-research.md` §8 (read)

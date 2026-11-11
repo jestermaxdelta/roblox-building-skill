@@ -39,7 +39,9 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 
 ## First 5 minutes
 
-1. 0:00 skip the lobby for a first-time player: drop straight into a short tutorial map with three starter units.
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
+1. 0:00 no lobby menu or queue for a first-time player: the first waves run on a short starter lane inside the lobby place, with three starter units and other players in view. A first-join teleport to a separate solo tutorial place lost session time and D1 in the one reported case (`tutorial-and-onboarding.md` §11); if the first match must be a reserved server, send the player there with their party, not alone.
 2. 0:15 first placement on a highlighted spot; 0:30 first kill.
 3. 1:30 first upgrade with a visible range and damage change.
 4. 3:00 a new enemy type that the first tower handles badly, and the unit that answers it.
@@ -77,6 +79,8 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 - Unit index and trait collection; trading only with the dupe protections in `pet-collection-hatching.md`.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: projectile, AoE telegraph and detonation, explosion, hatch or open reveal for summons.
 
 - Hotbar of loadout units with cost; tap unit then tap ground to place; range ring preview; upgrade panel on select with the stat delta and sell value.
 - Wave bar: number, timer, next-wave preview, skip or call-early button, speed toggle.
@@ -136,7 +140,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enem
 
 | # | Check | Fix if failing |
 |---|---|---|
-| 1 | First-time players skip the lobby into a tutorial map | Add a first-join teleport and three starter units |
+| 1 | First-time players place a unit within 60 s, with no menu, queue or solo teleport first | Add a starter lane in the lobby place and three starter units |
 | 2 | Enemies have no Humanoids; clients render them | Move to data simulation plus pooled client models |
 | 3 | Receive bandwidth stays flat as enemy count rises | Replicate spawn and correction events, not transforms |
 | 4 | Tower logic runs in one fixed-tick loop | Merge per-tower loops; precompute path coverage |
@@ -169,11 +173,11 @@ Accessed 2026-11-10.
 
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` §Gap analysis (read; 2026-11-07 snapshot).
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://devforum.roblox.com/t/an-in-depth-guide-to-a-tower-defense-game-part-1/3019857 (search summary)
-- https://devforum.roblox.com/t/tower-defense-enemy-system/2667346 (search summary)
-- https://devforum.roblox.com/t/how-can-i-create-a-tower-defense-entity-system-that-is-optimized/2128775 (search summary)
-- https://devforum.roblox.com/t/how-do-i-lower-my-recv-td-game-enemy-system/2772669 (search summary)
-- https://devforum.roblox.com/t/humanoidenemy-optimisation/4804990 (search summary)
+- https://devforum.roblox.com/t/an-in-depth-guide-to-a-tower-defense-game-part-1/3019857 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/tower-defense-enemy-system/2667346 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/how-can-i-create-a-tower-defense-entity-system-that-is-optimized/2128775 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/how-do-i-lower-my-recv-td-game-enemy-system/2772669 (opened 2026-11-11: thread and topic confirmed, details not re-read)
+- https://devforum.roblox.com/t/humanoidenemy-optimisation/4804990 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://github.com/0jewell/td-kit (read README; 4 stars, MIT; pathway, traveller and range-intersection utilities; reference only)
 - https://beebom.com/anime-vanguards-surpasses-blox-fruits-top-earning-roblox-game/amp/ (search summary)
 - https://deltiasgaming.com/?p=349658 and https://progameguides.com/roblox/anime-vanguards-traits-tier-list-all-traits-ranked/ (search summary; fan guides for summon cost, trait rates and pity)

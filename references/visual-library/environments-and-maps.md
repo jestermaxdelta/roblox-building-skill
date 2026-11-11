@@ -1,6 +1,6 @@
 # Environments and maps reference library
 
-What this is: 64 checked references for stylised and low-poly environments that suit Roblox: towns, lobbies and hubs, biomes, interiors, obby and arena layouts, plus the boards, thumbnails and kits behind them. The rules they support live in `references/art-direction-and-quality-bar.md` (slop tells, reference boards, review tests) and `references/level-design-worldbuilding.md` (layout, composition, kits).
+What this is: 62 checked references for stylised and low-poly environments that suit Roblox: towns, lobbies and hubs, biomes, interiors, obby and arena layouts, plus the boards, thumbnails and kits behind them. The rules they support live in `references/art-direction-and-quality-bar.md` (slop tells, reference boards, review tests) and `references/level-design-worldbuilding.md` (layout, composition, kits).
 
 How to use this file:
 - Pick the kind of space you are building, open three rows (include one marked Weak or Mixed), and write down one decision from each (focal point, palette, value split, kit size) before blocking out. Shrink each image to 320 px wide first: what survives is the lesson.
@@ -82,10 +82,10 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 |---|---|---|---|---|
 | 48 | [Starter Kit 3D Platformer](https://github.com/KenneyNL/Starter-Kit-3D-Platformer), Kenney, 2026 commit; code MIT, models CC0 · `https://raw.githubusercontent.com/KenneyNL/Starter-Kit-3D-Platformer/main/screenshots/screenshot.png` | repo | Obby readability: each platform has a dark top and a thick bright rim, so the landing edge is the highest-contrast line on screen; the pastel sky stays below the platforms in saturation | viewed |
 | 49 | [Starter Kit Racing](https://github.com/KenneyNL/Starter-Kit-Racing), Kenney, 2026 commit; code MIT, models CC0 · `https://raw.githubusercontent.com/KenneyNL/Starter-Kit-Racing/main/screenshots/screenshot.png` | repo | Track edges as red and white kerbs, a bright arch as the gate landmark, a yellow tent as the pit marker; layered cone pines are one mesh idea repeated | viewed |
-| 50 | [Level Design Workshop: Blockmesh and Lighting Tips](https://www.youtube.com/watch?v=09r1B9cVEQY), GDC | video | Listed for blockout and light-led guidance in arenas and corridors | oembed |
-| 51 | [Ruski's Tutorial #1: how to design a map layout](https://devforum.roblox.com/t/277853), Trustmeimrussian, 2019 | tutorial | Layout drawn before building (634 likes in search results) | search |
-| 52 | [Ruski's Tutorial #3: how to design a PvP map](https://devforum.roblox.com/t/2746055), Trustmeimrussian, 2023 | tutorial | Lanes and sightlines for PvP | search |
-| 53 | [Mad Studio map layout design guidebook](https://devforum.roblox.com/t/1246963), Mad Studio, 2021 | tutorial | Layout approved separately from visuals | search |
+| 50 | [Level Design Workshop: Blockmesh and Lighting Tips](https://www.youtube.com/watch?v=09r1B9cVEQY), GDC | video | Not watched here. A talk on what a blockout must already prove and on steering players with light; watch it beside `level-design-worldbuilding.md` §5 and §8 and note where the two disagree | oembed |
+| 51 | [Ruski's Tutorial #1: how to design a map layout](https://devforum.roblox.com/t/277853), Trustmeimrussian, 2019 | tutorial | The questions answered before opening Studio: genre, theme, server size, detail level and the map's overall shape (a horseshoe shows the objective but makes players go round; a circle returns them to the start). Then a small worked map | read |
+| 52 | [Ruski's Tutorial #3: how to design a PvP map](https://devforum.roblox.com/t/2746055), Trustmeimrussian, 2023 | tutorial | Seven steps in order: a labelled 2D layout on a 400 × 400 plate with three 32-stud lanes and cross alleys, greybox, risk-versus-reward spots, cover props, perimeter, lighting, finish. Rooms get several entrances so nobody can camp. Built from Parts: keep the order, build the kit in Blender | read |
+| 53 | [Mad Studio map layout design guidebook](https://devforum.roblox.com/t/1246963), loleris (Mad Studio), 2021 | tutorial | A studio's layout cycle: theme and one map quirk, a flat top-down sketch with spawns and objectives placed exactly, then a minimal 3D sketch. Layout is approved before visuals so two people can do the two jobs | read |
 
 ## F. Process: boards, thumbnails and kits
 
@@ -97,16 +97,9 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 57 | [Working on Lighting and Composition for a Night Scene](https://80.lv/articles/working-on-lighting-and-composition-for-a-night-scene), Stephen A. Falk, 2020 · `LV/b2/5e959e735df3d.jpg` | breakdown | Eight pencil thumbnails of one scene before any blockout: composition is chosen on paper | viewed |
 | 58 | [Melancholic City at Night](https://80.lv/articles/how-to-build-a-melancholic-environment-of-a-city-at-night-with-blender), Vitaliy Novart, 2026 · `LV/8d/696534f2a9b24.jpg` | breakdown | Mood references (night illustrations, lit alleys) kept apart from structure references (brick tenements, fire escapes) | viewed |
 | 59 | [As a builder, how do you plan your builds?](https://devforum.roblox.com/t/187515), AbandonedRick and replies, 2018 | tutorial | 706 likes. Greybox the world first (most-liked reply); always work from reference; subdivide until a piece is small enough to finish well | read |
-| 60 | [Environmental Art Design](https://www.youtube.com/watch?v=nwShvDmFHWc) and [Developing Polished Assets](https://www.youtube.com/watch?v=JiXnyF0fbrU), Roblox Documentation | video | The videos embedded in the environmental-art curriculum | oembed |
-| 61 | [The Art of Firewatch (GDC 2015)](https://www.youtube.com/watch?v=ZYnS3kKTcGg), Campo Santo Productions | video | Listed for colour-led stylised landscapes | oembed |
-| 62 | [Crafting a Tiny Open World: A Short Hike Postmortem](https://www.youtube.com/watch?v=ZW8gWgpptI8), GDC | video | Listed for a one-person stylised world | oembed |
-
-## G. Portfolios and galleries to browse (not opened)
-
-| # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
-|---|---|---|---|---|
-| 63 | [fluorlite portfolio](https://fluorlite-portfolio-site.carrd.co/); [Dimitri Rey: Avatar Legends: Bending Grounds environment art](https://dimitrirey.artstation.com/projects/GvxowQ); [Jennifer Towne: Stylized Modular Medieval Kit (Roblox)](https://jennifertowne.artstation.com/projects/XgxxEy); [Batthecat: Sonic Greenhill Time Trial (Roblox)](https://batthecat.artstation.com/projects/dyAQ3W) | gallery | Roblox environment artists with shipped credits, per search results. ArtStation is not reachable from here (not opened) | search |
-| 64 | [DevForum `low-poly` tag](https://devforum.roblox.com/tag/low-poly) and [80 Level environment-art articles](https://80.lv/articles) | gallery | Ongoing showcase and breakdown feeds; apply the quality gate before using anything from them | search |
+| 60 | [Environmental Art Design](https://www.youtube.com/watch?v=nwShvDmFHWc) and [Developing Polished Assets](https://www.youtube.com/watch?v=JiXnyF0fbrU), Roblox Documentation | video | Not watched here. The videos embedded in the curriculum behind rows 54 and 55: the same board and kit shown being built | oembed |
+| 61 | [The Art of Firewatch (GDC 2015)](https://www.youtube.com/watch?v=ZYnS3kKTcGg), Campo Santo Productions | video | Not watched here. Listed for one question: how a landscape is carried by a few flat colour bands per time of day instead of surface detail | oembed |
+| 62 | [Crafting a Tiny Open World: A Short Hike Postmortem](https://www.youtube.com/watch?v=ZW8gWgpptI8), GDC | video | Not watched here. Listed for scope: what one developer chose to build, and to leave out, in a small stylised open world | oembed |
 
 ## Patterns seen
 
@@ -132,10 +125,11 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 Accessed 2026-11-11. All images are third-party and are linked, not stored.
 
-- DevForum threads (Discourse JSON API; images from the forum's upload host): 709866, 3788097, 3682295, 3643516, 683143, 4068529, 3644614, 1891111, 293803, 1046975, 235354, 1497479, 1124673, 330237, 187515 (viewed or read as marked); 277853, 2746055, 1246963 (search only). Posts remain their authors' under the forum's terms.
-- Roblox Creator Docs images (`Roblox/creator-docs`, commit ccc2b01; documentation CC BY 4.0): environmental-art curriculum, Beyond the Dark, The Mystery of Duvall Drive.
+- DevForum threads (Discourse JSON API; images from the forum's upload host): 709866, 3788097, 3682295, 3643516, 683143, 4068529, 3644614, 1891111, 293803, 1046975, 235354, 1497479, 1124673, 330237, 187515 (viewed or read as marked); 277853, 2746055, 1246963 (opening posts read on 2026-11-11). Posts remain their authors' under the forum's terms.
+- Roblox Creator Docs images (`Roblox/creator-docs`): environmental-art curriculum, Beyond the Dark, The Mystery of Duvall Drive. © Roblox; the repository's CC BY 4.0 statement names prose, not images (`assets/reference/ATTRIBUTION.md`), so they are linked only.
 - 80.lv articles and their images: copyright the named artists and 80 Level; study only.
 - Sketchfab models: licences as stated per row (CC BY). They are listed to look at, and must not be downloaded into a game (house rule 1).
 - GitHub kits: KenneyNL starter kits (code MIT, models CC0, README checked), KayKit packs (CC0, `LICENSE.txt` checked). Study only. One KayKit image host request was refused (403), so only one contents image was viewed.
 - YouTube rows verified by oEmbed (title and channel); the videos were not watched.
+- Link check, 2026-11-11: every URL and image path in the tables answered (DevForum through the JSON API, GitHub through `git ls-remote`, Sketchfab through its model API, YouTube through oEmbed). A section of ArtStation portfolios and gallery feeds was removed: ArtStation is not reachable from here and none of it had been opened.
 - Rejected after viewing: tutorial screenshots of Studio and Blender panels, a meme logo, material-graph screenshots, a realistic character render and one reference board whose sources could not be told from generated images.

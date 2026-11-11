@@ -35,6 +35,8 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 control within 2 s of spawn; stage 1 is nearly flat so everyone reaches a checkpoint.
 2. 0:30 three checkpoints passed; the stage counter ticks up with a sound.
 3. 1:30 the first obstacle that can kill; the checkpoint is directly before it.
@@ -62,7 +64,7 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 - Speed or gravity coils only if they do not trivialise stages or leaderboards: keep paid movement out of timed and ranked modes (house rule 3).
 - A stage skip is a fixed, disclosed outcome, not a random item `[official]`.
 - Rewarded video is strongest here `[official]`: first-spawn buffs, mid-session trials, post-failure second chance. Benchmark opt-in 15–25% at frequency 3; best in class 30%+ at 4+. Examples: Glide Tower 47% opt-in at 2.3 ("respawn at previous checkpoint"); Escape the Carnival of Terror Obby 27% at 3.9 (an item worth one life after failing).
-- Developers report low pass sales in plain obbies `[community]`; expect dev products and rewarded video to carry revenue.
+- One developer of a trend obby reported 3,500 R$ from 20K visits, and reviewers blamed a wall of pop-ups and purchase buttons on every surface `[community]`: expect a few well-placed dev products and rewarded video to carry revenue, not the count of prompts.
 - The ethical line `[lihfolk]`: never tune a stage to be unfair so that skips sell. A stage far harder than its neighbours with a skip button beside it is noticed. This is also house rule 3.
 
 ## Retention and social hooks
@@ -73,6 +75,8 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 - Never punish quitting mid-stage; progress is the checkpoint.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: footstep and landing dust, dash, level-up for a stage clear.
 
 - HUD: stage number, world progress bar, a small "Skip?" button that only appears after repeated failure, timer in timed modes.
 - Mobile: large jump button in the right thumb zone; camera sensitivity setting; no HUD element above the character's landing line of sight.
@@ -166,10 +170,10 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/obby.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/templates.md (read; Platformer template)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
-- https://devforum.roblox.com/t/ideas-to-better-monetize-my-obby/1654630 (search summary)
-- https://devforum.roblox.com/t/how-to-refine-your-obby-game/862904 (search summary)
-- https://devforum.roblox.com/t/obby-game-monetization-being-low/3141998 (search summary)
-- https://devforum.roblox.com/t/ideas-to-improve-retention-on-a-themed-obby/1775815 (search summary)
+- https://devforum.roblox.com/t/ideas-to-better-monetize-my-obby/1654630 (read 2026-11-11)
+- https://devforum.roblox.com/t/how-to-refine-your-obby-game/862904 (read 2026-11-11)
+- https://devforum.roblox.com/t/obby-game-monetization-being-low/3141998 (read 2026-11-11)
+- https://devforum.roblox.com/t/ideas-to-improve-retention-on-a-themed-obby/1775815 (read 2026-11-11)
 - https://rowatcher.com/news/simulators-and-obbies-need-different-retention-clocks (search summary; host not reachable for a full read)
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - GitHub search for open obby kits (2026-11-10): no maintained, licensed kit of note found; results were mostly automation or exploit scripts (not used).

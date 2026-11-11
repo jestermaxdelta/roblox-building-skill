@@ -1,6 +1,6 @@
 # Playtest plan: <Title> — build <version> — <date>
 
-Method notes and interpretation rules are in references/process-and-playtesting.md. The default session is five strangers, observed silently, with a short interview afterwards. Run one every week from the first playable prototype.
+Method notes and interpretation rules are in references/process-and-playtesting.md §7; the timing targets below are the house targets from references/tutorial-and-onboarding.md §1–2, and a recording of each phone session is what its §13 rubric is scored from. The default session is five strangers, observed silently, with a short interview afterwards. Run one every week from the first playable prototype.
 
 ## Goal of this test
 
@@ -37,9 +37,9 @@ Method notes and interpretation rules are in references/process-and-playtesting.
 
 | Milestone | Target | P1 | P2 | P3 | P4 | P5 |
 |---|---|---|---|---|---|---|
-| In control | < 15 s | | | | | |
-| First action | < 30 s | | | | | |
-| First reward | < 30 s | | | | | |
+| In control (from join, on the 2–4 GB phone) | ≤ 10 s (15 s ceiling) | | | | | |
+| First action (from control) | ≤ 15 s | | | | | |
+| First reward (from control) | ≤ 30 s | | | | | |
 | First upgrade | < 2 min | | | | | |
 | Found the shop unprompted | < 3 min | | | | | |
 | First win / loop complete | < 5 min | | | | | |

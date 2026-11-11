@@ -20,7 +20,7 @@ New game: build recipes in the order your loop needs them, cheap versions first,
 
 ## Conventions and shared kit
 
-- Shorthand: `Life` = `Lifetime` in seconds; `Spd` = `Speed` in studs/s; `Acc` = `Acceleration`; `LE` = `LightEmission`; `Br` = `Brightness`; `Emit n` = burst with `Enabled = false`; `Rate n` = stream. Every emitter sets `LightInfluence` explicitly (0 unless a row says otherwise). Sizes assume a 5-stud character and a third-person camera 15–25 studs away. Windows are milliseconds from the trigger (animation marker or contact = 0); negative means before it.
+- Shorthand: `Life` = `Lifetime` in seconds; `Spd` = `Speed` in studs/s; `Acc` = `Acceleration`; `LE` = `LightEmission`; `Br` = `Brightness`; `Emit n` = burst with `Enabled = false`; `Rate n` = stream; a beam's `Width` = `Width0` and `Width1`. Every emitter sets `LightInfluence` explicitly (0 unless a row says otherwise). Sizes assume a 5-stud character and a third-person camera 15–25 studs away. Windows are milliseconds from the trigger (animation marker or contact = 0); negative means before it.
 - Curves: `POP(S)` = Size keys (0, 0.2·S) (0.15, 0.8·S) (1, S): fast in, eased out. `SHRINK(S)` = (0, S) (1, 0). `FADE` = Transparency (0, 0) (0.6, 0.3) (1, 1). `INOUT` = Transparency (0, 1) (0.15, 0) (0.7, 0.4) (1, 1).
 - Colour roles per element come from the ramp table in `vfx-and-juice.md` §1: **dark**, **body**, **hot**, plus white for the thin core. "Allegiance" means the team hue on the primary layer.
 - Budget line: particles alive at peak for your own cast at full detail (the low tier multiplies bursts by 0.4), pooled meshes, lights. Others' casts run at half and lose decoration layers.
@@ -29,7 +29,7 @@ New game: build recipes in the order your loop needs them, cheap versions first,
 |---|---|---|
 | `soft_dot` radial glow | 128² | Cores, glows, motes |
 | `hard_dot` hard-edged disc | 128² | Flat sparks, coins, bubbles |
-| `spark_streak` soft elongated oval | 128² | Sparks, embers, rain, speed lines (with `VelocityParallel`) |
+| `spark_streak` soft elongated oval, painted horizontal | 128² | Sparks, embers, rain, speed lines with `VelocityParallel`; stretch along the travel direction with a **negative** `Squash` `[official]` (check orientation with an arrow texture first) |
 | `star4` four-point flash | 256² | Hit frames, muzzle flashes, glints |
 | `ring_drawn` irregular hand-drawn shock ring | 512² | Impacts, explosions, level-up |
 | `ring_thin` clean thin ring | 512² | Telegraph rims, auras, shields |
@@ -128,10 +128,10 @@ Read: exactly where, and exactly when. Never culled, never simplified below outl
 
 | Layer | Build | Window |
 |---|---|---|
-| Dark outline | Two semicircle `Beam`s (handle 1.333 × r), Width 0.3, LE 0, dark colour, Segments 40 | 0 → T |
+| Dark outline | Two semicircle `Beam`s (`CurveSize0` and `CurveSize1` = 1.333 × r), Width 0.6, LE 0, dark colour, Segments 40 | 0 → T |
 | Base fill | Disc mesh, allegiance colour, Transparency 0.75–0.8 | 0 → T |
 | Progress fill (primary) | Second disc scaling 0 → 1 with an ease-in curve, Transparency 0.55, a hot `ring_thin` on its leading edge | 0 → T |
-| Bright rim | Ring beams, Width 0.15, LE 1, at the exact server radius | 0 → T |
+| Bright rim | Ring beams, Width 0.4, LE 1, centred on the exact server radius, `ZOffset` above the outline. Both widths keep the line at about 6 px or more at a 20-stud phone camera (`vfx-and-juice.md` §1); widen for a higher camera | 0 → T |
 | Pop | Fill flashes white on the damage frame and fades in about 220 ms `[lihfolk]` | T → T+220 |
 | Detonation | Recipe 7 or 8 scaled to r | T → |
 
@@ -183,7 +183,7 @@ Read: this character has a status, and which kind. Driven by a character attribu
 | End puff | 4 motes outward, ring fades in 200 ms | End |
 
 - Buff versus debuff must differ by more than hue: buffs rise, are smooth and light; debuffs fall or drip, are jagged and dark.
-- Budget: at most 12 alive per aura; others' auras at half rate; sleep beyond 160 studs. Parent to a welded helper part or it disappears in first person `[official]`. Cheap: ground ring plus 4 motes a second. Showpiece: orbiting element shapes on a ring beam, a pulse synced to the remaining duration.
+- Budget: at most 12 alive per aura; others' auras at half rate; sleep beyond 160 studs. Parent to a helper part outside the character model, welded to it, or it disappears in first person `[official]`. Cheap: ground ring plus 4 motes a second. Showpiece: orbiting element shapes on a ring beam, a pulse synced to the remaining duration.
 - Mistakes: covering the character's silhouette; constant bright additive glow; sent as a one-time event; never ends; every buff identical.
 
 ## 10. Heal
@@ -264,14 +264,14 @@ Read: a milestone, without taking control away.
 
 ## 15. Coin or reward burst
 
-Read: got it, and it went there. The reward sequence itself is in `game-craft.md` §1.
+Read: got it, and it went there. The reward sequence is in `game-craft.md` §1; its UI timings are in `ui-motion-and-feedback.md` §5.
 
 | Layer | Build | Window |
 |---|---|---|
 | Pickup pop | Coin mesh squash 15–30% then hide; `star4`, Emit 1, Life 0.06 | 0–80 |
 | Sparks | `hard_dot` in the coin colour, Emit 0–4 (small tier), Spd 10–15, Acc (0, −30, 0), Life 0.3–0.4 | 0–400 |
-| Fly to counter | 1–5 UI icons on a curved path, 300–500 ms, however large the amount | 50–550 |
-| Counter | Pop and count-up; pitch rises on chains | 350–700 |
+| Fly to counter | A few UI icons on a curved path, never one per coin; count and timing in `ui-motion-and-feedback.md` §5 | 50–550 |
+| Counter | Pop and count-up (`ui-motion-and-feedback.md` §5); pitch rises on chains | 350–700 |
 | Big reward fountain | Coin sprite (4×4 spin flipbook), Emit 8–12, Spd 18–25, SpreadAngle 30,30, Acc (0, −50, 0), Life 0.6–0.8 | 0–800 |
 
 - Budget: 0–4 particles for a normal pickup (the small tier in `game-craft.md`), up to 12 for a fountain. Cheap: pop plus sound. Showpiece: rarity-coloured ring and a short ray card behind the icon in the counter.
@@ -289,7 +289,7 @@ Read: something is coming, how good it is, and here it is. House rules: the serv
 | Reveal (primary) | Item scale 0 → 1.1 → 1 in 200 ms; two `glow_gradient` ray cards rotating in opposite directions behind it; motes | 700–1,400 |
 | Banner | Name and rarity, sound stinger | 900–1,500 |
 
-- Time by tier `[lihfolk]` (`game-craft.md`): common 0.3–0.5 s (flash and pop only), rare 1–1.5 s (adds ring and rays), top tiers 5–6 s (add a ground piece, pillar, camera push, world dim). Each tier adds a layer; it does not just get louder. Auto-open modes get a compact reveal.
+- Time by tier `[lihfolk]` (full ladder in `ui-motion-and-feedback.md` §5): common 0.3–0.5 s (flash and pop only), rare 1–1.5 s (adds ring and rays), top tiers 5–6 s (add a ground piece, pillar, camera push, world dim). Each tier adds a layer; it does not just get louder. Auto-open modes get a compact reveal.
 - Budget: about 20 alive, 2–3 meshes, in front of a calm background. Cheap: flash, pop, banner. Showpiece: top tier only.
 - Mistakes: long animation for commons; rays on everything; unskippable; result rolled on the client; strobing.
 
@@ -314,7 +314,7 @@ Read: hot at the base, rising, then smoke. Break the reference into components f
 |---|---|---|
 | Flame body (primary) | Flame-shaped sprites or a 4×4 loop, Rate 8–12, Life 0.5–0.8, Spd 2–4, Acc (0, 4, 0), Size 1.5 → 0.3, Color hot → body → dark, LE 0.8, Br 3, Rotation ±15 only | Loop |
 | Core glow | `soft_dot`, `LockedToPart`, 1 alive, hot colour | Loop |
-| Embers | `spark_streak`, `VelocityParallel` with Squash, Rate 2–4, Life 0.8–1.5, Spd 5–8, Acc (0, 10, 0), Drag 0.8, flickering Transparency, LE 1 (motion values `[official]`; the tutorial's Br 20 suits a volcano, start at 6–10) | Loop |
+| Embers | `spark_streak`, `VelocityParallel` with Squash, Rate 2–4, Life 0.8–1.5, Spd 5–8, Acc (0, 10, 0), Drag 0.8, flickering Transparency, LE 1 (Spd, Acc and Drag `[official]`; the tutorial's Life 1–5 and Br 20 suit a volcano, start at Br 6–10) | Loop |
 | Smoke | `puff_set`, Rate 1–2, Life 2–3, Acc (0, 2, 0), LE 0–0.1, LightInfluence 0.1–0.3, dark → grey, ZOffset −1, fading in while the flame fades out | Loop |
 | Light | `PointLight`, Brightness 1.5–2.5 flickering at 8–12 Hz, Range 12–16, shadows off | Loop |
 
@@ -327,7 +327,7 @@ Read: warning line, bolt, burst, residue: five beats in under 1.5 s `[community]
 
 | Layer | Build | Window |
 |---|---|---|
-| Warning line | Vertical `Beam`, Width 0.3, Transparency 0.7 → 0.3, LE 1 | −300 to 0 |
+| Warning line | Vertical `Beam`, `FaceCamera`, Width 0.8, Transparency 0.7 → 0.3, LE 1 | −300 to 0 |
 | Bolt (primary) | Crossed-ribbon mesh in 3 jagged variants shown 2 frames each, or 2–3 beams with fresh random curves per step; Width 1.2 → 0; white core, body colour edge | 0–100 |
 | Flash | `star4` at the ground, `PointLight` Brightness 6, Range 30, 60 ms; no full-screen flash by default | 0–60 |
 | Ground burst | `ring_drawn`, forking `spark_streak` sparks (Emit 8, Spd 30, Drag 10, Life 0.2) | 16–300 |
@@ -360,7 +360,7 @@ Read: the place is alive, quietly. Ambience is never brighter or sharper than ga
 | Dust motes in light | `soft_dot`, Rate 3–5, Life 6–10, Spd 0.3–0.6, Size 0.08–0.15, LE 0.5, `INOUT` |
 | Fireflies | `soft_dot`, Rate 1–2, Life 4–6, Size 0.2, Br 4, Transparency keys blinking 2–3 times |
 | Leaves or petals | Leaf shape, Rate 2–4, Life 6–8, Spd 2–3 downward, RotSpeed ±60, Drag 0.5 with `WindAffectsDrag` so `GlobalWind` carries them `[official]` |
-| Rain | One emitter box that follows the camera, `spark_streak`, `VelocityParallel` with Squash, Rate up to the mobile cap of 100, Life 0.6–0.8, Spd 60–80; a second emitter for ground splashes at Rate 10 |
+| Rain | One emitter box that follows the camera, `spark_streak`, `VelocityParallel` with negative Squash, Rate up to the mobile cap of 100, Life 0.6–0.8, Spd 60–80; a second emitter for ground splashes at Rate 10 |
 | Ground mist | Large `soft_dot` cards, at most 4 alive, Transparency 0.85 or more (large transparent sprites are the overdraw cost) |
 | Waterfall or lava | Stacked `Beam`s. Waterfall: Width0 60 → Width1 20, `TextureSpeed` 0.4, `TextureLength` 64, Wrap. Lava: base beam plus two crust beams at `TextureSpeed` 0.01 and −0.008 `[official]` |
 
@@ -379,7 +379,7 @@ Read: the place is alive, quietly. Ambience is never brighter or sharper than ga
 
 ## Sources
 
-Accessed 2026-11-11. Detail and links for each are in `vfx-and-juice.md` Sources and the two `visual-library/vfx*.md` files.
+Accessed 2026-11-11; every `[official]` value re-checked against the tutorials the same day. Detail and links for each are in `vfx-and-juice.md` Sources and the two `visual-library/vfx*.md` files.
 
 - Roblox/creator-docs at commit 7cbffff (read): `tutorials/use-case-tutorials/vfx/use-particles-for-explosions.md` (spark burst values), `create-volcanoes.md` (embers, ripples, lava splash, lava flow beams, smoke plume), `create-waterfalls.md` (cascade beams, splashes, white water, foam, mist); `effects/particle-emitters.md` (shapes, drag, flipbooks, wind).
 - LihFolk Vault V2 (CC BY 4.0) (read): timing table, telegraph formula, hit-stop tiers, dash FOV, reveal time by tier.

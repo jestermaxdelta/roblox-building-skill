@@ -18,7 +18,7 @@ What this is: how Roblox simulates and replicates physics, and how to build char
 
 - The engine simulates every unanchored assembly at 240 Hz by default, about 4 "worldsteps" per 60 fps frame `[official]`. Scripts see results in `RunService.PreSimulation` (write control inputs and forces here), `PostSimulation` and `Heartbeat` (read results).
 - Units `[official]`: 1 stud is 0.28 m; default `Workspace.Gravity` is 196.2 studs/s², while Earth gravity converted to studs would be 35 studs/s². Roblox gravity is therefore about 5.6 times stronger per stud than reality. Every realistic spring, buoyancy or flight constant feels stiff and nervous until it is retuned for this (sections 10.2, 10.5).
-- The solver is iterative. It is good at stacks, hinges and springs with sane mass ratios, and bad at small, fast, spinning colliders, very light parts jointed between heavy ones, and unlimited forces. `[VS]` `Workspace.NextGenerationPhysicsSolver` exists as a rollout-state property described as experimental `[official]`; no evidence found on its effects, so leave it on Default.
+- The solver is iterative. It is good at stacks, hinges and springs with sane mass ratios, and bad at small, fast, spinning colliders, very light parts jointed between heavy ones, and unlimited forces. `[VS]` `Workspace.NextGenerationPhysicsSolver` is a rollout-state property; the API reference says only that it "can provide improved accuracy and robustness in complex setups" `[official]`. No measurements found, so leave it on Default unless a test of your own mechanism shows a gain.
 - **The two questions** that answer almost every physics bug `[lihfolk]`: (1) What is the assembly: which parts move together, which is the root, what is the total mass, is anything anchored? (2) Which machine runs its physics (the server, a single client, or none because it is asleep or anchored), and can that owner switch during play? Settle both with Studio's visualisation before reading code: Visualization Options > Network owners and Awake parts; Studio Settings > Physics > Are Assemblies Shown, Are Timesteps Shown.
 
 ## 2. Assemblies and mass
@@ -58,7 +58,7 @@ Ownership policy by object class `[house]`:
 | Elevators, platforms, doors | Server | Riders otherwise see it through an extra replication hop |
 | Cosmetic debris, corpses, pets | No replication at all: simulate or animate per client | Zero server and network cost |
 
-Server authority mode `[VS]` replaces this model for competitive physics games: the server simulates, clients predict whole assemblies and roll back (networking-and-security.md). `[VS]` Physics replication itself changed in 2026: `Workspace.ImprovedPhysicsReplication` is a rollout-state property `[official]`; DevForum posts report a rollout that was rolled back in May 2026, a follow-up thread updated through July 2026, and bug reports of relative-motion desync with it enabled `[community]`. If riders or trains began to jitter after an engine update, test with the property set to Disabled before rewriting anything.
+Server authority mode `[VS]` replaces this model for competitive physics games: the server simulates, clients predict whole assemblies and roll back (networking-and-security.md). `[VS]` Physics replication itself changed in 2026 `[official: DevForum staff posts, read]`: a first rollout on 4 May 2026 was rolled back the next day; the improved path shipped again from 15 June behind `Workspace.ImprovedPhysicsReplication` (Studio property, not scriptable), and a Disabled option was added on 16 June as a temporary opt-out that staff said on 14 July will stay only until the remaining bugs are fixed. A July bug report describes relative-motion desync with it enabled `[community]`. If riders or trains began to jitter after an engine update, test with the property set to Disabled, file a bug report, and do not build on the opt-out lasting.
 
 ## 4. Constraints, not body movers
 
@@ -97,7 +97,7 @@ Legacy `Body*` movers are deprecated `[official]`; they still run in old models,
 
 **ControllerManager** `[VS]`. With `Humanoid.EvaluateStateMachine = false` the Humanoid applies no forces, runs no floor or ladder sensing, changes no collision and no state; state events still fire if you set states yourself, which is what keeps the Animate script working `[official]`. A `ControllerManager` (with `RootPart`, `BaseMoveSpeed`, `MovingDirection`, `FacingDirection`, `UpDirection`, `GroundSensor`, `ClimbSensor`) then drives a `GroundController`, `AirController`, `ClimbController` or `SwimController` chosen through `ActiveController`, using `ControllerPartSensor`s. An `ActiveController` that cannot activate (a GroundController with no floor) stays set and is retried each frame, so switch to the AirController in the air yourself. Use it when the Humanoid's movement model is the problem (wall-running, planet gravity through `UpDirection`, custom slopes), not when one move needs a push.
 
-**Character Controller Library** `[VS]`. `AvatarAbilities` rebuilds character movement as Luau "abilities" with start and run conditions, conflict rules and lifecycle callbacks that run on both the predicting client and the authoritative server. Conflict: a DevForum post titled "[Full Release] The Future of Character Movement: Character Controller Library" and the April 2026 weekly recap call it released `[community: search summaries]`, while the docs page still carries a beta notice and an enable step `[official]`. It is opt-in through Avatar Settings > Movement `[official]`. Treat it as adoptable for new projects built on server authority; prototype before migrating a live game.
+**Character Controller Library** `[VS]`. `AvatarAbilities` rebuilds character movement as Luau "abilities" with start and run conditions, conflict rules and lifecycle callbacks that run on both the predicting client and the authoritative server. Conflict: the staff post "[Full Release] The Future of Character Movement: Character Controller Library" (8 April 2026, updated 30 April) says it is available in live experiences `[official: DevForum, read]`, while the docs page still carries a beta notice and an enable step `[official]`. It is opt-in through Avatar Settings > Movement `[official]`. Treat it as adoptable for new projects built on server authority; prototype before migrating a live game.
 
 **Avatar Joint Upgrade** `[VS]`. `AnimationConstraint` is now the default joint for R15 player rigs when `StarterPlayer.AvatarJointUpgrade` is enabled (the default for new experiences) `[official]`. What breaks in older code: `FindFirstChildOfClass("Motor6D")` and `IsA("Motor6D")` find nothing (check for `AnimationConstraint` first, then fall back); `C0`, `C1`, `Part0`, `Part1` are read-only aliases; procedural motion multiplies into `Transform` during `PreSimulation` instead of writing `C0`; never edit `RigAttachment.CFrame`.
 
@@ -230,7 +230,7 @@ local function bindSeat(car: Model, seat: VehicleSeat, motors: { HingeConstraint
 		local humanoid = seat.Occupant
 		local driver = if humanoid then Players:GetPlayerFromCharacter(humanoid.Parent :: Model) else nil
 		if driver and Garage.mayDrive(driver, car) then
-			seat:SetNetworkOwner(driver) -- applies to the whole mechanism
+			seat:SetNetworkOwner(driver) -- applies to the whole mechanism; errors while anchored, so unanchor a parked-anchored car first
 			Validator.track(car, driver)
 		else
 			if humanoid then humanoid.Sit = false end -- not allowed to drive this car
@@ -266,18 +266,16 @@ Aerodynamic tier in four numbers: pick cruise speed and a cruise angle of attack
 
 ## 11. Anti-cheat for movement
 
-First try to make movement cheating worthless `[lihfolk]`: sequential server-validated checkpoints with minimum segment times, server zone gating, server distance checks on every interaction, laps and finishes recorded by the server from gate crossings. A fly hacker who gains only a view needs no detector. Build detection where position itself is the prize (racing, leaderboard obbies, PvP, carrying a stolen item), or adopt server authority mode.
+The decision (make cheating worthless first, detect only where position is the prize), the check table with its starting numbers (sampling, teleport, speed, fly, noclip) and the honest cases each must survive are in networking-and-security.md, "Movement and combat checks". This section adds the vehicle checks and the sampler.
 
-- Sample each character on the server every 0.2–0.5 s, staggered, using real elapsed time; skip a sample when the server itself hitched.
-- Honest causes that look like cheating: latency bursts, knockback, moving platforms, vehicles, falling, respawns and server teleports, ragdolls, flings by others. Each needs an exemption or a budget, and every server-caused move must go through one helper that grants it. Grep for `PivotTo`, `.CFrame =` and `MoveTo` on characters: a missed call site is the most common false positive `[lihfolk]`.
-- Speed: horizontal displacement minus the floor's velocity against expected speed × dt × 1.5 plus slack; accumulate in a leaky bucket. Teleport: a single step far beyond that, handled at once. Fly: airborne and **not descending** for longer than a jump allows (0.27 s to apex at defaults, so 1.5 s is far outside), grounded by a server raycast, not `Humanoid.FloorMaterial`. Noclip: a ray between samples at mid-torso height against static world geometry, counting only penetrations over about 1 stud.
 - Vehicles: per driven car, check horizontal speed against `MaxSpeed` plus margin, height above ground, map bounds and angular velocity (crash rolls are a few radians per second, flings are dozens); three consecutive bad samples at 4 Hz revoke ownership and restore the last good `CFrame`. A measured `MaxSpeed`, not a guessed one, or the fastest honest drivers get reset on the best straight.
-- Response: rubber-band and revoke first, add to the suspicion score, never kick on one sample (networking-and-security.md).
+- Response: rubber-band and revoke first, add to the suspicion score, never kick on one sample.
+- Every server-caused move goes through one helper that grants the exemption. Grep server code for `PivotTo`, `.CFrame =` and `MoveTo` on characters: a missed call site is the most common false positive `[lihfolk]`.
 
 ```lua
 --!strict
 -- unexecuted sketch (server): one helper for every server-caused move, and a sampler that respects it
-local graceUntil: { [Player]: number } = {}
+local graceUntil: { [Player]: number } = {} -- clear this and the per-player State on PlayerRemoving
 function Movement.allow(player: Player, seconds: number) -- call before knockback, dashes, launch pads
 	graceUntil[player] = math.max(graceUntil[player] or 0, os.clock() + seconds)
 end
@@ -285,7 +283,7 @@ function Movement.teleport(player: Player, target: CFrame)
 	local character = player.Character
 	if character then Movement.allow(player, 1.5); character:PivotTo(target) end
 end
-local function sample(player: Player, s: State, now: number) -- every 0.25 s per player, staggered
+local function sample(player: Player, s: State, now: number) -- every 0.25 s per player, staggered; s.good starts as the spawn CFrame
 	local root, humanoid = rootOf(player), humanoidOf(player)
 	if not root or not humanoid then return end
 	local dt, position = now - s.t, root.Position
@@ -295,13 +293,13 @@ local function sample(player: Player, s: State, now: number) -- every 0.25 s per
 		local carrier = if floor then (floor.Instance :: BasePart).AssemblyLinearVelocity else Vector3.zero
 		local step = ((position - s.position - carrier * dt) * Vector3.new(1, 0, 1)).Magnitude
 		local speed = expectedSpeed(player) -- the server's own formula, never a property a client can write
-		local allowed = speed * dt * 1.5 + 2 + speed * player:GetNetworkPing()
+		local allowed = speed * dt * 1.5 + 2 + speed * math.min(player:GetNetworkPing(), 1) -- ping is client-influenced: clamp it
 		s.bucket = math.max(0, s.bucket + (if step > allowed then 1 else -0.25))
-		if step > allowed * 3 + 10 or s.bucket >= 4 then -- single-step teleport, or sustained speed
+		if step > allowed + 10 or s.bucket >= 4 then -- single-step teleport (maxStep in the check table), or sustained speed
 			s.bucket = 0
 			Suspicion.add(player, "movement")
 			Movement.teleport(player, s.good)
-		elseif floor then
+		elseif floor and step <= allowed then -- grounded AND plausible: never rubber-band to mid-air or to a suspect spot
 			s.good = root.CFrame
 		end
 	end
@@ -339,7 +337,7 @@ end
 | Car spins on the spot under throttle | Mirrored motors with the same sign | Per-wheel sign |
 | Car falls through the road at speed | Client-owned car outran streaming | Atomic and per-player persistent car, larger minimum radius, persistent road collider |
 | Riders slide off lifts and trains | Anchored platform moved by `CFrame` | Constraint-driven unanchored platform, relative carry, or seats |
-| Riders jitter since an engine update | Physics replication rollout `[VS]` | Test with `ImprovedPhysicsReplication` Disabled; report it |
+| Riders jitter since an engine update | Physics replication rollout `[VS]` | Test with `ImprovedPhysicsReplication` Disabled (a temporary opt-out); file a bug report |
 | Character stuck floating or limp after an ability | State or mover not restored on an exit path | Restore on every path; cap hold time; destroy movers on death |
 | Dash does nothing, or stalls from standstill | Missing `Attachment0`; Humanoid fighting the mover | Assert the attachment; `Move(direction)` alongside or a state change |
 | Code cannot find `Motor6D` on new characters | Avatar Joint Upgrade `[VS]` | Look for `AnimationConstraint` first |
@@ -362,14 +360,14 @@ end
 
 ## Sources
 
-Accessed 2026-11-10. `Roblox/creator-docs` at commit ccc2b01 (2026-11-07).
+Accessed 2026-11-11. `Roblox/creator-docs` at commit 7cbffff (2026-11-10).
 
 - https://github.com/Roblox/creator-docs: `content/en-us/physics/{network-ownership,adaptive-timestepping,mover-constraints,assemblies,units,sleep-system}.md`, `workspace/collisions.md`, `characters/character-controller-library/index.md`, `projects/server-authority/index.md`, `reference/engine/classes/{Workspace,WorldRoot,BasePart,VehicleSeat,Humanoid,ControllerManager,AnimationConstraint,Motor6D,StarterPlayer,HingeConstraint,SpringConstraint,CylindricalConstraint,PhysicsService,Player,Model}.yaml`, `reference/engine/enums/{HumanoidStateType,ModelStreamingMode}.yaml`, `workspace/streaming/frustum.md` (read)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `25 Physics and Vehicles/` (Cars with Constraints - Suspension Steering and Drive; Choosing a Car Chassis; Boats Buoyancy and Water; Aircraft and Flight Models; Projectiles and Ballistics; Standing on Moving Vehicles and Platforms; Vehicle Ownership and Anti-Exploit; Vehicles and StreamingEnabled); `09 Gameplay Systems/Mover Constraints and Physics Controllers.md`; `23 Debugging Deep Dives/Debugging Physics and Network Ownership.md`; `22 Anti-Exploit and Security/Detecting Movement Exploits - Speed Fly Noclip Teleport.md`; `08 Animation/04 Procedural/Ragdolls and Physics-Based Animation.md` (read)
-- Physics replication, 2026 (search summary): https://devforum.roblox.com/t/upcoming-improvements-to-physics-replication/4675512, https://devforum.roblox.com/t/heads-up-upcoming-rollout-of-improved-physics-replication/4618365, https://devforum.roblox.com/t/relative-physics-desync-with-improvedphysicsreplication-enabled/4767277
-- Character controllers and joints (search summary): https://devforum.roblox.com/t/full-release-the-future-of-character-movement-character-controller-library/4565267, https://devforum.roblox.com/t/studio-beta-avatarabilities-library-for-a-luau-based-character-controller/4403904, https://devforum.roblox.com/t/weekly-recap-april-6-10-2026/4568634, https://devforum.roblox.com/t/avatar-joint-upgrade-for-physically-simulated-character-movement-is-now-live/4298561
+- Physics replication, 2026 (read): https://devforum.roblox.com/t/upcoming-improvements-to-physics-replication/4675512, https://devforum.roblox.com/t/heads-up-upcoming-rollout-of-improved-physics-replication/4618365, https://devforum.roblox.com/t/relative-physics-desync-with-improvedphysicsreplication-enabled/4767277
+- Character controllers and joints (first link read; the rest search summary, not re-read): https://devforum.roblox.com/t/full-release-the-future-of-character-movement-character-controller-library/4565267, https://devforum.roblox.com/t/studio-beta-avatarabilities-library-for-a-luau-based-character-controller/4403904, https://devforum.roblox.com/t/weekly-recap-april-6-10-2026/4568634, https://devforum.roblox.com/t/avatar-joint-upgrade-for-physically-simulated-character-movement-is-now-live/4298561
 - Vehicles (search summary): https://devforum.roblox.com/t/raycast-suspension-wheel-module-an-alternative-to-standard-physics-based-wheels/2170837, https://devforum.roblox.com/t/trying-to-create-ray-cast-suspension-editable-open-stable-and-optimized/3494597, https://devforum.roblox.com/t/a-vehicle-chassis-with-the-pacejka-friction-circle-raycast-suspension-gearbox/2400821
 - Projectiles (search summary): https://devforum.roblox.com/t/securecast-server-authoritative-projectiles-with-lag-compensation-multi-threading-and-more/2546164, https://devforum.roblox.com/t/fastcast2-an-improved-version-of-fastcast-with-parallel-scripting-more-extensions-and-statically-typed-a-powerful-modern-projectile-library/4093890, https://devforum.roblox.com/t/alternatives-to-fastcast/2630169
 - Ragdolls, platforms, movement checks (search summary): https://devforum.roblox.com/t/ragdoll-goes-through-ground-due-to-networkownership-changing/1119672, https://devforum.roblox.com/t/knockback-ragdoll-is-lagging/3441781, https://devforum.roblox.com/t/player-falling-off-moving-platform/2525985, https://devforum.roblox.com/t/preventing-anti-exploit-false-positives/280892, https://devforum.roblox.com/t/making-a-good-speed-hack-detector/2026856
 - GitHub repository search (read: listing metadata only): `lisphm/A-Chassis` (MPL-2.0, last push 2026-10), `weenachuangkud/FastCast2` (last push 2026-11)
-- Not reachable: devforum.roblox.com and create.roblox.com directly (search summaries and the docs mirror only); per-repository GitHub API. No evidence found: an official description of what `NextGenerationPhysicsSolver` changes; measurements of server authority prediction on high-speed constraint vehicles; an official number for vehicles per server.
+- Lines marked "search summary" were not re-read on 2026-11-11. No evidence found: an official description of what `NextGenerationPhysicsSolver` changes; measurements of server authority prediction on high-speed constraint vehicles; an official number for vehicles per server.

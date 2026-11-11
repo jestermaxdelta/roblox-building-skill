@@ -8,7 +8,7 @@ How to keep a Roblox game's players safe and its community healthy: child safety
 |---|---|---|
 | Beginner | (1) Answer the Maturity & Compliance Questionnaire truthfully for the most extreme content. (2) Use default `TextChatService` chat untouched. (3) Filter every player-written string and limit public text edits to one per minute per player. (4) Never ask players for personal information or send them off-platform. (5) Publish short game rules; ban only with evidence | Custom chat UI, voice routing, moderator teams, Discord |
 | Intermediate | Rule-report flow with fixed categories and server-attached evidence; case ids, a ban ladder and an appeal route; server-checked staff powers with an action log; weekly look at Safety and Feedback dashboards; group roles on least privilege; RTBF deletion templates; an incident runbook with kill switches | Voice access lists, statistical alt handling |
-| Expert | Migration to platform-integrated chat before May 2027; chat-compatible lobby grouping; appeal overturn rate and report-rate benchmarks tracked per release; per-crisis drills; measured Discord value; audited data inventory including external services | — |
+| Expert | Migration to platform-integrated chat before the February 2027 auto opt-in (required May 2027); chat-compatible lobby grouping; appeal overturn rate and report-rate benchmarks tracked per release; per-crisis drills; measured Discord value; audited data inventory including external services | — |
 
 ## Contents
 
@@ -30,7 +30,7 @@ Never build:
 
 - Any way for players to converse outside `TextChatService` (§4), or any private channel between strangers that the platform would not allow.
 - A feature whose purpose is to move a conversation off-platform: "type your Discord", free-text trade notes, links, handles or invite codes in game text. Moving a child to a less moderated space is the common pattern in grooming cases `[lihfolk]`.
-- Requests for real names, ages, photos, schools, locations, emails or phone numbers, in game or in any community space.
+- Requests for real names, ages, photos, schools, locations, emails, phone numbers or off-Roblox usernames and handles, in game or in any community space (the Community Standards list of personal information `[official]`).
 - Primarily private spaces (bedrooms, bathrooms, closets) in a game open to under-18s; add bounding-box limits on beds and similar props `[official]`.
 - A moderator process where a child reports abuse to your volunteer and the volunteer handles it privately. A volunteer's whole reply is three things: thanks, a pointer to Roblox's Report button for that player, and a statement that the player is being removed from the server now `[lihfolk]`.
 - Anything that infers a player's age (from voice eligibility, `PolicyService` flags, typing style) or pressures players to verify their age.
@@ -40,9 +40,9 @@ Never build:
 | Fact | Detail |
 |---|---|
 | Account tiers `[official]` | Roblox Kids (5–8): Minimal or Mild games that pass evaluation; chat off by default. Roblox Select (9–15): up to Moderate; chat off until age-checked, then introduced gradually. Roblox (age-checked 16+): everything except Restricted |
-| Age checks for chat | Required worldwide since January 2026 (facial age estimation, or ID). Six groups: under 9, 9–12, 13–15, 16–17, 18–20, 21+; by default a player chats with their own group and the groups directly above and below `[community: Roblox newsroom via search]` |
-| Effect on games | Roblox told developers to expect a drop in chat usage and said it "may impact gameplay if chat is a core part of your experience" `[community: DevForum announcement via search]`. No published figure for the size of the drop was found |
-| What code can know | `TextChatService:CanUserChatAsync`, `CanUsersChatAsync`, `CanUsersDirectChatAsync` and `GetChatGroupsAsync(players)` (matching group id = can chat) `[official]`. Never an age |
+| Age checks for chat `[official]` | Required wherever chat is available since the global rollout that began 7 January 2026 (facial age estimation, or ID). Age groups: under 9, 9–12, 13–15, 16–17, 18–20, 21+ (they "may vary by region and product"); by default a player chats with their own group and the groups directly above and below; under-9s need parental consent; age-checked 13+ users can add Trusted Connections outside their group. A Text Chat signal is part of default matchmaking; raise its weight in Custom Matchmaking when chat is essential |
+| Effect on games `[official]` | Staff FAQ: "you can expect to see a drop in chat usage which may impact gameplay if chat is a core part of your experience". In the three countries that went first (early December 2025), more than 50% of daily active users had completed a check by the end of that month. No figure for the drop in chat itself was found |
+| What code can know | `TextChatService:CanUserChatAsync`, `CanUsersChatAsync`, `CanUsersDirectChatAsync`, `GetChatGroupsAsync(players)` (matching group id = can chat) and `VoiceChatService:IsVoiceEnabledForUserIdAsync` `[official]`. Never an age |
 | Reaching under-16s `[official]` | Owner in good standing, verified (facial estimation under 18, government ID at 18+), 2-step verification, a Minimal/Mild/Moderate label, and either a Plus or Premium subscription held 2+ months or a one-time refundable per-game fee. Then evaluation: a trial with age-checked 16+ users, a safety review, and 250 unique plays by highly engaged age-checked users within 60 days. Expedited review: 50,000 R$ refundable fee |
 | Parents `[official]` | Linked parents can approve specific games ("Approved Experience", not for Restricted), see friends, screen time and spending, and set who a child may collaborate with in Studio |
 | Team side | Team Create with other people requires an age check and, by default, compatible age groups (see `team-business-legal.md`) |
@@ -66,8 +66,8 @@ Labels: Minimal and Mild (Kids, Select, 16+), Moderate (Select and 16+), Content
 | Romantic themes (even a quick kiss, or in the title), strong language, strong violence, heavy realistic blood | ID-verified 18+ |
 | Any depiction, reference or use of alcohol, including characters drinking at a bar | ID-verified 18+. A fantasy tavern serving ale moves the whole game; serve something else |
 | Gambling | Playable gambling, including simulated, is not allowed at all. A casino that players cannot bet in must still be declared |
-| Paid random items, paid item trading | Must be declared; gate with `PolicyService` (`monetization-and-policy.md`) |
-| Players share media, endless feeds, autoplay; generative-AI interaction (cross-session memory or "main purpose" = extended) | Declared in their own questionnaire sections |
+| Paid random items, paid item trading | Must be declared; gate with `PolicyService` (`monetization-and-policy.md`). Not using the required `PolicyService` and `TextChatService` APIs for a covered feature is itself a Community Standards violation |
+| Players share media, endless feeds, autoplay; generative-AI interaction (cross-session memory or "main purpose" = extended) | Declared in their own questionnaire sections. A media feed that autoplays, loops or scrolls by itself **and** rewards continued watching is not allowed in Kids and Select at all (staff post, 2026-08-25); rewarded video ads are exempt |
 | Nightclub, bar or dance-club setting as the main place | Restrict to 18+ `[official]` (safety guide) |
 
 Parents can bypass most content limits for their child but not the 16+ limit on hangouts and free-form creation. Decide the target audience at concept time: a drawing minigame or a "chill hangout" lobby can remove the whole under-16 audience from an otherwise Mild game.
@@ -81,10 +81,10 @@ Parents can bypass most content limits for their child but not the 16+ limit on 
 | Chat window, bubbles, team and direct messages, custom chat UIs, radios, phones, admin tools that let players or admins message each other | `TextChatService` only |
 | Direct or private channels | Check `CanUsersDirectChatAsync`, mark the channel with `TextChannel:SetDirectChatRequester()` |
 | Player-editable text others can see (signs, pet names, plates, bulletin boards, comments) | Filter with `TextService`, **and** rate-limit to at most one submission per minute per player. Comments may not have replies: replies are a conversation |
-| Preset phrases, chat wheels | Quick Words (Creator Hub ⟩ Configure ⟩ Chat): up to three custom categories of three to ten phrases, written in English, auto-translated, reviewed before going live. Required for player-usable presets by May 2027 |
+| Preset phrases, chat wheels | Quick Words (Creator Hub ⟩ Configure ⟩ Chat): up to three custom categories of three to ten phrases, each under 25 characters, written in English, auto-translated, reviewed before going live. Required for player-usable presets by May 2027; the staff post of 2026-10-21 says custom presets stop rendering in chat and the preset policy changes by February 2027 |
 | Developer-set text (menus, status lines, one-way announcements, moderation logs) | No filtering needed if players cannot alter or reply. Admin commands that let players reply, or admins chat with each other, count as chat |
 
-**Platform-integrated chat.** Opt-in now through `TextChatService.PlatformIntegratedChat = Enabled` (Studio only); required for all games from May 2027. The vault and press report automatic opt-in with an opt-out from February 2027 `[lihfolk][community]`. When enabled:
+**Platform-integrated chat.** Timeline from the staff post of 2026-10-21: opt in now with `TextChatService.PlatformIntegratedChat = Enabled` (Studio only); in February 2027 every new and existing game is opted in automatically and can still opt out by setting it to `Disabled` (the post's API table says "before March 2027"); from May 2027 it is the only way to have custom chat. Prefixes become filtered role badges in February 2027 (two per player, colour settable at runtime). When enabled:
 
 - Roblox renders all chat, in the default window or in a `TextChannelWindow` whose `Target` is a `TextChannel`. Drawing messages in a custom UI is no longer possible.
 - `TextChatMessage.Text` and `.Translation` return `""` with a warning; `PrefixText` is unsupported; `TextChannel:SendAsync` presets move to Quick Words; `OnIncomingMessage` and `Player.Chatted` no longer yield text. Chat-triggered commands must be `TextChatCommand`s. No API returns message content.
@@ -94,7 +94,7 @@ What to do today `[house]`, following `[lihfolk]`:
 
 - Build nothing new that reads message text: chat logs, "say the word" events, keyword triggers, custom profanity counters.
 - Move admin and gameplay commands to `TextChatCommand`; treat `unfilteredText` as input to parse, never to store or broadcast.
-- Keep chat-tag data in attributes with rendering in one small client module that can be deleted when native role badges ship. If a pass sells a chat tag, word it "where supported" and include a non-chat perk, so nobody pays for something that silently stops.
+- Keep chat-tag data in attributes with rendering in one small client module that can be deleted when native role badges ship (February 2027). If a pass sells a chat tag, word it "where supported" and include a non-chat perk, so nobody pays for something that silently stops.
 - Each callback (`OnIncomingMessage`, `OnBubbleAdded`, `ShouldDeliverCallback`) is a single slot owned by one module and must not yield.
 - Delivery rules may only narrow (proximity, team, dead-cannot-talk-to-living) through the server-side `TextChannel.ShouldDeliverCallback`; game mutes use `TextSource.CanSend = false`.
 - Test the game with the setting enabled before the deadline.
@@ -148,7 +148,8 @@ local lastReport: { [number]: number } = {}
 local perTarget: { [number]: number } = {}
 
 local function onReport(reporter: Player, targetUserId: unknown, category: unknown)
-	if typeof(targetUserId) ~= "number" or typeof(category) ~= "string" or not CATEGORIES[category] then return end
+	if typeof(targetUserId) ~= "number" or targetUserId ~= targetUserId then return end -- second test rejects NaN
+	if typeof(category) ~= "string" or not CATEGORIES[category] then return end
 	local target = Players:GetPlayerByUserId(targetUserId)
 	if target == nil or target == reporter then return end
 	local now = os.clock()
@@ -174,7 +175,7 @@ When not to build this: a small obby with no UGC, trading or social hub needs de
 
 API fields and the detection ladder are in `networking-and-security.md` §Detection (`Players:BanAsync`, `UnbanAsync`, `GetBanHistoryAsync`, alt propagation, device block). Policy on top:
 
-- **Official guidelines** `[official]`: rules must not contradict the Community Standards (no rule may exclude people for who they are); rules must be stated somewhere all players can read; enforce them fairly, not arbitrarily; players appeal to the creator, and Roblox steps in only if the rules or their enforcement break the Standards.
+- **Official guidelines** `[official]`: rules must not contradict the Community Standards (no rule may exclude people for who they are); rules must be stated somewhere all players can read; enforce them fairly, not arbitrarily; players appeal to the creator, and Roblox steps in only if the rules or their enforcement break the Standards. External tools (a Discord bot, a web panel) must enforce through Roblox's own kick and ban API (`Players:BanAsync`, Open Cloud user restrictions): the Community Standards list third-party services "conducting kicks and bans within a game without utilizing Roblox provided Kick and Ban API" as misuse.
 - **Ban message** `[official]`: filtered, up to 400 characters, may say where to appeal in general terms ("Visit the Discord in my group/game page"); no usernames, handles or direct links.
 - **Evidence before action** `[lihfolk]`: a case record with a short case id, user id, account age, each signal with rule version, value and threshold, server `JobId`, place version, ping, device type, economy deltas from the ledger, action, actor and reviewer notes. Put the case id in the display reason and a summary in `PrivateReason`. Keep the reason neutral ("Removed for unfair play. Case K7Q2"): naming the detector teaches exploiters which check fired.
 - **Ladder:** first confirmed offence temporary, repeat or severe permanent; statistical cases never propagate to alts (`ExcludeAltAccounts = true`), because shared devices and households can be linked `[lihfolk][VS]`.
@@ -217,7 +218,8 @@ Leaks (unreleased content getting out):
 `growth-and-marketing.md` §6 covers the marketing use of the group and Discord. Safety and operations:
 
 - **Roblox group (Community)** first: it is on-platform, reaches every age tier and owns the game. Wall and forum posts, name and logo fall under the Community Standards, and **owners are accountable**: Roblox expects reasonable effort against harmful behaviour, repeated failure can restrict group ownership, and an owner whose group is permanently removed cannot own a new group for 90 days `[official]`.
-- **Social links** `[official][VS]`: up to three, on the game details page, only if the owner (or one collaborator in a group) is age-verified 16+, visible only to age-verified 16+ users; never inside the game. If every verified 16+ collaborator leaves a group, its links are deleted after 90 days.
+- **Social links** `[official][VS]`: up to three, on the game details page, only if the owner (or one collaborator in a group) is age-verified 16+, visible only to age-verified 16+ users; never inside the game. If every verified 16+ collaborator leaves a group, its links are deleted after 90 days. The Community Standards prohibit any other way of directing users off Roblox. In-game text may point at the page and nothing more: "Join us in our Community Server. Links on our game's page" is allowed; a URL, an invite code, a handle or an email address is not.
+- **No reward for joining an off-platform space.** It cannot be verified, most players cannot see the link, and one large game reported being taken down for "scamming" with a moderation note naming "artificially inflating experience statistics" while it ran such a reward (creator's account, DevForum t/4776239, August 2026) `[community]`. Group-join rewards are verifiable on-platform (`liveops-quests-retention.md`).
 - **Discord** reaches only older, verified players, so codes, patch notes and news must also exist on-platform or most players never see them.
 
 | Situation | Recommendation `[lihfolk]` |
@@ -237,6 +239,7 @@ Discord operating rules `[lihfolk]`:
 - Account-linking bots: only ones that use Roblox's official sign-in or a profile-code method; never passwords or cookies.
 - Keep Discord and in-game enforcement separate unless a published rule links them.
 - Never post player data from the game to Discord; errors and telemetry go to a staff-only channel through the secrets store (`networking-and-security.md`).
+- Giveaways: no contest, raffle or competition with Robux or anything of real-money value as the prize, in the game or promoted through it (Community Standards, Contests & Sweepstakes `[official]`). In-game items earned in play are the safe prize.
 - Measure its worth: share-link joins from posts, D7 of that cohort, bug reports that led to fixes, bans and tickets per 1,000 members. If it is mostly codes and scams, shrink it to announcement-only.
 
 In-game guilds and clans: member lists and names are player text (filter, rate-limit); guild chat is a `TextChannel` with eligibility checks; **do not build cross-server guild chat** (it needs a custom transport, which is custom chat) `[lihfolk]`.
@@ -311,7 +314,7 @@ Containment tools, fastest first `[lihfolk][official]`: config kill switch for t
 
 | Crisis | First hour | Recovery | Say to players |
 |---|---|---|---|
-| **Data loss or corruption** | Read-only saves; note the start time; check the Roblox status page before blaming your code | DataStore versions: versioned backups expire 30 days after a newer write overwrites them and the latest never expires `[official][VS]`; the vault adds that a backup is cut on the first write per key per UTC hour `[lihfolk]`. Inspect before restoring; never write under a live session lock (`data-and-purchases.md`). Restore, compensate, or both | "Saves are paused while we fix a problem. Progress before 14:00 UTC is safe." |
+| **Data loss or corruption** | Read-only saves; note the start time; check the Roblox status page before blaming your code | DataStore versions: a versioned backup is cut on the first write to each key in each UTC hour, expires 30 days after a newer write overwrites it, and the latest never expires `[official][VS]`. Inspect before restoring; never write under a live session lock (`data-and-purchases.md`). Restore, compensate, or both | "Saves are paused while we fix a problem. Progress before 14:00 UTC is safe." |
 | **Purchases charged, not granted** | Flag off the prompts | A handler that errored (did not return `PurchaseGranted`) is retried by Roblox once fixed; one that returned granted needs manual grants from your purchase log | "Purchases are paused. Nothing you bought is lost; it will arrive automatically." |
 | **Dupe or economy exploit** | Flag off trading and the affected faucet; snapshot ledgers | Close the validation hole first; remove duplicated value from holding accounts; freeze suspicious trades; avoid global rollbacks; action accounts by the ladder (§7) | "We have paused trading to fix a bug. Nothing you own is at risk. Trading returns when this notice disappears." |
 | **Exploit wave** (fly, kill-all, server crash) | Raise server-side checks, enable stricter config thresholds, restart affected servers | Patch the remote or validation gap; ban by evidence, not by reports alone | "We are removing cheaters and have tightened checks. Report with the in-game button." |
@@ -341,7 +344,7 @@ Not legal advice. Roblox passes erasure requests to creators and holds them resp
 **Right to be forgotten (RTBF)** `[official][VS]`: when a user has Roblox delete their account, Roblox messages the creator daily with the requests needing action and the affected games, whatever automation exists. Three mechanisms:
 
 1. **Deletion templates** (Creator Hub ⟩ Configurations ⟩ Data stores manager ⟩ RTBF Deletion, or the Open Cloud Configs API key `user_data_templates`): up to 100 patterns with the case-sensitive token `{UserId}` in the key or scope, for standard and ordered stores; Roblox deletes matches itself.
-2. **Webhook** with the Right to Erasure Request trigger for data templates cannot reach (ids inside values, shared keys, external systems). Set a secret and verify the signature; the vault reports five delivery retries before a notification is dropped `[lihfolk]`.
+2. **Webhook** with the Right to Erasure Request trigger for data templates cannot reach (ids inside values, shared keys, external systems). Set a secret and verify the `roblox-signature`; after five failed deliveries Roblox stops sending and treats the URL as invalid; at most 5 webhooks; for a group-owned game only the group owner can configure them `[official]`.
 3. **The daily message** as the backstop you still read.
 
 Design keys so templates work: `User_{UserId}` in a fixed store; one long-lived leaderboard store rather than a new store per week; no variable parts in key names; old `_vN` stores either templated or deleted. `RemoveAsync` leaves versions that expire later, so erasure is not instant `[lihfolk][VS]`. Test templates on a test account in a test universe.
@@ -370,16 +373,16 @@ Retention defaults `[house]`: rule reports 30–90 days; ban evidence 180 days a
 
 ## 18. Conflicts
 
-- **Discord age rules.** LihFolk says Discord's teen-by-default settings launched globally in early 2026. Discord's own press release, as summarised in search on 2026-11-10, shows the announcement (9 Feb 2026) and a later note delaying global age assurance to the second half of 2026. Trust the press release and re-check before relying on either.
-- **In-game links.** Older community practice gated Discord links behind `PolicyService`; current docs prohibit in-game social links outright (also recorded in `growth-and-marketing.md`). Follow the docs.
+- **Discord age rules** (not re-verified on 2026-11-11). LihFolk says Discord's teen-by-default settings launched globally in early 2026. Discord's own press release, as summarised in search on 2026-11-10, shows the announcement (9 Feb 2026) and a later note delaying global age assurance to the second half of 2026. Trust the press release and re-check before relying on either.
+- **In-game links.** Older community practice gated Discord links behind `PolicyService.AllowedExternalLinkReferences`; that field is now a legacy field that always returns an empty array, and the docs and Community Standards prohibit in-game links outright (staff post, 2026-02-20). Follow the docs.
 - **Honeypots and instant action.** `networking-and-security.md` allows a session kick on a honeypot hit while bans need several signals; this file's ladder agrees. LihFolk's "permanent ban on honeypot plus economy damage" is compatible because it requires two signal types.
-- **Platform-integrated chat dates.** The docs give May 2027 as the requirement; the February 2027 default-on date comes from the announcement as reported by the vault and press, and the vault notes the announcement itself mentions March in one table. Plan for February.
+- **Platform-integrated chat dates.** Resolved at source (staff post, 2026-10-21): automatic opt-in in February 2027, opt-out possible until March 2027, required from May 2027. Plan for February.
 - **Moderator staffing ratio** is a LihFolk rule of thumb with no published benchmark; size from your own report volume.
 
 ## Review gate
 
 - [ ] No feature lets players converse outside `TextChatService`; every public editable text is filtered and limited to one edit per minute per player; no replies on comment boards.
-- [ ] No in-game link, handle, invite code or request for personal data; no reward for joining off-platform spaces.
+- [ ] No in-game link, handle, invite code or request for personal data; no reward for joining off-platform spaces; no giveaway with Robux or real-money-value prizes.
 - [ ] Questionnaire answered for the most extreme content and re-submitted after the last feature change; hangout, private-space and free-form creation effects were decided on purpose.
 - [ ] The core loop was played with chat and voice unavailable and still works.
 - [ ] Game tested with `PlatformIntegratedChat` enabled; no code depends on message text; paid chat cosmetics have a non-chat equivalent.
@@ -395,15 +398,16 @@ Retention defaults `[house]`: rule reports 30–90 days; ban evidence 180 days a
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-11 unless dated. "(read)" = opened and read; "(search summary)" = seen only through web search result text on 2026-11-10 and not re-opened.
 
-- `Roblox/creator-docs` at commit of 2026-11-07, https://github.com/Roblox/creator-docs (read): `safety.md`; `chat/guidelines.md`; `chat/platform-integrated-chat.md`; `chat/quick-words.md`; `chat/voice-chat.md`; `chat/examples/rate-limit-public-text-inputs.md`; `production/bans.md`; `players/index.md` (ban and message guidelines); `production/promotion/content-maturity.md`; `production/publishing/kids-and-select.md`; `production/publishing/RTBF-and-creators.md`; `cloud-services/data-stores/right-to-be-forgotten.md`; `production/promotion/social-media-links.md`; `projects/groups.md`; `projects/group-guidelines.md`; `projects/collaboration.md`; `production/analytics/feedback.md`; `production/configs.md`; `cloud-services/data-stores/versioning-listing-and-caching.md`; `projects/update-games.md`; engine reference for `TextChatService`, `TextChannel`, `TextSource`, `TextChannelWindow`, `VoiceChatService`, `GroupService:GetRolesInGroupAsync`, `SocialService:PromptFeedbackSubmissionAsync`, `Player:IsVerified`
+- `Roblox/creator-docs` (commit of 2026-11-10), https://github.com/Roblox/creator-docs (read): `safety.md`; `chat/guidelines.md`; `chat/platform-integrated-chat.md`; `chat/quick-words.md`; `chat/voice-chat.md`; `chat/examples/rate-limit-public-text-inputs.md`; `production/bans.md`; `players/index.md` (ban and message guidelines); `production/promotion/content-maturity.md`; `production/publishing/kids-and-select.md`; `production/publishing/RTBF-and-creators.md`; `cloud-services/data-stores/right-to-be-forgotten.md`; `cloud/webhooks/webhook-notifications.md`; `production/promotion/social-media-links.md`; `projects/groups.md`; `projects/group-guidelines.md`; `projects/collaboration.md`; `production/analytics/feedback.md`; `production/configs.md`; `cloud-services/data-stores/versioning-listing-and-caching.md`; `projects/update-games.md`; engine reference for `TextChatService`, `TextChannel`, `TextSource`, `TextChannelWindow`, `VoiceChatService`, `PolicyService`, `Players:BanAsync`, `GroupService:GetRolesInGroupAsync`, `SocialService:PromptFeedbackSubmissionAsync`, `Player:IsVerified`
+- Roblox Community Standards, https://about.roblox.com/community-standards (read: Sharing Personal Information, Directing Users Off-Platform, Misusing Roblox Systems, Contests & Sweepstakes)
+- Staff DevForum posts (read): Age Checks to Access Chat, Studio Team Create, and Links, 2025-11-18, https://devforum.roblox.com/t/4079702 · Age Check Requirement to Chat Now Live Globally, 2026-01-07 with the 2026-02-20 update on links, https://devforum.roblox.com/t/4226101 · Important TextChatService Updates, 2026-10-21, https://devforum.roblox.com/t/4948433 · New Restrictions on Reward-Driven Media Feeds, 2026-08-25, https://devforum.roblox.com/t/4829188
+- https://about.roblox.com/newsroom/2026/01/roblox-age-checks-required-to-chat (read: default chat adjacency, parental consent under 9)
+- https://devforum.roblox.com/t/4776239 (read; a creator's account of a takedown, not a Roblox statement)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `26 Community and Moderation/` (Player Reports and In-Game Moderation; Voice Chat and Safety Features; Discord Servers for Roblox Games; Text Chat Customization with TextChatService; Groups Roles and Permissions for Studios; Working with Content Creators), `49 Roblox Platform Features/` (Policy and Age Rules 2026; Regional Compliance - Paid Random Items and Country Rules), `22 Anti-Exploit and Security/Logging Bans and Appeals.md`, `13 Production and Case Studies/` (Live Incident Response and Post-Mortems; Disaster Recovery for a Roblox Game), `38 Live Ops Deep Dive/Patch Notes and Player Communication.md`, `04 Data and Persistence/Player Privacy and Data Deletion.md`, `11 Monetization Publishing and Live Ops/Refunds Chargebacks and Purchase Support.md` (read)
-- https://devforum.roblox.com/t/age-checks-to-access-chat-studio-team-create-and-links-on-roblox/4079702, https://about.roblox.com/newsroom/2026/01/roblox-age-checks-required-to-chat (search summary: age groups, default adjacency, expected chat drop, `CanUserChatAsync`)
-- https://create.roblox.com/docs/chat/platform-integrated-chat.md, https://www.gamebusiness.jp/article/2026/10/23/28425.html (search summary; the doc itself was read in the mirror)
 - https://discord.com/press-releases/discord-launches-teen-by-default-settings-globally and coverage on pocketgamer.biz, medianama.com (search summary: 9 Feb 2026 announcement, 24 Feb delay note)
 - https://www.pockettactics.com/roblox/blade-ball-10k-reward and levelup.com coverage (search summary: bounty for a duplication bug before a trading launch)
 - https://www.gameleap.com/articles/dress-to-impress-reverse-the-accessory-update-is-it-free, https://gameranx.com/updates/id/544164/article/roblox-grow-a-garden-team-apologies-to-players-and-promises-better-future-with-updates/ (search summary: reverted update; apology)
-- https://devforum.roblox.com/t/traders-on-roblox-are-reportedly-abusing-rollbacks/4820634 (search summary; platform trade rollbacks, context only)
 - `references/networking-and-security.md`, `references/growth-and-marketing.md`, `references/monetization-and-policy.md`, `references/liveops-quests-retention.md` (read, for consistency)
-- Not reachable: reddit.com, devforum.roblox.com, create.roblox.com, about.roblox.com and help-centre pages (blocked or outside the allowed network); Roblox Community Standards and Terms of Use text were not read directly, only as cited by the docs mirror. No published data on post-age-check chat volume, moderator staffing benchmarks or dupe-incident statistics was found.
+- Not read: the Roblox Terms of Use and other help-centre pages on en.help.roblox.com (HTTP 403); reddit.com (not reachable). No published data on post-age-check chat volume, moderator staffing benchmarks or dupe-incident statistics was found.

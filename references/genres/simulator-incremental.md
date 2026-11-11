@@ -34,6 +34,8 @@ Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn next to the first thing to hit or collect; the tool is already equipped.
 2. 0:05 first number pop; 0:20 first sale; 0:30 first upgrade purchased.
 3. 1:30 backpack or cap fills for the first time: the wall teaches selling and the capacity upgrade.
@@ -71,6 +73,8 @@ Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier
 - A vendor case study credits a 7-day login calendar ending in a rare pet with lifting D1 from 18% to 29%; unverified `[community]`. If used, make it cumulative (a missed day never resets it).
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: hit spark for the verb, coin or reward burst, level-up.
 
 - HUD: currency, backpack bar, one "next goal" chip, boost pills with honest timers. Thumb-reachable Sell/Teleport button.
 - Upgrade board: nodes show cost, effect and the delta ("+25% → +40%"); affordable nodes pulse once, not continuously.
@@ -117,7 +121,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §1 Currency and 
 - Standalone RNG with no second system; winner-take-most punishes entrants.
 - Upgrade trees with shortcuts that skip orders of magnitude and make the intended path pointless `[community]`.
 - Trusting the client for click counts or sell values; inflation from exploiters wrecks leaderboards.
-- Marketing before retention is fixed (one developer reports buying ads at 6% D1 as wasted spend) `[community]`.
+- Marketing before retention is fixed (a reported case of ads bought at 6% D1 is unverified: Reddit-mirror search text only) `[community]`.
 - Capacity upgrades that lag tools (the bag fills in seconds, play becomes walking) or lead them (the bag never fills and the cycle vanishes) `[lihfolk]`.
 - Aggressive patterns common in the genre (fake timers, pop-ups on every join, "only 1 left") break house rule 3 and are not used here.
 
@@ -157,7 +161,7 @@ Accessed 2026-11-10.
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read; 2026-11-07 snapshot).
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/incremental-sim.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://devforum.roblox.com/t/how-to-increase-retention-engagement-etc-in-a-simulator/3292053 (search summary)
+- https://devforum.roblox.com/t/how-to-increase-retention-engagement-etc-in-a-simulator/3292053 (read 2026-11-11)
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - https://rolearn.dev/case-studies/simulator-500-to-50k (search summary; vendor case study)
 - https://rowatcher.com/news/the-simulator-blueprint-how-every-hit-game-is-built (search summary; host not reachable for a full read)

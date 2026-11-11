@@ -1,6 +1,6 @@
 # UI screen recipes: sizes, HUD layouts by genre, shop, inventory, settings, rewards, notifications, loading
 
-Build-level recipes for the screens almost every Roblox game ships: what each contains, the numbers at a small phone, the server rule behind it and the failure modes to test. Open it when a screen is about to be designed or built, or when a live screen misbehaves. The look (hierarchy, tokens, construction, critique) is in `ui-design-figma.md`; motion and reward sequences in `ui-motion-and-feedback.md`; engine rules, zones and the presenter in `ui-input-crossplatform.md`; purchase and data flows in `data-and-purchases.md`. Reference images: `visual-library/ui-hud.md` and `visual-library/ui-screens.md`.
+Build-level recipes for the screens almost every Roblox game ships: what each contains, the numbers at a small phone, the server rule behind it and the failure modes to test. Open it when a screen is about to be designed or built, or when a live screen misbehaves. The look (hierarchy, tokens, construction, critique) is in `ui-design-figma.md`; motion and reward sequences in `ui-motion-and-feedback.md`; engine rules, zones and the presenter in `ui-input-crossplatform.md`; purchase and data flows in `data-and-purchases.md`. Examples to study before building: `visual-library/ui-hud.md` (HUDs by genre and platform) and the matching section of `visual-library/ui-screens.md` (named in each recipe); bundled sheets 01–04 (`visual-library/reference-sheets.md`).
 
 Tags: `[official]` Roblox docs, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; where it clashes with the house rules, the house rules win), `[VS]` version-sensitive, `[house]` house rule or estimate.
 
@@ -23,8 +23,8 @@ px at `Phone-S` (800×360); the scale column is a fraction of screen height (H) 
 | Element | px at Phone-S | Scale | Placement and rule |
 |---|---|---|---|
 | Currency readout | icon 28–32, number 18–20 | 0.08–0.09 H | Top-left under the top bar. Icon + outlined number, no panel `[community]`; counts up, never snaps |
-| Menu buttons | 48–56, gap 8 | 0.14–0.155 H | One home edge; 4–6 at most, the rest behind `More`; red count badge only when something is claimable |
-| Primary action | 0.8–1.0× the jump button (jump is 70 px on phones, 120 on large screens `[official][VS]`) | read at runtime | Placed from the live `JumpButton` once it `IsLoaded` `[official]`; never by screen percentage |
+| Menu buttons | 48–56, gap 8 | 0.13–0.155 H | One home edge; 4–6 at most, the rest behind `More`; red count badge only when something is claimable |
+| Primary action | 0.8–1.0× the jump button (70 px when the screen's short axis is ≤ 500 px, else 120 px `[official][VS]`) | read at runtime | Placed from the live `JumpButton` once it `IsLoaded` `[official]`; never by screen percentage |
 | Touch target floor | 44×44, 48 on the HUD | 0.12 H | 44 is Apple's figure, 48 dp Google's; the docs cite a 9 mm WCAG target `[official]`; Epic's mobile guidance also says 44 `[community]` |
 | Objective / timer | height 32–40 | 0.10 H | Top centre; read-only (hardest thumb reach); collapsible if it grows `[community]` |
 | Quest tracker | width ≤ 220 | ≤ 0.28 W | Right edge under the top bar; 1–3 lines with `101/500`; folded by default on phones |
@@ -34,12 +34,12 @@ px at `Phone-S` (800×360); the scale column is a fraction of screen height (H) 
 | Inventory cell | 64–72, columns computed from width | 0.18–0.20 H | Rarity = colour + name bar or pips; count bottom-right; undiscovered = silhouette + `??` with `162/284` `[community]` |
 | Item detail | n/a | n/a | Side pane on wide screens; a pushed page with Back under about 700 px width |
 | Reward popup | item 96–128, window ≤ 0.6 H | n/a | Centre; one Claim button; batch many rewards into one summary (`ui-motion-and-feedback.md` §5) |
-| Offer card | ≤ 25% of the screen | n/a | Rules in `ui-input-crossplatform.md` (offer surfaces) and `monetization-and-policy.md` |
+| Offer card | ≤ 25% of the screen | n/a | Safe-area corner outside the thumb zones, an X, never stacked; timing and cadence in `monetization-and-policy.md` §Offer and shop playbook |
 
 - Put information in the world when it belongs to an object (price, rate, timer on a `BillboardGui`) `[community]`.
 - Print the key on the button on PC (`[E]`); the same action is a round touch button on phones `[community]`. `InputActionLabel` does this from an `InputAction` without code (Studio beta, not yet publishable `[official][VS]`); until release use `UserInputService:GetImageForKeyCode`.
 - **Conflict:** the teardown lists strikethrough prices, "% OFF" tags and urgency countdowns as common in hit games. House rule 3 overrides: a timer only for a real state, a discount only against a price really charged, never a countdown that restarts.
-- **Conflict:** hit simulators run denser HUDs than the 5–7 element cap, and Epic's mobile guidance says 5–6 active controls `[community]`. Count groups (one menu column = one element) and hide secondary buttons behind `More`.
+- **Conflict:** hit simulators run denser HUDs than the 7-group cap (`ui-design-figma.md` §1), and Epic's mobile guidance says 5–6 active controls `[community]`. Count groups (one menu column = one group) and hide secondary buttons behind `More`. Element count tracks tempo in shipped games: 3 in a calm game, 6–8 in action games, 10 or more groups in desktop simulators, which is where a separate phone arrangement becomes mandatory (`visual-library/ui-hud.md` #25; #21, #7, #23; #5, #10).
 
 ## 2. HUD layouts by genre
 
@@ -59,11 +59,18 @@ Read-1 elements and zone layout per archetype `[house]`, built on the zone map i
 | Survival, crafting | Needs bars, hotbar | Needs as small bars top-left, or bottom centre above the hotbar; hotbar bottom centre; day clock top centre; crafting opens at stations | More than 4 needs bars; inventory as the only way to see health |
 
 - Bottom-centre rows need 12–16 px above the safe edge: young players hit bottom-edge buttons by accident (Smashing Magazine's children's guide `[community]`), and the home indicator lives there.
-- Contextual HUD beats a full HUD: swap buttons by state (the docs' ball-possession example `[official]`), show ability bars only in combat zones, hide the HUD in placement and photo modes.
+- Contextual HUD beats a full HUD: swap buttons by state (the docs' ball-possession example `[official]`: the same three thumb positions change verb, `visual-library/ui-hud.md` #8), show ability bars only in combat zones, hide the HUD in placement and photo modes.
+- Patterns that hold across the HUD library (`visual-library/ui-hud.md`, "Patterns seen"; numbers are its rows) `[community]`:
+  - One home edge of icon + caption buttons survives a phone (#3); two edges, or a left column, meet the thumbstick (#4, #10, #11, #12).
+  - A hotbar owns the bottom-centre band between stick and jump: numbered slots with icons, the price under each where it sells (#17, #7, #4). Text-only slots do not read at phone size (#2, #6).
+  - Capacity and progress are written as have/need beside the bar (`80/800`, `122/160`), never as a bar alone (#11, #24, #13).
+  - Keyboard letters printed on buttons mark a desktop-first HUD: on touch they become icons (#7, #12, #15 against #21, #8).
+  - A timer on the HUD states a real remaining time for a real event (#3, #1).
+- Pictures per archetype: `visual-library/ui-hud.md` §1 (hit Roblox games judged at phone size), §2 (Roblox HUDs by genre), §3 (shipped games outside Roblox whose layouts transfer).
 
 ## 3. Shared window anatomy
 
-Header (icon, loud title, the destination's colour) → optional tab strip → scrolling content → optional footer (summary, `Claim all`, timer). Close top-right, the same component everywhere, also on gamepad B and Escape. One presenter, one open window. A full-screen dim (black at 0.5–0.6 transparency) fades with the window, blocks input behind it and is the tap-outside-to-close target. The primary action is the brightest thing on the screen, one per card at most. On phones an open window hides the HUD. Navigation is at most two levels deep (Epic's mobile guidance `[community]`). `[lihfolk]`
+Header (icon, loud title, the destination's colour) → optional tab strip → scrolling content → optional footer (summary, `Claim all`, timer). The header carries identity plus the one live fact of that screen (restock timer, balance, capacity, season end) and the close button, nothing else; tabs are icon + word, six at most (`visual-library/ui-screens.md` #1, #8, #35, #38; #6, #9, #24). Close top-right, the same component everywhere, also on gamepad B (Escape always opens the Roblox menu and cannot be the close key). One presenter, one open window. A full-screen dim (black at 0.5–0.6 transparency) fades with the window, blocks input behind it and is the tap-outside-to-close target. The primary action is the brightest thing on the screen, one per card at most. On phones an open window hides the HUD. Navigation is at most two levels deep (Epic's mobile guidance `[community]`). `[lihfolk]`
 
 **Claim and buy buttons share one state machine**: available → pending → done, or locked with the reason. Between the tap and the server's answer (50–500 ms, seconds on a bad connection) the button is non-interactable and shows progress, or a second tap sends a second request. The server re-checks everything and records the claim before it pays out. `[lihfolk]`
 
@@ -80,11 +87,12 @@ Header (icon, loud title, the destination's colour) → optional tab strip → s
 
 - Sections with headers: passes, products (currency, boosts), bundles. Card: square art (`ScaleType = Fit`), name, one-line benefit ("2× Cash for 10 min"), native price button. Draw the eye to one card per section with size and extra padding, not with a false label (the docs' bundle example uses exactly that `[official]`).
 - Prices come from `MarketplaceService:GetProductInfoAsync`, never hard-coded; the button only opens the prompt. The grant happens in `ProcessReceipt` (products) or after a server ownership check (passes); the card flips to "Owned" or "Active 12:41" when the server says so, never when the prompt closes.
-- Unaffordable soft-currency prices turn `Danger` red and the button states the shortfall `[official]`.
+- Unaffordable soft-currency items: the button takes the disabled look and states the shortfall ("Need 50 coins"); a red price is the docs' own example of a consistent rule `[official]`, usable only where red text measures 4.5:1 on its plate, never on a green fill (`ui-design-figma.md` §3).
 - Phone cards about 1.3–1.4× their desktop size with fewer columns `[lihfolk]`. Keep the price stroke thin enough that digit holes stay open; an unreadable price costs sales.
 - Say scope precisely ("this server" on a server-wide boost). Live 3D previews (`ViewportFrame`) only in the featured slot or detail pane.
 - House rule 3: no countdown that restarts, no strikethrough without a real former price, close button never hidden or delayed. Paid random items show full odds read from the config the server rolls from, behind the PolicyService gate (`monetization-and-policy.md`). Children do not tell promotion from content `[community]` (NN/g): label paid things as paid, with the Robux glyph.
 - Failure modes: owned state granted from the client; double prompts (no pending state); "Best value" on something that is not.
+- Examples: `visual-library/ui-screens.md` §1. What the strong ones share: the price is the button, in a colour reserved for that currency, and a card sold for two currencies shows two buttons (#2, #12, #10); currency packs grow their art with the tier and the top tier gets a larger card, not a louder colour (#10, #9, #5); rotating stock states the real time left (#1, #17, #18); the materials come from the game's world (#1, #4, #7). Several hit shops in that file show struck-through prices and stock counters: its notes flag them, and house rule 3 decides.
 
 ## 6. Inventory and collection
 
@@ -94,8 +102,9 @@ Header (icon, loud title, the destination's colour) → optional tab strip → s
 - Search with `string.find(name, query, 1, true)` (plain match: a typed `%` or `[` otherwise throws), debounce 0.15–0.25 s, precomputed lower-case names. End every sort comparator with a unique tiebreaker: `table.sort` is not stable. `[lihfolk]`
 - Scroll position: reset on search, filter or sort change; keep on count or state change; for new items show a "1 new" pill instead of jumping.
 - Gamepad selection is a data index, not an instance, or recycled cells keep the focus ring on the wrong item.
-- Drag and drop `[lihfolk][VS]`: `UIDragDetector` with a custom response style, a ghost on a top-level drag layer (never inside the clipped grid), drop target from `GetGuiObjectsAtPosition`, the move sent as a server-validated intent. A 2026 bug report says drag detectors do not work in gamepad selection mode `[community]`: always offer select-then-place.
+- Drag and drop `[lihfolk][VS]`: `UIDragDetector` with a custom response style, a ghost on a top-level drag layer (never inside the clipped grid), drop target from `GetGuiObjectsAtPosition`, the move sent as a server-validated intent. Drag detectors support gamepad selection mode (`SelectionModeDragSpeed`, `SelectionModeRotateSpeed` `[official]`); a September 2026 regression that broke it was reverted by staff and confirmed fixed on 2026-11-01 `[community]`. Dragging with a stick is still slow: always offer select-then-place.
 - Icons are pre-rendered images; preload the first screen's icons and back each cell with a rarity-tinted plate so late textures do not pop.
+- Empty and locked states are designed, and say why and what to do: an empty box with two friendly lines and its actions, an undiscovered entry as a silhouette with `55 / 134 Discovered` under the grid (`visual-library/ui-screens.md` #27, #23). Examples: its §2 (inventories, collections, loadouts) and §3 (trading: both sides named, a status line between them, one Ready button, #32).
 
 ## 7. Settings
 
@@ -103,12 +112,13 @@ Header (icon, loud title, the destination's colour) → optional tab strip → s
 - Minimum set: music and SFX volume, effects quality, camera shake, reduced motion (default from the platform setting), hide other players' effects, UI scale, plus what `accessibility-and-player-qol.md` requires.
 - Every control ≥ 44 px tall drawn; the whole row is the tap target for toggles. Sliders show the number, follow the finger directly (no tween while dragging) and preview live. Gamepad: left/right steps sliders and segmented choices, shoulder buttons switch category. `[lihfolk]`
 - One saving model: auto-save ("Changes save automatically": apply locally at once, send after a few idle seconds or on close) or explicit Apply/Reset. Never mix them, never write a DataStore per slider tick. `[lihfolk]`
+- Examples: `visual-library/ui-screens.md` #55 (each toggle an ON / OFF pair, coloured and worded) and #56 (rows mocked with the longest setting name). No settings screen from a current top Roblox game was found in a viewable form.
 
 ## 8. Codes
 
 - One instruction line, one labelled text field (about 24 characters), one Redeem button, one inline result line. Errors appear at the field, not in a corner toast.
 - Client trims whitespace and shows "Checking…" with the button disabled; the server normalises case, checks validity, expiry and one-use-per-player, and rate-limits attempts (for example 5 a minute). The code list never ships to the client. `[lihfolk]`
-- Enter submits (`FocusLost` with `enterPressed`). Distribution policy: `growth-and-marketing.md` §8.
+- Enter submits (`FocusLost` with `enterPressed`). Distribution policy: `growth-and-marketing.md` §8. Examples: `visual-library/ui-screens.md` #57 (the whole recipe in one panel), #5 (the code field inside the store header).
 
 ## 9. Daily rewards
 
@@ -116,12 +126,13 @@ Header (icon, loud title, the destination's colour) → optional tab strip → s
 - Reset on a fixed clock (UTC midnight), not 24 hours after the last claim, which drifts later each day `[lihfolk]`.
 - **Conflict:** LihFolk treats "does a missed day reset the streak?" as a design choice to state on screen. House rule: it never resets. Use the cumulative calendar from `liveops-quests-retention.md` and no join pop-up.
 - Alternative without a calendar: playtime gifts in tiers with one interval banked across a break `[lihfolk]`.
+- Examples: `visual-library/ui-screens.md` §4 (#34 today's card largest with a tick once claimed; #43 the seven-day anatomy as a stock template, with a streak rule this skill rejects); quests and passes there follow one anatomy (#35–#39), owned by `liveops-quests-retention.md`.
 
 ## 10. Rebirth / prestige
 
 - Current and next tier side by side with their multipliers; a have/need bar with a percentage; one line stating what resets and what stays.
 - Two-step confirmation: the first tap turns the button into a `Danger` "Tap to confirm" for about 3 s, or opens a one-line dialog `[lihfolk]`. On gamepad use hold-to-confirm.
-- A paid skip, if any, is a separate, clearly priced button (never in competitive modes). Maths: `economy-and-progression.md`.
+- A paid skip, if any, is a separate, clearly priced button (never in competitive modes). Maths: `economy-and-progression.md`. Nearest example: the prestige panel in `visual-library/ui-screens.md` #74 (what was gained, what unlocked, a bar to the next rank); no hit-game rebirth screen was found in a viewable form.
 
 ## 11. Notifications
 
@@ -143,12 +154,13 @@ Choose the channel before the look `[lihfolk]`:
 - Banners: one centre slot owned by one module, at most 4 waiting, each shortened to about 1.2 s when more than two wait; gated during the tutorial, a cutscene, the death screen or an open window. `[lihfolk]`
 - Placement: top centre or top-right, never bottom-right on phones. Sound only for priority 3–4, one shared soft tick otherwise, at most one per 0.5 s.
 - Stress test: a debug command that fires every kind 10 times in one frame, then watch for 60 s.
+- Examples: `visual-library/ui-screens.md` §7 (reward summaries, level-up and results cards; #75 toast card anatomy and stacking).
 
 ## 12. Loading screen
 
 - A `ReplicatedFirst` LocalScript shows its own ScreenGui (`ScreenInsets = None`, high `DisplayOrder`) and calls `RemoveDefaultLoadingScreen()`. Preload only what the first screen needs: loading art, HUD fonts, first-screen icons (`ContentProvider:PreloadAsync`).
 - Teardown is one idempotent function; nothing can re-show the screen. A watchdog removes it after a fixed time (15–20 s `[house]`) and logs why. Every wait in the ready check has a timeout and never waits on an instance streaming may not have sent. A watchdog firing on more than about 1% of joins means the ready check waits for the wrong thing. `[lihfolk]`
-- Fade out in about 0.3 s. No offers, no purchase prompts (house rule 3). Join pipeline and budgets: `performance.md`.
+- Fade out in about 0.3 s. No offers, no purchase prompts (house rule 3). Join pipeline and budgets: `performance.md`. Examples: `visual-library/ui-screens.md` §6 (#48 loading → title → select in one style; #65 a logo that fills by tweening a `UIGradient` offset).
 
 ## Level-up: screen symptoms → cause → fix
 
@@ -167,7 +179,7 @@ Choose the channel before the look `[lihfolk]`:
 ## Review gate
 
 - [ ] HUD layout follows the genre's zone layout; read-1 elements only persistent; slot table for stackable rows; zero overlaps at six viewports in every scenario.
-- [ ] Every window uses the shared anatomy, one close component, B and Escape close it, HUD hidden on phones while it is open.
+- [ ] Every window uses the shared anatomy and one close component; gamepad B closes it; the HUD is hidden on phones while it is open.
 - [ ] Every claim and buy button has available, pending, done and locked states; the server decides and records before paying out.
 - [ ] Shop prices fetched, never hard-coded; nothing false, restarting or hidden (house rule 3); odds shown where required.
 - [ ] Inventories over a few hundred entries virtualised; comparator has a unique tiebreaker; drag and drop has a non-drag alternative.
@@ -179,11 +191,12 @@ Choose the channel before the look `[lihfolk]`:
 Accessed 2026-11-11 unless noted.
 
 - `Roblox/creator-docs` mirror, commit `7cbffff` (read): `production/game-design/ui-ux-design.md`, `tutorials/curriculums/user-interface-design/choose-an-art-style.md`, `ui/position-and-size.md`, `ui/ui-drag-detectors.md`, class reference `InputActionLabel`, `UIDragDetector`: https://github.com/Roblox/creator-docs
-- Roblox `PlayerModule` source, client 0.747, via https://github.com/MaximumADHD/Roblox-Client-Tracker (read: `ControlModule/TouchJump.lua` for the 70 px and 120 px jump button)
+- Roblox `PlayerModule` source, client 0.747, via https://github.com/MaximumADHD/Roblox-Client-Tracker (re-read 2026-11-11: `ControlModule/TouchJump.lua`, `minAxis <= 500` gives the 70 px jump button, otherwise 120 px)
 - Roblox staff announcement (read): InputActionLabel Studio beta https://devforum.roblox.com/t/4779420
 - Epic, "Designing for Mobile in Fortnite" (read) https://dev.epicgames.com/documentation/fortnite/designing-for-mobile-in-fortnite
 - NN/g, "Children's UX: Usability Issues in Designing for Young People" (read) https://www.nngroup.com/articles/childrens-websites-usability-issues/ · Smashing Magazine, "A Practical Guide To Designing For Children" (read) https://www.smashingmagazine.com/2024/02/practical-guide-design-children/
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/` HUD Design; Menu Archetypes - Shop Settings Codes Rewards; Notification and Toast Systems; Virtualized Lists and Large Inventories; Settings Menu Design for Roblox; Drag-and-Drop Inventories and Sliders with UIDragDetector (TL;DR and patterns); `56 Field Notes/` Centre-Screen Announcements, Streaming Joins and Loading Screen Teardown
 - https://github.com/MarkRuiz00/RbxUiStudio (read 2026-11-10: `juegos/README.md`, `juegos/pet-simulator-99.md`, `estilos/simulator.md`): source of the "observed" conventions
 - `references/genres/*.md` UI sections (read): element lists per genre
-- Search summary only (title seen in search results, not opened): UIDragDetector gamepad bug report https://devforum.roblox.com/t/4877569
+- DevForum bug report (read, with the staff replies of 2026-10-29 and 2026-11-05): UIDragDetector in gamepad selection mode https://devforum.roblox.com/t/4877569
+- `visual-library/ui-hud.md` and `visual-library/ui-screens.md` (read): the row numbers cited above

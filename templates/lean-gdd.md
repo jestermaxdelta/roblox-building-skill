@@ -35,13 +35,14 @@ For each system: purpose, inputs, outputs, rules, numbers, server/client split, 
 - Asset list by class (clutter, small prop, medium prop, building module, hero, NPC, vehicle) with triangle budgets.
 - NPCs and AI behaviour (models from references/game-craft.md).
 - Audio plan: soundbed, spot ambiences, music tracks, SFX count.
+- Look and feel: link to the style bible (references/art-direction-and-quality-bar.md §6); UI screens to build (references/ui-screen-recipes.md) and the effects the loop needs (references/vfx-recipes.md), each with its rubric pass mark.
 
 ## 5. First-time user experience
 
-- Minute-by-minute script for the first 5 minutes.
-- Tutorial technique per step (contextual, show-once, timed hint at 11 s).
+- Beat script for the first 10 minutes in the format of references/tutorial-and-onboarding.md §2 (control ≤ 10 s, first verb ≤ 15 s, first reward ≤ 30 s, first upgrade ≤ 2 min).
+- Teaching pattern and guidance device per step (its §3 and §5), hint delay as a Config key; skip, resume and returning-player behaviour (its §8).
 - Onboarding funnel steps to log (1 Spawned … 7 Session2Start).
-- No offers during onboarding.
+- No offers during onboarding; any intro scene follows references/cutscenes-and-cinematics.md §15.
 
 ## 6. Economy and monetization
 

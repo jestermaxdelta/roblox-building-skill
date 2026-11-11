@@ -1,6 +1,6 @@
 # Glossary: the words a Roblox developer meets
 
-250 terms across the platform, the engine, Luau, networking, data, monetisation, analytics, discovery, the art pipeline, UI and community slang, each in one or two plain lines with the reference to open for more. Open it when a term in another reference, a forum thread or a dashboard is unclear, when explaining something to a beginner (define the term the first time it appears), and in an audit to confirm two people mean the same thing by a word. File names in the last column are under `references/`; files from the wave-2 list may not exist in an older copy of the skill (`references/learning-paths.md` section 6 names the fallback). Numbers are `[VS]`: version-sensitive, re-check at create.roblox.com/docs. `[house]` marks house conventions.
+264 terms across the platform, the engine, Luau, networking, data, monetisation, analytics, discovery, the art pipeline, UI and community slang, each in one or two plain lines with the reference to open for more. Open it when a term in another reference, a forum thread or a dashboard is unclear, when explaining something to a beginner (define the term the first time it appears), and in an audit to confirm two people mean the same thing by a word. File names in the last column are under `references/` (the full file map is `references/INDEX.md`). Numbers are `[VS]`: version-sensitive, re-check at create.roblox.com/docs. `[house]` marks house conventions.
 
 Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · M–P · Q–S · T–Z · Level-up: words that flag a problem · Review gate · Sources
 
@@ -36,6 +36,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | Term | Meaning | More |
 |---|---|---|
 | **250-play gate** | The evaluation a game passes before players under 16 can see it: 250 unique plays by highly engaged, age-checked 16+ players within 60 days, on top of creator verification and a fee or subscription `[VS]` | analytics-and-discovery.md |
+| **9-slice** | An image cut into nine regions so the corners keep their shape while the middle stretches (`ScaleType = Slice`); how one small texture makes panels and buttons of any size | ui-design-figma.md |
 | **A/B test** | Showing different versions to random groups and comparing a metric. On Roblox: Experiments | analytics-and-discovery.md |
 | **Actor** | Container whose scripts may run in parallel with others | performance.md |
 | **AFK** | Away from keyboard. Idle players are disconnected after about 20 minutes `[VS]`; AFK rewards must not gate progress | liveops-quests-retention.md |
@@ -63,6 +64,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **BindToClose** | Callback that runs when a server shuts down; about 30 s to finish saving `[VS]` | data-and-purchases.md |
 | **Blockout (greybox)** | Rough layout before final art. Here it is built from a Blender blockout kit, never from Parts that ship `[house]` | art-pipeline-blender.md |
 | **Boost** | A timed multiplier (2× Cash for 10 minutes), earned or bought | monetization-and-policy.md |
+| **Bounce (first-play)** | A new player's first session ending within 60 s, or within 61–180 s. A negative recommendation signal | analytics-and-discovery.md |
 | **Brainrot** | Slang for the 2025 meme-character trend and the games built on it (Steal a Brainrot) | market-scan-2026-11.md |
 | **Buffer** | Fixed-size block of bytes in Luau; used for compact network and save data | networking-and-security.md |
 | **CanCollide / CanQuery / CanTouch** | Whether a part blocks movement / is found by raycasts and spatial queries / fires `Touched` | performance.md |
@@ -85,12 +87,13 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Creator Rewards** | Roblox programme paying creators for daily engagement and for bringing in new or returning users `[VS]` | monetization-and-policy.md |
 | **Creator Store** | Roblox's library of models, plugins and audio for developers. Nothing from it ships as visible content `[house]` | studio-workflow.md |
 | **CTR** | Click-through rate: clicks divided by impressions | growth-and-marketing.md |
+| **Cutscene** | A short scene that takes the camera (and usually the controls) to show something. Always skippable, never before the first action | cutscenes-and-cinematics.md |
 
 ## D–F
 
 | Term | Meaning | More |
 |---|---|---|
-| **D1 / D7 / D30** | Share of new players who return 1, 7 or 30 days after their first day | liveops-quests-retention.md |
+| **D1 / D7 / D30** | Share of new players who return 1, 7 or 30 days after their first day. Benchmarks are in one table only | analytics-and-discovery.md |
 | **DataModel** | The tree of everything in a place; `game` in code | engineering-architecture.md |
 | **DataStore** | Roblox's persistent key-value storage for player and game data; values up to 4 MB `[VS]` | data-and-purchases.md |
 | **DAU / MAU** | Distinct players per day / per month | analytics-and-discovery.md |
@@ -103,6 +106,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Drafts mode** | Team Create option where script edits stay local until committed | studio-workflow.md |
 | **Draw call** | One batch of geometry sent to the GPU. Fewer is faster; house budget under 1,000 in the worst view `[house]` | performance.md |
 | **Dupe** | Duplicating items or currency through a bug, usually a save or trade race | economy-and-progression.md |
+| **Easing** | The speed curve of a movement (slow start, slow stop). Linear motion reads as mechanical | ui-motion-and-feedback.md |
 | **ECS** | Entity component system: data in components, logic in systems. Only for simulation-heavy games | architecture-patterns-luau.md |
 | **EditableMesh / EditableImage** | Meshes and images changed by code at runtime; restricted and memory-heavy | performance.md |
 | **Egg / hatch** | Collection-game purchase that reveals a random pet. If Robux can buy it, it is a paid random item | genres/pet-collection-hatching.md |
@@ -113,11 +117,11 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Explorer** | Studio window showing the DataModel tree | studio-workflow.md |
 | **Faucet / sink** | Where currency enters the economy / where it leaves | economy-and-progression.md |
 | **FilteringEnabled (FE)** | Old switch, now always on: client changes do not replicate to the server. Still used as slang ("FE-safe") | networking-and-security.md |
-| **Flipbook** | A grid of frames in one texture, played as an animated particle | vfx-and-juice.md |
+| **Flipbook** | A grid of frames in one texture (2×2, 4×4 or 8×8), played as an animated particle. Also the name of a UI storybook plugin | vfx-and-juice.md, vfx-recipes.md |
 | **FPS** | Frames per second. House floor: 30 on a low-end Android phone `[house]` | performance.md |
 | **Frame budget** | Time available per frame: 16.7 ms at 60 FPS, 33.3 ms at 30 | performance.md |
 | **Free model** | A Creator Store model made by someone else. Common source of backdoors; banned from shipped content `[house]` | networking-and-security.md |
-| **FTUE** | First-time user experience: the first minutes of a new player | design-foundations.md |
+| **FTUE** | First-time user experience: the first minutes of a new player, including any tutorial | tutorial-and-onboarding.md |
 | **Funnel** | Ordered steps (joined, first reward, first upgrade…) with the share of players reaching each | analytics-and-discovery.md |
 
 ## G–L
@@ -133,7 +137,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Heartbeat** | `RunService` event fired every frame after physics; also "server heartbeat", the server's frame rate (target 60 Hz) | performance.md |
 | **Highlight** | Outline and fill effect on a model; limited in number on screen | vfx-and-juice.md |
 | **Hitbox** | The volume used to decide whether an attack lands | gameplay-systems-cookbook.md |
-| **Hit-stop** | A few frozen frames on impact that make a hit feel heavy | vfx-and-juice.md |
+| **Hit-stop** | A few frozen frames on impact that make a hit feel heavy; local to the attacker and target, never a server pause | vfx-and-juice.md |
 | **Home** | The Roblox app's front page; most traffic starts here | analytics-and-discovery.md |
 | **Honeypot** | A fake remote or value that only a cheater would touch, used as evidence | networking-and-security.md |
 | **HttpService** | Server-side web requests and JSON; 500 requests a minute `[VS]` | networking-and-security.md |
@@ -148,10 +152,13 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Instance streaming** | Sending the world to each client in pieces near the player (`StreamingEnabled`). Code must cope with things not being there yet | performance.md |
 | **Intent** | What a remote should carry: "I want to buy X", never "give me 100 coins" | networking-and-security.md |
 | **Jest Roblox** | Test framework for Luau; the default for new in-engine tests | engineering-architecture.md |
+| **Journey** | Analytics for a branching path (pick a class, then a starter): stages with alternative nodes, where a funnel is one straight line `[VS]` | tutorial-and-onboarding.md |
 | **Juice** | Feedback that makes an action feel good: sound, flash, shake, particles, squash | game-craft.md |
+| **Key / fill / rim** | The main light, the light that softens its shadows, and the edge light from behind that separates a subject from the background | lighting-and-atmosphere.md |
 | **Kit** | A set of modular Blender pieces built on one grid that snap together | art-pipeline-blender.md |
 | **Knit** | An older Luau framework. Not used for new projects here `[house]` | engineering-architecture.md |
 | **Leaderstats** | A folder named `leaderstats` under a Player whose values show on the default leaderboard. A display, not a save system | gameplay-systems-cookbook.md |
+| **Letterbox** | Black bars above and below a cutscene. They tell the player the controls are off, so they never show while the player can act | cutscenes-and-cinematics.md |
 | **LightingStyle** | Lighting setting (Soft or Realistic) that replaced `Lighting.Technology` `[VS]` | lighting-and-atmosphere.md |
 | **LiveOps** | Running a live game: updates, events, offers, fixes on a cadence | liveops-quests-retention.md |
 | **Localization** | Translating text and adapting content per language | growth-and-marketing.md |
@@ -174,9 +181,10 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **MessagingService** | Best-effort messages between servers of one experience | data-and-purchases.md |
 | **Meta** | (1) The long loop beyond one session. (2) Slang for the currently strongest strategy | design-foundations.md |
 | **Mezzanine** | Studio's bar above the toolbar holding the test controls and collaboration buttons | studio-workflow.md |
-| **MicroProfiler** | Frame-by-frame timing tool (`Ctrl F6`) | performance.md |
+| **MicroProfiler** | Frame-by-frame timing tool (`Ctrl F6`; some docs pages say `Ctrl Alt F6`) `[VS]` | performance.md |
 | **Migration** | Code that upgrades old saved data to a new schema version | data-and-purchases.md |
 | **ModuleScript** | A script that returns a value (usually a table of functions) when required. Where shared logic lives | engineering-architecture.md |
+| **Motion token** | A named duration and easing (for example "fast: 0.12 s, ease out") used by every UI animation so the whole game moves one way | ui-motion-and-feedback.md |
 | **Motor6D** | The animatable joint between two parts of a rig | animation-and-rigs.md |
 | **MTX** | Microtransaction: a small in-game purchase | monetization-and-policy.md |
 | **Native codegen** | Compiling a hot script to machine code (`--!native`). Only after measuring | performance.md |
@@ -200,6 +208,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Pity** | A guaranteed good result after a set number of unlucky rolls | economy-and-progression.md |
 | **Place** | One loadable world inside an experience | studio-workflow.md |
 | **Place version** | A numbered save of a place; publishing picks which one new servers run | studio-workflow.md |
+| **Play days** | The number of different days a player returns inside a window (day 1, days 2–7, days 8–28). A core recommendation signal | analytics-and-discovery.md |
 | **PlayerGui** | Each player's live copy of the UI, cloned from StarterGui | ui-input-crossplatform.md |
 | **Plugin** | A Studio extension. Runs with high privileges and can edit every script | studio-workflow.md |
 | **PolicyService** | Tells the server what a player may see by region and age (for example whether paid random items are restricted) | monetization-and-policy.md |
@@ -208,7 +217,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **ProcessReceipt** | The single server callback that grants developer-product purchases | data-and-purchases.md |
 | **ProfileStore** | Library that adds session locking and safe saving on top of DataStores; the house default | data-and-purchases.md |
 | **ProximityPrompt** | Built-in "hold E to interact" prompt that adapts to touch and gamepad | ui-input-crossplatform.md |
-| **PTR / qualified PTR** | Play-through rate: plays per Home impression. Qualified PTR counts only plays that last. The top recommendation signal `[VS]` | analytics-and-discovery.md |
+| **PTR / qualified PTR** | Play-through rate: plays per Home impression; with first-play bounce it has been the top recommendation signal since June 2026. Qualified PTR counts only plays that last and is what the thumbnail table reports `[VS]` | analytics-and-discovery.md |
 | **PurchaseId** | Unique id of one receipt; save it before granting to avoid double grants | data-and-purchases.md |
 
 ## Q–S
@@ -216,6 +225,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | Term | Meaning | More |
 |---|---|---|
 | **QoL** | Quality of life: small conveniences such as settings, sort, skip, auto-collect | accessibility-and-player-qol.md |
+| **Qualified play** | A play that lasts long enough to count as real, which filters accidental taps | analytics-and-discovery.md |
 | **Quest** | A stated goal with a reward; daily, weekly or story | liveops-quests-retention.md |
 | **R6 / R15** | The two standard avatar rigs: 6 parts or 15 parts | animation-and-rigs.md |
 | **Rate limit** | A cap on how often something may happen, per player or per service | networking-and-security.md |
@@ -229,12 +239,12 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **ReplicatedStorage** | Container both sides can read. No secrets, no server logic | engineering-architecture.md |
 | **Replication** | The engine copying server state to clients (and a little the other way) | engineering-architecture.md |
 | **Reserved server** | A private server instance created by code, for matches, dungeons or lobbies | data-and-purchases.md |
-| **Retention** | Share of players who come back; see D1 / D7 / D30 | liveops-quests-retention.md |
+| **Retention** | Share of players who come back; see D1 / D7 / D30. Benchmarks: analytics-and-discovery.md | liveops-quests-retention.md |
 | **Rewarded video** | An ad a player chooses to watch for a reward. Never random rewards, never a progress gate `[house]` | monetization-and-policy.md |
 | **RFY** | Recommended For You: the personalised sort on Home that drives most discovery | analytics-and-discovery.md |
 | **Rig** | A model with joints or bones that can be animated | animation-and-rigs.md |
 | **RNG** | Random number generator; slang for games whose loop is rolling for rare results | genres/simulator-incremental.md |
-| **Roblox Plus** | Roblox subscription whose members get a discount on eligible purchases, funded by Roblox; sits beside the older Premium `[VS]` | monetization-and-policy.md |
+| **Roblox Plus** | Roblox subscription whose members get 10% (20% from the third month) off eligible purchases, paid for by Roblox; sits beside the older Premium `[VS]` | monetization-and-policy.md |
 | **Roblox Studio** | The free desktop editor (Windows, macOS) for building, scripting, testing and publishing | studio-workflow.md |
 | **Robux (R$)** | Roblox's currency. Developers receive a share of each sale and can cash out through DevEx | monetization-and-policy.md |
 | **Rojo** | Tool that syncs files on disk into Studio, enabling git, reviews and CI | studio-workflow.md |
@@ -266,6 +276,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Stickiness** | DAU divided by MAU | analytics-and-discovery.md |
 | **Streak** | Consecutive days played. The house daily reward is a cumulative calendar (days played, never resets); a login streak that resets on a miss is rejected `[house]` | liveops-quests-retention.md |
 | **Stud** | Roblox's unit of length; 1 stud = 0.28 m. The house pipeline models at 1 Blender unit = 1 stud | art-pipeline-blender.md |
+| **Style bible** | One page of measurable art rules for this game: palette, shape language, bevel width, texel density, lighting, UI and effect tie-ins. Written before the first asset | art-direction-and-quality-bar.md |
 | **Subscription** | A monthly recurring purchase inside one experience | monetization-and-policy.md |
 | **SurfaceAppearance** | The PBR texture set applied to a MeshPart | art-pipeline-blender.md |
 | **SurfaceGui** | UI drawn on the face of a part | ui-input-crossplatform.md |
@@ -278,16 +289,18 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **task library** | `task.wait`, `task.spawn`, `task.delay`, `task.defer`: the current scheduling functions. `wait`, `spawn` and `delay` are deprecated | luau-mastery.md |
 | **Team Create** | Several people editing one place at once | studio-workflow.md |
 | **Team Test** | A shared playtest on Roblox servers for collaborators | studio-workflow.md |
+| **Telegraph** | A visible warning (ring, flash, wind-up) that shows where and when an attack will land, long enough to react | vfx-and-juice.md, vfx-recipes.md |
 | **TeleportService** | Moves players between places and servers. Does not work in Studio playtests | data-and-purchases.md |
 | **Terrain** | Roblox's voxel landscape. Needs the owner's approval per game `[house]` | art-pipeline-blender.md |
-| **Texel density** | Texture pixels per stud; keep it even across assets (about 50 px per stud `[house]`) | art-pipeline-blender.md |
+| **Texel density** | Texture pixels per stud; keep it even across assets (about 50 px per stud `[house]`, fixed in the style bible) | art-pipeline-blender.md, art-direction-and-quality-bar.md |
 | **Text filtering** | Mandatory moderation of any player-written text before others see it | ui-input-crossplatform.md |
 | **TextChatService** | The current chat system; all chat code goes through it | ui-input-crossplatform.md |
-| **Thumbnail / icon** | The images on a game's page and tile; the main lever on play-through rate | market-scan-2026-11.md |
+| **Thumbnail / icon** | Thumbnail: the 16:9 image on Home, which promises the first minute. Icon: the square image players learn to recognise. The main levers on play-through rate | icons-thumbnails-and-store-page.md |
+| **Tile test** | Shrinking an icon to 150, 64 and 32 px and a thumbnail to 160×90 (also greyscale and blurred) to see what survives on a phone; `scripts/images/tile_test.py` | icons-thumbnails-and-store-page.md |
 | **Toolbox** | Studio panel for inserting Creator Store assets and your own inventory | studio-workflow.md |
 | **Touched** | Event fired when parts physically touch | performance.md |
 | **Trim sheet** | One texture of reusable strips mapped onto many meshes | art-pipeline-blender.md |
-| **Tween** | Animating a property from one value to another over a fixed time | vfx-and-juice.md |
+| **Tween** | Animating a property from one value to another over a fixed time | ui-motion-and-feedback.md, vfx-and-juice.md |
 | **Tycoon** | Genre: own a plot, earn per second, buy the next piece | genres/tycoon-and-cozy-management.md |
 | **Type checking (`--!strict`)** | Luau checking types before the code runs. On for all new code `[house]` | luau-mastery.md |
 | **UDim2** | UI size and position as scale (fraction of parent) plus offset (pixels) on each axis | ui-input-crossplatform.md |
@@ -297,10 +310,11 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **UpdateAsync** | DataStore call that reads, lets you change, and writes back safely | data-and-purchases.md |
 | **UserId** | A player's permanent numeric id. Key data by it, never by name | data-and-purchases.md |
 | **UV** | The 2D coordinates that place a texture on a mesh | art-pipeline-blender.md |
+| **Value (art)** | How light or dark a colour is. A scene, icon or effect must read in greyscale before hue is chosen | art-direction-and-quality-bar.md |
 | **Version History** | Studio window listing every saved and published version of a place | studio-workflow.md |
 | **Vertex colour** | Colour stored on mesh vertices; tints without a texture | art-pipeline-blender.md |
 | **Vertical slice** | One small part of the game finished to shipping quality, used to estimate the rest | process-and-playtesting.md |
-| **VFX** | Visual effects: particles, beams, trails, flashes | vfx-and-juice.md |
+| **VFX** | Visual effects: particles, beams, trails, flashes | vfx-and-juice.md, vfx-recipes.md |
 | **ViewportFrame** | A UI element that renders 3D objects (item previews) | ui-input-crossplatform.md |
 | **WaitForChild** | Pauses until a named child exists. Needed on the client; give it a timeout when streaming | engineering-architecture.md |
 | **Wally** | Package manager for Luau libraries | engineering-architecture.md |
@@ -321,7 +335,8 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | `wait(`, `spawn(`, `LoadAnimation` on a Humanoid, BodyVelocity | Tutorial-era or AI-pasted code | engineering-architecture.md |
 | "Dupe" | A save or trade race; purchase grants not idempotent | data-and-purchases.md, economy-and-progression.md |
 | "It only happens in the real game" | Studio-only API, asset permissions, latency | studio-workflow.md |
-| "CCU is fine but nobody comes back" | A traffic spike hiding weak D1 | core-loop-tuning.md, liveops-quests-retention.md |
+| "CCU is fine but nobody comes back" | A traffic spike hiding weak D1 | core-loop-tuning.md §5, tutorial-and-onboarding.md, liveops-quests-retention.md |
+| "It looks AI", "looks like every other game" | Engine defaults, no style bible, generated or borrowed art | art-direction-and-quality-bar.md |
 | "Limited time!" on a timer that restarts | False scarcity: policy and house-rule violation | monetization-and-policy.md |
 
 ## Review gate
@@ -330,11 +345,12 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 - [ ] Any number quoted from a row marked `[VS]` was re-checked in the routed reference or the official docs.
 - [ ] Experience, universe and place were not used interchangeably in instructions that involve ids, data or publishing.
 - [ ] House-rule terms (primitive Part, free model, Terrain, paid random item, rewarded video, streak) were used with their house limits.
+- [ ] Every file named in a "More" column exists (check `references/INDEX.md`).
 - [ ] A new term added to another reference was added here in the same pass, in alphabetical order.
 
 ## Sources
 
-Accessed 2026-11-10.
+Accessed 2026-11-10; routing and the facts on PTR, Roblox Plus and the MicroProfiler shortcut re-checked 2026-11-11 (creator-docs commit 7cbffff).
 
 - Definitions follow the existing references in this skill (the file named in each row), which carry their own sources.
 - Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{testing-modes,device-simulator,overview,output}.md`, `scripting/sync.md`, `projects/{collaboration,version-history,place-files,update-games}.md`, `projects/assets/packages.md`, `production/publishing/{publish-games-and-places,kids-and-select}.md`, `production/monetization/roblox-plus.md` and the file list of `production/monetization/`, `creator-rewards.md`, `cloud-services/data-stores/index.md` (read) — https://github.com/Roblox/creator-docs

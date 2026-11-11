@@ -36,6 +36,8 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *fl
 
 ## First 5 minutes
 
+Genre beats only. Script format, teaching patterns, guidance devices and funnel steps: `tutorial-and-onboarding.md` §2, §3, §5 and §9; this genre's row is in its §10. No offer or social card in this window (offer gate).
+
 1. 0:00 spawn beside small throwable props; the verb is on the primary button.
 2. 0:05 first throw with a trail and impact sound.
 3. 0:30 first interaction with another player; a one-line hint shows the escape input.
@@ -67,6 +69,8 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *fl
 - Small regular updates (one new toy a week) add return reasons to an already strong toy.
 
 ## UI patterns
+
+Genre specifics only. Zone layout for this archetype and the shop, inventory, settings and reward-screen recipes: `ui-screen-recipes.md` (HUD layouts by genre). Effects to build first, from `vfx-recipes.md`: heavy impact, shockwave, footstep and landing dust.
 
 - Almost none: a crosshair or reticle, a visible grab line (`Beam`), an escape prompt, a toy menu.
 - Consent controls in settings and in the world: a no-grab toggle inside safe zones, short immunity after being thrown `[lihfolk]`.

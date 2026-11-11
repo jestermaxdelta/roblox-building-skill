@@ -1,6 +1,6 @@
 # Consolidated checklists and ship gates
 
-Collected from knowledge-base sections 1.12.3 (design review), 3.8 (compliance), 3.10 (launch), 4.11 (engineering anti-patterns) and 5.13 (pre-launch performance and content). Each topic reference file ends with its own detailed gate; this file is the short version to run at each phase. Items marked (HR) enforce a house rule.
+Each topic reference ends with its own detailed gate; this file is the short version to run at each phase (phases in `references/workflow-phases.md`, standing rules in `references/decision-rules.md`, file map in `references/INDEX.md`). Items marked (HR) enforce a house rule. Quality is scored with the rubric the owning guide defines; this file names the rubric and its pass mark and does not restate criteria.
 
 Two entry points. Building from scratch: run Gate 0 → Gate 5 in order. Levelling up an existing game: run Gate A first; it tells you which of Gates 0–5 to re-run and in what order, and every change it produces ships through the live-change items at the end of Gate A.
 
@@ -16,7 +16,7 @@ A gate item is pass or fail with evidence (a number, a screenshot, a file and li
 
 ## Gate A: level-up audit (existing games)
 
-Method, scoring criteria and benchmark table: `references/audit-existing-game.md`. Report: `templates/game-audit-report.md`.
+Method, scoring and routing (finding → guide, §10): `references/audit-existing-game.md`. Benchmark table: `references/analytics-and-discovery.md` §Benchmarks. Report: `templates/game-audit-report.md`.
 
 Before touching anything
 
@@ -29,6 +29,7 @@ Before touching anything
 Findings
 
 - [ ] All ten dimensions scored 0–5 with one evidence line each: first session, core loop, progression and economy, retention and LiveOps, monetisation, UI/UX, art and house rules, performance, security and data, discovery and growth.
+- [ ] Five dimensions quote a guide rubric as evidence: first session → tutorial rubric (`tutorial-and-onboarding.md` §13, pass 16/20); core loop → loop scorecard (`core-loop-tuning.md` §4, pass 7/10); UI/UX → UI rubric per screen (`ui-design-figma.md` §9, pass 8/10); art → whole-game art review (`art-direction-and-quality-bar.md` §8, score = lowest discipline); discovery → store-page gates and rubric (`icons-thumbnails-and-store-page.md` §15, pass 8.5/10).
 - [ ] Caps applied to scores: no live numbers → at most 3; (HR) any visible primitive, marketplace or generated asset, walk-through mesh, invasive or non-compliant offer, client-trusted value or data-loss path → at most 1 for that dimension. A cap describes the game; it does not set the order of work.
 - [ ] Blockers listed separately and fixed first: data loss, ungranted purchases, dupes and client-trusted values, policy violations, (HR) walk-through geometry on the main path, (HR) invasive or non-compliant offers. Nothing else is a blocker.
 - [ ] (HR) Every other house-rule violation is a finding on the debt track: listed by surface, ordered by visibility (spawn view, shop, main path, capture spots, the rest), with a fixed 20–30% of weekly hours. It does not hold up other fixes and never triggers a rebuild by itself.
@@ -40,7 +41,7 @@ Findings
 
 Plan
 
-- [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to; top 10 ranked; blockers first. Effort is in hours and restated in weeks at the owner's weekly budget.
+- [ ] Every action has Impact × Confidence ÷ Effort, a metric it should move, and the reference it routes to (audit §10; tutorial, art direction, UI screens, UI motion, VFX recipes, cutscenes, store page and the visual library each have a row); top 10 ranked; blockers first. Effort is in hours and restated in weeks at the owner's weekly budget.
 - [ ] With no place access, the numbers-only first pass was sent (triage step, top 3 actions with reasons, at most five asks, under about 400 words) instead of an empty report.
 - [ ] Decision stated with its rule: quick-wins sprint (the default), rebuild the loop in the same universe (an option presented with its hours and weeks, chosen only if the loop problem is measured, the estimate fits about eight weeks of the owner's budget and a second opinion agrees), or park. A rebuild keeps the universe, DataStore keys, purchases and community.
 - [ ] A rebuild, park, save-schema migration, live price change or ship decision has a blind second opinion: neutral question, rubric fixed first, same evidence pack, dissent and confidence recorded.
@@ -66,7 +67,8 @@ Shipping changes to a live game
 
 - [ ] One-pager complete: player fantasy, one-sentence pitch, three pillars, core loop, session loop, long-term loop, target audience and age tier, platform priority (mobile first), comparable games, risks.
 - [ ] Core loop scores at least 7/10 on the rubric in design-foundations.md (clear goal, fast feedback, meaningful choice, variable reward, visible progress, social hook, repeatability, low friction, fantasy fit, monetization fit).
-- [ ] FTUE script written: first reward under 30 s, first upgrade under 2 min, one verb at a time, no offers.
+- [ ] FTUE script written in the format of `tutorial-and-onboarding.md` §2: first verb by 15 s, first reward by 30 s, first upgrade by 2 min, one verb at a time, no offers.
+- [ ] Art direction decided before any asset: the three-decisions line, palette and bevel width (`art-direction-and-quality-bar.md` §3–6); three to five references chosen from `references/visual-library/` with what to take from each.
 - [ ] Economy sheet modelled with numbers (faucets, sinks, first ten prices, rebirth ratio, pack ladder).
 - [ ] Retention and social hooks named for D1, D7 and D30.
 - [ ] Monetization plan uses the house default product set; every paid shortcut has a free alternative; Luck items only if luck mechanics exist.
@@ -138,6 +140,7 @@ Tooling
 - [ ] Particle rates within mobile caps; VFX client-side and pooled; no server tweens or server VFX; animations loaded once; concurrent sounds capped; volume sliders exist.
 - [ ] UI tested on phone (portrait and landscape), tablet, desktop and TV with gamepad; `CoreUISafeInsets`; nothing in reserved zones; every action bound on keyboard, gamepad and touch; `PreferredInput`, `PreferredTextSize`, `PreferredTransparency` and `ReducedMotionEnabled` honoured; console chat disabled.
 - [ ] Join-to-playable ≤ 10–15 s on low-end Android; loading screen has Skip, no forced minimum, never waits on spatial instances; no offers on loading.
+- [ ] Look-and-feel rubrics passed, each scored by someone other than the maker: art review with no discipline under 6 and no caps (`art-direction-and-quality-bar.md` §7–8, soft-launch tier); UI rubric 8+ on every screen (`ui-design-figma.md` §9; screens built from `ui-screen-recipes.md`); UI motion on tokens with a reduced-motion path (`ui-motion-and-feedback.md` review gate); core-verb and reward effects 16/20 (`vfx-and-juice.md` §16); tutorial 16/20 (`tutorial-and-onboarding.md` §13); any cutscene skippable and 16/20 (`cutscenes-and-cinematics.md` §18).
 
 House-rule scan (edit mode, via Studio MCP `execute_luau` with `datamodel_type = "Edit"`, or the command bar; never in live servers). It groups findings by area with counts, caps its output, and checks who uploaded the most-used meshes:
 
@@ -281,7 +284,7 @@ Monetization and compliance
 
 Discovery and metadata
 
-- [ ] Five custom 16:9 1920×1080 thumbnails under 3 MB (2–5 active), icon readable at 150 px, title with status tag and verb phrase, description hook under 160 characters, genre set, supported languages set.
+- [ ] Five custom 16:9 1920×1080 thumbnails under 3 MB (2–5 active on Home), each with its own first-minute promise, passing the three gates and 8.5+ on the rubric in `icons-thumbnails-and-store-page.md` §15; icon subject named at 32 px and genre at 64 px (tile test, its §5); title keeps the name inside the first 23 characters; first description sentence summarises the game; genre and supported languages set.
 - [ ] Age-tier plan: launch 16+ (or Select if eligible), then pursue the 250 engaged age-checked plays for under-16 reach; questionnaire complete.
 - [ ] Share links, invite prompt (`CanSendGameInviteAsync` → `PromptGameInvite`) and referral banner wired.
 
@@ -300,8 +303,8 @@ Timing
 
 ## After launch (weekly)
 
-- [ ] Read PTR, bounce, D1/D7/D30, co-play, ARPDAU against last week and against the genre benchmark.
-- [ ] Review the onboarding funnel for the biggest drop and fix it first.
+- [ ] Read PTR, bounce, D1/D7/D30, co-play, ARPDAU against last week and against the game's own dashboard benchmark (fallback rows: `analytics-and-discovery.md` §Benchmarks).
+- [ ] Review the onboarding funnel; fix the earliest step that loses twice its neighbours (`tutorial-and-onboarding.md` §14).
 - [ ] Re-run the MicroProfiler and Scene Analysis after each content update.
 - [ ] Review safety dashboard reports and ban appeals.
 - [ ] Ship the weekly update on the announced day.
@@ -312,7 +315,7 @@ Timing
 
 Detail in `references/growth-and-marketing.md`.
 
-- [ ] Bounce and D1 at or above the benchmark median (fallback D1 > 11%); like ratio ≥ 85%; crash rate under 2–3%.
+- [ ] Bounce and D1 at or above the dashboard benchmark median (no dashboard benchmark: D1 above the 11% house launch target, which sits just over the 10.3% large-title median); like ratio ≥ 85%; crash rate under 2–3%.
 - [ ] Funnels and economy events live; 30-day revenue per new user by source known; max cost per play computed with a stop-loss date.
 - [ ] One share link per channel and per creator; creatives are real captures of the game and match the first minute.
 - [ ] (HR) No giveaway, Robux or "free" wording in title, thumbnails or description; social rewards stay bonuses after the first win; no restarting countdowns or false scarcity in event marketing.
@@ -324,6 +327,6 @@ Detail in `references/growth-and-marketing.md`.
 
 ## Sources
 
-This file restates gates defined in the topic references; evidence and source lists live there. Gate A and the growth gate were added on 2026-11-10 from `references/audit-existing-game.md` and `references/growth-and-marketing.md` (creator docs read from the `Roblox/creator-docs` mirror, commit dated 2026-11-07).
+This file restates gates defined in the topic references; evidence and source lists live there. Gates 0–5 came from knowledge-base sections 1.12.3, 3.8, 3.10, 4.11 and 5.13; Gate A and the growth gate from `references/audit-existing-game.md` and `references/growth-and-marketing.md`. Rubric pointers and platform facts re-checked on 2026-11-11 (creator docs mirror, commit 7cbffff of 2026-11-10; `MarketplaceService:GetProductInfoAsync` signature read in the engine reference).
 
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/quality-score/SKILL.md`, `skills/council-method/SKILL.md`, `commands/audit.md`, `27 Marketing and Growth/Launch Strategy - The First Two Weeks.md`, `Rescuing a Weak Launch - Empty Servers, Low CCU and Relaunch Tactics.md` (read). Source of the evidence-grade, second-opinion, deliverable-score and soft-launch items, rewritten in our own words `[lihfolk]`.

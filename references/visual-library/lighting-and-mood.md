@@ -1,6 +1,6 @@
 # Lighting and mood reference library
 
-What this is: 25 checked references for lighting and mood in day, dusk, night, interior, cozy and horror scenes, with before-and-after pairs where they exist. The values and safe ranges that turn these looks into Roblox settings live in `references/lighting-and-atmosphere.md` (key and fill in §2, time of day in §4, presets in §12); the review tests are in `references/art-direction-and-quality-bar.md` §8.
+What this is: 22 checked references (28 rows; seven point at rows in the other two library files) for lighting and mood in day, dusk, night, interior, cozy and horror scenes, with before-and-after pairs where they exist. The values and safe ranges that turn these looks into Roblox settings live in `references/lighting-and-atmosphere.md` (key and fill in §2, time of day in §4, presets in §12); the review tests are in `references/art-direction-and-quality-bar.md` §8.
 
 How to use this file:
 - Choose the mood, open two rows for it and one pair row, and write three things before touching `Lighting`: where the key comes from, what colour the shadows are, and which one or two things are allowed to be warm (or bright). Then view the reference in greyscale and at 320 px wide: if the mood survives, value carries it and it will survive a phone with shadows off.
@@ -66,8 +66,6 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 | 26 | [Cel shade using a normal map](https://devforum.roblox.com/t/4880290), yamashio, 2026 · `DF/5X/9/2/4/a/924a5309dc3c12008f4ecb1c7764fc7ed9df155b.png` | tutorial | A two-tone toon terminator on a character from a hand-drawn normal map under stock Studio lighting `[VS]`: shading style as an authored choice, not a post effect | viewed |
 | 27 | [Solid Coloring Cookbook](https://devforum.roblox.com/t/2031219), SuperSpaceMan230, 2022, and [Stylized Flat-Color Art](https://devforum.roblox.com/t/1510773), Flumzee, 2021 | tutorial | The unlit flat-colour look by lighting values (ambient near white, brightness 0, shadows off). Both lean on the retired `Technology` setting `[VS]`: read for the idea that removing light makes shape and value carry everything | read |
 | 28 | models row 32 (Team Fortress 2 paper) | breakdown | Shadows go cool, not black; saturation rises at the edge between light and shade; rim light instead of outlines | read |
-| 29 | [The Complete Guide to Lighting in Roblox Studio](https://devforum.roblox.com/t/1876371), smartycar23, 2022 | tutorial | A video-led walkthrough of lighting properties (54 likes); predates the unified-lighting change `[VS]` | search |
-| 30 | [Setting Up Lighting for a Cozy Forest Scene](https://80.lv/articles/setting-up-lighting-for-a-cozy-forest-scene-in-unreal-engine-5-1) and [Horror lighting study](https://80.lv/articles/artist-shows-a-ue5-horror-lighting-study-featuring-hinako-from-silent-hill-f), 80 Level | breakdown | Further cozy and horror lighting write-ups found in search | search |
 
 ## Patterns seen
 
@@ -91,9 +89,10 @@ Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.ama
 
 Accessed 2026-11-11. All images are third-party and are linked, not stored.
 
-- Roblox Creator Docs images (`Roblox/creator-docs`, commit ccc2b01; documentation CC BY 4.0): outdoor and indoor lighting tutorials, The Mystery of Duvall Drive.
-- DevForum threads (Discourse JSON API): 709866, 4727106, 4880290 (images viewed); 2031219, 1510773 (read); 1876371 (opening only, listed as `search`).
-- 80.lv articles and images: copyright the named artists and 80 Level. Two rows are search results only.
+- Roblox Creator Docs images (`Roblox/creator-docs`): outdoor and indoor lighting tutorials, The Mystery of Duvall Drive. © Roblox; the repository's CC BY 4.0 statement names prose, not images, so they are linked only.
+- DevForum threads (Discourse JSON API): 709866, 4727106, 4880290 (images viewed); 2031219, 1510773 (read).
+- 80.lv articles and images: copyright the named artists and 80 Level.
+- Link check, 2026-11-11: every URL and image path answered. Two rows that had only been seen in search results (a 2022 forum lighting video guide and two further 80.lv write-ups) were removed.
 - Game Developer article on Sable: read as text.
 - Sketchfab model: CC BY as stated; listed to look at only.
 - Rejected after viewing: baseplate screenshots of lighting panels, colour-grading panel screenshots, a material graph, a sculpt close-up, an editor capture that duplicated row 22, and one mood board whose images could not be told from generated ones.
