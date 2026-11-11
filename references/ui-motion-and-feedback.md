@@ -32,7 +32,7 @@ Define motion as a handful of tokens; no screen creates its own `TweenInfo`.
 | `enter` | 0.18–0.26 s | Back Out (playful) or Quint Out (clean) | `UIScale` from 0.90–0.92 (not from 0) + fade | Full-screen surfaces about 1.3× longer |
 | `exit` | 0.10–0.15 s | Quad In or Quint In | scale to 0.90 + fade | 0.55–0.75× the enter time; never Back In |
 | `move` | 0.20–0.40 s | Quad or Sine InOut | `Position` | Scale with distance (§3) |
-| `emphasis` | 0.25–0.45 s | Back Out | `UIScale` pop from 1.15 (counter on arrival) or 1.2 (reward icon, badge) → 1 | Jump to the peak, ease back; the counter value is the only one other guides quote |
+| `emphasis` | 0.25–0.45 s | Back Out | `UIScale` pop from 1.15 (counter on arrival) or 1.2 (reward icon, badge) → 1 | Jump to the peak, ease back. Counter pop is 1.15× everywhere in this skill |
 | `toggle` / selector | 0.10–0.16 s | Quad Out | knob position, track colour | Keep the colour change under reduced motion |
 | `fill` | 0.35 s | Quad Out | bar `Size.X.Scale` | Fast start reads responsive |
 | `countUp` | `clamp(0.35 + 0.22 × log10(gain), 0.35, 1.8)` s | Quad Out (Exponential Out for huge jumps) | a number driving text at ≤ 10–30 Hz | +1 → 0.35 s, +1,000 → 1.0 s, +1,000,000 → 1.67 s |
@@ -241,4 +241,4 @@ Accessed 2026-11-11 unless noted.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/UI Motion Language and Timing.md`; `47 Game Feel and Juice/Reward Moments and Celebrations.md`; `47 Game Feel and Juice/Squash Stretch and Anticipation in UI and Characters.md` (TL;DR and the latency-mask section heading only)
 - Google, "Designing engaging apps" (kids; read) https://developers.google.com/building-for-kids/designing-engaging-apps
 - Talks verified to exist, not watched (oembed): Martin Jonasson and Petri Purho, "Juice it or lose it" https://www.youtube.com/watch?v=Fy0aCDmgnxg · Jan Willem Nijman, "The art of screenshake" https://www.youtube.com/watch?v=AJdEqssNZ-U
-- Related in this repo (read): `game-craft.md` §1, `vfx-and-juice.md` §9 and §12, `audio-sfx-music.md` §9
+- Related in this repo (read): `game-craft.md` §1, `vfx-and-juice.md` §9 and §12, `audio-sfx-music.md` §9; `visual-library/ui-screens.md` §7 (rows cited in §5)

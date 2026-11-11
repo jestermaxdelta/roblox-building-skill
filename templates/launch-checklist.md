@@ -63,7 +63,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 - [ ] `DataModel.ServerRestartScheduled` handled: in-game countdown and save before a delayed restart.
 - [ ] (LIVE) New behaviour sits behind Configs keys whose defaults are the old behaviour; save schema change is additive, tested on copies of real profiles and readable by servers still on the old version; nothing a player paid for is removed.
 - [ ] Safety: `BanAsync` tooling, report handling and appeal path ready; ban rules published.
-- [ ] Rollback plan: previous version id recorded; data migrations backwards compatible or Migrate To Latest Update chosen.
+- [ ] Rollback plan: previous version id recorded; data migrations backwards compatible, or a server restart planned (Creator Hub: Restart Servers, outdated only, with a delay).
 
 ## T-7 to T-3 days: soft launch (public, "Exclude from recommendations" on)
 

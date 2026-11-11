@@ -340,7 +340,7 @@ Run on four devices (small phone, tablet, PC, gamepad) with a fresh account and 
 **Small (under half a day each)**
 
 - [ ] Music and SFX sliders; mute music; every sound in a group.
-- [ ] Every menu sets a selection on open; B and Escape close it.
+- [ ] Every menu sets a selection on open; gamepad B and an on-screen close button close it (Escape belongs to the Roblox menu, so never rely on it).
 - [ ] Every rejected action shows a reason and next step.
 - [ ] Shake 0–100% at the sum point; flashes toggle plus the flash gate.
 - [ ] Loading screen closes on a ready signal with a timeout; one modal at most in the first minute.
