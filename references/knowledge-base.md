@@ -2,6 +2,7 @@
 
 A large reference on designing and building efficient, well-thought-out Roblox games. It combines generic game design knowledge that transfers to Roblox with official Roblox documentation and the best open-source Roblox engineering libraries.
 
+- **Status: archive.** This is the original source text, compiled before the Roblox docs site and the DevForum could be read directly. The guides in `references/` were later verified at source and corrected; where a guide and this file differ, the guide is right. Use this file only to dig for background, and check anything you take from it.
 - **Compiled:** 2026-11-08, from 31 GitHub repositories (shallow clones, text files only), plus the owner's Roblox market-research vault (snapshot 2026-11-07).
 - **Size:** about 90,000 words in five sections.
 - **Purpose:** source material for the `roblox-game-design` agent skill, and a deep reference for humans and agents.

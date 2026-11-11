@@ -299,7 +299,7 @@ Analytics and LiveOps
 Timing
 
 - [ ] Launch inside a seasonal window (summer 10–30 June, Halloween, winter) and on or just before a Saturday; weekly update day announced.
-- [ ] Rollback plan: previous place version noted; Migrate To Latest Update decision made for any data migration.
+- [ ] Rollback plan: previous place version noted; server-restart decision made for any data migration (Creator Hub: Restart Servers, outdated servers only, with a delay; see the live-update runbook in engineering-architecture.md).
 
 ## After launch (weekly)
 

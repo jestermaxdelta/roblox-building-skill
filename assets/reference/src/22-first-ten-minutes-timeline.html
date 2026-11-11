@@ -39,5 +39,5 @@ a += T(0, 50, 'Segments are equal width; time is not to scale. Half of the scrip
 document.getElementById('axis').innerHTML = `<svg width="${W}" height="54" viewBox="0 0 ${W} 54">${a}</svg>`;
 document.getElementById('beats').innerHTML = beats.map((b, i) => `<div class="b" style="border-top:4px solid ${cols[i]}"><div class="w">${b[0]}</div><h2>${b[1]}</h2><p>${b[2]}</p><p class="fail"><b class="fail">Fails when:</b> ${b[4]}</p>${b[3] ? `<span class="log">log ${b[3]}</span>` : ''}</div>`).join('');
 Sheet.frame({ n: '22', cat: 'Onboarding', title: 'The first ten minutes as a timeline', sub: 'Eight beats from spawn to the first meso goal, with what the game does, what to log and the observable failure for each.',
-  supports: ['tutorial-and-onboarding.md §2 First-minute script format, §3 Teaching patterns, §9 Funnel', 'core-loop-tuning.md §2 (same beats)'], sources: 'tutorial-and-onboarding.md ([official], [house] as tagged there)' });
+  supports: ['tutorial-and-onboarding.md §2 First-minute script format, §3 Teaching patterns, §9 Funnel', 'core-loop-tuning.md §2 (timing targets only)'], sources: 'tutorial-and-onboarding.md ([official], [house] as tagged there)' });
 </script></body></html>
