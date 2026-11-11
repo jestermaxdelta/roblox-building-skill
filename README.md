@@ -157,7 +157,7 @@ Claude runs the matching checklist and fixes problems in order of impact.
 Good-looking games are built from references, not from memory. So the skill ships with a visual library, and Claude studies a few examples that fit your game before it designs anything.
 
 - **22 original reference sheets** come with the skill: annotated diagrams for HUD layout, shop screens, buttons, colour, effect timing, camera shots, lighting, level metrics and more. Claude can open them at any time, even offline.
-- **About 690 curated references** across 13 topics (HUDs, menus, effects, cutscenes, tutorials, maps, models, lighting, animation, sound, icons and thumbnails). Each one has a note saying exactly what to study in it. Roughly 400 are images the curators actually looked at before listing them; weak, generic or AI-looking examples were thrown out.
+- **About 720 curated references** across 13 topics (HUDs, menus, effects, cutscenes, tutorials, maps, models, lighting, animation, sound, icons and thumbnails). Each one has a note saying exactly what to study in it. Roughly 430 are images the curators actually looked at before listing them; weak, generic or AI-looking examples were thrown out.
 - These are for **studying, never for copying**. Other people's images stay theirs: the library links to them and does not include them.
 
 <p align="center">
@@ -212,12 +212,12 @@ If you leave something out, Claude picks a sensible default and tells you.
 | `SKILL.md` | The main skill: the three modes, the rules, and the trigger table. Kept short on purpose |
 | `skills/` | The 13 focused skills (level-up, retention, monetization, ui, vfx-and-audio, cinematics, world-and-lighting, models-and-animation, systems, debug, performance, security-data, growth). Each is short and points at its own guides |
 | `.claude-plugin/` | What makes this installable as a plugin |
-| `references/` | 48 topic guides, plus `INDEX.md` (which guide to open for which job). Each guide starts with a "start here by level" table and ends with a checklist |
+| `references/` | 49 topic guides, plus `INDEX.md` (which guide to open for which job). Each guide starts with a "start here by level" table and ends with a checklist |
 | `references/genres/` | 21 genre playbooks |
 | `references/visual-library/` | The curated reference library, one file per topic |
 | `assets/reference/` | The 22 bundled reference sheets, with their sources |
 | `templates/` | Fill-in documents: audit report, one-page plan, design doc, economy sheet, product plan, analytics plan, playtest plan, launch checklist |
-| `scripts/` | Ready-to-run helper scripts (Blender export and checks, thumbnail tile test) |
+| `scripts/` | Ready-to-run helper scripts (Blender export and checks, thumbnail tile test, a read-only Studio scan for house-rule problems) |
 | `CREDITS.md` | Where the knowledge comes from |
 
 ## Where the knowledge comes from
