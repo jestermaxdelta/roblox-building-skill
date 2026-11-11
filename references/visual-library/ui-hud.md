@@ -6,11 +6,14 @@ The rules these references support live in `references/ui-design-figma.md` §1 (
 How to use this file:
 - Pick your genre, open three rows (one from section 1, one from section 3), shrink each image to 800×360, and write down element count per screen region and what sits in read 1 before placing anything.
 - Evidence: `viewed` = the image was downloaded and looked at; `read` = the page, thread or licence file was read; `oembed` = the video exists with that title and creator and was not watched; `search` = seen in search results only, not opened. `†` after the evidence word = the link is a Fandom `File:` page: it opens in a browser, but Fandom answers HTTP 403 to automated clients (curl, fetch tools), so an agent should download the `WK/…` image path given in the same row instead. Each such file was confirmed to exist through its wiki's `api.php` on 2026-11-11. Row numbers are stable ids that the guides cite: a removed row leaves a gap. Every link and image path was re-requested on 2026-11-11 (DevForum through its topic JSON, GitHub through `git ls-remote`): all answered except gameuidatabase.com, which this network cannot reach.
+- File types and sizes (checked 2026-11-11): every linked image is a still; no row links a GIF or a video file. Fandom `WK/` paths serve WebP under a .png or .jpg name (the Read tool opens it). Files of 1.5 MB or more carry their size after the path, for example `(PNG 7.3 MB)`; every other file is under 1.5 MB. Each section opens with a "Start here" line naming its strongest rows.
 - These are references to study, not assets to copy: every screenshot, layout and kit stays its owner's. Copy the layout decision, never the art, logo or palette. Accessed 2026-11-11.
 
 Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original`, `WK` = `https://static.wikia.nocookie.net`, `IIG` = `https://interfaceingame.com/wp-content/uploads`, `DOCS` = `https://prod.docsiteassets.roblox.com/assets`. `t/<id>` = `https://devforum.roblox.com/t/<id>`.
 
 ## 1. Hit Roblox games, judged at phone size
+
+Start here: #1, #3, #8.
 
 Each row says what the HUD does well and what breaks on a small landscape phone. Only what is visible in the capture is described.
 
@@ -22,11 +25,13 @@ Each row says what the HUD does well and what breaks on a small landscape phone.
 | 4 | [Tower Defense Simulator: lobby HUD and inventory on a phone](https://tds.fandom.com/wiki/File:TDS_Mobile_Gameplay_New.png), Paradoxum Games; wiki upload 2022 · img `WK/tower-defense-sim/images/5/51/TDS_Mobile_Gameplay_New.png` | image | Well: captioned icon column; tower hotbar bottom-centre with the price under each slot and the XP bar beneath. Badly: the left column runs into the thumbstick, which covers the Rewards and Twitter buttons; inventory body text is far under the 12 px floor. | viewed † |
 | 5 | [Bee Swarm Simulator: desktop HUD with item list open](https://bee-swarm-simulator.fandom.com/wiki/File:Gingerbread_Bears_in_your_inventory.png), Onett; wiki upload 2021 · img `WK/bee-swarm-simulator/images/f/fd/Gingerbread_Bears_in_your_inventory.png` | image | Well: the two loop meters (honey, pollen against capacity) sit top-centre with numbers; hotbar bottom-centre. Badly: rows of buff icons, a docked list with paragraph descriptions and world labels all compete for read 1. The dense-HUD case: study what would have to move behind one tap on a phone. | viewed † |
 | 6 | [Fisch: gameplay HUD](https://fisch.fandom.com/wiki/File:RobloxScreenShot20250517_191437503.png), wiki upload 2025, desktop · img `WK/fisch/images/2/2d/RobloxScreenShot20250517_191437503.png` | image | Well: world-first layout: compass strip top-centre, quest tracker on the left with a pointer, level and C$ as bare italic text bottom-right, no plates anywhere. Badly: hotbar tiles are small text labels, and chat plus leaderboard take both top corners on small screens. | viewed † |
-| 7 | [The Survival Game: HUD features (official docs figure)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-1.png` | image | Two vitals top-right as thin bars with numbers; ability buttons split left and right, each showing its key letter; 3-slot numbered hotbar; centre empty. Eight elements: the upper end of what a HUD carries (`ui-design-figma.md` §1 caps it at 7 groups). The key letters are a desktop layout: on touch they must become icons. | viewed |
-| 8 | [Super Striker League: contextual touch buttons (official docs figures)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-6.png`, `DOCS/game-design/ui-ux-design/ui-ux-design-7.png` | image | The same three thumb positions change verb with state: Tackle / Shoot / Sprint without the ball, Deke / Shoot / Pass with it. Buttons sit in an arc round the right thumb; score and clock top-left; stamina bar bottom-left. | viewed |
-| 9 | [Spellbound RPG: spells as cards (official docs figure)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-4.png` | image | Turn-based battle drawn as a hand of cards inside the arena; HP is a number on a heart beside each fighter; only Pass and Flee are buttons. Information sits next to its owner, so the HUD proper is two numbers. | viewed |
+| 7 | [The Survival Game: HUD features (official docs figure)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-1.png` (PNG 1.8 MB) | image | Two vitals top-right as thin bars with numbers; ability buttons split left and right, each showing its key letter; 3-slot numbered hotbar; centre empty. Eight elements: the upper end of what a HUD carries (`ui-design-figma.md` §1 caps it at 7 groups). The key letters are a desktop layout: on touch they must become icons. | viewed |
+| 8 | [Super Striker League: contextual touch buttons (official docs figures)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-6.png` (PNG 1.8 MB), `DOCS/game-design/ui-ux-design/ui-ux-design-7.png` (PNG 1.6 MB) | image | The same three thumb positions change verb with state: Tackle / Shoot / Sprint without the ball, Deke / Shoot / Pass with it. Buttons sit in an arc round the right thumb; score and clock top-left; stamina bar bottom-left. | viewed |
+| 9 | [Spellbound RPG: spells as cards (official docs figure)](https://create.roblox.com/docs/production/game-design/ui-ux-design), Roblox docs · img `DOCS/game-design/ui-ux-design/ui-ux-design-4.png` (PNG 7.3 MB) | image | Turn-based battle drawn as a hand of cards inside the arena; HP is a number on a heart beside each fighter; only Pass and Flee are buttons. Information sits next to its owner, so the HUD proper is two numbers. | viewed |
 
 ## 2. Roblox HUD designs by genre: commissions, concepts, tutorials
+
+Start here: #18, #19, #11.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -44,9 +49,11 @@ Each row says what the HUD does well and what breaks on a small landscape phone.
 
 ## 3. Outside Roblox: HUD patterns that transfer
 
+Start here: #21, #24, #25.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 21 | [Brawl Stars: battle](https://interfaceingame.com/screenshots/brawl-stars-battle/), Supercell, via interfaceingame.com · img `IIG/brawl-stars/brawl-stars-battle-1920x1080.png` | image | Touch action game on a phone: stick left, attack and a larger yellow super button right, team bars in the top corners, timer top-centre, one emote button. Names and HP ride above the characters. No menu button exists during a match: six elements. | viewed |
+| 21 | [Brawl Stars: battle](https://interfaceingame.com/screenshots/brawl-stars-battle/), Supercell, via interfaceingame.com · img `IIG/brawl-stars/brawl-stars-battle-1920x1080.png` (PNG 1.7 MB) | image | Touch action game on a phone: stick left, attack and a larger yellow super button right, team bars in the top corners, timer top-centre, one emote button. Names and HP ride above the characters. No menu button exists during a match: six elements. | viewed |
 | 22 | [Clash Royale: combat (portrait)](https://interfaceingame.com/screenshots/clash-royale-combat/), Supercell, via interfaceingame.com · img `IIG/clash-royale/clash-royale-combat-1920x1080.png` | image | The bottom third is the primary verb: a hand of four cards with the cost on each, the elixir bar under them and the next card previewed. Tower HP is printed in the world; the timer is the only thing in a top corner. | viewed |
 | 23 | [Fortnite: build mode](https://interfaceingame.com/screenshots/fortnite-build/), Epic Games, via interfaceingame.com · img `IIG/fortnite/fortnite-build-1920x1080.jpg` | image | Desktop and console shooter: compass top-centre, minimap top-right with three counters under it, health and shield bars with numbers low-centre, build pieces bottom-right with key hints, and the prompts (EDIT, ROTATE) drawn on the object being built. | viewed |
 | 24 | [Hades: boss fight](https://interfaceingame.com/screenshots/hades-fight/), Supergiant Games, via interfaceingame.com · img `IIG/hades/hades-fight.jpg` | image | Boss bars with names at the top; boons as a left column of small diamonds; health as bar + `122/160` bottom-left, currency bottom-right; damage numbers in the world. Corners carry state, the centre carries only the fight. | viewed |
@@ -56,6 +63,8 @@ Each row says what the HUD does well and what breaks on a small landscape phone.
 | 28 | [Game UI Database](https://www.gameuidatabase.com/), not opened (site refused this network) | gallery | Search results describe 55,000+ screenshots and 1,700 videos from about 1,300 games, filterable by screen type and HUD element. Roblox's Engine UI designer and the designer unroot both point to it in the threads listed here. | search |
 
 ## 4. Articles, talks and tools
+
+Start here: #29, #32, #36.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|

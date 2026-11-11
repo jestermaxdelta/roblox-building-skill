@@ -16,6 +16,15 @@ Contents: Design first · Time to afford · Hard currency or direct Robux · Pro
 
 Related: monetization-and-policy.md (what is sold, price ladders, boost rules); gameplay-systems-cookbook.md §1 Currency and wallet, §3 Shop, §5 Upgrades and rebirth (implementation); data-and-purchases.md (saving balances, dupes, receipts); templates/economy-balance-sheet.md (the fill-in sheet).
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Inflation, upgrade costs, rebirth | "Level-up: economy symptoms → likely cause → fix", "Time to afford: price everything from one income model", "Progression curves", "Rebirth and prestige math", "Measuring a live economy", "Live rebalancing without angering players", "Design the economy before you build it"; `templates/economy-balance-sheet.md` Sheet 0; this file "Review gate" (about 206 lines) |
+| Plan an economy | "Design the economy before you build it", "Time to afford: price everything from one income model", "Progression curves", "Rebirth and prestige math", "Paid multipliers and the curve", "Offline income", "Hard currency or direct Robux prices?", "Pricing soft currency against Robux"; `templates/economy-balance-sheet.md` Sheet 1, Sheet 2, Sheet 2b, Sheet 3, Sheet 3b, Sheet 4, Sheet 5, Sheet 6, Sheet 7, "Validation plan"; this file "Review gate" (about 279 lines) |
+
 ## Design the economy before you build it
 
 1. **Name every currency and resource, then limit them.** The Creator Analytics economy dashboard shows up to 5 currencies and the event limits allow 10 resource types. Fewer currencies are easier to balance and to read.

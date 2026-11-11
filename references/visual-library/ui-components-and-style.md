@@ -5,12 +5,15 @@ The rules these references support live in `references/ui-design-figma.md` (§3 
 
 How to use this file:
 - Before drawing a kit, open three rows from section 1 (include one marked template) and write down what the strong ones share: outline weight, lip, highlight angle, radius, the one motif. Then draw your own five pieces with those numbers fixed.
-- Evidence: `viewed` = the image was downloaded and looked at; `read` = the page, thread or licence file was read; `oembed` = the video exists with that title and channel and was not watched; `search` = seen in search results only. `†` after the evidence word = the link is a Fandom `File:` page: it opens in a browser, but Fandom answers HTTP 403 to automated clients (curl, fetch tools), so an agent should download the `WK/…` image path given in the same row instead. Each such file was confirmed to exist through its wiki's `api.php` on 2026-11-11. Row numbers are stable ids that the guides cite: a removed row leaves a gap. Every link and image path was re-requested on 2026-11-11 (GitHub through `git ls-remote`): all answered.
+- Evidence: `viewed` = the image was downloaded and looked at; `read` = the page, thread or licence file was read; `oembed` = the video exists with that title and channel and was not watched; `search` = seen in search results only. `†` after the evidence word = the link is a Fandom `File:` page: it opens in a browser, but Fandom answers HTTP 403 to automated clients (curl, fetch tools), so an agent should download the `WK/…` image path given in the same row instead. Each such file was confirmed to exist through its wiki's `api.php` on 2026-11-11. Row numbers are stable ids that the guides cite: a removed row leaves a gap. Every link and image path was re-requested on 2026-11-11 (GitHub through `git ls-remote`): all answered except kenney.nl (#10), whose page and image return HTTP 403 to clients without a browser user agent and open normally in a browser.
+- File types and sizes (checked 2026-11-11): every linked image is a still; no row links a GIF or a video file. Fandom `WK/` paths serve WebP under a .png or .jpg name (the Read tool opens it). Files of 1.5 MB or more carry their size after the path, for example `(PNG 7.3 MB)`; every other file is under 1.5 MB. Each section opens with a "Start here" line naming its strongest rows.
 - These are references to study, not assets to copy: every kit, screenshot and icon stays its owner's. Licences are quoted as read on 2026-11-11 and can change; nothing here is legal advice.
 
 Image host prefixes: `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original`, `WK` = `https://static.wikia.nocookie.net`, `IIG` = `https://interfaceingame.com/wp-content/uploads`. "megathread" = DevForum thread t/311776 "Show off your UI designs" (the link goes to the post).
 
 ## 1. Kits, style directions and families
+
+Start here: #1, #2, #3, then template #8 beside them.
 
 Rows marked as template or "before" are here on purpose: compare them with the rows above them.
 
@@ -25,10 +28,12 @@ Rows marked as template or "before" are here on purpose: compare them with the r
 | 7 | [Animal Crossing: New Horizons: NookPhone app grid](https://interfaceingame.com/screenshots/animal-crossing-new-horizons-nookphone/), Nintendo, via interfaceingame.com · img `IIG/animal-crossing-new-horizons/animal-crossing-new-horizons-nookphone.jpg` | image | Nine app icons: one rounded-square plate each, one pastel per app, a simple two-tone glyph, one stroke weight. The selected app's name is printed once above the grid, not under every icon. | viewed |
 | 8 | [Epic UI Pack: button matrix](https://devforum.roblox.com/t/2206337), MapleMarvel, 2023, 440 likes (Creator Store plugin) · img `DF/5X/1/f/1/b/1f1bb743caba37910552f0b515694b2350ffb256.jpeg`, `DF/5X/e/a/f/8/eaf86322aedc705cce90e5327aa650a6c9eef76f.jpeg` | gallery | Ten hues × four styles × six sizes of one bevelled button. Useful to see a size ladder and what a stock kit offers; as a look it is the template tell itself: variety by recolour only, with nothing tied to a game. Study it, do not ship it. | viewed |
 | 9 | [Cartoon UI pack on one sheet](https://devforum.roblox.com/t/311776/100), Bylocks, 2019, megathread · img `DF/4X/0/d/0/0d000ddecd067902fe86f7782b8ab872d68cd23c.png` | image | A whole kit laid out together: currency pill, bar, titled panels, icon-button set, confirm dialog, chat, dialogue. Good as a checklist of components to draw; the single blue for everything is why it reads as a template. | viewed |
-| 10 | [Kenney UI Pack](https://kenney.nl/assets/ui-pack), Kenney; Creative Commons CC0 (stated on the page and the preview image) · img `https://kenney.nl/media/pages/assets/ui-pack/ab9e396e4d-1718203978/preview.png` | tool | Buttons, sliders, checkboxes and panels in five colours, free for commercial use without credit. A grey-box kit for wireframes and tools; a shipped game replaces it with its own family. | viewed |
+| 10 | [Kenney UI Pack](https://kenney.nl/assets/ui-pack), Kenney; Creative Commons CC0 (stated on the page and the preview image) · img `https://kenney.nl/media/pages/assets/ui-pack/ab9e396e4d-1718203978/preview.png` | tool | Buttons, sliders, checkboxes and panels in five colours, free for commercial use without credit. A grey-box kit for wireframes and tools; a shipped game replaces it with its own family. kenney.nl answers 403 to automated clients: open it in a browser. | viewed |
 | 11 | [A designer's own "before": early admin panel and gun shop](https://devforum.roblox.com/t/3077233), unroot, in Roblox's Creator Spotlight, 2024 · img `DF/5X/6/1/1/c/611c02d1bba6915a4db01996bb0e7af1c18b0922.png` | image | Default font, coloured text on translucent blue frames, rows of small same-size buttons. Shown by a now-professional designer as where he started; open it next to his later work in `ui-screens.md` to see what changed (hierarchy, spacing, one accent). | viewed |
 
 ## 2. Design fundamentals
+
+Start here: #12, #15, #20.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -44,6 +49,8 @@ Rows marked as template or "before" are here on purpose: compare them with the r
 
 ## 3. Technique: clipping, borders, shine, icon fonts, type
 
+Start here: #21, #24, #26.
+
 9-slice, export and upload settings are in `ui-design-figma.md` §6 and §13.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
@@ -57,6 +64,8 @@ Rows marked as template or "before" are here on purpose: compare them with the r
 
 ## 4. Native styling features: what no longer needs an image
 
+Start here: #27, #28, #31.
+
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 27 | [\[Full Release\] New UI Capabilities: Shadows & Individual Corners!](https://devforum.roblox.com/t/4636263), missmandypanda (Roblox), fully released 23 Jun 2026, 1,963 likes · img `DF/5X/f/6/6/e/f66e25437c5be089152fb0a2be7e091f9ebac9d3.png` | breakdown | `UIShadow` and per-corner `UICorner` radii. The before/after image is a ladder of blur radii from 1 to 128 px after the retune toward CSS: use it to pick a blur by eye instead of by number. | viewed |
@@ -66,6 +75,8 @@ Rows marked as template or "before" are here on purpose: compare them with the r
 | 31 | [\[Full Release\] UI Styling is officially released!](https://devforum.roblox.com/t/4275082), missmandypanda (Roblox), Jan 2026; follow-ups t/4566519 (StyleQuery, May 2026) and t/4646870 (transitions, Jul 2026) | breakdown | StyleSheets, StyleRules and the Style Editor for one-place re-skins; StyleQuery adds device, input, reduced-motion and text-size queries; transitions add tweens with no script. | read |
 
 ## 5. Motion and micro-interactions
+
+Start here: #33, #38, #39.
 
 Tokens and rules: `ui-motion-and-feedback.md`.
 
@@ -82,6 +93,8 @@ Tokens and rules: `ui-motion-and-feedback.md`.
 
 ## 6. Icon sets, with the licence that was read
 
+Start here: #41, #44, #43.
+
 House position: a shipped game's icons are its own family, drawn in Figma or rendered from its own Blender assets (`ui-design-figma.md` §5). Use these sets to study construction, to test metaphors and to fill wireframes. If one is ever shipped, keep the licence file and any required credit.
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
@@ -93,6 +106,8 @@ House position: a shipped game's icons are its own family, drawn in Figma or ren
 | 45 | [Material Symbols and Icons](https://fonts.google.com/icons), Google; Apache License 2.0 (LICENSE read in google/material-design-icons) | tool | Outlined, rounded and sharp versions of one set with adjustable weight and fill: shows how corner style alone changes tone. | read |
 
 ## 7. Tools
+
+Start here: #47, #53, #49.
 
 Figma-to-Roblox converters are in `ui-design-figma.md` §13; UI frameworks are in `ui-input-crossplatform.md`.
 

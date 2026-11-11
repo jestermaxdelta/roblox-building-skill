@@ -12,6 +12,15 @@ Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked again
 
 Terms: **impression** a tile shown on Home; **PTR** play-through rate, plays ÷ impressions; **qualified play** a play that lasts (filters accidental taps); **bounce** a first play ending inside 60 s or 61–180 s; **play days** days a user returns in a window; **cohort** users grouped by first-play date; **P50/P90** median and top-decile of the benchmark group; **MDE** minimum detectable effect, the smallest change a test can reliably see.
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Nobody plays (impressions, PTR) | "Level-up: symptoms → likely cause → fix", "Recommended For You"; `audit-existing-game.md` §4; `growth-and-marketing.md` §1, §11; `icons-thumbnails-and-store-page.md` "Level-up: store-page symptoms → likely cause → fix"; `market-scan-2026-11.md` "Discovery facts that change design decisions"; this file "Review gate" (about 210 lines) |
+| Analytics events | "Analytics: what to measure", "Event API and limits"; `templates/analytics-event-plan.md` (whole file); this file "Experiments and Configs", "Review gate" (about 218 lines) |
+
 ## Platform facts that shape design `[VS]`
 
 - Mobile is the majority; Android is about 65% of players, most on 2–4 GB phones (see performance.md).

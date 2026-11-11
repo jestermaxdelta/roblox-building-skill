@@ -8,9 +8,19 @@ Tags: `[official]` Roblox docs (mirror commit 7cbffff, 2026-11-10) or Roblox sta
 
 | Level | Do first | Ignore for now |
 |---|---|---|
-| Beginner | 1. Ask the §1 question; most moments stay playable. 2. One shot, 2–4 s, two camera keys, one ease for the whole move. 3. Run it in a LocalScript with the §14 runner so camera, controls and HUD come back on every exit. 4. Show a skip control after 1.5 s. 5. Change game state on the server before the cutscene starts, never at its end | Splines, actors, depth of field, synced party cutscenes, trailers |
-| Intermediate | Shot list before any keying (§3); shot sizes from the §4 table; spline paths with one ease per shot; local actor clones with marker cues; subtitles at child reading speed; reduced-motion variant; preload and stream the stage before the trigger | Blender Cam-bone cameras, EventSequencer, dolly zoom |
+| Beginner | 1. Ask the §1 question; most moments stay playable. 2. Copy the first-cutscene script at the start of §14: one shot through two or three marks, a fade, one sound, skip and restore built in. 3. Run every test listed under it; after each, the camera, controls and HUD must be back. 4. Change game state on the server before the cutscene starts, never at its end | The timeline runner, actors, depth of field, synced party cutscenes, trailers |
+| Intermediate | Shot list before any keying (§3); shot sizes from the §4 table; the §14 timeline runner (splines travelled by distance, one speed profile per shot); local actor clones with marker cues; subtitles at child reading speed; reduced-motion variant; preload and stream the stage before the trigger | Blender Cam-bone cameras, EventSequencer, dolly zoom |
 | Expert | Data-driven timelines that seek, so late and synced viewers join mid-scene; party-synced reveals with a server clock; audio as master clock for voiced scenes; Cam-bone cameras for takedowns and first-person scenes; repeatable capture paths for trailers; funnel events for every exit reason | Nothing: watch skip rate and exit reasons |
+
+## Fast routes
+
+| Task | Read exactly | Look at |
+|---|---|---|
+| First cutscene for a beginner | ROUTE1 | LOOK1 |
+| Boss or reveal intro | ROUTE2 | LOOK2 |
+| Fix a robotic camera | ROUTE3 | LOOK3 |
+| Dialogue scene with subtitles | ROUTE4 | LOOK4 |
+| Trailer capture | ROUTE5 | LOOK5 |
 
 ## Contents
 
@@ -37,20 +47,20 @@ Three tests before building `[house]`: (1) say what the player learns or feels i
 
 One production game removed a polished 27 s intro that sat inside the first minute, even with a 3 s skip `[lihfolk]`. Hancock's console-era ceiling was 2 minutes for any scene; for a phone-first audience in short sessions the house ceiling is half that.
 
-| Purpose | Budget `[house]` | Skip appears | Repeat views |
-|---|---|---|---|
-| First-join intro | 0 s before first input (§15) | n/a | Never again |
-| Glance ("look there") | 1–2 s out and back | Not needed | Once per event |
-| Zone or map reveal | 2–4 s, one shot | 1 s | First visit only |
-| Round intro flyover (shared) | 3–6 s, inside time the round already spends spawning and streaming | Personal skip | Every round, so keep it under 4 s after the first |
-| Ability, takedown or finisher camera | 0.8–2.5 s | Too short to need one | Every use: vary the angle or players tire of it |
-| Reward or hatch reveal | 2–4 s | Tap at any time | 1 s fast version or off by setting |
-| Boss reveal | 4–8 s in 2–3 shots | 1.5 s | Second attempt onward: 1.5 s title sting only |
-| Death or jumpscare camera | 1.5–3 s | 1 s | Never the same unskippable scare twice `[community]` |
-| Story beat mid-session | 10–25 s; over 30 s, split it with play | 1.5 s | Skipped by default, replayable from a menu |
-| Chapter ending | 20–45 s, hard cap 60 s | 2 s | Replayable from a menu |
+| Purpose | Budget `[house]` | Repeat views |
+|---|---|---|
+| First-join intro | None by default; the one exception (mood-driven genres) and its ceiling are owned by `tutorial-and-onboarding.md` §2 | Never again |
+| Glance ("look there") | 1–2 s out and back | Once per event |
+| Zone or map reveal | 2–4 s, one shot | First visit only |
+| Round intro flyover (shared) | 3–6 s, inside time the round already spends spawning and streaming; skip is personal (§7) | Every round, so keep it under 4 s after the first |
+| Ability, takedown or finisher camera | 0.8–2.5 s | Every use: vary the angle or players tire of it |
+| Reward or hatch reveal | 2–4 s | 1 s fast version, tap to skip, or off by setting |
+| Boss reveal | 4–8 s in 2–3 shots | Second attempt onward: 1.5 s title sting only |
+| Death or jumpscare camera | 1.5–3 s | Never the same unskippable scare twice `[community]` |
+| Story beat mid-session | 10–25 s; over 30 s, split it with play | Skipped by default, replayable from a menu |
+| Chapter ending | 20–45 s, hard cap 60 s | Replayable from a menu |
 
-Budget for a whole session: non-interactive time under about 5% of play (30 s in 10 minutes) `[house]`. A shot needs 1.2 s or more on a phone to be read; a typical shot runs 2–4 s; hold the first and last frame 0.3–0.5 s `[house]`.
+Skip follows the one rule in §8 for every row. Budget for a whole session: non-interactive time under about 5% of play (30 s in 10 minutes) `[house]`. A shot needs 1.2 s or more on a phone to be read; a typical shot runs 2–4 s; hold the first and last frame 0.3–0.5 s `[house]`.
 
 ## 3. Storyboard to shot list
 
@@ -100,9 +110,10 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 | Do | How |
 |---|---|
 | One curve through all keys | Catmull-Rom spline (passes through its points; a Bezier is only shaped by them) `[community]`. A shot with two keys is a line; add a third key to give it an arc |
-| One ease per shot, never per waypoint | `TweenService:GetValue(alpha, style, direction)` turns linear time into eased time `[official]`. Sine or Quad InOut for moves; Out for a settle; no Back, Bounce or Elastic on a camera |
-| Aim, do not slerp | Keep a second curve for the look-at point and build `CFrame.lookAt(position, look)` each frame. The subject stays framed and roll never creeps in |
-| Give the camera weight | Real cameras on dollies ramp up and settle, so ease both ends (Schnitzer). House numbers: 0.3 s or more at each end, the settle longer than the start |
+| Move by distance, not by spline parameter | Equal steps of the parameter bunch where keys are close and stretch where they are far, so the camera lurches at every key. Sample the curve into a length table once per shot and look up the point at each distance (§14 runner; sheet 14) |
+| One speed profile per shot, never per waypoint | Ramp up, hold a constant speed, ramp down (a trapezoid), applied to distance along the whole curve. `TweenService:GetValue(alpha, Quad, InOut)` `[official]` is the same ramps with no hold: fine for a single two-key move. No Back, Bounce or Elastic on a camera |
+| Aim, do not slerp | Keep a second curve for the look-at point, evaluated at the same key parameter as the position, and build `CFrame.lookAt(position, look)` each frame. Each key's framing is hit exactly, the subject stays framed and roll never creeps in |
+| Give the camera weight | Real cameras on dollies ramp up and settle, so ease both ends (Schnitzer). House numbers: ramps of 0.3 s or more at each end, the settle longer than the start |
 | Drive it per frame | One function of time evaluated in `BindToRenderStep` at `Enum.RenderPriority.Camera.Value + 1` `[official]`, so it can be sought, paused and skipped. Use time, never frame counts: a `for` loop over 60 exported frames with `task.wait()` runs at half speed on a 30 FPS phone |
 | Cut instead of travelling | To get from A to B, cut. A long fly-through between two framings is travel time the viewer did not ask for |
 | Set `Camera.Focus` every frame | A Scriptable camera does not update it, and lighting detail follows it `[official]` |
@@ -132,7 +143,7 @@ Why scripted cameras look robotic: (a) straight-line interpolation between waypo
 - **Body-locked cameras** (first person, takedowns). Blender cameras do not import: animate a `Cam` bone or part in the actor rig (`animation-and-rigs.md` §10) and, in the render step after camera priority, copy its world CFrame (`Bone.TransformedWorldCFrame` for a bone) to the Scriptable camera `[community]`. Orient the bone in Blender so its −Z axis is the view direction, and carry FOV as marker parameters `[house]`. The restore rules in §7 apply unchanged.
 - **Eyelines.** Actors look at each other or at a point just off the lens; straight into the lens only when addressing the player. Use the procedural head look-at from `animation-and-rigs.md` §9 for a live target.
 - **Lip-sync status `[VS]`.** The engine has no automatic lip-sync. `FaceControls` on animatable heads can be keyed, and Studio's Face Capture records up to 60 s from a webcam (beta) `[official]`; the Fall 2026 roadmap lists FACS upgrades and root motion for mid-2027 `[official]`. Third-party animator plugins advertise lip-sync keying `[community]` (not tested). House position: on blocky avatars use body acting, a jaw or head beat per phrase, and subtitles; do not build a scene that depends on mouths.
-- **Geometry.** Every prop and set piece in frame is Blender-authored and solid (house rules 1 and 2). Camera path points are data in a module, not parts left in `Workspace`: stray parts are primitive builds, and streaming can remove them.
+- **Geometry.** Every prop and set piece in frame is Blender-authored and solid (house rules 1 and 2). Camera path points are data in a module, not parts left in `Workspace`: stray parts become primitive builds, and streaming can remove them. The one allowance is the §14 first-cutscene script: invisible, non-colliding marks in one `Atomic` model that the script checks before it plays.
 
 ## 7. The client-only architecture
 
@@ -163,7 +174,7 @@ Cutscene data may sit on every client. A player who forces a scene to play early
 
 ## 8. Skip, pause, subtitles and reduced motion
 
-- **Skip.** Every scene over 2 s. The control appears after 1–2 s so a button mashed during play does not skip by accident, sits bottom-right inside the safe area at thumb size, and shows on any input. Touch: one tap on the visible button. Keyboard and gamepad: hold for 0.6–0.8 s with a fill ring `[house]`. Skipping jumps to the end state (cues marked `state` still fire) and grants exactly what watching grants.
+- **Skip: the one rule** `[house]`. Every scene longer than 3 s shows a skip control 2 s after it starts: the 2 s stop a button mashed during play from skipping by accident, and shorter scenes end about when a skip would appear. One exception: from the second view, reward and hatch reveals skip on the first tap (`accessibility-and-player-qol.md` §11). The control sits bottom-right at thumb size on a `ScreenGui` with the default insets (`ScreenInsets = None` is for non-interactive content such as fades and bars `[official]`) and shows on any input. Touch: one tap on the visible button. Keyboard and gamepad: hold for 0.6–0.8 s with a fill ring `[house]`. Skipping jumps to the end state (cues marked `state` still fire) and grants exactly what watching grants.
 - **Repeats.** Full on first view; from the second view play the short version or nothing (`accessibility-and-player-qol.md` §11). Store "seen" in the profile the server already saves `[community]`.
 - **Pause.** A personal scene may pause when the Roblox menu opens: freeze the clock, `AdjustSpeed(0)` on tracks, pause the audio. Synced scenes never pause; they run on the server clock.
 - **Subtitles.** Rules and the display-time formula are in `accessibility-and-player-qol.md` §6. Cutscene additions from Hamilton's subtitle guide: on by default and switchable before the first line plays; two lines at most; one second minimum on screen; about 2–2.5 s per line for adults and 3–3.5 s per line for under-13s (BBC figures he cites), so pace Roblox scenes for children; leave a quarter-second gap between subtitles; split a line rather than reveal the twist early; name the speaker when it is not obvious; outline or plate behind the text, never a drop shadow alone.
@@ -222,17 +233,7 @@ The legacy `Dialog` and `DialogChoice` instances still exist `[official]` but gi
 | EventSequencer | Concerts, live events, multi-scene shows synced across servers; seek and late join; inline mode for existing places | Heavy for a 4 s reveal; scenes are folders with client and server schemas | Roblox module `[official]` |
 | Data-driven timeline (below) | Everything else: reveals, intros, endings, capture paths | You write the runner once | House default |
 
-Roblox ships no track-based sequencer; its own showcase team typed keyframes into a script-driven `EventManager` (interpolants, scripts, audio, camera shakes per event) and said they would have liked a track UI `[official]`. The format below follows the same idea.
-
-| Field | Type | Meaning |
-|---|---|---|
-| `length`, `skipAfter` | seconds | Total length; when the skip control may appear |
-| `anchor` | name | Mark or part that all positions are relative to |
-| `shots[]` | `{ t, length, keys[] }` | One entry per shot; a new entry is a cut. `keys[]` are `{ pos, look, fov }`: one key is a static shot, two a move, three or more a spline. One ease per shot |
-| `cues[]` | `{ t, id, state? }` | Sorted by time. `id` is looked up in one cue table (sound, VFX, subtitle, actor clip, title card). `state = true` marks cues that must also run on skip |
-| `subtitles[]` | `{ t, key, speaker? }` | Localisation keys; display time from the caption formula |
-| `actors[]` | `{ name, rig, mark, clip }` | Local clones to build during preload |
-| `short` | timeline | Optional repeat-view version |
+Roblox ships no track-based sequencer; its own showcase team typed keyframes into a script-driven `EventManager` (interpolants, scripts, audio, camera shakes per event) and said they would have liked a track UI `[official]`. The house format follows the same idea. Its core is the `Timeline` type at the top of the §14 runner: `length` and `skipAfter` in seconds; `shots[]` of `{ t, length, keys[], easeIn?, easeOut? }`, where a new entry is a cut and `keys[]` are `{ pos, look, fov }` (one key is a static shot, two a move, three or more a spline; one speed profile per shot); `cues[]` of `{ t, id, state? }` sorted by time, each `id` looked up in one cue table (sound, VFX, subtitle, actor clip, title card), with `state = true` on cues that must also run on skip. Add when the scene needs them: `anchor` (the mark all positions are relative to), `subtitles[]` of `{ t, key, speaker? }` (localisation keys; display time from the caption formula), `actors[]` of `{ name, rig, mark, clip }` (local clones built during preload) and `short` (the repeat-view timeline).
 
 Everything is a function of time, so the same data plays, seeks for late joiners, skips to the end, renders the reduced-motion variant and replays identically for trailer capture.
 

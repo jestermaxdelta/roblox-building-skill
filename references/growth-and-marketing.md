@@ -14,6 +14,15 @@ Terms: **cost per play (CPP)** ad spend ÷ plays; **ROAS** value earned from an 
 
 Contents: 1 Order of operations and soft launch · 2 Channel map · 3 Ads Manager · 4 Short-form video · 5 Creators · 6 Community · 7 Updates, events, launch window · 8 Codes · 9 Cross-promotion, search and localisation · 10 What breaks the rules · 11 Rescuing a weak launch · Level-up table · Review gate · Sources.
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Should I run ads? | §1, §3; `checklists.md` "Growth gate: before paid or creator-driven traffic"; this file §10, "Review gate" (about 174 lines) |
+| TikTok, creators, codes, community | §4, §5, §6, §8, §10; `community-moderation-safety.md` §10, §14; this file "Review gate" (about 189 lines) |
+
 ## 1. Order of operations
 
 Traffic multiplies whatever the game already does to a new player. Buy or borrow reach only after the readiness gate passes.
@@ -23,7 +32,7 @@ Traffic multiplies whatever the game already does to a new player. Buy or borrow
 | Onboarding funnel, economy and offer events live | Required | Otherwise the spend teaches nothing |
 | First-play bounce and D1 | At or above the dashboard benchmark median; with no dashboard benchmark, D1 above the 11% house launch target `[house]` (market-scan-2026-11.md; the large-title median is 10.3%, analytics-and-discovery.md §Benchmarks) | Roblox: improve retention and engagement before acquiring `[official]` |
 | Like ratio | ≥ 85% | A sponsored tile pays to display the rating (market-scan rule 13); ad-running games sit at a 79% median vs 92% for others (vault sample) |
-| Tile matches the first minute | Thumbnail rules 1–13 pass; rubric in `icons-thumbnails-and-store-page.md` §15 scores 8.5+ | Mismatched metadata reduces exposure `[official]` |
+| Tile matches the first minute | Thumbnail rules 1–13 (market-scan-2026-11.md) pass; rubric in `icons-thumbnails-and-store-page.md` §15 scores 8.5+ | Mismatched metadata reduces exposure `[official]` |
 | Stability | Crash rate under 2–3%, join ≤ 15 s on low-end Android | A spike magnifies crashes |
 | Value of a new player known | 30-day revenue per new user by source, from the Acquisition new-users funnel | Sets the cost-per-play ceiling |
 | Kids/Select status known | Trial (16+ only) or eligible | Decides audience and channel |

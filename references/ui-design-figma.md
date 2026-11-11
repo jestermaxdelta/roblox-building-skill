@@ -8,15 +8,28 @@ Tags: `[official]` Roblox docs and staff announcements, `[community]` DevForum, 
 
 | Level | Do first | Ignore for now |
 |---|---|---|
-| Beginner | (1) Write the three reads for the HUD (§1). (2) Fill the token table: 6 colour roles, 2 fonts, 1 radius, 1 outline (§3–4). (3) Grey-box the HUD and one window at `Phone-S` over a real screenshot. (4) Build button, panel and currency readout from the recipes in §6. (5) Score with the rubric (§9) and fix every row under 1. | StyleSheets, converters, springs, virtualised lists |
+| Beginner | (1) Write the three reads for the HUD (§1). (2) Derive the tokens from four inputs taken from the game (§3): 6 colour roles, 2 fonts, 1 radius, 1 outline; never ship the §15 placeholder. (3) Grey-box the HUD and one window at `Phone-S` over a real screenshot. (4) Build button, panel and currency readout from the recipes in §6. (5) Score with the rubric (§9) and fix every row under 1. | StyleSheets, converters, springs, virtualised lists |
 | Intermediate | Theme module with no raw value outside it; full state matrix per component; icon family; the tells table as a pre-ship check; Figma variables mirrored to the theme; hand-off checklist; six test viewports | Automating the Figma round trip |
 | Expert | Regenerate builders from Figma; automated audit plus rubric score per screen in every milestone review; A/B HUD and shop layouts with Experiments `[official]`; style stress test before any re-skin; measured budgets in `ui-input-crossplatform.md` §UI performance | Nothing: re-verify every `[VS]` |
 
 Terms: a **token** is a named design value stored once. A **read** is one pass of the eye over the screen. **9-slice** stretches an image's edges and centre while keeping its corners. **Optical** alignment centres what the eye sees (the glyph, the icon's mass), not the bounding box.
 
+## Fast routes
+
+The six commonest UI tasks, each read in 250–360 lines instead of the four guides end to end. "figma" is this file; "recipes", "input" and "motion" are `ui-screen-recipes.md`, `ui-input-crossplatform.md` and `ui-motion-and-feedback.md`. Sheets are `assets/reference/NN-*.png`; library rows are in `visual-library/`. Each listed section defines its tokens or sits beside the section that does.
+
+| Task | Read exactly | Look at |
+|---|---|---|
+| Redesign one screen (shop, inventory, rewards) | figma §3, §4, §6, §9, §10 · recipes §1, §3 and the screen's own section (§5 shop, §6 inventory, §9 rewards) · input §UI architecture from the `DisplayOrder` band plan to the note under the presenter · motion §2, §8 (about 350 lines) | Sheets 03 or 04, 05, 09 · `ui-screens.md` the screen's section, its "Start here" rows (shops #1, #4, #10) · `ui-components-and-style.md` §1 #1–#3 against #8 |
+| Build a new HUD | figma §1, §2, §3, §4, §6 · recipes §1, §2, §4 · input §Containers, insets and sizing, §Mobile layout and thumb zones · motion §2 (about 330) | Sheets 01, 02, 19 · `ui-hud.md` §1–§3 (#1–#28), "Start here" rows first |
+| Fix the phone layout of a live UI | figma §2, §4, §11 · input §Containers, insets and sizing, §Text, numbers and localisation, §Mobile layout and thumb zones, Level-up table, UI audit scan · recipes §1, §4 (about 270) | Sheets 01, 19, 06 · `ui-hud.md` #4, #18, #20, #36 |
+| Add motion and feedback to an existing UI | figma §3 "States" bullet · motion §1–5, §7, §8, Level-up table · input the presenter sketch and its note in §UI architecture (about 270) | Sheets 05, 08 · `ui-components-and-style.md` §5 #33, #38, #39 · `ui-screens.md` §7 #67, #68, #72 |
+| Figma to Roblox | figma §3, §4, §7, §9, §11, §12, §13, §14, §15 · input §Containers, insets and sizing (about 310) | Sheets 06, 05 · `ui-components-and-style.md` §4 #27–#31, §7 #47, #51 |
+| Critique a UI (score, list fixes) | figma §1, §3, §4, §8, §9, Level-up table · input the pass criteria at the end of §Mobile layout, Level-up table · recipes and motion Level-up tables (about 250) | Sheets 02, 09, 07 · "What the weak examples had in common" in each `visual-library/ui-*.md` |
+
 ## Contents
 
-1 Visual hierarchy: the three reads · 2 Grid and spacing · 3 Colour system · 4 Type system · 5 Icons · 6 Construction recipes (native-first) · 7 From brief to design system · 8 Generic and AI-look tells · 9 Critique rubric · 10 Redesign procedure · 11 Frames and scale · 12 Figma and the Figma MCP · 13 Export, upload, converters · 14 Hand-off checklist · 15 Theme module · Level-up table · Review gate · Sources
+Fast routes · 1 Visual hierarchy: the three reads · 2 Grid and spacing · 3 Colour system · 4 Type system · 5 Icons · 6 Construction recipes (native-first) · 7 From brief to design system · 8 Generic and AI-look tells · 9 Critique rubric · 10 Redesign procedure · 11 Frames and scale · 12 Figma and the Figma MCP · 13 Export, upload, converters · 14 Hand-off checklist · 15 Theme module · Level-up table · Review gate · Sources
 
 ## 1. Visual hierarchy: the three reads
 
@@ -47,8 +60,8 @@ Worked example: backpack simulator HUD at `Phone-S` (800×360), numbers `[house]
 | 1 | Coins | Top-left, under the top bar | Icon 30, number 20 | Outlined number, no plate; counts up |
 | 2 | Next-goal chip | Top centre | Height 32 | Dark plate at 0.25 transparency, progress `340/500`, white ink |
 | 2 | Gems | Under coins | Icon 22, number 16 | Same construction, one tier smaller |
-| 2 | Menu: Shop, Pets, Rebirth, More | Right edge, above the jump zone | 48 px, gap 8 | Neutral tiles, icon plus a 12 px caption; badge only when claimable |
-| 2 | Boost pills | Under the goal chip | Height 24 | Only while a boost runs; honest timer |
+| 2 | Menu: Shop, Pets, Gifts, More (Rebirth behind More or a world prompt) | Right edge, above the jump zone, 2 × 2 | 56 px tiles, gap 8 | Neutral tiles, icon 24 plus a 14 px caption of one short word; badge only when claimable |
+| 2 | Boost pills | Under the goal chip | Height 32 | Only while a boost runs; honest timer |
 | 3 | Everything else | Behind `More` or a world prompt | n/a | Not on the HUD |
 
 The result uses one accent (Sell), one colour per currency icon and white ink for everything else. Zone rules behind the placements: `ui-input-crossplatform.md` §Mobile layout.
@@ -74,14 +87,33 @@ Numbers are px at `Phone-S`; all `[house]` unless tagged. Critique threads retur
 | Empty space | Leave one free cell or 15% free width in every window: features arrive later and a full window forces a redesign `[community]` |
 
 - Use `UIListLayout` + `UIPadding` (auto layout in Figma) so spacing is a property, not a position; `UIFlexItem` for the one child that should take the remaining width `[official]`.
-- A window that looks empty is usually too large for its content, not short of decoration: shrink the window, keep the content size `[community]`.
 - Borders cost separation, not add it: prefer spacing and a surface step to a 1 px line around every element `[community]`.
 
 ## 3. Colour system built from the game's art direction
 
-1. **Sample the world.** Take three gameplay screenshots: the brightest zone, the darkest, the most saturated. Note the dominant hue and the value range. UI neutrals must sit outside the world's value band: a bright saturated world wants dark neutral panels (lightness 15–25%) or white panels with a dark outline; a dark world wants light ink on plates of 60–75% opacity. Official guidance for HUD over 3D: neutral black and white for almost everything, colour only for key information `[official]`.
-2. **Pull the outline colour, two accents and the surface tint from the style bible** (`art-direction-and-quality-bar.md` §6, which holds the measurable rules and the UI tie-in) so UI and world read as one product; keep the icon shape language distinct from world props so UI never looks like scenery `[official]`.
-3. **Assign roles, not colours.** 60% of any screen is neutral surface, about 30% structure (headers, tabs, plates), at most 10% accent.
+**Derive the theme from the game before drawing anything.** The values in §15 and on the bundled sheets are placeholders: shipped unchanged, they make every game look like the sheets, which is the generic result this skill exists to prevent. Take four inputs from the game, preferably from its style bible (`art-direction-and-quality-bar.md` §6, whose UI tie-in row these steps apply), and turn them into tokens `[house]`:
+
+| Input | Read it from | Becomes |
+|---|---|---|
+| 1. Dominant world hue and value band | The brightest and the darkest gameplay screenshot: the hue covering most pixels, and the HSV value range | `Surface` hue (a neutral tinted 5–15% saturation toward it). `Surface` lightness outside the world's band: a bright world takes dark panels (lightness 15–25%) or light panels with a dark outline; a dark world takes light ink on dark plates at 75–85% opacity. `Outline` = the world's darkest neutral. Official guidance for HUD over 3D: neutral black and white for almost everything, colour only for key information `[official]` |
+| 2. One accent | The bible's interactable accent (the colour of things players use) | `Primary`, the one action per screen. `Premium` and `Danger` at least 40° of hue from it and from each other; a world with a treasure colour (gold coin, gem) lends it to `Premium` |
+| 3. Material motif | One object only this game has (a basket, a collar tag, an enamel sign) | Radius family (soft bevels → 16/12/8; crisp chamfers → 4/2 or cut corners), outline weight, the header or frame treatment, the close button's shape. Icon shapes stay distinct from world props so UI never reads as scenery `[official]` |
+| 4. Tone and age band | The brief | Display family (§4), lip or flat buttons (§6), enter easing (Back Out playful, Quint Out tense), saturation cap |
+
+Then measure every text-on-fill pair (contrast bullets below) and fix failures by moving lightness, not hue. **No access to the game:** ask for two screenshots (brightest and darkest zone) and one object that is unmistakably theirs; until they arrive, write the four assumed inputs in one line above the theme, keep `Placeholder = true` (§15) and say so in the hand-off. **Line-up check:** place the HUD beside captures of the three nearest competitors; if it shares a palette family and radius with any of them, change the accent or the motif. Two derivations, ratios measured with the WCAG formula `[house]`:
+
+| | A: pet-farm simulator | B: hospital escape (horror) |
+|---|---|---|
+| Inputs | Grass H 105°, V 55–85%; sunflower-yellow interactables; woven-basket motif; playful, ages 8–12 | Teal-grey H 190°, V 8–45%; sodium-amber lamps; enamel name tags; tense, 13+ |
+| `Surface`, `SurfaceAlt` | Cream `#FFF4DC`, straw `#F2DDB0`: light panels, separated from the bright world by the outline | `#12181A` at transparency 0.2, `#1E2629`: dark plates under light ink |
+| `Ink`, `InkMuted`, `Outline` | `#3A2414`, `#6E513C`; outline = ink (the basket's shadow brown), 3 px | Paper `#E8E2D0`, `#A8A28F`; outline `#0A0D0E`, 2 px |
+| `Primary` (label) | `#FFC234` (dark ink, 9.0:1) | `#E8A33D` (ink `#12181A`, 8.3:1) |
+| `Premium`, `Danger` (label) | Teal `#0F766D` (white 5.5:1), red `#C8343A` (white 5.2:1) | Enamel green `#6FB8AC` (ink `#12181A`, 7.8:1), red `#A33241` (paper 5.3:1) |
+| Shape | Radius 16/12/8, lip 5, a basket-weave header strip (9-sliced image) | Radius 2/0, flat buttons, the header is an enamel tag with two rivets |
+| Type, motion | `LuckiestGuy` + `BuilderSans`; enter Back Out 0.22 s | `SpecialElite` + `BuilderSans`; enter Quint Out 0.18 s, no overshoot, no idle loops |
+| Ink on surface | 13.3:1, muted 6.6:1 | 9.9:1, muted 5.0:1 on the plate composited over the brightest zone (`#8FA3A6`) |
+
+**Assign roles, not colours.** 60% of any screen is neutral surface, about 30% structure (headers, tabs, plates), at most 10% accent.
 
 | Role | Use | Derived values per role |
 |---|---|---|
@@ -113,7 +145,7 @@ Numbers are px at `Phone-S`; all `[house]` unless tagged. Critique threads retur
 | Weights | Two: regular or medium for reading, bold or extra-bold for emphasis. Build hierarchy with weight and ink colour before reaching for a new size |
 | Stylised display font | Titles and alerts only `[official]`; never body, prices or numbers the player compares |
 | Case | Capitals for labels of one or two words; sentences in sentence case |
-| Text over the world | Stroke or plate `[official]`. Stroke at most about 7% of rendered size on rounded heavy fonts (2 px at 28 px), 8–12% on open geometric ones `[lihfolk]`; add `UIShadow` with `Mode = Enum.ApplyShadowMode.Text`, `Offset` `(0, 2)` px, `BlurRadius` 0, for the hard cartoon drop (`Spread`, `Inset` and `ShowBehindParent` do nothing in text mode) `[official][VS]` |
+| Text over the world | Stroke or plate `[official]`. Stroke at most about 7% of rendered size on rounded heavy fonts (2 px at 30 px), 8–12% on open geometric ones `[lihfolk]`; add `UIShadow` with `Mode = Enum.ApplyShadowMode.Text`, `Offset` `(0, 2)` px, `BlurRadius` 0, for the hard cartoon drop (`Spread`, `Inset` and `ShowBehindParent` do nothing in text mode) `[official][VS]` |
 | Size mismatch | Labels in one group share one size; a size difference must mean importance. Mixed sizes from `TextScaled` are the most repeated text critique `[community]` |
 
 - A glyph stroke grows inward and closes the holes of 0, 6, 8, 9, a, e; `UIScale` scales the stroke with the text, so enlarging does not help `[lihfolk]`. Test string: `10 20 60 80 88 00 Fast` at the smallest phone size over the real background.
@@ -147,16 +179,17 @@ Recipes (px at `Phone-S`; colours are role names from §3; unexecuted property s
 
 | Component | Instances and properties |
 |---|---|
-| Chunky button (toy, simulator) | Root `TextButton` 160×48, transparent, `AutoButtonColor = false`. `Lip` Frame full size, `Primary.dark`, `UICorner` 12, `UIStroke` Outer 3 `Outline`. `Face` Frame `Size = UDim2.new(1, 0, 1, -5)`, white background, `UICorner` 12, `UIGradient` `Rotation = 90` from `Primary.light` to `Primary`; second `UIStroke` on `Face`: `BorderStrokePosition = Inner`, thickness 2, white, transparency 0.65, with its own `UIGradient` fading it out below mid-height (top highlight only). Label: bold display font 20, white with a contextual stroke 2 `Outline` (the stroke is what makes white legible on a mid-tone fill, §3), `UIShadow` `Mode = Text`, offset `(0, 2)`, `Primary.dark`. Pressed: `Face.Position` +4 px so it sinks into the lip |
+| Chunky button (toy, simulator) | Root `TextButton` 160×48, transparent, `AutoButtonColor = false`. `Lip` Frame full size, `Primary.dark`, `UICorner` 12, `UIStroke` Outer 3 `Outline`. `Face` Frame `Size = UDim2.new(1, 0, 1, -5)`, white background, `UICorner` 12, `UIGradient` `Rotation = 90` from `Primary.light` to `Primary`; second `UIStroke` on `Face`: `BorderStrokePosition = Inner`, thickness 2, white, transparency 0.65, with its own `UIGradient` fading it out below mid-height (top highlight only). Label: bold 20 (display family for words, body family for prices, §4), white with a contextual stroke 2 `Outline` (the stroke is what makes white legible on a mid-tone fill, §3), `UIShadow` `Mode = Text`, offset `(0, 2)`, `Primary.dark`. Pressed: `Face.Position` +4 px so it sinks into the lip |
 | Flat button (competitive, tools) | One Frame, `Primary`, `UICorner` 8, no stroke, no gradient. Hover +6% lightness, pressed −10% and inner `UIScale` 0.97. Label medium weight 16 in `OnAccent`, no stroke. Depth, if any: `UIShadow` blur 8, offset `(0, 2)`, transparency 0.75 |
-| Window | Frame `Surface`, `UICorner` 16, `UIStroke` Outer 3 `Outline`, one `UIShadow` blur 24, offset `(0, 8)`, transparency 0.65. Header strip in the destination colour (deep enough for a white title at 3:1 or better) with per-corner radii (top 16, bottom 0) so nothing pokes past the rounding. Content areas `SurfaceAlt`, radius 4 (16 − 12 padding). Body gradient at most 4% lightness, vertical, or none |
+| Window | Three layers, so the fade cannot clip what leaves the window's box: `Face` (`CanvasGroup`, transparent, static size = window + 20 px on every side; the presenter fades its `GroupTransparency`) → `Window` Frame at 20 px inset (`Surface`, `UICorner` 16, `UIStroke` Outer 3 `Outline`, one `UIShadow` blur 16, offset `(0, 4)`, transparency 0.65, the pop `UIScale`) → header, close, content. Close overhang (≤ 8), stroke (3) and shadow (16 + 4) all fit in the 20 px margin; at `Phone-S` a 736×308 window makes a 776×348 group. Header strip in the destination colour (deep enough for a white title at 3:1 or better) with per-corner radii (top 16, bottom 0) so nothing pokes past the rounding. Content areas `SurfaceAlt`, radius 4 (16 − 12 padding). Body gradient at most 4% lightness, vertical, or none |
 | Card / slot | Plate = rarity colour mixed 25% into `Surface`; `UICorner` 8; one `UIStroke` 2 in the rarity colour; icon 70% of the cell; count bottom-right in outlined text; no shadow per cell (the 100-shadow budget goes in one screen of cards) |
 | HUD number | Icon + `TextLabel`, no plate; stroke per §4; optional text `UIShadow` |
 | Progress bar | Track `SurfaceAlt` darkened, radius = height / 2, `UIShadow` `Inset = true`, blur 4, offset `(0, 2)`, black at 0.6 (reads as a groove). Fill is a child with its own `UICorner`, vertical gradient `light` → base, minimum visible sliver 6 px |
-| Badge | `Danger` circle ≥ 18 px, white 2 px stroke, bold 12 px white number (needs a `Danger` on which white measures 4.5:1), overlapping the button's top-right corner by a third |
+| Badge | `Danger` circle ≥ 22 px, white 2 px stroke, bold 14 px white number (needs a `Danger` on which white measures 4.5:1), overlapping the button's top-right corner by a third |
 
 - A gradient multiplies the background: put `UIGradient` on a white `BackgroundColor3` `[community]`. Keep gradients to 2–3 stops (the docs advise no more than 6) and never put one on text that also has a legacy text stroke `[official]`.
 - `ClipsDescendants` clips to the rectangle, not the `UICorner`: round the child too (per-corner radii), inset it, or use one `CanvasGroup` `[official]`.
+- A `CanvasGroup` always clips its descendants to its bounds `[official]`, and a `UIStroke` or `UIShadow` parented directly to the group draws outside its texture and ignores `GroupTransparency` (as designed, per a staff reply) `[community]`: keep stroke and shadow on the inner `Window`, never on the group. The docs' reduced-motion sample fades a full-screen transparent group; the 20 px margin is the same idea for less texture memory. A window that does not fade needs no group.
 - A chunky button is about ten instances: right for 5 HUD buttons, wrong for 300 list cells. For dense lists use a 9-sliced body image or the flat recipe.
 - Reach for an image when the recipe exceeds about 10 instances per repeated element, when the silhouette is not a rounded rectangle, or when the surface has texture.
 
@@ -195,7 +228,7 @@ State matrix: draw and build every state before shipping a component; most visua
 | Text field | empty with a label outside the field (not placeholder only), focused, filled, error. It must look typeable `[community]` |
 | Progress bar | empty (minimum sliver), filling, full, completed |
 
-One shared close button `[lihfolk]`: a square about 1.1× the header height (`SizeConstraint = RelativeYY`), anchored at the header's top-right, `Danger` colour, white X: the convention the docs describe `[official]`. Keep `ClipsDescendants` off the header and panel.
+One shared close button `[lihfolk]`: a square about 1.1× the header height (`SizeConstraint = RelativeYY`), anchored at the header's top-right, `Danger` colour, white X: the convention the docs describe `[official]`. Keep `ClipsDescendants` off the header and panel, and keep the overhang inside the fade group's margin (§6 Window).
 
 ## 8. Generic and AI-look tells, with the fix
 
@@ -323,7 +356,7 @@ Mapping traps `[lihfolk]` (compare a Studio capture with the Figma screenshot af
 | Image fill Fill / Fit / Tile | `ScaleType` Crop / Fit / Tile | Crop the PNG yourself rather than rely on a transform |
 | Letter spacing | none | Roblox text has no tracking: design with 0 |
 | Layer blur, background blur, blend modes, masks | none | Bake into the PNG, or redesign |
-| Font size 12 in a 1080p frame | about 4 px on a small phone | ≥ 14 px in `Phone-S`, ≥ 15 px in 1080p frames |
+| Font size 12 in a 1080p frame | about 4 px on a 667×375 phone (scale 0.347) | Design text at `Phone-S` (≥ 14 px there); a 1080p frame would need about 35 px text to draw 12 on that phone, so phones get their own arrangement (§11) |
 
 ## 13. Export, upload, converters
 
@@ -341,7 +374,7 @@ Mapping traps `[lihfolk]` (compare a Studio capture with the Figma screenshot af
 | Upload | Studio MCP `upload_image` (batch), Open Cloud Assets (`.png .jpeg .bmp .tga`, ≤ 20 MB), or Asset Manager bulk import. Every image is moderated and blank until approved | `[official][VS]` |
 | Third-party art | Kits and packs are references unless the licence clearly allows shipping; Studio MCP `generate_*` and `insert_asset` stay off-limits for shipped content | `[house]` |
 
-Converters and agent skills (GitHub metadata checked 2026-11-10; DevForum threads read 2026-11-11). Low star counts everywhere: treat converters as accelerators and audit their output. Community cost of hand import: about 30 minutes per frame, or more than $10 a frame when outsourced `[community]`.
+Converters and agent skills (GitHub metadata checked 2026-11-10; DevForum threads read 2026-11-11). Low star counts everywhere: treat converters as accelerators and audit their output. Community cost of hand import: about 30 minutes per frame, or more than $10 a frame when outsourced `[community]`. `lopi-py/figblox` and `EgoMoose/figma-to-roblox-ui` are stale or archived (2023–2024): do not start there.
 
 | Tool | Status | What it does |
 |---|---|---|
@@ -352,7 +385,6 @@ Converters and agent skills (GitHub metadata checked 2026-11-10; DevForum thread
 | `MarkRuiz00/RbxUiStudio`, `RaRdq/FigmaRobloxForge`, `astrorehan/figlo`, `MiaGobble/Figma-Import-Assistant` | 1–18★, 2026 | Teardown notes and editor; rasterise-everything exporter (many uploads, more texture memory); relay plugin (alpha); manual-import assistant |
 | `cameronpcampbell/supercorner` | 16★, MIT | Squircle corners as generated 9-slice images |
 | RoImport (free), UILint v2, GuiForge (free, browser editor), Bloxporter (paid, about $20 a month) | DevForum, 2025–2026 | Tag-driven Figma → Studio importers; UILint also lints overlap, overflow and scaling |
-| `lopi-py/figblox`, `EgoMoose/figma-to-roblox-ui` | 2023–2024, stale or archived | Do not start here |
 
 ## 14. Hand-off checklist: Figma to Studio
 
@@ -370,7 +402,9 @@ Converters and agent skills (GitHub metadata checked 2026-11-10; DevForum thread
 ```lua
 --!strict
 -- ReplicatedStorage/Shared/UI/Theme.luau. Generated from Figma variables; edit in Figma, then regenerate.
--- Placeholder values (the palette the bundled sheets are drawn in): replace every one with the game's own tokens.
+-- PLACEHOLDER palette, the one the bundled sheets are drawn in. It must not ship: derive every colour, font,
+-- radius and stroke from the game (section 3), then set Placeholder = false. The boot script warns while it is true:
+--   if Theme.Placeholder then warn("UI theme is the placeholder: derive it (ui-design-figma.md section 3)") end
 -- Label ink is measured, not assumed: On passes 4.5:1 on Base and Light (ratios in section 3).
 local function ramp(hex: string, light: string, dark: string, on: string)
 	return table.freeze({
@@ -379,6 +413,7 @@ local function ramp(hex: string, light: string, dark: string, on: string)
 	})
 end
 return table.freeze({
+	Placeholder = true,
 	Color = table.freeze({
 		Surface = Color3.fromHex("#26324A"), SurfaceAlt = Color3.fromHex("#3A4A6B"),
 		Ink = Color3.fromHex("#FFFFFF"), InkMuted = Color3.fromHex("#C8D2E3"),
@@ -421,15 +456,14 @@ Engine symptoms (safe areas, input, performance) are in `ui-input-crossplatform.
 | "Colours hurt" or "it's bland" | Several saturated hues touching, or no role colour at all | Roles and the 60/30/10 split (§3) |
 | Shop conversion low although traffic is fine | Buy button not the brightest element; price baked in art, unreadable under a thick stroke, or bare white on a mid-tone fill | One `Primary` button per card, native price text, stroke ≤ 7%, label ink by measured contrast (§3); `monetization-and-policy.md` |
 | Players do not understand an icon | Abstract or adult metaphor; no caption | Naming test (§5); caption until found |
-| UI and world look like two games | UI palette and shapes chosen apart from the art bible | Sample the world (§3); shape language from the brief (§7) |
-| Art soft on desktop, fringed edges on phone | 1× exports; no alpha bleed | Re-export 2–3× (≤ 1024), alpha-bleed, or rebuild natively (§6) |
+| UI and world look like two games, or like the bundled sheets | Theme chosen apart from the art bible, or the §15 placeholder shipped | Derive the theme from four inputs (§3); shape language from the brief (§7) |
+| Soft or fringed art; client memory up after a UI update | 1× exports without alpha bleed; dozens of 1024² uploads, one image per colour | Re-export 2–3× (≤ 1024) and alpha-bleed (§13); native recipes, tinted bases, sprite sheets, 9-slice |
 | Re-skin takes weeks | Colours and sizes hard-coded per instance | Theme module or `StyleSheet` tokens; components own numbers |
-| Client memory up after a UI update | Dozens of 1024² uploads; one image per colour | Native recipes, tinted bases, sprite sheets, 9-slice |
 
 ## Review gate
 
 - [ ] Three reads written for the HUD and each window; blur and greyscale test passed at phone size over busy gameplay.
-- [ ] Tokens exist in Figma and in `Theme.luau`; no raw colour, font, size or spacing elsewhere; palette sampled from the game's own world.
+- [ ] Tokens exist in Figma and in `Theme.luau`; no raw colour, font, size or spacing elsewhere; the four inputs of §3 are written above the theme, `Placeholder = false`, and the line-up check against three competitors passed.
 - [ ] Every text-on-fill pairing in the token table has a measured ratio written beside it: 4.5:1 text, 3:1 large text and icons, 3:1 disabled; rarity ramp rises in lightness and each tier carries a name or pips.
 - [ ] One icon family; item icons rendered from the Blender assets; naming test passed; no generated or third-party art shipped.
 - [ ] Components built from §6 with full state matrices; effects within the 300-stroke and 100-shadow budgets; nothing depends on an unreleased or beta-only property.
@@ -443,17 +477,16 @@ Engine symptoms (safe areas, input, performance) are in `ui-input-crossplatform.
 
 Accessed 2026-11-11 unless noted. "(read)" = opened and read at source; "(viewed)" = image looked at; "(oembed)" = video verified to exist, not watched; "(search summary)" = not opened.
 
-- `Roblox/creator-docs` mirror, commit `7cbffff` (read): `production/game-design/ui-ux-design.md`; `tutorials/curriculums/user-interface-design/choose-an-art-style.md`, `wireframe-your-layouts.md`; `ui/position-and-size.md`, `ui/appearance-modifiers.md`, `ui/9-slice.md`, `ui/styling/index.md`, `ui/styling/editor.md`; `art/modeling/texture-specifications.md`; class reference `UIStroke`, `UICorner`, `UIShadow`, `UIGradient`, `UIFlexItem`, `TextLabel`, `GuiService`; `cloud/guides/usage-assets.md` (upload formats, 20 MB); enums `Font`, `GradientType`, `GradientTileMode`, `ApplyShadowMode`, `BorderStrokePosition`, `GuiState`: https://github.com/Roblox/creator-docs. Note: the mirror still shows beta alerts for gradients and shadows that the announcements below supersede.
+- `Roblox/creator-docs` mirror, commit `7cbffff` (read): `production/game-design/ui-ux-design.md`; `tutorials/curriculums/user-interface-design/choose-an-art-style.md`, `wireframe-your-layouts.md`; `ui/position-and-size.md`, `ui/appearance-modifiers.md`, `ui/9-slice.md`, `ui/styling/index.md`, `ui/styling/editor.md`; `art/modeling/texture-specifications.md`; class reference `UIStroke`, `UICorner`, `UIShadow`, `UIGradient`, `UIFlexItem`, `TextLabel`, `GuiService`, `CanvasGroup` (always clips its descendants); `includes/ui/clipping.md`; `production/publishing/accessibility.md` (the reduced-motion sample's full-screen fade group); `cloud/guides/usage-assets.md` (upload formats, 20 MB); enums `Font`, `GradientType`, `GradientTileMode`, `ApplyShadowMode`, `BorderStrokePosition`, `GuiState`: https://github.com/Roblox/creator-docs. Note: the mirror still shows beta alerts for gradients and shadows that the announcements below supersede.
 - Roblox staff announcements on DevForum (read): UIStroke improvements, full release Dec 2025 https://devforum.roblox.com/t/3958036 · shadows and individual corners, full release Jun 2026 https://devforum.roblox.com/t/4636263 · upgraded UIShadow, full release Nov 2026 https://devforum.roblox.com/t/4934553 · upgraded UI gradients, full release Oct 2026 https://devforum.roblox.com/t/4846594 · UI styling https://devforum.roblox.com/t/4275082 · StyleQuery https://devforum.roblox.com/t/4566519 · styling transitions https://devforum.roblox.com/t/4646870 · 4K texture rendering https://devforum.roblox.com/t/4316229 · scaled-stroke bug report with staff reply https://devforum.roblox.com/t/4238464. Release dates, the 300-stroke and 100-shadow guidance and the shadow and corner property names re-read on 2026-11-11.
-- DevForum bug reports (read): `UICorner` on 9-slice images https://devforum.roblox.com/t/4713370 (Jul 2026), https://devforum.roblox.com/t/4779785 (Aug 2026)
+- DevForum bug reports (read): a `UIStroke` parented directly to a `CanvasGroup` ignores `GroupTransparency`, staff reply "as-designed" (2024) https://devforum.roblox.com/t/2880215 · `UICorner` on 9-slice images https://devforum.roblox.com/t/4713370 (Jul 2026), https://devforum.roblox.com/t/4779785 (Aug 2026)
 - DevForum tutorials (read): UI Design Starter Guide (2017, 1,112 likes on the thread) https://devforum.roblox.com/t/53461 · The Ultimate UI Design Guide (2021) https://devforum.roblox.com/t/1236916 · A Guide to User Interface Design (2017) https://devforum.roblox.com/t/47526 · How to make extremely Clean UI while keeping good UX (2023) https://devforum.roblox.com/t/2438099 · UI Design and the Fundamentals (2021) https://devforum.roblox.com/t/1455805 · Professional UI Designer Raising Guides 101 (2020) https://devforum.roblox.com/t/476101 · 5 Tricks to improve your UIs (2021) https://devforum.roblox.com/t/1416491 · Customize your GUIs with builder icons (2025) https://devforum.roblox.com/t/3968755 · Automated PixelFix for UI (2026) https://devforum.roblox.com/t/4812286. Mostly mechanics; the craft rules here come from the critique threads and outside sources.
 - DevForum critique threads, replies read (source of the C rows and §2–5 corrections): https://devforum.roblox.com/t/4859702, /t/4809265, /t/4823740, /t/4738500, /t/3098753, /t/764512, /t/756188, /t/317837, /t/4110542, /t/3166846, /t/4775592, /t/4706951, /t/2893476, /t/453803, /t/819976, /t/807561, /t/1170877, /t/4860297, /t/3676758
 - DevForum threads on the "AI look" (read; source of the A rows): https://devforum.roblox.com/t/4960156, /t/4943365, /t/4526615, /t/3780811
 - DevForum converter threads (read): https://devforum.roblox.com/t/3381689, /t/4731967, /t/4765869, /t/4834077, /t/4891173, /t/3501193
-- Outside craft writing (read): Zach Gage, "Building Games That Can Be Understood at a Glance" (GDC 2018) via the GIGAZINE summary https://gigazine.net/gsc_news/en/20180501-game-design-subway-legibility and https://mgmarlow.pages.dev/words/2023-01-15-case-study-zach-gage (talk video, oembed: https://www.youtube.com/watch?v=YISKcRDcDJg) · "A simple 10-minute UI litmus test" https://www.gamedeveloper.com/design/a-simple-10-minute-ui-litmus-test · Anthony Stonehouse, "User interface design in video games" (2014) https://www.gamedeveloper.com/design/user-interface-design-in-video-games · Yowan Langlais, "Burrito Bison: Launcha Libre – UI Design Process" https://interfaceingame.com/articles/burrito-bison-launcha-libre-ui-design-process/ · Raffaele Lattanzio, "The UI & UX of Sonic Racing" https://interfaceingame.com/articles/the-ui-ux-of-sonic-racing/ · Epic, "Designing for Mobile in Fortnite" https://dev.epicgames.com/documentation/fortnite/designing-for-mobile-in-fortnite · NN/g, "Children's UX" https://www.nngroup.com/articles/childrens-websites-usability-issues/ · Google, "Designing engaging apps" (kids) https://developers.google.com/building-for-kids/designing-engaging-apps · Figma MCP rate limits and exempt tools (re-read 2026-11-11) https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/
-- Roblox Creators, "UI/UX Essentials" (oembed) https://www.youtube.com/watch?v=lOOvOIJoMi4
+- Outside craft writing (read): Zach Gage, "Building Games That Can Be Understood at a Glance" (GDC 2018) via the GIGAZINE summary https://gigazine.net/gsc_news/en/20180501-game-design-subway-legibility and https://mgmarlow.pages.dev/words/2023-01-15-case-study-zach-gage (talk video, oembed: https://www.youtube.com/watch?v=YISKcRDcDJg) · "A simple 10-minute UI litmus test" https://www.gamedeveloper.com/design/a-simple-10-minute-ui-litmus-test · Anthony Stonehouse, "User interface design in video games" (2014) https://www.gamedeveloper.com/design/user-interface-design-in-video-games · Yowan Langlais, "Burrito Bison: Launcha Libre – UI Design Process" https://interfaceingame.com/articles/burrito-bison-launcha-libre-ui-design-process/ · Raffaele Lattanzio, "The UI & UX of Sonic Racing" https://interfaceingame.com/articles/the-ui-ux-of-sonic-racing/ · Epic, "Designing for Mobile in Fortnite" https://dev.epicgames.com/documentation/fortnite/designing-for-mobile-in-fortnite · NN/g, "Children's UX" https://www.nngroup.com/articles/childrens-websites-usability-issues/ · Google, "Designing engaging apps" (kids) https://developers.google.com/building-for-kids/designing-engaging-apps · Figma MCP rate limits and exempt tools (re-read 2026-11-11) https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/ · Roblox Creators, "UI/UX Essentials" (oembed) https://www.youtube.com/watch?v=lOOvOIJoMi4
 - GitHub READMEs and skills read on 2026-11-10: `xtrair/figma-to-roblox-ui`, `grim-technologies-arch/ui-figma-roblox`, `MarkRuiz00/RbxUiStudio`, `NoTwistedHere/Figma-to-Roblox`, `RaRdq/FigmaRobloxForge`, `astrorehan/figlo`, `MiaGobble/Figma-Import-Assistant`, `cameronpcampbell/supercorner`; star and push dates from the GitHub API that day (not refreshed: the API was closed to this session on 2026-11-11).
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/` UI Design Systems; UI Style Directions - A Visual Vocabulary for Briefs; Text Fonts and Rich Text; Figma Property Mapping for Roblox UI; Figma to Roblox UI - Pipeline and Handoff; Designing Roblox UI in Figma - Frames, Safe Areas and Tokens; `56 Field Notes/` Shared Close Buttons and Headers, UIStroke on Text; `skills/lihfolk-figma/SKILL.md`. Method adopted; its palette, kit and icon style were not.
 - Figma MCP tool names as listed by the server in this session (names checked 2026-11-11, with the schemas of `get_screenshot`, `download_assets` and `get_motion_context` read; no tool was called): `whoami`, `create_session`, `create_new_file`, `use_figma`, `get_metadata`, `get_design_context`, `get_variable_defs`, `get_screenshot`, `download_assets`, `upload_assets`, `get_motion_context`, `generate_image`, `get_figma_skill`; `generate_figma_design` is named in the server's instructions and Figma's docs
-- Contrast ratios in §3 and §15: computed for this guide with the WCAG 2 relative-luminance formula; OKLab lightness after Björn Ottosson
+- Contrast ratios in §3 (including both worked derivations) and §15: computed for this guide with the WCAG 2 relative-luminance formula; OKLab lightness after Björn Ottosson
 - Not reachable: reddit.com, medium.com-hosted articles, GitHub API, gameuidatabase.com (the docs recommend it for icon research: browse it yourself, not opened).

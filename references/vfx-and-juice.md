@@ -32,7 +32,7 @@ An effect has three jobs **in this order**: communicate gameplay without clutter
 - **Retime, do not rebuild.** The same layers played slowly with low contrast read as a friendly spell; played fast with darks pressed against whites they read as damage `[community]` (Keyser).
 - **Less is more** is a budget: one ground piece, one body, one core, one accent hue (numbers in §6). Add a layer only if removing it would lose information or the theme.
 
-**Colour script by element.** Ramp runs dark → body → hot; white is only ever the thin core. Secondary elements and motion carry the element as much as hue does `[community]` (Jevremović's element table) `[lihfolk]`.
+**Colour script by element.** Ramp runs dark → body → hot; white is only ever the thin core (example hex per row: `vfx-recipes.md` Conventions). Secondary elements and motion carry the element as much as hue does `[community]` (Jevremović's element table) `[lihfolk]`.
 
 | Element | Ramp (dark → body → hot) | Secondary elements | Motion |
 |---|---|---|---|
@@ -158,14 +158,14 @@ Particles alone look thin; the silhouette of a strong effect is usually a mesh w
 | Edge fade by vertex alpha (common in other engines) | Not available: vertex colours import, but no doc states that vertex alpha drives transparency `[VS]` | Paint the fade into the texture alpha along the UV edge |
 
 **Texture authoring.**
-- Paint in white and grey with alpha; colour comes from the emitter, beam or part at runtime through palette roles (main, hot, dark, glow, spark, debris), so one template serves every element `[lihfolk]` `[community]`. Other engines recolour one greyscale texture through a gradient map (dark, body and hot from one image); Roblox only multiplies by one colour, so build the ramp from layers: a dark non-additive copy behind, the body colour, and a smaller additive core `[house]`.
+- Paint in white and grey with alpha; colour comes from the emitter, beam or part at runtime through palette roles, so one template serves every element `[lihfolk]` `[community]`. Role names across the skill: dark, body, hot, core, spark, debris; example hex per element in the palette table of `vfx-recipes.md` Conventions and on sheet 12. Other engines recolour one greyscale texture through a gradient map (dark, body and hot from one image); Roblox only multiplies by one colour, so build the ramp from layers: a dark non-additive copy behind, the body colour, and a smaller additive core `[house]`.
 - Hand-painted streak or trail, in order `[community]` (McSheehan): draw the overall shape with motion in it; carve sections that follow the flow and delete those that fight it; decide primary and secondary shapes; narrow the value range so depth reads; add motion blur along the direction of travel; soften and darken what belongs in the background; colour last.
 - Paint by hand: slash streaks, shockwave rings, impact stars, stylised smoke puffs and splashes, anything whose outline is the effect. For a shockwave ring: guide lines from the centre at uneven angles and lengths, an outer line with varied curvature, an inner line, fill, then cut shapes with the eraser `[community]` (McDonald). Generate: soft glows, gradients, tiling noise, and fluid sims for realistic smoke and fire (Blender, EmberGen). Krita's wrap-around mode makes tiling textures easy `[community]`.
 - Polar trick for swirls: paint horizontal lines of varied thickness and opacity, erase the ends, apply a polar-coordinates filter (GIMP: Filters → Distorts → Polar Coordinates) `[community]`.
 - Fade edges to transparent white, never transparent black, or sprites get a dark halo `[lihfolk]`. Check orientation with an asymmetric arrow texture before painting the real one.
 - Flipbook layout: 2×2 for four random variants (framerate 0); 4×4 (16 frames) for one-shots of 0.2–0.5 s; 8×8 (64 frames) only for 1–2 s smoke or fire that must hold up close; custom strips such as 8×2 for wide slash frames. Use only as many frames as the layer's duration needs and let `FlipbookBlendFrames` smooth the rest `[community]` `[house]`. In the official 8×8 explosion sheet the fireball takes about a quarter of the frames and smoke the rest: budget frames for dissipation.
 - Sizes: sprites 256² (specks 128²), strips and rings 512². Cell margins about 16/12/8 px for 512/256/128 px cells `[lihfolk]`. Memory is unique pixel count (`performance.md`); share ring, strip and glow textures. House budget: at most 8–12 VFX textures per kit, 3–4 flipbook sheets in memory on the low tier.
-- Bloom is scene-wide: get glow from the texture and brightness first, keep `BloomEffect` moderate, and remember post effects weaken or vanish at low quality levels `[official]`. CC0 texture packs (`visual-library/vfx-learning.md`) are fine for block-ins; the shapes that define your game's effects are painted for it, and no AI-generated textures ship.
+- Bloom is scene-wide: get glow from the texture and brightness first, keep `BloomEffect` moderate, and remember post effects weaken or vanish at low quality levels `[official]`. No textures of your own yet: the kit table in `vfx-recipes.md` Conventions names a built-in, Roblox-tutorial or CC0 stand-in for each kit texture, with its status and what to replace first. The shapes that define your game's effects are painted for it, and no AI-generated textures ship.
 
 ## 6. Timing in milliseconds and ability anatomy
 
@@ -204,44 +204,28 @@ Design the effect as a table (role, class, texture, size curve, life, brightness
 
 ## 7. Hit-stop, camera shake and FOV kicks
 
-This section owns the hit-stop and shake numbers for the whole skill; `game-craft.md` §1.3 holds the shake module sketch and defers here for values. Give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`.
+This section owns the hit-stop, shake and kick numbers for the whole skill; `game-craft.md` §1.3 holds the one module (`HitFeel`: shake, kick, catch-up hit-stop) that applies them. Give every hit **one strength value** (about 0.3–1.3) and derive every layer from it, so designers move one number per move `[lihfolk]`. Pixels are on `Phone-S` (800×360, `ui-design-figma.md`) at FOV 70.
 
-| Tier | Strength | Hit-stop | Trauma added | Directional kick (% of screen height) |
-|---|---|---|---|---|
-| Light | 0.30 | none | 0 | none |
-| Medium | 0.45 | 50 ms | 0.12 | 0.25 |
-| Heavy | 0.80 | 66 ms | 0.25 | 0.5 |
-| Finisher | 1.00 | 75 ms | 0.35 | 0.8 |
-| Ultimate | 1.30 | 89 ms | 0.60 | 1.2 |
+| Tier | Strength | Hit-stop | Trauma added | Peak shake (trauma² × 2°) | On `Phone-S` | Shake back to 0 after | Kick: % of height (°, px) |
+|---|---|---|---|---|---|---|---|
+| Light | 0.30 | none | 0 | none | 0 | — | none |
+| Medium | 0.45 | 50 ms | 0.50 | 0.5° | 2.2 px: just visible | 0.20 s | 0.25% (0.2°, 0.9 px) |
+| Heavy | 0.80 | 66 ms | 0.75 | 1.1° | 5 px: clear | 0.30 s | 0.5% (0.4°, 1.8 px) |
+| Finisher | 1.00 | 75 ms | 0.85 | 1.45° | 6.5 px | 0.34 s | 0.8% (0.64°, 2.9 px) |
+| Ultimate | 1.30 | 89 ms | 1.00 | 2.0° (the comfort cap) | 9 px: strong | 0.40 s | 1.2% (0.96°, 4.3 px) |
 
-Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`. Conflict: the knowledge-base tier table gives larger values (medium 0.04–0.06 s with trauma 0.30–0.50; large 0.10–0.15 s with 0.70–1.00) `[house]`; the table above is measured in a combat game where hits land several times a second `[lihfolk]`. Ruling: the table above is the default; the larger values are only a ceiling for isolated, spaced moments (a launch, a rare drop, a boss slam).
+Arithmetic (heavy): 0.75² × 2° = 1.125°; tan 1.125° ÷ (2 × tan 35°) = 1.4% of screen height × 360 px = 5 px (15 physical px on a 1,080-px panel). Smooth noise rarely sits at its extreme: sampling Luau's own `math.noise` code, the largest swing of one hit is typically 0.6–0.75 of the peak, so read the pixel column as "up to". Visibility bands `[house]`, to confirm on a real phone: under 1 px nothing, about 2 px just visible, 4–5 px clear, 8–9 px strong. Stop = `0.03 + 0.045 × strength` seconds `[lihfolk]`; trauma, kick and the bands are `[house]`.
+
+Conflict: LihFolk's ladder adds 0.12 / 0.25 / 0.35 / 0.60 trauma and keeps single medium and heavy hits nearly shakeless on purpose, letting flurries build it up; under the house 2° cap its heavy hit is 0.125° (0.56 px on `Phone-S`): invisible on a phone. Ruling: the trauma column above, which also sits inside the knowledge-base tier ranges (medium 0.30–0.50, large 0.70–1.00). The knowledge base's longer stops (0.04–0.06 s medium, 0.10–0.15 s large) remain only a ceiling for isolated, spaced moments (a launch, a rare drop, a boss slam).
 
 - **Frame maths.** A 50 ms stop is 3 frames at 60 FPS but 1 or 2 at 30 FPS, so it reads as inconsistency on phones. A stop that must be felt needs at least 66 ms; cap any stop at 200 ms `[lihfolk]`.
-- **Budgets** `[lihfolk]`: at most 140 ms of hit-stop per rolling 0.6 s; under 15% of a move's duration; reserve room for the finisher; one stop per swing however many targets it hits; trauma grows with `1 + 0.35 × log2(targets)`; visible shake under about 10% of combat time.
-- **Catch-up hit-stop**: slow the track to 0.12× for `d`, then play at 1.88× for `d`; after `2d` the animation is back on the wall clock, so effects scheduled at cast time still line up `[lihfolk]`.
-- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. Multiply rotational shake by `tan(FOV/2) / tan(35°)` when zoomed. Use rotation (pitch and yaw) for impacts and translation only for "the ground moved". Cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
-- **Directional kick**: one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake. Others' hits: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]`.
-- **Shake amplitude and roll.** At trauma 1: at most 2° of pitch and yaw (2.5% of screen height at FOV 70) and 0.5 studs of offset `[house]`. **No roll in gameplay**: roll is the strongest nausea trigger, and `accessibility-and-player-qol.md` §5 forbids it. Conflict: LihFolk's camera module clamps roll at 4° and rolls 2.5° on a dash, while its comfort note says "no gameplay roll"; the comfort note wins. A static tilted frame belongs to cutscenes (`cutscenes-and-cinematics.md` §5).
+- **Budgets** `[lihfolk]`: at most 140 ms of hit-stop per rolling 0.6 s; under 15% of a move's duration; reserve room for the finisher; one stop per swing however many targets it hits; trauma grows with `1 + 0.35 × log2(targets)` up to the cap of 1; visible shake under about 10% of combat time.
+- **Catch-up hit-stop** (`HitFeel.stop`): slow the track to 0.12× for `d`, then play at 1.88× for `d`; after `2d` the animation is back on the wall clock, so effects scheduled at cast time still line up `[lihfolk]`.
+- **Shake by FOV, not resolution.** Screen movement for a rotation `a` is `tan(a) / (2 × tan(FOV/2))` of screen height: 1° is 1.25% at FOV 70 and 2.4% at FOV 40. The module multiplies rotation by `min(1, tan(FOV/2) / tan 35°)`, so zooming in does not double the shake and widening never exceeds 2°. Use rotation (pitch and yaw) for impacts and translation only for "the ground moved" (0.5 studs moves a subject 15 studs away by 2.4% of the screen, as much as 2° of rotation). Cap noise frequency at 0.4 × smoothed FPS (12 Hz at 30 FPS) or smooth noise turns into jitter `[lihfolk]`.
+- **Directional kick** (`HitFeel.kick`): one rotation away from the impact, set in one frame, eased back over 100–180 ms; it carries direction and is the comfortable substitute for shake. Others' hits: no hit-stop or kick on your screen; trauma × 0.3 with smoothstep falloff from 30 to 150 studs `[lihfolk]` (a heavy hit next to you adds 0.225: 0.1°, nothing visible).
+- **Shake amplitude and roll.** Shake plus kick stays within 2° of pitch and yaw per axis and 0.5 studs of offset (`accessibility-and-player-qol.md` §5). **No roll in gameplay**: roll is the strongest nausea trigger. Conflict: LihFolk's camera module clamps roll at 4° and rolls 2.5° on a dash, while its comfort note says "no gameplay roll"; the comfort note wins. A static tilted frame belongs to cutscenes (`cutscenes-and-cinematics.md` §5).
 - **FOV and offsets.** Every effect is a finite envelope that ends at exactly 0 (exponential decays leave residue). Sum envelopes per channel and clamp: FOV ±12°, offset 1.6 studs. One module owns `Camera.FieldOfView`; two systems tweening it fight every frame. Reference dash: +9° in 60 ms, out over 250 ms `[lihfolk]`. First person: FOV only.
 - **Impact frames**: one high-contrast full-screen frame (the anime version inverts the scene to black and white with radial streaks). Conflict: LihFolk counts rendered frames (remove after 2 `PreRender` callbacks); at 240 FPS that is 8 ms and invisible. Time flashes on the real clock: about 33–50 ms and at least one rendered frame `[house]`. Flash limits in §12.
-
-```lua
---!strict
--- Unexecuted sketch. Client only. Catch-up hit-stop; the newest stop owns the restore.
-local token = 0
-local function hitStop(track: AnimationTrack, seconds: number, baseSpeed: number)
-	token += 1
-	local mine = token
-	track:AdjustSpeed(baseSpeed * 0.12)
-	task.delay(seconds, function()
-		if token ~= mine then return end
-		track:AdjustSpeed(baseSpeed * 1.88) -- replay the lost time
-		task.delay(seconds, function()
-			if token == mine then track:AdjustSpeed(baseSpeed) end
-		end)
-	end)
-end
-```
 
 ## 8. Screen effects and number popups
 
@@ -377,7 +361,7 @@ end)
 
 | System | Under reduced motion |
 |---|---|
-| Camera shake and offsets | Off; keep a 0.25× directional kick if any confirmation is wanted |
+| Camera shake and offsets | Off; keep a 0.25× directional kick if any confirmation is wanted (about 1 px from the finisher tier up, nothing below: the flash, target flash and sound carry the hit) |
 | FOV changes | 0.5× |
 | Hit-stop | Off or shortened; keep the sound and spark |
 | Impact frames, blur, full-screen flashes | Off; replace with a steady edge vignette and a directional indicator |

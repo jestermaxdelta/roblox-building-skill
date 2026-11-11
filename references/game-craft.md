@@ -1,8 +1,10 @@
 # Game craft: input feel, game camera, AI, procgen, save design
 
-What this is: the design-level guide to how a verb responds (feedback tiers, input budget, buffering, coyote time), the gameplay camera and its shake module, NPC decision-making and pathfinding, seeded generation, and save design. Open it when a verb feels late or dead, when building a camera, an enemy, a generator or a save format. It also keeps the jump-metric derivation, pacing beat table and soft-lock check that `level-design-worldbuilding.md` points to.
+What this is: the design-level guide to how a verb responds (feedback tiers, input budget, buffering, coyote time), the gameplay camera and its shake, kick and hit-stop module, NPC decision-making and pathfinding, seeded generation, and save design. Open it when a verb feels late or dead, when building a camera, an enemy, a generator or a save format. It also keeps the jump-metric derivation, pacing beat table and soft-lock check that `level-design-worldbuilding.md` points to.
 
 Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0; "reference project" = one anonymised production combat game; other figures are rules of thumb), `[VS]` version-sensitive, `[house]` house estimate. Platform facts behind every rule here: the server is authoritative and the client untrusted (rules on the server, feedback on the client); every device shares one server (design for a small landscape phone); players arrive mid-session from discovery (teach the verb in 30–60 s with no reading).
+
+Contents: Start here by level · 1. Game feel (1.2 Input responsiveness, 1.3 Shake module with kick and hit-stop) · 2. Level metrics, pacing and soft-locks · 3. Gameplay camera · 4. Audio · 5. Game AI · 6. Procedural generation · 7. Save design · 8. Physics rules of thumb · Review gate · Sources
 
 | Not in this file | Owner |
 |---|---|
@@ -46,7 +48,7 @@ Reward sequence, the most repeated feedback in a progression game `[house]`: the
 Platform rules:
 
 - **Client only.** A server-side `TweenService` tween replicates the property to every client every frame: jittery, and wasted bandwidth `[official]`. Send one remote per gameplay fact ("hit at X, tier medium"); the client builds the cluster. Never one remote per particle.
-- **Hit-stop changes animation speed on the attacker's client.** It never pauses the server or other players, and never plays on the victim (it arrives late and reads as lag) `[lihfolk]`.
+- **Hit-stop changes animation speed on the attacker's client.** It never pauses the server or other players, and never plays on the victim (it arrives late and reads as lag) `[lihfolk]`. Sketch: `HitFeel.stop` in §1.3.
 - **Own effects in full, others' reduced** and culled by distance, or big moments become unreadable in a full server (`vfx-and-juice.md` §11).
 - **Sound never leads the picture** (`audio-sfx-music.md` §5).
 - **Haptics:** `HapticEffect` gives waveform feedback on supported phones and gamepads `[official]` `[VS]`; large-tier events only, with a setting to turn it off.
@@ -136,42 +138,79 @@ UserInputService.JumpRequest:Connect(function()
 end)
 ```
 
-### 1.3 Shake module
+### 1.3 Shake module (with kick and hit-stop)
 
-Values per hit (how much trauma to add, when, and for whom) are owned by `vfx-and-juice.md` §7. The module's behaviour: trauma 0–1 decays at 1.0–1.5 per second; shake = trauma²; motion comes from smooth noise, never per-frame random; **pitch and yaw only, no roll** (roll is the strongest nausea trigger; `accessibility-and-player-qol.md` §5); the user's shake setting and reduced motion scale the result once, here, where offsets are summed. The offset is removed before the default camera step and re-applied after it, so it never accumulates and never moves the player's aim. `Humanoid.CameraOffset` is the simpler position-only alternative.
+Values per hit (how much trauma, kick and stop, when, and for whom) are owned by `vfx-and-juice.md` §7, which also shows what each tier looks like on a phone. The module's behaviour: trauma 0–1 decays at 2.5 per second, so even trauma 1 is back to exactly 0 in 0.4 s (`accessibility-and-player-qol.md` §5); shake = trauma² × 2° of pitch and yaw; motion comes from smooth noise, never per-frame random; **pitch and yaw only, no roll** (roll is the strongest nausea trigger); camera offset (0.5 studs at trauma 1) only when the ground moved; rotation is scaled down when zoomed in so the picture moves the same share of the screen; shake plus kick is clamped at 2° per axis. The comfort resolver's outputs scale everything once, here. The offset is removed before the default camera step and re-applied after it, so it never accumulates and never moves the player's aim. `Humanoid.CameraOffset` is the simpler position-only alternative.
 
 ```lua
 --!strict
--- Unexecuted sketch. Client module. Trauma-based camera shake that never accumulates and never rolls.
+-- Unexecuted sketch. Client module: trauma shake, directional kick and catch-up hit-stop.
 local RunService = game:GetService("RunService")
-local Shake = { userScale = 1 } -- set from the comfort resolver's `shake` output (accessibility-and-player-qol.md §10), never from the raw setting
-local trauma, DECAY, FREQ = 0, 1.2, 12 -- 12 Hz stays under 0.4 x frame rate at 30 FPS (vfx-and-juice.md §7)
-local MAX_ANGLE, MAX_OFFSET = math.rad(2), 0.5 -- radians of pitch/yaw and studs at trauma 1
+local HitFeel = { shakeScale = 1, kickScale = 1, stopsEnabled = true } -- copy shake, kick and hitStop from the comfort resolver (accessibility-and-player-qol.md §10)
+local MAX_ANGLE, MAX_OFFSET = math.rad(2), 0.5 -- comfort caps at trauma 1: pitch and yaw in radians, offset in studs
+local DECAY, FREQ = 2.5, 12 -- trauma 1 is gone in 0.4 s; 12 Hz stays under 0.4 x frame rate at 30 FPS
+local TAN35 = math.tan(math.rad(35))
+local trauma, ground = 0, 0
+local kickAngle, kickAxis, kickStart, kickTime = 0, Vector3.xAxis, -math.huge, 0.15
 local applied = CFrame.identity
 
 local function noise(t: number, seed: number): number
 	return math.clamp(math.noise(t, seed) * 2, -1, 1) -- math.noise stays within about -0.5..0.5
 end
 
-function Shake.add(amount: number)
+-- amount: the tier's trauma (vfx-and-juice.md §7). moved = true only when the ground moved: it adds camera offset.
+function HitFeel.addTrauma(amount: number, moved: boolean?)
 	trauma = math.min(1, trauma + amount)
+	if moved then ground = math.min(1, ground + amount) end
 end
 
-RunService:BindToRenderStep("ShakeUndo", Enum.RenderPriority.Camera.Value - 1, function()
+-- One rotation that shifts the picture along the blow's on-screen direction, eased back to exactly 0.
+function HitFeel.kick(worldDirection: Vector3, percentOfHeight: number, seconds: number?)
 	local camera = workspace.CurrentCamera
-	camera.CFrame = camera.CFrame * applied:Inverse()
+	local d = camera.CFrame:VectorToObjectSpace(worldDirection)
+	local flat = Vector2.new(d.X, d.Y)
+	local screen = if flat.Magnitude > 0.05 then flat.Unit else Vector2.new(0, -1) -- blow along the view: jolt down
+	kickAxis = Vector3.new(-screen.Y, screen.X, 0) -- pitch and yaw only; the roll component is always 0
+	kickAngle = math.atan(percentOfHeight / 100 * 2 * math.tan(math.rad(camera.FieldOfView) / 2)) * HitFeel.kickScale
+	kickStart, kickTime = os.clock(), seconds or 0.15
+end
+
+local stopToken = 0
+-- Catch-up hit-stop on the attacker's own track: 0.12x for `seconds`, then 1.88x for `seconds`; the newest stop owns the restore.
+function HitFeel.stop(track: AnimationTrack, seconds: number, baseSpeed: number)
+	if not HitFeel.stopsEnabled then return end
+	stopToken += 1
+	local mine = stopToken
+	track:AdjustSpeed(baseSpeed * 0.12)
+	task.delay(seconds, function()
+		if stopToken ~= mine then return end
+		track:AdjustSpeed(baseSpeed * 1.88) -- replay the lost time: after 2 x seconds the clip is back on the wall clock
+		task.delay(seconds, function()
+			if stopToken == mine then track:AdjustSpeed(baseSpeed) end
+		end)
+	end)
+end
+
+RunService:BindToRenderStep("HitFeelUndo", Enum.RenderPriority.Camera.Value - 1, function()
+	local camera = workspace.CurrentCamera
+	camera.CFrame *= applied:Inverse()
 	applied = CFrame.identity
 end)
-RunService:BindToRenderStep("ShakeApply", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-	if trauma <= 0 then return end
-	trauma = math.max(0, trauma - DECAY * dt)
-	local s, t = trauma * trauma * Shake.userScale, os.clock() * FREQ
-	applied = CFrame.new(MAX_OFFSET * s * noise(t, 13.6), MAX_OFFSET * s * noise(t, 21.4), 0)
-		* CFrame.Angles(MAX_ANGLE * s * noise(t, 0.31), MAX_ANGLE * s * noise(t, 4.73), 0)
+RunService:BindToRenderStep("HitFeelApply", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
+	trauma, ground = math.max(0, trauma - DECAY * dt), math.max(0, ground - DECAY * dt)
+	local k = (os.clock() - kickStart) / kickTime
+	if trauma <= 0 and ground <= 0 and k >= 1 then return end
 	local camera = workspace.CurrentCamera
-	camera.CFrame = camera.CFrame * applied
+	local zoom = math.min(1, math.tan(math.rad(camera.FieldOfView) / 2) / TAN35) -- zoomed in: smaller angle, same screen movement
+	local s, g, t = trauma * trauma * HitFeel.shakeScale * zoom, ground * ground * HitFeel.shakeScale, os.clock() * FREQ
+	local kick = if k < 1 then kickAngle * (1 - k) * (1 - k) else 0 -- full at once, eased back to exactly 0
+	local pitch = math.clamp(MAX_ANGLE * s * noise(t, 0.31) + kickAxis.X * kick, -MAX_ANGLE, MAX_ANGLE)
+	local yaw = math.clamp(MAX_ANGLE * s * noise(t, 4.73) + kickAxis.Y * kick, -MAX_ANGLE, MAX_ANGLE)
+	applied = CFrame.new(MAX_OFFSET * g * noise(t, 13.6), MAX_OFFSET * g * noise(t, 21.4), 0) * CFrame.Angles(pitch, yaw, 0)
+	camera.CFrame *= applied
 end)
-return Shake
+-- Heavy hit, attacker's client: HitFeel.stop(track, 0.066, 1); after 0.066 s, HitFeel.kick(swingDirection, 0.5) and HitFeel.addTrauma(0.75).
+return HitFeel
 ```
 
 ## 2. Level metrics, pacing and soft-locks
@@ -259,7 +298,7 @@ Fast objects tunnel: cap speed so `speed / step_rate` is below wall thickness. M
 - [ ] No input handler waits for the server before showing a response; a press on cooldown shows a "denied" tick.
 - [ ] Buffers: jump 0.10–0.15 s, combo 0.15–0.20 s, one press, recorded on press, cleared on stun, death, menu and cutscene; ageing paused during hit-stop.
 - [ ] Coyote time (0.08–0.15 s) and jump buffer exist in any game with platforming; server movement checks tolerate them.
-- [ ] Shake comes from the one module in §1.3: no roll, scaled by the player's setting, zero under reduced motion; values match `vfx-and-juice.md` §7.
+- [ ] Shake, kick and hit-stop come from the one module in §1.3: no roll, at most 2° per axis, back to exactly 0 within 0.4 s, scaled by the comfort resolver (shake 0 under reduced motion); per-tier values match `vfx-and-juice.md` §7.
 - [ ] Movement metrics derived for the place's jump mode and stored in one module; critical gaps at or below the safe gap; soft-lock check passes; each level has a beat table.
 - [ ] Camera smoothing uses `1 - exp(-rate * dt)` or `SmoothDamp`; smoothing resets on teleport; one owner of `FieldOfView`; drag-heavy UI is off the right side on phones.
 - [ ] NPC decisions tick at 5–15 Hz in buckets; repath on a timer or `Path.Blocked` ahead of the agent; server NPCs have network owner `nil`.

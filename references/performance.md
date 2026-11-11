@@ -16,6 +16,18 @@ Terms: *frame time* is the milliseconds one frame takes (16.67 ms at 60 FPS). A 
 
 Related: lighting-and-atmosphere.md (cost of lights, shadows and post effects, low-detail order); vfx-and-juice.md (particle budgets and quality scaling); debugging-and-testing.md (leak hunting, Network Simulator); ui-input-crossplatform.md (UI performance).
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Low FPS | "Measured investigation by problem class", "Profiling workflow", "Frame budgets and device targets", "Rendering", "Luau performance idioms", "Physics and collision", "Review gate" (about 197 lines) |
+| Phone crashes, memory | "Mobile crashes and memory", "Measured investigation by problem class", "Frame budgets and device targets", "Streaming"; `debugging-and-testing.md` "Memory-leak hunting"; `art-pipeline-blender.md` "Texturing strategy"; this file "Review gate" (about 210 lines) |
+| Server lag, high ping | "Measured investigation by problem class", "Frame budgets and device targets", "Physics and collision", "Parallel Luau", "VFX, animation and audio budgets"; `networking-and-security.md` "Designing the network surface"; this file "Profiling workflow", "Review gate" (about 188 lines) |
+| Slow join | "Loading and join", "Streaming", "Measured investigation by problem class", "Profiling workflow", "Review gate" (about 119 lines) |
+| Performance audit (live) | "Level-up audit: how to check an existing game", "Profiling workflow", "Measured investigation by problem class", "Frame budgets and device targets", "Rendering", "Review gate" (about 251 lines) |
+
 ## Frame budgets and device targets
 
 Measure milliseconds per frame, not FPS; consistency beats the average.
@@ -351,7 +363,7 @@ Conflict: LihFolk splits a 60 FPS phone frame as rendering 8–10 ms, engine sim
 
 Conflict: the staff article says "aim for under 50 KB/s network receive" per client (about 400 kbps) and 40–60 moving assemblies; LihFolk could find no documentation for the figure, treats it as folklore and budgets about 30 kbps. There is no documented per-client cap: use your own budget and the data-ping gap as the test.
 
-**D. Place size and instance count** `[lihfolk, measured in its reference project]`. Count instances per top-level folder with replicated containers listed separately (sketch A). Keep backups, archives and import sources out of the place: export `.rbxm` files and rely on Version History. At about 1.07 million instances their project had Studio down to about 15 FPS on about 18 GB, with cloud saves timing out; its 600k-instance ReplicatedStorage hurt phone memory as much as join time. Split scripts long before about 200,000 characters (a cap they measured; undocumented `[VS]`). Delete only what is proven unreferenced, never on a name search alone.
+**D. Place size and instance count** `[lihfolk, measured in its reference project]`. Count instances per top-level folder with replicated containers listed separately (sketch A, in "Level-up audit"). Keep backups, archives and import sources out of the place: export `.rbxm` files and rely on Version History. At about 1.07 million instances their project had Studio down to about 15 FPS on about 18 GB, with cloud saves timing out; its 600k-instance ReplicatedStorage hurt phone memory as much as join time. Split scripts long before about 200,000 characters (a cap they measured; undocumented `[VS]`). Delete only what is proven unreferenced, never on a name search alone.
 
 **E. Mobile tiers** `[lihfolk]`. Offer an in-game graphics preset (performance, balanced, quality) that switches live. Choose the starting preset from measured frame time in the first seconds of play, and let a frame-time governor lower detail when the phone heats up (sketch in vfx-and-juice.md); do not read `SavedQualityLevel` (see VFX above). Every effect has a low tier, effects on other players are reduced first, ambient effects sleep with distance. Gameplay information (telegraphs, hit areas, timers) is identical on every tier. Each release: a 15-minute fixed route on a real phone (spawn, heaviest area, one full encounter, every major menu, one zone change), recording FPS, peak memory and crashes.
 

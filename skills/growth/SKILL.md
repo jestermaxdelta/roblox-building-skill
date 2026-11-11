@@ -22,6 +22,19 @@ On a live game, change it safely: note the baseline number, put the change behin
 
 **Start from references, not from memory.** Before designing anything here, open the library rows listed below, pick three to five references that fit this game's genre and tone, and look at them: bundled sheets open with the Read tool; for a linked image, download it to a temporary folder and Read it, or work from its "Look at it for" note if it cannot be fetched. Write down what to take from each (layout, hierarchy, palette, timing, shape) before building, borrow principles from several sources and never reproduce one. Work built from defaults is what makes a game look generic.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Icon, thumbnails, title | icons-thumbnails-and-store-page.md §2, §3, §5, §8, §15, §1, §4, §10, §11, §12, §Review gate; market-scan-2026-11.md §Thumbnail and title playbook v2 | 240 |
+| Nobody plays (impressions, PTR) | analytics-and-discovery.md §Level-up, §Recommended For You, §Review gate; audit-existing-game.md §4; growth-and-marketing.md §1, §11; icons-thumbnails-and-store-page.md §Level-up; market-scan-2026-11.md §Discovery facts that change design decisions | 210 |
+| Should I run ads? | growth-and-marketing.md §1, §3, §10, §Review gate; checklists.md §Growth gate | 174 |
+| About to launch | launch-checklist.md (whole); checklists.md §Gate 5, §Growth gate; growth-and-marketing.md §1, §7; market-scan-2026-11.md §Launch checklist from the v2 report; analytics-and-discovery.md §Launch checklist | 234 |
+| TikTok, creators, codes, community | growth-and-marketing.md §4, §5, §6, §8, §10, §Review gate; community-moderation-safety.md §10, §14 | 189 |
+| Analytics events | analytics-and-discovery.md §Analytics: what to measure, §Event API and limits, §Experiments and Configs, §Review gate; analytics-event-plan.md (whole) | 218 |
+
 ## What to read
 
 | When | Open |

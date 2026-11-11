@@ -2,15 +2,29 @@
 
 What this is: the cross-discipline guide to the owner's bar ("very high-quality, cohesive, put-together, avoids the generic AI slop look"). It names what gives a Roblox game away as generic or AI-made in every discipline, gives the method that produces one distinct look across models, world, light, UI, effects, motion, sound and words, sets the bar per release tier, and gives a review procedure and an ordered rescue plan for a live game. Open it before the first asset of a new game, at every milestone review, when feedback says "looks like every other game" or "looks AI", and before commissioning art. It owns direction, the style bible (template in §6) and review; depth stays with the discipline files and is linked, not repeated: `blender-modeling-craft.md` (asset numbers and the per-asset rubric), `art-pipeline-blender.md` (export, import, collision), `lighting-and-atmosphere.md`, `level-design-worldbuilding.md`, `ui-design-figma.md`, `vfx-and-juice.md`, `animation-and-rigs.md`, `audio-sfx-music.md`, `icons-thumbnails-and-store-page.md` (icon, thumbnail and store-page recipes, tells and rubric), `growth-and-marketing.md` (ads and channels). Reference images: `visual-library/environments-and-maps.md`, `visual-library/models-props-characters.md`, `visual-library/lighting-and-mood.md`. Tags: `[official]` Roblox, `[community]` forum or named practitioner, `[lihfolk]`, `[VS]` version-sensitive, `[house]` house rule or estimate.
 
-Contents: 1 What generic means · 2 Slop tells by discipline · 3 Pillars to art direction · 4 A style a small team can sustain · 5 Reference board · 6 Style bible: template, measurable rules, tie-ins, palette scan · 7 Quality bar by tier · 8 Art review procedure · 9 AI tools without slop · 10 Raising a live game in ordered passes · 11 Level-up table · Review gate · Sources
+Contents: Fast routes · 1 What generic means · 2 Slop tells by discipline · 3 Pillars to art direction · 4 Choosing the direction (intake, genre defaults and directions, style tiers, capacity) · 5 Reference board · 6 Style bible: template, measurable rules, tie-ins, palette scan · 7 Quality bar by tier · 8 Art review procedure, several artists on one look · 9 AI tools without slop · 10 Raising a live game: ordered passes and a six-week plan · 11 Level-up table · Review gate · Sources
+
+## Fast routes
+
+Read only these for the commonest tasks (about 200–320 lines each). AD = this file, LA = `lighting-and-atmosphere.md`, LD = `level-design-worldbuilding.md`, BM = `blender-modeling-craft.md`, AP = `art-pipeline-blender.md`; library files are in `visual-library/` (env, models, light); sheets are `assets/reference/NN-*.png`.
+
+| Task | Read exactly (file §section, …) | Look at (sheet numbers, library file and row ranges) |
+|---|---|---|
+| Give a new game its look | AD Fast routes, §1, §3, §4, §5, §6, §8 steps 1–2; LA §2, §12 | Sheets 18, 16; env §G rows of the genre (63–81) plus 1 and 54; light: the "start here" rows of the chosen mood |
+| Make a generic-looking live game distinct | AD §1, §2, §4, §8, §10, §11; LA §12, §14 | Sheets 18, 16; env §G default rows (63, 70, 72, 75, 76) beside 1, 13, 16; light 1–2, 6 |
+| Keep a team of artists consistent | AD §3, §4 "Style tiers", §6, §8 (with "Several artists, one look"), §10 six-week table; BM "Edges and shading", "Colour and value", "Concept to model", "Quality rubric"; AP "Texturing strategy", "Naming and hierarchy", "Asset acceptance checklist" | Sheet 18; models 1, 8, 10–11; env 44 |
+| Fix an empty or confusing map | LD Start here, §1, §4, §5, §6, §7, §8, §16, §17, polish checklist; LA §2, §3 | Sheet 17; env 1–4, 6, 13–19, 23–24 and the genre's §G rows |
+| Fix flat lighting | LA Start here, §1, §2, §3, §4, §5, §6, §8, §9, §11, §12, §13, §14 | Sheet 16; light 1–3, 6, 10, 16; env 28 |
+| Model one prop to the bar | BM "The numbers", "Shape language", "Proportion", "Edges and shading", "Spending triangles", "Colour and value", "Recipes and budgets", "Concept to model", "Quality rubric"; AP "Asset acceptance checklist" | Sheet 18 (bevel and value panels); models 1–3, 8, then 16 and 25 (weak) and 17 (too realistic) |
+| Build a first kit | BM "The numbers" (first table), "Edges and shading", "Recipes and budgets", "Quality rubric", "First kit walkthrough"; LD §8, §9; AP "Naming and hierarchy", "Modular kits", "Asset acceptance checklist" | Sheet 17 (avatar metrics); env 7, 11, 29, 44, 55; models 1, 8, 10–11 |
 
 ## Start here by level
 
 | Level | Do these first | Ignore for now |
 |---|---|---|
-| Beginner | In order: run the defaults scan (§2, the code block) and fix what it prints. Write the three-decisions line (§3). Pick the cheapest style in §4. Build a 20-image board with a label on every image (§5). Make one golden sample before any other asset | Rubric scoring, tie-in tables, tiers |
-| Intermediate | Fill in the bible template with measurable rules and tie-ins (§6); run the palette scan. Build a beauty corner (§3). Run the four tests on 12 captures at each milestone (§8). Hold contractors to the bible and the rubric | Blind scoring panels |
-| Expert | Blind one-screenshot tests with strangers; weakest-link scoring per discipline with caps; a motif audit across icon, UI, world and effects; bible versioning with family-by-family migration (§10) | Nothing |
+| Beginner | In order: run the defaults scan (§2, the code block) and fix what it prints. Fill the §4 intake, read your genre's default row and pick one direction from the table. Write the three-decisions line (§3). Build a 20-image board with a label on every image (§5). Make one golden sample before any other asset | Rubric scoring, tie-in tables, tiers |
+| Intermediate | Run §4 in full: default row from three competitors, two directions tested as hero assets, the line-up. Fill in the bible template with measurable rules and tie-ins (§6); run the palette scan. Build a beauty corner (§3). Run the four tests on 12 captures at each milestone (§8). Hold contractors to the bible and the rubric | Blind scoring panels |
+| Expert | Blind one-screenshot tests with strangers; weakest-link scoring per discipline with caps; a motif audit across icon, UI, world and effects; the several-artists system (§8); bible versioning with family-by-family migration and the six-week plan (§10) | Nothing |
 
 Terms: **generic** = could be swapped into another game unnoticed; **slop** = output nobody made a decision about, whatever tool produced it; **pillar** = one of the three promises the game makes; **golden sample** = the finished asset every new asset is held beside; **beauty corner** = a small area finished to final quality in every discipline; **motif** = a small shape or pattern repeated across disciplines; **value** = lightness independent of hue; **tie-in** = a rule that makes one discipline inherit from another.
 
@@ -44,7 +58,7 @@ Each row: the tell, why it reads as generic, the fix and where the fix is specif
 | Environments | The simulator-lobby template: orange cliffs with green caps, checker ground, floating SHOP text | One 2020 template repeated | Start from the map brief and the three decisions; landmark and palette of your own |
 | Environments | Floating slab that "just ends", default sky behind it | Boundary and backdrop never designed | Diegetic edge, backdrop mesh, authored sky, atmosphere |
 | Environments | Pack trees beside a detailed house; one building repeated in a visible row | Style seam; reviewers call out repetition `[community]` | One kit from one bible; reuse by rotation, roofline and palette swap |
-| Lighting | Noon sun, default sky, no grade | The most recognisable default on the platform | Genre preset plus white-cube balance (`lighting-and-atmosphere.md` §2, §12) |
+| Lighting | Noon sun, default sky, no grade; or the genre preset pasted unchanged | The most recognisable defaults on the platform | The §12 row your direction names, its deviation step and white-cube balance (`lighting-and-atmosphere.md` §2, §12) |
 | Lighting | Blown whites, haze of bloom, sun rays always on | "Effects on" mistaken for quality | Safe ranges (its §6) |
 | Lighting | One tint over everything (the all-blue city); black "horror" | Hue replaces value structure; darkness hides the game | Value bands first; night by hue, not darkness |
 | UI | Default-looking frames and fonts, mixed icon packs, a hit game's skin, rainbow gradients | Defaults, several sources, or one source | Tokens tied to the bible (§6); full list in `ui-design-figma.md` |
@@ -117,13 +131,51 @@ The house-rule scan in `checklists.md` (primitive Parts, marketplace and generat
 
 1. **Three pillars, three visual consequences.** Take the pillars from the one-pager and write what each forces on the look. Example: "cosy" → rounded primary shapes, warm key, nothing darker than value 20; "collect everything" → every collectable identifiable at 64 px by outline; "show off" → the avatar and the pet are the most saturated things on screen, so the world stays under saturation 45.
 2. **The three-decisions line.** "This is the game with ___ shapes, a ___ palette and the ___ motif." If a competitor could sign it, rewrite it. Weak: "chunky low-poly shapes, a bright palette and a star motif" (every simulator). Strong: "everything is sewn felt with no straight edge longer than 2 studs, nine dusk colours with one mustard accent, and a cross-stitch on seams, UI corners and hit effects".
-   **Line-up test before production** `[house]`: capture the first frame of five current competitors in the genre and write each one's line on four axes (dominant shape, hue families and value key, material idea, motif). Yours must differ from every one of them on at least two axes; if it does not, change shape or material idea first, palette last (palette is the cheapest thing for the next clone to copy).
+   **Line-up test before production**: the genre default row, the two-axis rule and the two-day test are §4 steps 2–4. If the line fails them, change shape, edge, material or light first, palette last.
 3. **One motif, repeated across disciplines.** A knot carved on a pauldron that returns on the belt, the bracer and the anvil is what makes a character read as one design (`visual-library/models-props-characters.md`). Put yours on a model trim, a UI corner, the icon and one effect shape.
 4. **Rules can carry meaning.** Team Fortress 2 gave one team warm colours, natural materials and angular geometry and the other cool colours, industrial materials and orthogonal forms, kept characters identifiable as pure silhouettes, and omitted high-frequency detail where possible `[community: Valve, NPAR 2007]`. Use the same device for factions, zones or rarity.
 5. **Find the style by making, then freeze it.** Practitioners describe the same loop: a small prop test before the kit; one or two objects pushed to final to lead everything else; about twenty objects, a critique of the whole, one or two iterations, then hold `[community: Gonçalves, Lucas, Özben on 80.lv]`. Write the bible from that golden sample, not from intentions. Make the golden sample a set of three (one small prop, one kit module, one character, creature or interactable) so every scale has a reference to stand beside. The same rule holds per family `[house]`: finish and approve one hero piece of a kit, pet line or enemy set (rubric 8+, in the place, under the preset) before producing its siblings, so a wrong bevel or palette is fixed once, not twenty times.
 6. **Build a beauty corner before production.** About 30 × 30 studs at final quality in every discipline: kit pieces, lighting preset, one interactable with its prompt, the HUD over it, one effect, one sound. It is the capture for the one-screenshot test (§8) and the brief for everyone who joins later.
 
-## 4. A style a small team can sustain
+## 4. Choosing the direction: intake, the genre default, a style the team can sustain
+
+A process without a decision ships the genre's average: the §12 lighting preset, sheet 18's examples and a safe palette, which is what every other agent and template produces too. This section ends in one named direction with numbers. Method `[house]`; defaults read from the captures in `visual-library/environments-and-maps.md` §G and the market scan.
+
+1. **Intake** (written, ten minutes). Fantasy and tone in three words; audience (age band, phone share, session length); the three competitors the game is mistaken for (beside it on Home, in search, or named by players); what the team can sustain (people × art hours a week, and the style tier below they can hold for 200 assets); what cannot change on a live game (footprints, pad positions, avatar scale).
+2. **Write the genre default.** Capture the first frame of those three competitors (no access: their official thumbnails through `thumbnails.roblox.com`, plus the §G rows) and fill one row on the seven axes of the table below. That row is what "generic" means for this game.
+3. **Pick a direction that differs from the default on at least two named axes**, one of them shape, edge, material or light. Palette alone never counts: it is the cheapest thing for the next clone to copy. Each genre below has a default row and three or four directions with the trade-off; any other genre gets the same treatment from its three competitors.
+4. **Test it in two days, before the bible.** One hero asset (the most-seen interactable: the dropper, the pet, the checkpoint) and one 20 × 20-stud vignette in the direction, under its light, captured on the phone. Line-up: the capture beside the three competitors' first frames at 320 px, shown for 3 s to two people outside the team; pass when both pick yours afterwards and name what differs, and greyscale shows three value bands. If two directions pass, take the one the team can sustain, not the prettier.
+
+No access to the game: ask for two captures (first frame, core action) and the three competitor names, derive the default row from the competitors' thumbnails, and present two directions with trade-offs. Never fill the blanks with a table row or a sheet example: the owner chooses (taste is theirs).
+
+| Genre · direction | Palette: value key and hex anchors (HSV V) | Shape and edge | Materials | Light (start row in `lighting-and-atmosphere.md`, then the change) | Motif | Trade-off · who sustains it |
+|---|---|---|---|---|---|---|
+| **Tycoon · default** (env 63–66) | Grass V55–75, brick #845B50, concrete #C7C4BF; player colour on everything | Lots in a row on a road or a walled flat slab; default boxes | Photo brick, wood, glass at real scale, or built-in materials | Noon in play; warm dusk with lamps in promo art (the §12 golden-hour row) | None | What the line-up already shows |
+| Tycoon · Tin-toy workshop | High key: felt ground #3F6E5A (43), tin cream #EFE6D2 (94), red #C8473A, cobalt #2F5D8C; brass #C9A04A only on buyables; #22303F only in gaps | Pressed tin: rounded rectangles, rolled rims, rivets; round bevel 4–6% of size, 2 segments | Painted tin (roughness 0.4), brass (metal), felt | §12 simulator row at Brightness 1.8, sun 45°, fill raised to key:fill 1.5: a soft studio | Wind-up key on machines, UI corners, the buy effect | Reads young; flat colour and one atlas, 1–2 generalists |
+| Tycoon · Overcast works | Greys V35–60: steel #4A535C, floor #6B6E70, concrete #8A8D8F; safety orange #F28C28 (95) only on buyables | Square, heavy; crisp one-segment chamfers 1–2% | Concrete, painted steel, rubber belt, glass on one trim sheet | §12 overcast row plus 6–8 warm practicals (255,170,90) on machines | Hazard chevron on trims, belts, UI stroke | Drab if the practicals are cut; needs Realistic and a light budget; one lighting-literate artist |
+| Tycoon · Lantern night market | Low key V25–45: indigo #1E2A44, teal ground #2F5E66, wood #6B4A36; lacquer red #A8322D; paper #F6E7C1 glowing on buyables | Tall narrow stalls, canvas awnings, sagging strings; soft bevel 0.1–0.2 | Canvas, lacquered wood, paper, rope | §4 dusk keyframe at ClockTime 20, ExposureCompensation +0.3; one shadowed light per stall | Paper lantern | Dim phones need the value floor held; stands out among noon tiles; 2–3 artists with one lighting owner |
+| Tycoon · Cut-paper diorama | Sage ground #7E9A7A (60), paper #F3EBDD (95), kraft #D9B98C; coral #E8735A on buyables; ink #2B2B3A edges | Extruded flat silhouettes 0.4 thick, layered like a pop-up book; no bevel | Matte paper only, no textures | §12 overcast row with both ambients lifted 40 per channel | Torn edge | Depth only from layering and value; cheapest per asset; solo |
+| **Simulator · default** (env 69–71) | Saturated primaries at high value: red #D85846, green #3BD776, sky #CFF7E4 (V80–97, saturation 65–75) | Stacked box bases, lanes, voxel or faceted props, cube pets, floating text | Flat plastic, studs | Noon, high fill, bloom | The currency number | — |
+| Simulator · Gouache storybook | Saturation capped at 50 except interactables: ground #7F9470 (58), slate #4E5A6B, terracotta #B9654A, ochre #D7A24A, cream #F2E6C9; teal #2FB5A8 on interactables | Organic, tapered, leaning 2–4°; soft bevel 3–6% | One painted gradient atlas | §12 golden-hour row moved to ClockTime 9 with a cooler fill | Brush swirl in clouds, trails, UI | One painter must own the atlas; medium cost |
+| Simulator · Night arcade | Low key V15–40: #141826, #262C44, floor #3A4566; cyan #3FF0FF and magenta #FF4FD8 only on interactables and rewards | Geometric, sharp chamfers; light strips as trims | Matte dark plastic, glass, emissive strips | §12 neon-city row | Pixel grid | Glow must live in emissive shape, not bloom (bloom drops at low quality); small team |
+| Simulator · Matte clay | Low saturation (15–25): ground #8A7F99 (60), mint #BFD8C5, lilac #C9C3E6, peach #F2C9B6, shadow #4A4458; one saturation spike on interactables | Pillowy: round bevel over 8%, no straight edge over 2 studs | Matte clay (roughness 1), no specular | §12 overcast row at Brightness 1.6, ClockTime 11 | Thumbprint dimple | Hierarchy without saturation is hard; cheapest; solo |
+| Simulator · One hue per world | Each world one hue plus near-black and off-white: #1E3FE0, #0B0E1A, #F4F4F0; the next world red | Hard graphic shapes, crisp chamfers | Flat colour, one emissive | §12 PvP row, `ColorShift_Top` tinted to the world hue | The world's sigil | Strong thumbnails; monotony inside a world, so keep worlds short; 1–2 people |
+| **Obby · default** (env 72) | One saturated hue per section, neon kill bricks, grey shell; V60–90 | Floating slabs over the default sky | SmoothPlastic, Neon | Noon | None | — |
+| Obby · Brutalist with one signal | Concrete V37–72: #5E5C58, #8C8984, #B8B5AE; landing tops #FFD23F; #FF3B30 only on hazards | Monoliths, big flat landing faces, crisp chamfers | Board-marked concrete trim, painted metal | §12 obby row at ClockTime 8.5; tops lighter than sides by value so it holds without shadows | Stencilled stage numbers | Austere; a 12–15-piece kit; solo |
+| Obby · Craft table | Dark kraft ground #8E6A45 (56), kraft #C49A6C, tape #EADFBF, marker blue #2E5AAC; marker red #D2423A on hazards | Boxes 2–4° off square, tape strips as trims | Corrugated card, masking tape, felt | §8 interior: one warm desk-lamp SpotLight key, cool window fill | Masking-tape strip | Needs giant props to sell scale; 2 people |
+| Obby · Backlit silhouettes | Sides #141019 (10), tops #5A4A6E (43) with a glowing rim #FFE3A3; sky #F49A5B to #6A4C93 | Irregular organic slabs; no bevel (the outline is the read) | Matte plus one emissive edge | §12 backlit-dusk row | Glowing rim | Depth is hard: blob shadows mandatory; cheapest geometry; solo |
+| **Horror · default** (env 76, 80) | Warm dark wood V5–55 (saturation 45–68), or grey-green fog V20–70 under saturation 50 | Realistic rooms and forests | PBR textures | Night or fog; a flashlight | The monster's face | — |
+| Horror · Bright liminal (env 77) | High key walls #EDE4CF (93); floor tiles #9E9786 (62); water #0E8A94, deep #124D50 | 2-stud tile grid, long sightlines, repetition | Tile, still water, fluorescent tubes | §12 fluorescent-liminal row | Tile grid | Fear must come from sound, emptiness and repetition; cheap kit; solo |
+| Horror · One hue, lanterns (env 79) | Red family V7–76: #130503, floor #6A2418 (42), #7A2D21, highlight #C2715F; lanterns (255,170,110) | Traditional architecture, symmetry, one-point corridors | Lacquered wood, paper screens | §12 horror row with ambient and colour shift tinted red; lanterns as practicals | Paper lantern | Hue fatigue: change hue per chapter; 2+ artists |
+| Horror · Toon cast in a dark building (env 78) | World V5–35: #0E0D0B, #2B281C, floor #5A4D38; characters and pickups V100: #FFD23F, #FF5FA2, #3FC5FF | Round flat-shaded characters; plain institutional boxes | Flat-shaded cast, plain materials | §12 dungeon row with cool fluorescent pools | The cast | Needs a strong character designer; the world is cheap |
+| **Roleplay · default** (env 73–75) | White render #D8D8D8, grey asphalt, lawn #869B7C, blue-grey glass, palms | Modern suburb at real proportions, chunky trees | Real-world materials | Noon | None | — |
+| Roleplay · Mediterranean morning | Whitewash #F2EEE6, plaster shade #D9CBB5, terracotta #C0643C, cobble ground #8E8170 (56), cypress #3E5B3A; cobalt #2E6DB4 shutters mark districts | Rounded plaster masses, arches, stepped hill heights; bevel 3–5% | Plaster, terracotta tile, painted wood, stone | §4 day keyframe at ClockTime 9.5 | The arch | Hills need solid Blender ground; 2–3 people |
+| Roleplay · Rainy blue hour | Cool V35–50: asphalt #474F5E (37), brick #5C3F3A, concrete #6E747E; sign accents #FF6B4A, #4AD9FF | Tall narrow facades, awnings | Wet asphalt (roughness 0.2), brick, glass, neon tube | §4 dusk keyframe at ClockTime 19, Realistic, `EnvironmentSpecularScale` 1 | Neon lettering | Wetness is specular, lost on low end: paint reflections as value strips; a lighting owner |
+| Roleplay · Retro-future pastel | Mint #9ED9C8, salmon #F2A28C, cream #F5EBD7, chrome #B8C0C8, charcoal #3A3F47; #FFC93C accent | Boomerangs, capsules, large radii | Enamel, chrome, terrazzo | §12 simulator row at Brightness 2, ClockTime 11 | Starburst | Theme-locked (modern items clash); flat colour, 1–2 people |
+
+Every row is a starting point to push, not a skin to apply: two games that both pick "Tin-toy workshop" converge as surely as two on noon. Fill the bible (§6) from the tested hero asset, with your own hexes measured from it.
+
+### Style tiers: what the team can sustain
 
 A style is what the team can make two hundred times at the same quality. Sable's flat-shaded desert was chosen because the team could not build a detailed open world: the look had to be quick to produce, quick to iterate, consistent and still stand out, and readability was then recovered with layered lighting, distance fog and line work `[community: Kythreotis, GDC 2022]`.
 
@@ -136,7 +188,7 @@ A style is what the team can make two hundred times at the same quality. Sable's
 | Voxel | Low | Strong | Lowest: the grid enforces it | Medium | Building or mining games; strict grid discipline |
 | Realistic PBR | Highest | Weakest | High | Low | Not with a small team |
 
-- **Capacity check** `[house]`: assets needed × hours per asset at rubric score 8 ≤ art hours before launch. If not, cut asset count or drop a style tier; never drop the score.
+- **Capacity check** `[house]`: assets needed × hours per asset at rubric score 8 ≤ art hours before launch. If not, cut asset count or drop a style tier; never drop the score. Modelling-only times from one production vault: rock 20–45 min, crate or barrel 20–40 min, stylised weapon 1–3 h `[lihfolk]`; one artist built a 12-piece island kit in three days `[community: Lucas]`. Starting figures at score 8, including bevels, palette, export, the in-game check and one fix round, flat colour or atlas `[house]`: small prop 1–2 h, kit module 2–4 h, medium prop or machine with a moving part 4–8 h, tree 2–4 h, pet or creature without rig 6–12 h, hero landmark 12–24 h; double them for stylised PBR. Replace them with the measured time of your own golden samples in week 1.
 - **Limitation as style.** Pick two or three hard limits and enforce them everywhere (a 12-colour zone palette, no textures, one bevel width, no outlines, one material idea such as "everything is folded paper" `[community: Lucas]`). Constraints kept everywhere beat detail.
 - **Less detail, better read.** At gameplay distance small detail reads as noise `[community: Koepp]`; areas of low detail are what make the detailed focal point draw the eye `[community: Barrett]`.
 - **Do not raise the detail level mid-production.** A team that used extra time to add painted folds, edge highlights and AO to new assets found them clashing with the earlier flat ones `[community: Epistory team via Game Developer]`. Version the bible: a change ships as a new version signed by one named owner, with the old and new golden sample side by side and the list of families to migrate. Migrate whole families or not at all (§10).
@@ -158,7 +210,7 @@ The top-liked forum answer to "how are simulator pets made" starts by exporting 
 
 ## 6. Style bible: measurable rules and tie-ins
 
-The bible is one page, so it fits beside the viewport and two artists (or two agents) build one world. Fill it in from the golden sample; a filled example is sheet `assets/reference/18-style-bible-one-pager.png`.
+The bible is one page, so it fits beside the viewport and two artists (or two agents) build one world. Fill it in from the golden sample. Sheet `assets/reference/18-style-bible-one-pager.png` shows the blank page and two opposite fillings of one brief: examples of the range, never values to ship.
 
 ```markdown
 # <Game> style bible v<N> (<date>, owner)
@@ -289,6 +341,21 @@ Asset-level review (the fixed critique order and paintovers) and zone-level test
 
 4. **Rules.** The scorer is not the author. The game's art score is its lowest discipline, because cohesion is weakest-link. Write findings as what, where, why and how much, ranked by how many players see it over the hours to fix. Re-capture from the same cameras after the fix.
 
+### Several artists, one look `[house]`
+
+Three artists drift into three games through small choices nobody reviews. Make the cheap rules mechanical and review the rest weekly against fixed samples.
+
+| Piece | Rule |
+|---|---|
+| Bible | §6 lines as numbers; one named owner signs each version; changes only at the weekly line-up |
+| Golden samples | The three from §3 in `golden.blend` and in the place's `_Dev/Golden` folder (unpublished); every review places the new asset beside one |
+| Shared sources | One `palette_vN.png` atlas and the trim sheets, versioned, in a shared folder; one `kit_base.blend` holding the `Scale_Ref` proxies, bevel and Weighted Normal presets and the `M_` placeholder materials. Artists append from it; nobody types a hex by eye |
+| Ownership and names | Each artist owns whole families (all plot walls, all machines), never half of one; names per `art-pipeline-blender.md` "Naming and hierarchy"; one `.blend` per family (`kit_plot.blend`) so the roster renders it whole |
+| Author check (before review) | `blender -b --factory-startup kit_plot.blend -P scripts/blender/check_asset.py -- --out build/check` exits 0 (names, transforms, UVs, class budgets, open edges; add `--symmetric <name>` for mirrored pieces); the same call with `silhouette_sheet.py -- --out build/sil --px 64 --roster` shows the new piece beside its family; the palette scan (§6) prints nothing for it in the test place |
+| Reviewer check | A non-author, rotating so each artist reviews the other two; the bible owner breaks ties. Rubric in `blender-modeling-craft.md` beside the golden sample at 8, 15–40 and 100 studs under the zone preset on the phone, plus the acceptance checklist in `art-pipeline-blender.md`. Pass at 8 with no zero; a fail is written as what, where, why and how much |
+| Weekly line-up (Friday, 30 min) | The twelve fixed captures and the four tests; every family's roster sheet; all of the week's new assets in one row beside the golden samples. Output: the fix list and any bible change |
+| Drift alarms | Palette-scan rows; a `check_report.json` budget outlier; an outline that breaks its roster; two reviewers 2+ points apart on one asset (re-calibrate both on a golden sample) |
+
 ## 9. AI tools without shipping slop
 
 The line `[house]`: generative tools may feed thinking; nothing they output ships. Everything a player sees or hears as art is authored: meshes in Blender (house rule 1), UI art, icons and thumbnails designed in Figma or by hand.
@@ -327,13 +394,26 @@ Order by visual gain per hour, then by how many players see the surface. Ship ea
 | 8 | Kit replacement, one family at a time, by traffic: shop, main path, zones | Weeks | The house-rule debt track; whole families only, so old and new never sit side by side |
 | 9 | Animation: authored idles, core-verb timing, UI motion tokens | Days | Last because it depends on final meshes and UI |
 
-Write the bible after pass 2 from the best fifth of what exists, then hold passes 4–9 to it. Do not start pass 8 before passes 1–3: new kit under default lighting and a rainbow palette still reads as generic.
+Choose the direction (§4) before pass 2, so the palette pass recolours toward it rather than tidying the old look; write bible v1 from the tested hero asset and hold passes 4–9 to it. Do not start pass 8 before passes 1–3: new kit under default lighting and a rainbow palette still reads as generic.
+
+**Six weeks, biggest visual win per hour first** `[house]`. Passes run in parallel lanes; the order that matters is 1–3 before 8, and 4 before 6. Before week 1, export 14 days of the numbers this should move: Home click-through, play-through past the first minute, D1, average session (`analytics-and-discovery.md`). Each pass ships behind a Config flag whose default is the old look; at a few thousand CCU, run the first-frame and kit passes as Experiments.
+
+| Week | Three artists (A, B, C) | Solo (about 20 art hours a week) | Measure at the end of the week |
+|---|---|---|---|
+| 1 Direction | Day 1 all: pass 0, §4 intake and default row. Days 2–3: each builds the hero asset in a different candidate direction. Day 4: line-up test, choose. Day 5: golden samples frozen, bible v1, passes 1–3 behind a flag | Pass 0, intake, two candidate hero assets (a day each), line-up test, bible v1, pass 1 | Twelve captures scored; line-up passed; hours per golden sample timed (capacity check, §4) |
+| 2 Light and first frame | A: pass 4 (first frame, hero landmark, plot edge and backdrop). B: lighting from the §12 row plus the deviation, white-cube and no-shadow tests. C: hero piece of the most-seen family to 8+ | Pass 2, then pass 4 | First-frame capture passes the four tests; flag on for 50% of servers |
+| 3 Families | A and C: siblings of their families; B: hero piece and siblings of the second family. First weekly line-up | Hero piece and three siblings of the most-seen family | Every new piece 8+; rosters clean; memory and draw calls on the 3 GB phone not worse |
+| 4 Families and UI | A: last family pieces by traffic. B: second family done. C: pass 5 (UI skin on tokens) | Pass 5 | World-only and UI-only halves read as one game; first-minute play-through vs baseline |
+| 5 Verbs | A: hub or zone family. B: pass 7 (effects and sounds on the core verb and reward). C: icons rendered from the meshes | Pass 7 on the core verb only | Motif in four disciplines; cohesion score |
+| 6 Show it | Fixes from the line-up; pass 6 (icon and thumbnails captured in-game); final twelve captures | Pass 6; final captures | No discipline under 8 (team) or 7 (solo); a stranger picks your capture from six in 3 s; Home click-through, play-through and D1 not worse on any pass and better on the first-frame pass; thumbnails left 7 days before judging |
+
+Families go live whole or not at all, so old and new never share a plot. Keep every pad id, purchase key and footprint: a wall 0.5 studs wider than the old one moves saved buttons.
 
 ## 11. Level-up: symptoms in a live game → cause → fix
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| "Looks like every other simulator" | Template from one source | Three-decisions line; change primary shapes and palette before adding anything |
+| "Looks like every other simulator" | Template from one source, or a default (preset, sheet example, safe palette) left unchanged | §4: default row, a direction two axes away, hero asset and line-up test; change primary shapes before adding anything |
 | Comments or reviews say "AI game" | Generated icon, thumbnail or description; defaults everywhere | Real captures, rewritten copy, defaults sweep |
 | Each zone is fine; the game feels stitched together | Assets from several sources or eras | One bible; replace by family (§10 pass 8) |
 | New assets make old ones look worse | Detail level rose mid-production | Freeze the bible version; migrate the family or hold the new work back |
@@ -348,16 +428,17 @@ Write the bible after pass 2 from the best fifth of what exists, then hold passe
 
 ## Review gate
 
+- [ ] §4 intake written; the genre default row filled from three named competitors; the chosen direction differs from it on at least two axes, one of them shape, edge, material or light; hero asset and line-up test passed before the bible.
 - [ ] Three-decisions line written; no competitor could sign it.
-- [ ] Style chosen with the capacity check; two or three hard limits written as bans.
+- [ ] Style tier chosen with the capacity check (timed golden samples); two or three hard limits written as bans.
 - [ ] Reference board: 20–40 labelled images, at most a third from one title, at least 40% real world, no generated targets; anti-board exists.
-- [ ] Three-decisions line differs from each of five named competitors on at least two of the four axes (line-up test).
 - [ ] Bible lines are numbers or side-by-sides; tie-ins written for UI, icons, thumbnails, VFX, animation, audio and writing; the motif appears in each; palette scan prints zero rows.
 - [ ] Golden samples (prop, kit module, character or interactable) and the beauty corner exist and match the current bible version.
 - [ ] Defaults scan shows only deliberate rows; house-rule scan clean.
 - [ ] Twelve captures taken on the phone; four tests run; every discipline scored by someone other than its author; no caps triggered for the target tier.
 - [ ] Nothing generated ships: meshes, textures, UI art, icons, thumbnails, unedited copy.
-- [ ] For a live game: passes run in order, each re-captured from the same cameras and shipped through the safe-change steps.
+- [ ] Several artists: each owns whole families; `check_asset.py` and the roster sheet run before every review; a non-author signs off at 8+ beside a golden sample; weekly line-up held.
+- [ ] For a live game: passes run in order (1–3 before 8, 4 before 6), each re-captured from the same cameras, behind a flag, measured against the 14-day baseline.
 
 ## Sources
 
@@ -380,4 +461,6 @@ Accessed 2026-11-11. DevForum threads read through the Discourse JSON API.
 - 80.lv breakdowns (read; images viewed, listed in the three library files): Stanley Barrett, Emek Can Özben, Rodrigo Gonçalves, Benjamin Lucas, Tobias Koepp, Ivan Blinov, Georg Klein, Sasha Bernert, Angelo Tsiflas, Vitaliy Novart
 - Reddit and petition sentiment on AI thumbnails (search summary only; reddit.com is not reachable from here)
 - Engine API dump, version 0.747 (https://github.com/MaximumADHD/Roblox-Client-Tracker, read 2026-11-11): every class, member and enum item named in §2 exists with that spelling, and `ParticleEmitter.Texture` defaults to the path in the scan.
-- Not verified: both Luau scans are unexecuted; the default font family and grey GUI colour in the defaults scan are from memory `[VS]`; board sizes, the line-up test, capacity check and rubric caps are house estimates. No measured data was found linking AI art to retention or click-through; vendor "high CTR" claims were not used.
+- Genre defaults (§4) read from captures viewed on 2026-11-11 and listed in `visual-library/environments-and-maps.md` §G: official Creator Spotlight posts (https://devforum.roblox.com/t/3840933, /3419750, /3579254, /3639226, /3659603, /4036940, /3269481) and official game thumbnails fetched through `https://thumbnails.roblox.com/v1/games/multiget/thumbnails` (Restaurant Tycoon 3, Retail Tycoon 2, Run A Farm!, LINE UP! Metro Tycoon, Steal a Brainrot, Grow a Garden, Tower of Hell, Brookhaven RP, DOORS, DONT SPLASH); hex values in the default rows were sampled from those images (median-cut, six colours). The directions are house proposals, not measured.
+- LihFolk Vault V2, `15 AI Tools/AI 3D Model Generation Outside Roblox.md` §4 (modelling times) and `55 Modelling Nuance and Readability/Critiquing a Model - Paintovers and Iteration.md` (read, 2026-11-11)
+- Not verified: both Luau scans are unexecuted; the reference hours per asset class and the six-week plan are house estimates; the default font family and grey GUI colour in the defaults scan are from memory `[VS]`; board sizes, the line-up test, capacity check and rubric caps are house estimates. No measured data was found linking AI art to retention or click-through; vendor "high CTR" claims were not used.

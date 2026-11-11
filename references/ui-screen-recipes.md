@@ -4,6 +4,8 @@ Build-level recipes for the screens almost every Roblox game ships: what each co
 
 Tags: `[official]` Roblox docs, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; where it clashes with the house rules, the house rules win), `[VS]` version-sensitive, `[house]` house rule or estimate.
 
+**Fast routes** (the full table with sheets and library rows: `ui-design-figma.md` §Fast routes). From this file: redesign one screen → §1, §3 and that screen's section (§5–§12); new HUD → §1, §2, §4; phone layout fix → §1, §4; critique → the Level-up table. Role and size names (`Primary`, Caption 14) are defined in `ui-design-figma.md` §3–4.
+
 ## Start here by level
 
 | Level | Do first | Ignore for now |
@@ -22,15 +24,15 @@ px at `Phone-S` (800×360); the scale column is a fraction of screen height (H) 
 
 | Element | px at Phone-S | Scale | Placement and rule |
 |---|---|---|---|
-| Currency readout | icon 28–32, number 18–20 | 0.08–0.09 H | Top-left under the top bar. Icon + outlined number, no panel `[community]`; counts up, never snaps |
+| Currency readout | icon 28–32, number 20; a second currency icon 22, number 16 | 0.08–0.09 H | Top-left under the top bar. Icon + outlined number, no panel `[community]`; counts up, never snaps |
 | Menu buttons | 48–56, gap 8 | 0.13–0.155 H | One home edge; 4–6 at most, the rest behind `More`; red count badge only when something is claimable |
 | Primary action | 0.8–1.0× the jump button (70 px when the screen's short axis is ≤ 500 px, else 120 px `[official][VS]`) | read at runtime | Placed from the live `JumpButton` once it `IsLoaded` `[official]`; never by screen percentage |
 | Touch target floor | 44×44, 48 on the HUD | 0.12 H | 44 is Apple's figure, 48 dp Google's; the docs cite a 9 mm WCAG target `[official]`; Epic's mobile guidance also says 44 `[community]` |
 | Objective / timer | height 32–40 | 0.10 H | Top centre; read-only (hardest thumb reach); collapsible if it grows `[community]` |
 | Quest tracker | width ≤ 220 | ≤ 0.28 W | Right edge under the top bar; 1–3 lines with `101/500`; folded by default on phones |
 | Toast | height 36–44 | 0.11 H | Top centre under the objective; ≤ 2 visible on `Phone-S`; never a modal |
-| Window | ≤ 736×310 | ≤ 0.92 W × 0.86 H | Centred; header 44–48; close top-right ≥ 44; opens in ≤ 0.25 s |
-| Shop card | ≈ 220×190, 3 columns | (W − padding) / 3 | Art, name, one-line benefit, full-width native price button ≥ 44 high; show the top of the next row so scrolling is obvious |
+| Window | ≤ 736×308 | ≤ 0.92 W × 0.86 H | Centred; header 44–48; close top-right ≥ 44; opens in ≤ 0.25 s; built inside a fade group 20 px larger on every side (§3) |
+| Shop card | Phone: 160×236 in one horizontal row (featured 200×236), next card cut off at the edge; tablet and desktop: a 3–4 column grid | 0.66 H tall on phones | Art 104, name 16, one-line benefit 14, full-width native price button 48 high (price 20); the cut-off card or the top of the next row shows that the list scrolls. Fits `Phone-S`: §5 |
 | Inventory cell | 64–72, columns computed from width | 0.18–0.20 H | Rarity = colour + name bar or pips; count bottom-right; undiscovered = silhouette + `??` with `162/284` `[community]` |
 | Item detail | n/a | n/a | Side pane on wide screens; a pushed page with Back under about 700 px width |
 | Reward popup | item 96–128, window ≤ 0.6 H | n/a | Centre; one Claim button; batch many rewards into one summary (`ui-motion-and-feedback.md` §5) |
@@ -70,7 +72,7 @@ Read-1 elements and zone layout per archetype `[house]`, built on the zone map i
 
 ## 3. Shared window anatomy
 
-Header (icon, loud title, the destination's colour) → optional tab strip → scrolling content → optional footer (summary, `Claim all`, timer). The header carries identity plus the one live fact of that screen (restock timer, balance, capacity, season end) and the close button, nothing else; tabs are icon + word, six at most (`visual-library/ui-screens.md` #1, #8, #35, #38; #6, #9, #24). Close top-right, the same component everywhere, also on gamepad B (Escape always opens the Roblox menu and cannot be the close key). One presenter, one open window. A full-screen dim (black at 0.5–0.6 transparency) fades with the window, blocks input behind it and is the tap-outside-to-close target. The primary action is the brightest thing on the screen, one per card at most. On phones an open window hides the HUD. Navigation is at most two levels deep (Epic's mobile guidance `[community]`). `[lihfolk]`
+Header (icon, loud title, the destination's colour) → categories → scrolling content → optional footer (summary, `Claim all`, timer). On landscape phones the categories are a side rail, because height is the scarce axis (a 44 px tab strip costs 12% of a 360 px screen); a top strip suits portrait and wide screens. The header carries identity plus the one live fact of that screen (restock timer, balance, capacity, season end) and the close button, nothing else; tabs are icon + word, six at most (`visual-library/ui-screens.md` #1, #8, #35, #38; #6, #9, #24). Close top-right, the same component everywhere, also on gamepad B (Escape always opens the Roblox menu and cannot be the close key). One presenter, one open window; the window sits in a transparent `CanvasGroup` 20 px larger on every side, so the fade does not clip the close overhang, outer stroke or shadow (`ui-design-figma.md` §6 Window). A full-screen dim (black at 0.5–0.6 transparency) fades with the window, blocks input behind it and is the tap-outside-to-close target. The primary action is the brightest thing on the screen, one per card at most. On phones an open window hides the HUD. Navigation is at most two levels deep (Epic's mobile guidance `[community]`). `[lihfolk]`
 
 **Claim and buy buttons share one state machine**: available → pending → done, or locked with the reason. Between the tap and the server's answer (50–500 ms, seconds on a bad connection) the button is non-interactable and shows progress, or a second tap sends a second request. The server re-checks everything and records the claim before it pays out. `[lihfolk]`
 
@@ -86,11 +88,13 @@ Header (icon, loud title, the destination's colour) → optional tab strip → s
 ## 5. Shop
 
 - Sections with headers: passes, products (currency, boosts), bundles. Card: square art (`ScaleType = Fit`), name, one-line benefit ("2× Cash for 10 min"), native price button. Draw the eye to one card per section with size and extra padding, not with a false label (the docs' bundle example uses exactly that `[official]`).
+- Phone layout that fits `Phone-S` (sheet 03) `[house]`: window 736×308, header 48 (title 24), padding 12, so the body is 236 px tall. Category rail 128 wide on the left: tabs 48 tall, gap 8, icon + one word in 14, at most four. Cards in one horizontal `ScrollingFrame` 572 wide: featured 200 + two of 160 + gaps of 8 leave 28 px of the fourth card showing. Card inside 12 px padding: art 104, name 16, benefit 14, price button 48 anchored to the bottom. Four text sizes on the screen: 24, 20, 16, 14.
+- The Robux icon is a private-use character the engine draws: `utf8.char(0xE002)`, or `"\u{E002}"` in a script string (Premium is `0xE001`). It is monochrome and takes `TextColor3` or a RichText colour; there is no character for the green shaded logo. The Studio Text field does not parse `\u{...}`: set it from code or paste the character. It is not in the docs: the source is a staff reply in the release notes for version 541 (2022) `[official][VS]`; check it on a device in your chosen font. The `BuilderIcons` font path is undocumented: do not ship on it (`ui-design-figma.md` §5).
 - Prices come from `MarketplaceService:GetProductInfoAsync`, never hard-coded; the button only opens the prompt. The grant happens in `ProcessReceipt` (products) or after a server ownership check (passes); the card flips to "Owned" or "Active 12:41" when the server says so, never when the prompt closes.
 - Unaffordable soft-currency items: the button takes the disabled look and states the shortfall ("Need 50 coins"); a red price is the docs' own example of a consistent rule `[official]`, usable only where red text measures 4.5:1 on its plate, never on a green fill (`ui-design-figma.md` §3).
 - Phone cards about 1.3–1.4× their desktop size with fewer columns `[lihfolk]`. Keep the price stroke thin enough that digit holes stay open; an unreadable price costs sales.
 - Say scope precisely ("this server" on a server-wide boost). Live 3D previews (`ViewportFrame`) only in the featured slot or detail pane.
-- House rule 3: no countdown that restarts, no strikethrough without a real former price, close button never hidden or delayed. Paid random items show full odds read from the config the server rolls from, behind the PolicyService gate (`monetization-and-policy.md`). Children do not tell promotion from content `[community]` (NN/g): label paid things as paid, with the Robux glyph.
+- House rule 3: no countdown that restarts, no strikethrough without a real former price, close button never hidden or delayed. Paid random items show full odds read from the config the server rolls from, behind the PolicyService gate (`monetization-and-policy.md`). Children do not tell promotion from content `[community]` (NN/g): label paid things as paid, with the Robux icon before every Robux price.
 - Failure modes: owned state granted from the client; double prompts (no pending state); "Best value" on something that is not.
 - Examples: `visual-library/ui-screens.md` §1. What the strong ones share: the price is the button, in a colour reserved for that currency, and a card sold for two currencies shows two buttons (#2, #12, #10); currency packs grow their art with the tier and the top tier gets a larger card, not a louder colour (#10, #9, #5); rotating stock states the real time left (#1, #17, #18); the materials come from the game's world (#1, #4, #7). Several hit shops in that file show struck-through prices and stock counters: its notes flag them, and house rule 3 decides.
 
@@ -192,7 +196,7 @@ Accessed 2026-11-11 unless noted.
 
 - `Roblox/creator-docs` mirror, commit `7cbffff` (read): `production/game-design/ui-ux-design.md`, `tutorials/curriculums/user-interface-design/choose-an-art-style.md`, `ui/position-and-size.md`, `ui/ui-drag-detectors.md`, class reference `InputActionLabel`, `UIDragDetector`: https://github.com/Roblox/creator-docs
 - Roblox `PlayerModule` source, client 0.747, via https://github.com/MaximumADHD/Roblox-Client-Tracker (re-read 2026-11-11: `ControlModule/TouchJump.lua`, `minAxis <= 500` gives the 70 px jump button, otherwise 120 px)
-- Roblox staff announcement (read): InputActionLabel Studio beta https://devforum.roblox.com/t/4779420
+- Roblox staff announcement (read): InputActionLabel Studio beta https://devforum.roblox.com/t/4779420 · Release Notes for 541, staff reply #5 on the Robux (`\u{E002}`) and Premium (`\u{E001}`) characters (read) https://devforum.roblox.com/t/1940089/5; community list of the same characters (read) https://devforum.roblox.com/t/2175425; the Studio Text field ignoring `\u` escapes (read) https://devforum.roblox.com/t/2393765
 - Epic, "Designing for Mobile in Fortnite" (read) https://dev.epicgames.com/documentation/fortnite/designing-for-mobile-in-fortnite
 - NN/g, "Children's UX: Usability Issues in Designing for Young People" (read) https://www.nngroup.com/articles/childrens-websites-usability-issues/ · Smashing Magazine, "A Practical Guide To Designing For Children" (read) https://www.smashingmagazine.com/2024/02/practical-guide-design-children/
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/` HUD Design; Menu Archetypes - Shop Settings Codes Rewards; Notification and Toast Systems; Virtualized Lists and Large Inventories; Settings Menu Design for Roblox; Drag-and-Drop Inventories and Sliders with UIDragDetector (TL;DR and patterns); `56 Field Notes/` Centre-Screen Announcements, Streaming Joins and Loading Screen Teardown

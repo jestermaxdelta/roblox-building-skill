@@ -89,7 +89,7 @@ Staff posts on custom flipbook layouts and on quality levels are rows 46 and 51 
 
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 48 | [Particle Pack](https://kenney.nl/assets/particle-pack), Kenney, 2018; CC0 (stated on the page) | gallery | 80 sprites at 512²: flares, smoke, sparks, slashes, magic circles. A legitimate block-in kit | read |
+| 48 | [Particle Pack](https://kenney.nl/assets/particle-pack), Kenney, 2018; CC0 (stated on the page) | gallery | 80 sprites at 512²: flares, smoke, sparks, slashes, magic circles. A legitimate block-in kit and the source of three tonight stand-ins in `vfx-recipes.md` Conventions. Download it from the page by hand: preview images under kenney.nl/media refused an automated request in a 2026-11-11 test (403) | read (page and CC0 statement re-read 2026-11-11) |
 | 49 | [Textures for Particles, Visual Effects, Lights and Lensflares](https://github.com/RPicster/Godot-particle-and-vfx-textures), RPicster; CC0 (LICENSE file) | repo | Textures at 1024², 256² and 64² in black-and-white and alpha versions, with the Blender files that rendered them: a worked example of generating soft textures in Blender | read |
 
 ## Sources and licences

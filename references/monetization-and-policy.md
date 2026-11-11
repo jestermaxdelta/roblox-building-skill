@@ -16,6 +16,17 @@ Contents: Catalogue · Benchmarks, segments and unit economics · Default produc
 
 Related: economy-and-progression.md (currency design, sinks, the paid-multiplier cap); gameplay-systems-cookbook.md §3 Shop and §24 Server-wide events and boosts (implementation); data-and-purchases.md (ReceiptService, passes, gifts); ui-design-figma.md (shop screen recipe); liveops-quests-retention.md (season pass missions, social rewards).
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| What to sell | "The house default product set", "Price ladder and product mix by genre", "Policy: what is banned and what must be disclosed"; `genres/<genre>.md` "Monetisation set that fits"; `templates/monetization-product-plan.md` "Product set", "Ladder check", "Policy checklist for this plan"; this file "Review gate" (about 201–204 lines) |
+| Nobody buys (live) | "Level-up: monetisation symptoms → likely cause → fix", "What the numbers say (benchmarks, 2025–2026)"; `analytics-and-discovery.md` "Benchmarks: one table"; this file "The house default product set", "Price elasticity and experiments"; `templates/monetization-product-plan.md` "Mode and baseline"; this file "Review gate" (about 173 lines) |
+| Starter pack, offers, shop | "Offer and shop playbook (house rule: never invasive)", "Anti-patterns and the reason each is banned"; `templates/monetization-product-plan.md` "Offer timing map", "Offer gate configuration (Configs keys)"; this file "Review gate" (about 193 lines) |
+| Set or change prices | "Price ladder and product mix by genre", "Price elasticity and experiments", "What the numbers say (benchmarks, 2025–2026)"; `economy-and-progression.md` "Pricing soft currency against Robux", "Paid multipliers and the curve", "Hard currency or direct Robux prices?"; `templates/monetization-product-plan.md` "Ladder check"; this file "Review gate" (about 201 lines) |
+
 ## Catalogue of monetization surfaces
 
 | Surface | Rules and limits `[VS]` | Use for |
@@ -162,7 +173,7 @@ Shop layout that sells without annoying:
 
 - Tabs in this order: Featured (at most 3 cards: starter or value pack, the pass that fits the player's stage, the live event bundle), Boosts, Passes, Currency, Gifts. Mark owned passes "Owned" instead of hiding them, so the player sees what they already have and what is left.
 - Every card states the effect in the game's own unit ("+4,200 Cash in 10 min at your current rate"), not only "2×". Starter-pack buyers hesitate when contents are hidden `[community]`: list them with the price each has elsewhere in the shop.
-- Anchor honestly: a "Best value" tag is allowed on exactly one pack per ladder and only when its unit price is the lowest; show the arithmetic ("+15% Cash per R$"). A struck-through price is allowed only for a real, ended-on-time discount or a Roblox-reported discount (sketch above).
+- Anchor honestly: a "Best value" tag is allowed on exactly one pack per ladder and only when its unit price is the lowest; show the arithmetic ("+15% Cash per R$"). A struck-through price is allowed only for a real, ended-on-time discount or a Roblox-reported discount (the "Honest price label" sketch under "Catalogue of monetization surfaces").
 - Limited-time offers are real: one `endsAt` timestamp in Configs, shown as a date or honest countdown, never extended and never restarted for the same item. Bring an item back as a named rerun at least 30 days later `[house]`.
 - Complementary offers `[official]`: after a pass purchase, show the related pass once inside the shop, or sell both as a bundle; do not chain prompts.
 - Turn on the platform Shop button, mark products Listed with icons and categories, and keep the receipt handler correct for purchases that start outside your UI.
@@ -386,7 +397,7 @@ Read Creator Hub ⟩ Monetization ⟩ Overview for 28 days first. Compare agains
 | Price test recommends lower prices | List price above what your audience pays | Accept it; the test applies a price only when total revenue rises `[official]` |
 | Subscription churn after month one | Value was front-loaded | Monthly drop with clear contents; keep the one-time VIP as the alternative |
 | Revenue falls after an event | Event paid out main currency | Event currency with expiring sinks |
-| One rung of a ladder sells almost nothing | Worse value per Robux than the rung below, or priced too close to it | Monotone-value test; widen the gap `[lihfolk]` |
+| One rung of a ladder sells almost nothing | Worse value per Robux than the rung below, or priced too close to it | Monotone-value test ("Ladder arithmetic and tests"); widen the gap `[lihfolk]` |
 | New bundle sells, revenue per user is flat | Cannibalisation of an existing product | Judge total revenue per user; differentiate the bundle `[lihfolk]` |
 | Sale-day spike, then a two-week dip | Purchases pulled forward | Measure sale plus two weeks against baseline; fewer, event-tied sales `[lihfolk]` |
 | Dashboard revenue below list price × units | Regional pricing (your share is of the lower price), not a bug | Compute from receipt amounts `[lihfolk]` |

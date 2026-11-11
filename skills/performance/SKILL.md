@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Low FPS | performance.md §Measured investigation by problem class, §Profiling workflow, §Frame budgets and device targets, §Rendering, §Luau performance idioms, §Physics and collision, §Review gate | 197 |
+| Phone crashes, memory | performance.md §Mobile crashes and memory, §Measured investigation by problem class, §Frame budgets and device targets, §Streaming, §Review gate; debugging-and-testing.md §Memory-leak hunting; art-pipeline-blender.md §Texturing strategy | 210 |
+| Server lag, high ping | performance.md §Measured investigation by problem class, §Frame budgets and device targets, §Physics and collision, §Parallel Luau, §VFX, §Profiling workflow, §Review gate; networking-and-security.md §Designing the network surface | 188 |
+| Slow join | performance.md §Loading and join, §Streaming, §Measured investigation by problem class, §Profiling workflow, §Review gate | 119 |
+| Performance audit (live) | performance.md §Level-up audit, §Profiling workflow, §Measured investigation by problem class, §Frame budgets and device targets, §Rendering, §Review gate | 251 |
+| Draw calls, triangles, textures | art-pipeline-blender.md §Level-up, §Platform limits and behaviours, §Mesh specifications, §Texturing strategy, §Collision authoring, §Modular kits, §Review gate; performance.md §Rendering, §Physics and collision | 162 |
+
 ## What to read
 
 | When | Open |

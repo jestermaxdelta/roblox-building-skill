@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Leave in minute one; bad tutorial | tutorial-and-onboarding.md §15, §14, §9, §4, §2, §13, §Review gate; design-foundations.md §7.2, §7.3 | 158 |
+| Boring loop, short sessions, low D1 | core-loop-tuning.md §6, §5, §4, §1, §Review gate; design-foundations.md §3 | 171 |
+| Test a fix (Configs, experiment) | core-loop-tuning.md §7, §6, §Review gate; analytics-and-discovery.md §Experiments and Configs; liveops-quests-retention.md §Shipping an update | 175 |
+| Nobody returns (D7, D30) | liveops-quests-retention.md §Level-up, §Reading retention, §Retention toolkit, §Social design, §Review gate; economy-and-progression.md §Level-up, §Time to afford | 156 |
+| Daily rewards, playtime gifts, quests | liveops-quests-retention.md §Retention toolkit, §Quests and missions, §Notifications done right, §Social rewards, §Review gate; gameplay-systems-cookbook.md §0, §6, §7 | 149 |
+| Events, season pass, update plan | liveops-quests-retention.md §Update and event cadence, §LiveOps calendar, §Season pass, §Patch notes and player communication, §Resets, §Review gate | 273 |
+
 ## What to read
 
 | When | Open |

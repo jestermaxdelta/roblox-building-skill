@@ -6,11 +6,13 @@ What this is: how Roblox lighting works after the unified-lighting change, how t
 
 1 How lighting works today · 2 Key, fill and rim · 3 Colour script and palettes · 4 Mood by time of day · 5 Atmosphere, Sky, Clouds · 6 Post-processing safe ranges · 7 Local lights: budgets and shadow cost · 8 Interior lighting · 9 Emissive materials and fake light · 10 Per-zone transitions (client-side) · 11 Quality-level fallbacks · 12 Presets by genre · 13 Common mistakes · 14 Level-up table · Review gate · Sources
 
+Routes (about 150 lines each): **flat, washed-out or unreadable live game** → §2, §6, §11, §13, §14, then a §12 row with its deviation step. **Light for a new game** → the direction from `art-direction-and-quality-bar.md` §4, then §1 decision rule, §2, §12, §11. **Interior or night** → §4, §7, §8, §9. Look at sheet 16 and the "start here" rows of `visual-library/lighting-and-mood.md`.
+
 ## Start here by level
 
 | Level | Do these | Ignore for now |
 |---|---|---|
-| Beginner | Choose `LightingStyle` and `PrioritizeLightingQuality` on purpose in Studio (§1). Paste one genre preset (§12). Add one `ColorCorrectionEffect` and one `BloomEffect` inside the safe ranges (§6). Run the no-shadow and greyscale tests (§11). Put real lights only at focal points, `Shadows` off. | Day cycles, zone blending, grade stacks |
+| Beginner | Choose `LightingStyle` and `PrioritizeLightingQuality` on purpose in Studio (§1). Start from the §12 row your art direction names and make its deviation step. Add one `ColorCorrectionEffect` and one `BloomEffect` inside the safe ranges (§6). Run the no-shadow and greyscale tests (§11). Put real lights only at focal points, `Shadows` off. | Day cycles, zone blending, grade stacks |
 | Intermediate | Balance key against fill on a white cube (§2). Plan a colour strip across zones (§3). Tune Atmosphere in order (§5). Light interiors with their own profile (§8). Budget lights and cull to the nearest few (§7). Client-side zone profiles (§10). A low-detail mode (§11). | Luminance maths, clocks |
 | Expert | Mood keyframes on a server-published clock (§4). A priority stack for personal screen effects (§6). GPU cost measured in the MicroProfiler (`ShadowMapSystem`, `LightGridCPU`). Contrast ratios checked numerically (§3). Snapshot and restore around Edit previews; one owner per property (§10). | Nothing; measure on the 3 GB phone |
 
@@ -320,7 +322,9 @@ Most phones run on automatic quality, and below level 4 there are no shadows at 
 
 ## 12. Presets by genre
 
-Starting points `[house]`, untested in engine, adapted from the LihFolk recipes and earlier house presets. Every column is a real property and every value is inside its documented range; "Style, priority" is `LightingStyle` and `PrioritizeLightingQuality`, set in Studio, never by script. Colours are RGB 0–255; `Ambient` never exceeds `OutdoorAmbient` on any channel. Atmosphere is Density / Offset / Haze / Glare then Color; Bloom is Intensity / Size / Threshold; Grade is the zone `ColorCorrectionEffect`. Apply, then run the §11 tests on the phone.
+Starting points `[house]`, untested in engine, adapted from the LihFolk recipes and earlier house presets. Every column is a real property and every value is inside its documented range; "Style, priority" is `LightingStyle` and `PrioritizeLightingQuality`, set in Studio, never by script. Colours are RGB 0–255; `Ambient` never exceeds `OutdoorAmbient` on any channel. Atmosphere is Density / Offset / Haze / Glare then Color; Bloom is Intensity / Size / Threshold; Grade is the zone `ColorCorrectionEffect`.
+
+A row is a genre's default, not an answer: every game that pastes the tycoon golden hour looks like every other tycoon. Required deviation step `[house]`: (1) take the row the chosen direction names (`art-direction-and-quality-bar.md` §4), not the row of your genre; (2) change at least two of: hour and sun angle, key hue (`ColorShift_Top`), fill hue or key:fill ratio, Atmosphere colour and density, grade, practical lights; (3) write the changed values in the bible's lighting line; (4) run the white-cube check (§2) and the §11 tests on the phone.
 
 | Genre look | Style, priority | ClockTime | Brightness | Ambient / OutdoorAmbient | ColorShift Top / Bottom | Env diffuse / specular | Atmosphere | Bloom | Grade |
 |---|---|---|---|---|---|---|---|---|---|
@@ -334,6 +338,8 @@ Starting points `[house]`, untested in engine, adapted from the LihFolk recipes 
 | Neon city or night racing | Realistic, on | 22 | 0.4 | (40,30,60) / (60,45,90) | none | 0.2 / 0.6 | 0.4 / 0 / 2 / 0, (90,50,120) | 1.0 / 36 / 0.9 | Contrast 0.15, Saturation 0.2 |
 | Overcast (any genre, flat soft day) | Realistic, on | 12 | 1.2 | (50,55,60) / (90,95,100) | none | 0.4 / 0.2 | 0.4 / 0.1 / 2.5 / 0, (190,195,205) | 0.2 / 24 / 1.5 | Contrast 0.1 |
 | Interior shop (sealed room, fixture-lit) | Realistic, on | any | 1.5 | (30,30,35) / (60,60,70) | none | 0.3 / 0.5 | 0.2 / 0.5 / 0 / 0, default | 0.3 / 24 / 1.2 | Contrast 0.05, Saturation 0.1; SurfaceLights on Blender fixtures |
+| Backlit dusk (silhouette obby, landmark views) | Soft, off | 18.3 | 1.5 | (70,60,90) / (110,90,130) | (255,170,120) / none | 0.3 / 0 | 0.35 / 0.3 / 2 / 0.6, (250,170,140) | 0.4 / 24 / 1.3 | Contrast 0.12, Saturation 0.05. Deliberately backlit, against the §2 across-the-light rule: platform tops carry a lighter value and an emissive rim, plus blob shadows |
+| Fluorescent liminal (bright sealed horror) | Realistic, on | any | 1 | (150,155,160) / (150,155,160) | none | 0.2 / 0.6 | 0.3 / 0 / 0.5 / 0, (220,230,230) | 0.3 / 24 / 1.2 | Contrast 0.05, Saturation −0.15, tint (240,250,250); ceiling SurfaceLights (235,245,255) |
 
 - Conflict: the simulator row uses a brighter ambient than the earlier house "Bright stylized day" preset ((70,70,80) / (120,120,130)) `[house]`. The darker pair gives bevelled palette art more form; the brighter pair is the "nothing is ever dark" simulator look. Decide with the white-cube test: lit faces 1.5–2.5× shadow faces.
 - Obby: no haze (the next stages must read), no sun rays, no depth of field; the kill colour is the only saturated emissive on the course. PvP: environment saturation slightly below zero leaves saturation for effects and team colours; light the fighting floor more than its surroundings. Horror: one warm light the player carries or follows; darkness hides the threat, never the counter. Bright cartoon cannot be made scary by darkening it: switch preset `[lihfolk]`.
@@ -364,7 +370,8 @@ Starting points `[house]`, untested in engine, adapted from the LihFolk recipes 
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| "Looks cheap" or flat in feedback and thumbnails | Default lighting, no key-to-fill contrast, no grade | Preset from §12; white-cube balance; one ColorCorrection |
+| "Looks cheap" or flat in feedback and thumbnails | Default lighting, no key-to-fill contrast, no grade | A §12 row plus its deviation step; white-cube balance; one ColorCorrection |
+| Lit like every competitor (golden hour on every tycoon) | A §12 row pasted unchanged | Deviation step (§12): change two of hour, key hue, fill, air, grade, practicals |
 | Looks great on PC, grey on phones | Look depends on shadows, bloom or Realistic shading | §11 tests; move contrast into colour shifts, ambient tint and baked AO |
 | Phone players cannot see at night or in caves | Black ambient; low screen brightness | Tinted ambient; exposure +0.2 to +0.3; emissive and outlines on gameplay objects |
 | Frame rate dips near lantern rows or markets | Many overlapping lights, some shadowed; `ShadowMapSystem` high | Shadows off on decoration; nearest-K culling; fewer, larger lights |
@@ -382,6 +389,7 @@ Starting points `[house]`, untested in engine, adapted from the LihFolk recipes 
 - [ ] `LightingStyle` and `PrioritizeLightingQuality` chosen in Studio and written in the style bible; nothing depends on `Technology` or on switching style at runtime.
 - [ ] `Ambient` ≤ `OutdoorAmbient` on every channel; `GlobalShadows` on unless the style deliberately has none.
 - [ ] White-cube check: lit faces about 1.5–2.5× shadow faces; sun angled, not overhead.
+- [ ] The look started from the §12 row the art direction names and differs from it on at least two of hour, key hue, fill, air, grade and practicals; the values are in the bible.
 - [ ] Greyscale and no-shadow tests pass in every preset the game uses; night readable on a dim phone.
 - [ ] Atmosphere or fog, not both; no ghosting at the horizon; far landmarks still visible in every preset.
 - [ ] At most 2–3 always-on post effects, all inside the safe ranges; DepthOfField and Blur contextual only.

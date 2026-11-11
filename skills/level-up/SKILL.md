@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| A few numbers, no access | audit-existing-game.md §Numbers-only first pass, §2, §4, §Review gate; analytics-and-discovery.md §Benchmarks | 112 |
+| Inspect read-only | audit-existing-game.md §5, §Operating rules, §House-rule debt track, §7, §Review gate; checklists.md §Gate 4 (scan: `scripts/studio/house_rule_scan.luau`) | 195 |
+| Score the ten dimensions | audit-existing-game.md §3, §7, §Review gate; game-audit-report.md §2; tutorial-and-onboarding.md §13; core-loop-tuning.md §4; ui-design-figma.md §9; art-direction-and-quality-bar.md §8; icons-thumbnails-and-store-page.md §15 | 264 |
+| Triage, rank, plan | audit-existing-game.md §4, §6, §2, §Review gate; game-audit-report.md §0, §4, §5, §6 | 201 |
+| Ship a live fix safely | audit-existing-game.md §9; analytics-and-discovery.md §Experiments and Configs; engineering-architecture.md §Runbook; liveops-quests-retention.md §Shipping an update; checklists.md §Gate A | 157 |
+| Genre level-up checklist | genres/<genre>.md §Level-up checklist for a live game, §Common failure modes, §Core loop with timings, §Review gate; genre-playbooks.md §Level-up, §Cross-genre rules, §Routing table | 120–129 |
+
 ## What to read
 
 | When | Open |

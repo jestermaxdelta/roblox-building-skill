@@ -4,6 +4,8 @@ How Roblox UI should move and answer the player: a small set of motion tokens, t
 
 Tags: `[official]` Roblox docs and staff announcements, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; field values from one production game: starting points, not laws), `[VS]` version-sensitive, `[house]` house rule or estimate.
 
+**Fast routes** (the full table with sheets and library rows: `ui-design-figma.md` §Fast routes). Motion pass on an existing UI: §1–5, §7, §8 and the Level-up table, plus the presenter in `ui-input-crossplatform.md` §UI architecture. Redesign one screen or a new HUD: §2 and §8 only. Every section here uses the tokens defined in §2.
+
 ## Start here by level
 
 | Level | Do first | Ignore for now |
@@ -55,7 +57,7 @@ Durations are `[lihfolk]` field values. Perception bands: under 0.1 s reads as i
 - **State, not events.** Store `wantOpen` and animate toward it from one function. Hide on `Completed` only when `playbackState == Enum.PlaybackState.Completed` and the intent is still "closed". `Tween:Cancel()` leaves the property where it was `[official]`.
 - **Proportional retarget.** A close interrupted at 80% needs about 20% of the enter time to reopen: multiply the token time by the remaining fraction, floor about 0.3.
 - **Input from the first visible frame.** Never disable buttons until an entrance ends; set the gamepad selection when the entrance starts. Locked input is the usual cause of "the UI feels laggy" with short tweens.
-- **Pick the property.** Pop with a child `UIScale` (cheap, scales text and strokes with it); tweening `Size` re-runs sibling layout, re-wraps text and makes `TextScaled` text step. Never tween `Position` of a child owned by a layout: animate an inner face. Fade a panel with `CanvasGroup.GroupTransparency` or per element toward each stored base transparency. Do not tween `UIStroke.Thickness` on text `[official]`.
+- **Pick the property.** Pop with a child `UIScale` (cheap, scales text and strokes with it); tweening `Size` re-runs sibling layout, re-wraps text and makes `TextScaled` text step. Never tween `Position` of a child owned by a layout: animate an inner face. Fade a panel with `CanvasGroup.GroupTransparency` (a transparent group 20 px larger than the window, because a group clips its children: `ui-design-figma.md` §6 Window) or per element toward each stored base transparency. Do not tween `UIStroke.Thickness` on text `[official]`.
 - **Two scales, two objects.** The root carries device scale, an inner frame carries pop scale; two `UIScale`s on one object fight.
 - **Squash honestly.** `UIScale` is uniform; a real squash sets width = 1 / height on the art layer only (never the text), jumps to the extreme pose at once and springs back.
 

@@ -25,6 +25,12 @@ Conventions the scripts assume (from `references/art-pipeline-blender.md`): 1 Bl
 |---|---|---|
 | `tile_test.py` | Shows an icon and thumbnails the way the Roblox Home grid does: icon at 150, 64 and 32 px on dark and light, each thumbnail at 320×180 and 160×90, greyscale, blurred and with the bottom 20% hidden. Writes `tile_test.png` in the current folder. Needs Pillow. Pass marks: `references/icons-thumbnails-and-store-page.md` §5. Run on 2026-11-11 | `python3 scripts/images/tile_test.py icon.png thumb1.png thumb2.png` |
 
+## Studio (`scripts/studio/`)
+
+| Script | What it does | Run |
+|---|---|---|
+| `house_rule_scan.luau` | Read-only scan of a place for house-rule debt: visible primitive Parts, meshes uploaded by someone other than the game's owner, world geometry players can walk through. Groups findings by area and caps its output. Unexecuted sketch: reviewed by reading, never run in Studio | Edit mode only: paste into the command bar, or send through the Studio MCP's `execute_luau` with `datamodel_type = "Edit"`. How to read the result: `references/checklists.md`, Gate 4 |
+
 ## What was tested, and what was not
 
 - Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS Python module, driving each script the way `blender -b file.blend -P script.py -- args` does: a five-piece test file, every flag above, and the exported GLBs re-read to confirm names, triangle counts, sizes and vertex colour.

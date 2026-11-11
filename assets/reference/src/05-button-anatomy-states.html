@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>05 Button anatomy and states</title><link rel="stylesheet" href="sheet.css">
 <style>
-.b{position:relative;width:132px;height:50px}
-.b .lipx{position:absolute;left:0;right:0;top:6px;bottom:0;border-radius:12px;background:#1F7A3D;border:2.5px solid #1A1F2B}
-.b .face{position:absolute;left:0;right:0;top:0;bottom:6px;border-radius:12px;background:#35B25D;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;font-weight:850;font-size:17px}
+.b{position:relative;width:160px;height:48px}
+.b .lipx{position:absolute;left:0;right:0;top:0;bottom:0;border-radius:12px;background:#1F7A3D;border:2.5px solid #1A1F2B}
+.b .face{position:absolute;left:0;right:0;top:0;bottom:5px;border-radius:12px;background:#35B25D;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;font-weight:850;font-size:20px}
 .b .sheen{position:absolute;left:8px;right:8px;top:4px;height:6px;border-radius:4px;background:rgba(255,255,255,.35)}
 .states{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px}
 .st{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:10.5px;color:var(--ink2);line-height:1.32}
@@ -13,7 +13,7 @@
 </style></head><body>
 <div class="sheet">
   <div class="row">
-    <div class="card" style="flex:0 0 330px"><h3>Anatomy of a chunky button, built natively (drawn at 2×)</h3>
+    <div class="card" style="flex:0 0 330px"><h3>Anatomy of a chunky button, built natively (160×48 drawn at 1.5×)</h3>
       <div class="big" id="anat"></div>
       <h3 style="margin-top:4px">Instance tree</h3>
       <table class="spec"><tr><td><b>TextButton</b></td><td>160×48, transparent, AutoButtonColor off</td></tr>
@@ -39,12 +39,12 @@ const I = Sheet.icon, E = Sheet.el;
 // anatomy drawing (button 240 x 84 at 2x of a 120 x 42 button)
 document.getElementById('anat').innerHTML = `<svg width="300" height="150" viewBox="0 0 300 150">
   <rect x="14" y="12" width="262" height="120" rx="10" fill="none" stroke="#788294" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <rect x="30" y="40" width="230" height="80" rx="20" fill="#1F7A3D" stroke="#1A1F2B" stroke-width="5"/>
-  <rect x="30" y="28" width="230" height="80" rx="20" fill="#35B25D" stroke="#1A1F2B" stroke-width="5"/>
-  <rect x="48" y="37" width="194" height="10" rx="5" fill="#fff" opacity=".35"/>
-  <g transform="translate(74,46) scale(1.9)"><path d="${Sheet.GLYPH.gem}" fill="#fff" stroke="#1A1F2B" stroke-width="1.6" stroke-linejoin="round"/></g>
-  <text x="132" y="80" font-size="32" font-weight="850" fill="#fff" stroke="#1A1F2B" stroke-width="6" paint-order="stroke" stroke-linejoin="round">BUY</text>
-</svg>` + [[1, 14, 12], [2, 262, 124], [3, 258, 64], [4, 232, 42], [5, 30, 86], [6, 86, 96], [7, 172, 92]].map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
+  <rect x="25" y="36" width="240" height="72" rx="18" fill="#1F7A3D" stroke="#1A1F2B" stroke-width="4.5"/>
+  <rect x="25" y="36" width="240" height="64.5" rx="18" fill="#35B25D" stroke="#1A1F2B" stroke-width="4.5"/>
+  <rect x="43" y="44" width="204" height="9" rx="4.5" fill="#fff" opacity=".35"/>
+  <g transform="translate(76,47.5) scale(1.75)"><path d="${Sheet.GLYPH.gem}" fill="#fff" stroke="#1A1F2B" stroke-width="1.6" stroke-linejoin="round"/></g>
+  <text x="130" y="80" font-size="30" font-weight="850" fill="#fff" stroke="#1A1F2B" stroke-width="6" paint-order="stroke" stroke-linejoin="round">BUY</text>
+</svg>` + [[1, 14, 12], [2, 258, 112], [3, 262, 60], [4, 232, 44], [5, 25, 86], [6, 88, 98], [7, 172, 96]].map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
 const L = [
   ['Tap pad', '≥ 44×44 px, 48 on the HUD', 'A small visual may sit in a larger invisible pad (Selectable = false). Gaps ≥ 8 px; pads never overlap.'],
   ['Lip', 'Frame in Primary.dark, 5 px showing', 'The depth cue for toy and simulator styles. On press the face sinks 3–4 px into it.'],
@@ -59,12 +59,12 @@ const btn = (o = {}) => `<div class="b ${o.cls || ''}" style="${o.style || ''}" 
 const st = [
   ['Rest', 'Face up on its lip. Scale 1.', btn()],
   ['Hover', 'Lightness <span class="v">+6–8%</span>, scale <span class="v">1.04–1.06</span> in <span class="v">0.10–0.12 s</span>. Mouse only.', btn({ style: 'transform:scale(1.06)', face: 'background:#3FC76C' })],
-  ['Pressed', 'Face sinks <span class="v">3–4 px</span> or scales to <span class="v">0.92–0.96</span> in <span class="v">0.08–0.10 s</span>; lightness −10–12%; click and haptic at 0 ms.', btn({ style: 'transform:scale(.94)', face: 'top:5px;bottom:1px;background:#2A9A4E', nosheen: 1 })],
+  ['Pressed', 'Face sinks <span class="v">3–4 px</span> or scales to <span class="v">0.92–0.96</span> in <span class="v">0.08–0.10 s</span>; lightness −10–12%; click and haptic at 0 ms.', btn({ style: 'transform:scale(.94)', face: 'top:4px;bottom:1px;background:#2A9A4E', nosheen: 1 })],
   ['Gamepad focus', 'At least the hover look, plus a ring in the reserved Focus colour, with a margin.', btn({ cls: 'ring', style: 'transform:scale(1.04)', face: 'background:#3FC76C' })],
   ['Selected', '"This page is open": adds an outline and a tint, plus a word or icon. Must not look like focus.', btn({ face: 'background:#fff;color:#1A1F2B;-webkit-text-stroke:0', lip: 'background:#B9C0CC', label: 'ON ✓', nosheen: 1 })],
-  ['Disabled', 'Fill saturation under <span class="v">15%</span> and opacity <span class="v">50–60%</span>; label kept at full opacity (≥ 3:1) and it states the reason.', btn({ face: 'background:#8A93A3;font-size:12.5px;-webkit-text-stroke:1.8px #1A1F2B', lip: 'background:#5E6676', label: 'Need 50 coins', nosheen: 1 })],
+  ['Disabled', 'Fill saturation under <span class="v">15%</span> and opacity <span class="v">50–60%</span>; label kept at full opacity (≥ 3:1) and it states the reason ("Need 50" beside the coin icon).', btn({ face: 'background:#8A93A3', lip: 'background:#5E6676', label: 'Need 50 <svg width="18" height="18" style="flex:none"><circle cx="9" cy="9" r="7" fill="#F0B63A" stroke="#1A1F2B" stroke-width="2"/></svg>', nosheen: 1 })],
   ['Pending', 'Entered at once on release: Interactable = false, progress in place of the label (<span class="v">50–500 ms</span>).', btn({ face: 'background:#6E9E7D', lip: 'background:#4C7559', label: '· · ·', nosheen: 1 })],
-  ['Done', 'Kept visible with a tick; set by the server reply. An error shakes and shows inline.', btn({ face: 'background:#52648A;font-size:15px', lip: 'background:#3A4A6B', label: '✓ Owned', nosheen: 1 })],
+  ['Done', 'Kept visible with a tick; set by the server reply. An error shakes and shows inline.', btn({ face: 'background:#52648A', lip: 'background:#3A4A6B', label: '✓ Owned', nosheen: 1 })],
 ];
 document.getElementById('states').innerHTML = st.map(s => `<div class="st"><div class="holder">${s[2]}</div><div><b>${s[0]}</b>${s[1]}</div></div>`).join('');
 // timing chart: 0..520 ms, scale 0.90..1.04

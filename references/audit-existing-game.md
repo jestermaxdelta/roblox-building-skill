@@ -16,6 +16,18 @@ Contents: 1 Intake (and the numbers-only first pass) · 2 Benchmarks · 3 Scorec
 
 Shortest route. The owner gave a few numbers and no access: read only "Numbers-only first pass" in §1, the four rules in §2 and the triage table in §4 (about 60 lines), then reply. Open §3 and §5–9 once there is a place, a repo or a dashboard to inspect; §10 is a lookup table.
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| A few numbers, no access | "Numbers-only first pass (no place access yet)", §2, §4; `analytics-and-discovery.md` "Benchmarks: one table"; this file "Review gate" (about 112 lines) |
+| Inspect read-only | §5, "Operating rules"; `checklists.md` "Gate 4: performance and content (HR)"; this file "House-rule debt track", §7, "Review gate" (about 309 lines) |
+| Score the ten dimensions | §3; `templates/game-audit-report.md` §2; this file §7; `tutorial-and-onboarding.md` §13; `core-loop-tuning.md` §4; `ui-design-figma.md` §9; `art-direction-and-quality-bar.md` §8; `icons-thumbnails-and-store-page.md` §15; this file "Review gate" (about 264 lines) |
+| Triage, rank, plan | §4, §6, §2; `templates/game-audit-report.md` §0, §4, §5, §6; this file "Review gate" (about 201 lines) |
+| Ship a live fix safely | §9; `analytics-and-discovery.md` "Experiments and Configs"; `engineering-architecture.md` "Runbook: shipping an update to a live game"; `liveops-quests-retention.md` "Shipping an update: flags and staged rollout"; `checklists.md` "Gate A: level-up audit (existing games)" (about 157 lines) |
+
 ## How the audit adapts to the developer
 
 Rate the owner per domain from evidence in the conversation and the project, never by asking "what level are you" (same rule as SKILL.md; signals in `references/learning-paths.md`). People are often strong in one domain and new in another, so the report mixes columns: an owner who quotes D1 and conversion but works Studio-only with no Rojo gets the intermediate treatment for numbers and the beginner treatment for the change method.
@@ -79,7 +91,7 @@ When the owner gives a few numbers and a description but no place file, repo or 
 
 1. **What the numbers say** (2–3 sentences): each number placed against the benchmark rule in §2, with the benchmark named.
 2. **Triage step** (T0–T8) and the one sentence of evidence that selects it; say what was assumed for anything missing.
-3. **Top 3 actions**, each with the reason, the first concrete step, the effort in hours and in weeks at the owner's weekly budget, and the number that will show it worked. If the description reveals house-rule debt, say it goes on the 20–30% track and name the first surface (spawn view).
+3. **Top 3 actions**, each with the reason, the first concrete step, the effort in hours and in weeks at the owner's weekly budget, and the number that will show it worked. If the description reveals house-rule debt, say it goes on the 20–30% track (§6, "House-rule debt track") and name the first surface (spawn view).
 4. **At most five asks**, the ones that would change the plan: usually (a) first-play bounce under 60 s and 61–180 s, (b) average session time and the first-session curve at 5 minutes, (c) crash rate on the worst platform, (d) read access to the place or repo, (e) the one thing the owner most wants to move.
 5. **What comes next:** the full scored report after access, with its date.
 

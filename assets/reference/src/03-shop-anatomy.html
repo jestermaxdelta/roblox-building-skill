@@ -2,19 +2,23 @@
 <style>
 .wrap{position:relative;width:744px;height:335px}
 .stage{width:800px;height:360px}
+.stage .a{position:absolute}
 .dimmer{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.win{position:absolute;left:32px;top:25px;width:736px;height:310px;background:#26324A;border:3px solid #1A1F2B;border-radius:16px;overflow:hidden}
-.head{height:46px;background:#C4372F;display:flex;align-items:center;gap:8px;padding-left:14px;color:#fff;font-weight:850;font-size:24px;letter-spacing:.02em}
-.close{position:absolute;right:6px;top:4px;width:50px;height:50px;border-radius:12px;background:#CF2E3E;border:3px solid #1A1F2B;color:#fff;font-weight:900;font-size:24px;display:flex;align-items:center;justify-content:center}
-.tabs{height:44px;display:flex;gap:8px;padding:6px 12px 0}
-.tab{height:38px;padding:0 16px;border-radius:10px 10px 0 0;background:#1B2436;color:#AEB8C9;font-weight:750;font-size:14px;display:flex;align-items:center}
-.tab.on{background:#3A4A6B;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:10px 12px}
-.sc{height:190px;background:#3A4A6B;border-radius:10px;border:2.5px solid #1A1F2B;padding:8px;display:flex;flex-direction:column;align-items:center}
-.art{width:84px;height:84px;border-radius:10px;background:#52648A;display:flex;align-items:center;justify-content:center}
-.nm{color:#fff;font-weight:800;font-size:15px;margin-top:5px}.bn{color:#C8D2E3;font-size:12px;font-weight:600}
-.buy{margin-top:auto;width:100%;height:44px;border-radius:10px;border:2.5px solid #1A1F2B;background:#35B25D;color:#fff;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;font-weight:850;font-size:18px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 0 #1F7A3D inset}
-.buy.owned{background:#52648A;box-shadow:none}.buy.active{background:#2D6CDF;box-shadow:none}
+.group{position:absolute;left:12px;top:6px;width:776px;height:348px;border:2px dashed #FFE45C;border-radius:4px}
+.win{position:absolute;left:32px;top:26px;width:736px;height:308px;background:#26324A;border:3px solid #1A1F2B;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.head{position:absolute;left:0;top:0;width:730px;height:45px;background:#7B57D1;border-radius:13px 13px 0 0;display:flex;align-items:center;gap:10px;padding-left:16px;color:#fff;font-weight:850;font-size:24px;letter-spacing:.02em}
+.close{position:absolute;left:722px;top:20px;width:52px;height:52px;border-radius:12px;background:#CF2E3E;border:3px solid #1A1F2B;color:#fff;font-weight:900;font-size:24px;display:flex;align-items:center;justify-content:center}
+.rail{position:absolute;left:44px;top:86px;width:128px;height:236px;background:#1B2436;border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.tab{position:relative;height:48px;border-radius:8px;display:flex;align-items:center;gap:8px;padding-left:12px;color:#AEB8C9;font-weight:750;font-size:14px}
+.tab.on{background:#3A4A6B;color:#fff}.tab.on:before{content:"";position:absolute;left:-8px;top:12px;width:4px;height:24px;border-radius:2px;background:#F0B63A}
+.cards{position:absolute;left:184px;top:86px;width:572px;height:236px;overflow:hidden}
+.sc{position:absolute;top:0;height:236px;background:#3A4A6B;border-radius:8px;border:2px solid #1A1F2B;overflow:hidden}
+.art{position:absolute;left:50%;top:12px;margin-left:-52px;width:104px;height:104px;border-radius:8px;background:#52648A;display:flex;align-items:center;justify-content:center}
+.rays{position:absolute;left:50%;top:-14px;margin-left:-80px}
+.nm{position:absolute;left:12px;right:12px;top:120px;color:#fff;font-weight:800;font-size:16px;line-height:20px;text-align:center;white-space:nowrap}
+.bn{position:absolute;left:12px;right:12px;top:142px;color:#C8D2E3;font-size:14px;font-weight:600;line-height:18px;text-align:center;white-space:nowrap}
+.buy{position:absolute;left:12px;right:12px;top:176px;height:48px;border-radius:8px;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:850;font-size:20px;color:#1A1F2B;background:#F0B63A;box-shadow:0 -5px 0 #B07A10 inset}
+.buy.owned{background:#52648A;color:#fff;box-shadow:none}.buy.active{background:#2D6CDF;color:#fff;box-shadow:none}
 .dk{position:relative;width:352px;height:198px;background:#8FB3A8;border:2px solid var(--ink);border-radius:6px;overflow:hidden;flex:none}
 .dk div{position:absolute}
 .sm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -22,15 +26,15 @@
 .arrow{color:var(--ink3);font-weight:700}
 </style></head><body>
 <div class="sheet">
-  <h3>Phone · Phone-S 800×360 px</h3>
+  <h3>Phone · Phone-S 800×360 px, drawn at 93% · placeholder skin (ui-design-figma.md §15): derive your own from the game (§3)</h3>
   <div class="wrap">
     <div class="stage scaled" style="transform:scale(.93)" data-lint="nosize">
       <div id="bg"></div><div class="dimmer"></div>
-      <div class="win">
-        <div class="head"><span id="hicon"></span>SHOP</div><div class="close">✕</div>
-        <div class="tabs"><div class="tab on">Passes</div><div class="tab">Currency</div><div class="tab">Boosts</div><div class="tab">Bundles</div></div>
-        <div class="grid" id="grid"></div>
-      </div>
+      <div class="group"></div>
+      <div class="win"><div class="head"><span id="hicon"></span>SHOP</div></div>
+      <div class="close">✕</div>
+      <div class="rail" id="rail"></div>
+      <div class="cards" id="cards"></div>
     </div>
     <div id="pins"></div>
   </div>
@@ -42,10 +46,10 @@
     </div>
     <div class="col grow">
       <div class="card"><h3>Buy and claim buttons: one state machine</h3>
-        <div class="sm"><div class="sb" style="background:#35B25D;color:#1A1F2B">199</div><span class="arrow">→</span><div class="sb" style="background:#7E8A9C">· · ·</div><span class="arrow">→</span><div class="sb" style="background:#52648A">✓ Owned</div><span class="arrow">or</span><div class="sb" style="background:#59616E">Need level 10</div></div>
+        <div class="sm"><div class="sb" style="background:#F0B63A;color:#1A1F2B">199</div><span class="arrow">→</span><div class="sb" style="background:#7E8A9C">· · ·</div><span class="arrow">→</span><div class="sb" style="background:#52648A">✓ Owned</div><span class="arrow">or</span><div class="sb" style="background:#59616E">Need level 10</div></div>
         <div class="note mt6"><b>available → pending → done</b>, or <b>locked with the reason</b>. Pending covers the server round trip (typically <span class="v">50–500 ms</span>): non-interactable, shows progress, so a second tap cannot buy twice. The card flips to Owned or Active 12:41 only when the server says so.</div></div>
       <div class="card"><h3>House rule 3 on this screen</h3>
-        <div class="note">A timer only for a real state (a boost that is running, an event end that does not move). A discount only against a price that was really charged. No restarting countdown, no hidden or delayed close. Label paid things as paid, with the Robux glyph. Paid random items show full odds from the config the server rolls from.</div></div>
+        <div class="note">A timer only for a real state (a boost that is running, an event end that does not move). A discount only against a price that was really charged. No restarting countdown, no hidden or delayed close. Label paid things as paid: the Robux icon, <b>utf8.char(0xE002)</b>, before every Robux price. Paid random items show full odds from the config the server rolls from.</div></div>
     </div>
   </div>
 </div>
@@ -53,34 +57,40 @@
 <script>
 const S = 0.93, I = Sheet.icon;
 document.getElementById('bg').innerHTML = Sheet.scene(800, 360);
-document.getElementById('hicon').innerHTML = I('gem', 26);
-const cards = [['bolt', '2× Cash', 'Doubles cash for good', `${I('hex', 18, '#fff', '#1A1F2B', 1.4)}199`, ''], ['star', 'VIP', 'Tag, lounge, +20% XP', '✓ Owned', 'owned'], ['potion', 'Lucky Boost', '2× luck for 10 min', 'Active 12:41', 'active'],
-  ['egg', 'Auto Hatch', '', '', ''], ['shield', 'Extra Slots', '', '', ''], ['key', 'Fast Travel', '', '', '']];
-document.getElementById('grid').innerHTML = cards.map(c => `<div class="sc" ${c[2] ? '' : 'data-lint="off"'}><div class="art">${I(c[0], 56)}</div><div class="nm">${c[1]}</div><div class="bn">${c[2]}</div><div class="buy ${c[4]}">${c[3]}</div></div>`).join('');
-const pins = [[1, 16, 180], [2, 32, 300], [3, 200, 48], [4, 716, 76], [5, 420, 96], [6, 286, 130], [7, 302, 250], [8, 520, 300], [9, 400, 332], [10, 760, 200]];
+document.getElementById('hicon').innerHTML = I('gem', 28);
+document.getElementById('rail').innerHTML = [['star', 'Passes', 1], ['bolt', 'Boosts', 0], ['hex', 'Coins', 0], ['key', 'Bundles', 0]].map(t => `<div class="tab ${t[2] ? 'on' : ''}">${I(t[0], 24)}${t[1]}</div>`).join('');
+const robux = I('hex', 20, '#1A1F2B', '#1A1F2B', 0.6);
+const rays = `<svg class="rays" width="160" height="160" viewBox="-80 -80 160 160">${Array.from({ length: 12 }, (_, i) => `<path d="M0 0L${(80 * Math.cos((i * 30 - 6) * Math.PI / 180)).toFixed(1)} ${(80 * Math.sin((i * 30 - 6) * Math.PI / 180)).toFixed(1)}L${(80 * Math.cos((i * 30 + 6) * Math.PI / 180)).toFixed(1)} ${(80 * Math.sin((i * 30 + 6) * Math.PI / 180)).toFixed(1)}Z" fill="#F0B63A" opacity=".28"/>`).join('')}</svg>`;
+// x, width, glyph, name, benefit, button label, state
+const cards = [[0, 200, 'bolt', '2× Cash', 'Doubles cash, forever', `${robux}399`, '', 1], [208, 160, 'star', 'VIP', '+20% XP, VIP tag', '✓ Owned', 'owned'], [376, 160, 'potion', 'Lucky Boost', '2× luck for 10 min', 'Active 12:41', 'active'], [544, 160, 'egg', 'Auto Hatch', 'Hatches while you play', `${robux}249`, '']];
+document.getElementById('cards').innerHTML = cards.map(c => `<div class="sc" style="left:${c[0]}px;width:${c[1]}px" ${c[0] > 500 ? 'data-lint="off"' : ''}>${c[7] ? rays : ''}<div class="art">${I(c[2], 64)}</div><div class="nm">${c[3]}</div><div class="bn">${c[4]}</div><div class="buy ${c[6]}">${c[5]}</div></div>`).join('');
+const pins = [[11, 12, 6], [1, 22, 250], [2, 32, 334], [3, 210, 50], [4, 716, 70], [5, 172, 92], [6, 384, 92], [7, 384, 216], [8, 384, 300], [9, 756, 200], [10, 556, 300]];
 document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x * S - 9.5}px;top:${y * S - 9.5}px">${n}</span>`).join('');
 const L = [
-  ['Dim layer', 'black at 0.5–0.6 transparency', 'Fades with the window, blocks input behind it, tap outside closes. On phones an open window hides the HUD.'],
-  ['Window', '≤ 736×310 px · ≤ 0.92 W × 0.86 H', 'Centred; dark or neutral body so coloured cards read. Opens in ≤ 0.25 s, closes faster.'],
-  ['Header', '44–48 px', 'Icon, loud title, the window\'s signature colour (Shop is the same colour everywhere).'],
-  ['Close', '≥ 44 px, about 1.1 × header height', 'Red, top-right, one shared component. Also gamepad B (Escape belongs to the Roblox menu).'],
-  ['Tabs or section headers', '≥ 44 px tall', 'Passes, products (currency, boosts), bundles. Navigation at most two levels deep.'],
-  ['Card', '≈ 220×190 px, 3 columns · (W − padding) / 3', 'Square art with ScaleType = Fit, never stretched. Phone cards about 1.3–1.4 × their desktop size.'],
-  ['Name + one-line benefit', '15 px / 12 px here', 'Say what it does and its scope: "2× luck for 10 min", "this server".'],
-  ['Buy button', 'full width, ≥ 44 px high', 'Native price text from GetProductInfoAsync, never baked into art. Unaffordable: the disabled look, with the shortfall as the label.'],
-  ['Next row peeks', 'show its top edge', 'Makes scrolling obvious without a scrollbar hint.'],
+  ['Dim layer', 'black at 0.5–0.6 transparency', 'Its own ScreenGui (ScreenInsets None); fades with the window, blocks input behind it, tap outside closes. On phones an open window hides the HUD.'],
+  ['Window', '736×308 px · ≤ 0.92 W × 0.86 H', 'Centred. Header 48 + padding 12 + 12 leaves a 236 px body. Opens in ≤ 0.25 s, closes faster.'],
+  ['Header', '48 px, title 24 px', 'Icon, loud title, the destination colour: Shop has one colour everywhere it appears.'],
+  ['Close', '52 px, 1.1 × header, overhangs 6 px', 'Danger red, top-right, one shared component. Also gamepad B (Escape belongs to the Roblox menu).'],
+  ['Category rail', '128 px wide · tabs 48, gap 8', 'Icon + one word at 14 px; active = fill + marker, not colour alone. A rail, because height is the scarce axis on a landscape phone.'],
+  ['Card', '160×236 px · featured 200×236 · gap 8', 'Padding 12, art 104 with ScaleType = Fit. One featured card per tab: emphasis by size, not by a "Best value" label.'],
+  ['Name + one-line benefit', '16 px / 14 px', 'Say what it does and its scope: "2× luck for 10 min", "this server".'],
+  ['Price button', 'full width, 48 px high, price 20 px', 'Robux prices on the Premium colour with the Robux icon. Native text from GetProductInfoAsync, never baked into art.'],
+  ['Next card cut off', '28 px of card 4 showing', 'The row scrolls sideways (featured 200 + 160 + 160 + three gaps of 8 = 544 of 572 px).'],
   ['Server-driven states', 'Owned, Active 12:41', 'Never flipped by the client when the prompt closes.'],
+  ['Fade group', 'CanvasGroup 776×348 = window + 20 px a side', 'Transparent, static size. It clips its children, so the close overhang, outer stroke and shadow must sit inside it to fade instead of being cut.'],
 ];
 document.getElementById('legend').innerHTML = L.map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b> · <span class="v">${l[1]}</span><br>${l[2]}</div></div>`).join('');
 // desktop schematic (1920x1080 at 352x198)
 const k = 352 / 1920, r = (x, y, w, h, c, extra = '') => `<div style="left:${x * k}px;top:${y * k}px;width:${w * k}px;height:${h * k}px;background:${c};${extra}"></div>`;
-let d = r(0, 0, 1920, 1080, 'rgba(0,0,0,.5)') + r(360, 150, 1200, 780, '#26324A', 'border-radius:5px;border:1.5px solid #1A1F2B') + r(360, 150, 1200, 90, '#C4372F', 'border-radius:4px 4px 0 0') + r(1470, 156, 84, 84, '#CF2E3E', 'border-radius:3px;border:1px solid #1A1F2B');
-[0, 1, 2, 3].forEach(i => d += r(384, 270 + i * 84, 200, 68, i ? '#1B2436' : '#3A4A6B', 'border-radius:3px'));
-d += r(616, 270, 440, 300, '#3A4A6B', 'border-radius:3px') + r(640, 290, 180, 180, '#52648A', 'border-radius:3px') + r(850, 500, 180, 50, '#35B25D', 'border-radius:3px');
-for (let i = 0; i < 6; i++) { const x = 1080 + (i % 2) * 232, y = 270 + Math.floor(i / 2) * 212; d += r(x, y, 216, 196, '#3A4A6B', 'border-radius:3px') + r(x + 14, y + 140, 188, 42, '#35B25D', 'border-radius:2px'); }
-for (let i = 0; i < 2; i++) d += r(616 + i * 224, 594, 208, 196, '#3A4A6B', 'border-radius:3px') + r(630 + i * 224, 734, 180, 42, '#35B25D', 'border-radius:2px');
-document.getElementById('dk').innerHTML = d + [[1, 470, 420], [2, 836, 420], [3, 1300, 470], [4, 1560, 930]].map(([n, x, y]) => `<span class="pin abs" style="left:${x * k - 9.5}px;top:${y * k - 9.5}px">${n}</span>`).join('');
-document.getElementById('dleg').innerHTML = [['Category rail', 'tabs become a fixed side rail; the page scrolls'], ['Featured slot', 'the only place for a live 3D preview (ViewportFrame)'], ['More, smaller cards', 'same card component, more columns'], ['UISizeConstraint max', '75% width must not become huge on a TV']].map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b>: ${l[1]}</div></div>`).join('');
-Sheet.frame({ n: '03', cat: 'UI', title: 'Shop screen anatomy', sub: 'One window recipe on phone and desktop: header, tabs, scrolling cards, one buy button per card. Prices are native text; ownership comes from the server.',
-  supports: ['ui-screen-recipes.md §1 Patterns with sizes, §3 Shared window anatomy, §5 Shop', 'ui-design-figma.md §7 (shared close button)', 'monetization-and-policy.md (house rule 3)'], sources: 'ui-screen-recipes.md ([house], [official], [lihfolk] as tagged there)' });
+let d = r(0, 0, 1920, 1080, 'rgba(0,0,0,.5)') + r(360, 150, 1200, 780, '#26324A', 'border-radius:5px;border:1.5px solid #1A1F2B') + r(360, 150, 1200, 90, '#7B57D1', 'border-radius:4px 4px 0 0') + r(1500, 140, 84, 84, '#CF2E3E', 'border-radius:3px;border:1px solid #1A1F2B');
+d += r(384, 264, 200, 640, '#1B2436', 'border-radius:2px');
+[0, 1, 2, 3].forEach(i => d += r(396, 276 + i * 84, 176, 72, i ? 'transparent' : '#3A4A6B', 'border-radius:3px'));
+d += r(608, 264, 448, 300, '#3A4A6B', 'border-radius:3px') + r(632, 284, 180, 180, '#52648A', 'border-radius:3px') + r(852, 490, 180, 50, '#F0B63A', 'border-radius:3px');
+for (let i = 0; i < 6; i++) { const x = 1076 + (i % 2) * 232, y = 264 + Math.floor(i / 2) * 212; d += r(x, y, 216, 196, '#3A4A6B', 'border-radius:3px') + r(x + 14, y + 140, 188, 42, '#F0B63A', 'border-radius:2px'); }
+for (let i = 0; i < 2; i++) d += r(608 + i * 232, 588, 216, 196, '#3A4A6B', 'border-radius:3px') + r(622 + i * 232, 728, 188, 42, '#F0B63A', 'border-radius:2px');
+d += r(608, 808, 216, 100, '#3A4A6B', 'border-radius:3px') + r(840, 808, 216, 100, '#3A4A6B', 'border-radius:3px');
+document.getElementById('dk').innerHTML = d + [[1, 590, 300], [2, 830, 420], [3, 1290, 470], [4, 960, 900], [5, 1560, 930]].map(([n, x, y]) => `<span class="pin abs" style="left:${x * k - 9.5}px;top:${y * k - 9.5}px">${n}</span>`).join('');
+document.getElementById('dleg').innerHTML = [['Same category rail', 'one component on every device'], ['Featured slot', 'the only place for a live 3D preview (ViewportFrame)'], ['Same cards in a grid', 'more columns; the page scrolls'], ['Next row peeks', 'its top edge shows'], ['UISizeConstraint max', 'a 75% width must not become huge on a TV']].map((l, i) => `<div class="li"><span class="pin">${i + 1}</span><div><b>${l[0]}</b>: ${l[1]}</div></div>`).join('');
+Sheet.frame({ n: '03', cat: 'UI', title: 'Shop screen anatomy', sub: 'One window recipe that fits a 360 px tall phone: header, category rail, one scrolling row of cards, one price button per card. Prices are native text; ownership comes from the server.',
+  supports: ['ui-screen-recipes.md §1 Patterns with sizes, §3 Shared window anatomy, §5 Shop', 'ui-design-figma.md §6 Window, §7 (shared close button)', 'monetization-and-policy.md (house rule 3)'], sources: 'ui-screen-recipes.md, ui-design-figma.md ([house], [official], [lihfolk] as tagged there)' });
 </script></body></html>

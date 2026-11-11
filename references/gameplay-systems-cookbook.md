@@ -10,6 +10,16 @@ What this is: an implementation spec for the 24 gameplay systems Roblox games ke
 | Intermediate | All-or-nothing grants, stable ids and GUIDs, absolute end times instead of countdown remotes, one odds function for roll and display, exploit table per system, a Configs kill switch per risky feature | Journalled trades, custom queues, rewind |
 | Expert | Two-profile commit protocol for trades (17, specified in data-and-purchases.md), MemoryStore queues with a leased matcher (11), rewind-capped hit validation (12), spawn director and flow fields (13), budget maths for ordered stores (9), dupe detection jobs | — |
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Build a cookbook system (§1–24) | §0, the system's own section (§1–§24), "Build order by genre"; `data-and-purchases.md` "ProfileStore essentials", "DataService with schema migration"; `networking-and-security.md` "Remote guard and rate limiter (server-only module)"; this file "Review gate" (about 285–314 lines; skip the `data-and-purchases.md` and `networking-and-security.md` sections if the project already has DataService and RemoteGuard) |
+| Combat, abilities, projectiles | §12, §14, §0; `networking-and-security.md` "Movement and combat checks", "Validation layers (cheapest first; reject silently)"; `physics-and-vehicles.md` §9, §6; this file "Review gate" (about 163 lines) |
+| Trading | §17; `data-and-purchases.md` "Duplication: four classes and the commit pattern"; `economy-and-progression.md` "Trading, gifting and duplication risk"; this file §0, §2; `data-and-purchases.md` "ProfileStore essentials", "Runbook: dupe incident", "Review gate (data and purchases)" (about 223 lines) |
+
 ## Contents
 
 0 Shared contract · 1 Wallet · 2 Inventory and equip · 3 Shop · 4 Pets and eggs · 5 Upgrades and rebirth · 6 Quests and achievements · 7 Daily and playtime rewards · 8 Codes · 9 Leaderboards · 10 Rounds · 11 Teams, queues, reserved servers · 12 Combat · 13 NPCs and hordes · 14 Tools and abilities · 15 Interaction and zones · 16 Plots and placement · 17 Trading · 18 Crafting · 19 Stealing and base defence · 20 Checkpoints · 21 Party and friends · 22 Chat commands and admin · 23 Time and day cycle · 24 Server-wide events and boosts · Build order · Level-up table · Review gate · Sources

@@ -14,6 +14,17 @@ Contents: Start here by level · Choosing a storage service · DataStore limits 
 
 Terms: a *profile* is one player's saved table. A *session lock* (or lease) marks which server currently owns a profile so two servers cannot write it. A *schema* is the shape of the saved table; a *migration* upgrades an old shape. *Idempotent* means running it twice has the same effect as once. Related: gameplay-systems-cookbook.md (§1 Wallet, §2 Inventory, §3 Shop and §17 Trading are built on the DataService and ReceiptService here); monetization-and-policy.md (product set, boost rules, refunds and clawback policy); economy-and-progression.md (what the saved numbers mean); networking-and-security.md (RemoteGuard); debugging-and-testing.md (migration and receipt tests).
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Purchase code | "Developer products: idempotent ProcessReceipt", "Game passes", "Subscriptions, gifts, boosts, prices", "ProfileStore essentials", "DataService with schema migration"; `monetization-and-policy.md` "Gift passes", "Refunds, clawbacks and purchase support"; this file "Review gate (data and purchases)" (about 252 lines) |
+| Lost data, rollback | "Runbook: data incident and rollback", "Practices that prevent data loss", "ProfileStore essentials", "DataStore limits", "Level-up audit: how to check an existing game"; `community-moderation-safety.md` §15; this file "Review gate (data and purchases)" (about 155 lines) |
+| Duped items | "Runbook: dupe incident", "Duplication: four classes and the commit pattern", "Level-up audit: how to check an existing game"; `community-moderation-safety.md` §9, §15; this file "Review gate (data and purchases)" (about 223 lines) |
+| Paid, got nothing | "Developer products: idempotent ProcessReceipt", "Game passes", "Subscriptions, gifts, boosts, prices", "ProfileStore essentials", "Level-up audit: how to check an existing game"; `monetization-and-policy.md` "Refunds, clawbacks and purchase support"; this file "Review gate (data and purchases)" (about 192 lines) |
+
 ## Choosing a storage service
 
 | Need | Use |
@@ -63,7 +74,7 @@ Adapted from `[lihfolk]`. Knowing the class tells you where to look; class 1 is 
 |---|---|---|---|
 | 1. In-server race | Two requests pass a check before either writes, because the handler yields in between | Double click, two remotes in one frame | Synchronous core: read, validate, write with no yield; busy lock shared across trade, sell, equip |
 | 2. Save-boundary split | Two profiles change in memory, only one saves before a crash or leave | Server dies right after a trade | One-way transfer (gift, mail): debit the giver and confirm that save **before** crediting the receiver, so a crash destroys rather than duplicates, and the giver's ledger or outbox entry lets a retry or support restore it. Two-way swap: no save order is safe (whichever side saves first, a crash leaves one item in two profiles), so use the commit protocol below |
-| 3. Cross-server overlap | One profile live on two servers | Fast rejoin, teleport, a writer that ignores the lock (admin tool, Studio session, "load anyway" fallback) | Session lock respected by every writer; audit them with sketch E |
+| 3. Cross-server overlap | One profile live on two servers | Fast rejoin, teleport, a writer that ignores the lock (admin tool, Studio session, "load anyway" fallback) | Session lock respected by every writer; audit them with sketch E (in "Level-up audit") |
 | 4. Rollback abuse | The player moves value out, then gets their own save reverted | "Restore my data" support requests; a forced failed save | Restores never bring back items the ledger shows left after the restore point; check item GUIDs |
 
 - **Plan, validate, apply, record.** Express every economic action as a list of changes; validate it against current state; apply it synchronously; append a ledger entry (action, changes, resulting balance, time, `game.JobId`, `game.PlaceVersion`). Keep the last 50–200 entries in the profile for support and repair.

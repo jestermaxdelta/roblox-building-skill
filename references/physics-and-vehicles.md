@@ -10,6 +10,15 @@ What this is: how Roblox simulates and replicates physics, and how to build char
 | Intermediate | Constraint movers with force limits; explicit ownership policy per object class; projectiles as swept casts; springs computed from frequency and damping ratio; one server teleport helper with movement exemptions | Custom character controllers, rewind |
 | Expert | Raycast chassis with a load-sensitive tyre model; float-point boats; aerodynamic flight with a derived stall speed; per-vehicle validators; streaming for fast vehicles; server authority mode and the Character Controller Library; fixed versus adaptive stepping measured in the MicroProfiler | — |
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Vehicles, physics objects | §10, §3, §4, §2, §1, §11, "Review gate" (about 240 lines) |
+| Flinging, jitter, rubber-banding | "Level-up: symptom → cause → fix", §1, §2, §3, §4, §6, §7, "Review gate" (about 138 lines) |
+
 ## Contents
 
 1 Solver basics and the two questions · 2 Assemblies and mass · 3 Network ownership · 4 Constraints, not body movers · 5 Collision groups and collider cost · 6 Character controllers · 7 Moving platforms · 8 Ragdolls · 9 Projectiles · 10 Vehicles (cars, boats, aircraft) · 11 Movement anti-cheat · 12 Physics performance · Level-up · Review gate · Sources

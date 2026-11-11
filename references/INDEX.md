@@ -113,3 +113,4 @@ How to use them: pick three to five references that fit the game's genre and ton
 | `templates/launch-checklist.md` | Phase 11 |
 | `scripts/blender/` (`export_kit.py`, `check_asset.py`, `silhouette_sheet.py`, `modeling_helpers.py`) | Headless Blender export and checks; see `scripts/README.md` |
 | `scripts/images/tile_test.py` | See an icon and thumbnails the way the Home grid shows them |
+| `scripts/studio/house_rule_scan.luau` | Read-only scan of a place for house-rule debt (edit mode only) |

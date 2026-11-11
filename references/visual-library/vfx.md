@@ -5,11 +5,14 @@ What this is: 62 checked references for stylised game effects: annotated stills 
 How to use this file:
 - Pick the effect you are building, open two or three rows, and write down what you will copy as a number or a shape (frames of brightness, number of layers, where the dark sits) before opening Studio.
 - Evidence: `viewed` = the image was downloaded and looked at; for a GIF, six evenly spaced still frames were looked at, not the motion; `read` = the page or thread was read; `oembed` = the video exists with that title and creator, it was not watched, and the note comes from its title or the thread that led to it; `search` = not opened.
-- These are references to study, not assets to copy: every third-party image, clip, texture and mesh stays its owner's. Most are from Unity or Unreal; the shapes, values and timing transfer, the shaders do not (`vfx-and-juice.md` §5 maps each trick to Roblox). Accessed 2026-11-11; every page and image link re-checked the same day (all respond).
+- These are references to study, not assets to copy: every third-party image, clip, texture and mesh stays its owner's. Most are from Unity or Unreal; the shapes, values and timing transfer, the shaders do not (`vfx-and-juice.md` §5 maps each trick to Roblox). Accessed 2026-11-11; every page and image link re-checked the same day (all respond); sizes and frame counts measured then.
+- **Studying a GIF cheaply.** Most rows here are 2–8 MB GIFs, and the Read tool shows only one frame of one. Download the file to a scratch folder and turn it into one contact sheet of 12 evenly spaced frames, then Read the sheet: `ffmpeg -v error -i in.gif -vf "select='not(mod(n\,N))',scale=300:-1,tile=4x3" -frames:v 1 -fps_mode vfr sheet.png`, with N = frame count ÷ 12 (the Type column gives the count). Rows marked `image` are stills under 0.3 MB.
 
 Image host prefixes: `RT` = `https://realtimevfx.com/uploads/default`, `DF` = `https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads`, `DOCS` = `https://prod.docsiteassets.roblox.com/assets`, `LV` = `https://cdn.80.lv/api/upload/content`. Thread links are `https://realtimevfx.com/t/<id>` and `https://devforum.roblox.com/t/<id>`.
 
 ## 1. Readability, value and hierarchy
+
+Start here: rows 1 (value hierarchy on one missile), 8 with 9 (finished effect beside its greyscale block-in), 16 (flash and scale curves).
 
 | # | Reference (linked title, creator, year) | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -19,62 +22,72 @@ Image host prefixes: `RT` = `https://realtimevfx.com/uploads/default`, `DF` = `h
 | 4 | Same thread: visual hierarchy sheet `RT/original/3X/d/e/de2193134e2434cbb8f5a064bfbd76c8e65217d8.png` | image | A spreadsheet rating each ability 0–10 for self, enemies and allies with a notes column and a key of example abilities; the range circle is 0 for allies, so they never see it | viewed |
 | 5 | Same thread: heals `RT/optimized/3X/a/9/a983a92d6758d8e1f591187c289d79b1c1fcf52a_2_690x348.jpeg` | image | Four heals from different characters, all green, all round; the caption on the missile: "should not feel threatening (no sharp shapes)" | viewed |
 | 6 | Same thread: roots `RT/original/3X/4/a/4ae30b48c1594681382eab44a7994b84697dca82.jpeg` | image | Six skins in six palettes, one mechanic: every root is a ring on the floor plus a cage or cylinder around the target | viewed |
-| 7 | Same thread: team fight `RT/optimized/3X/f/3/f3a6d478444c6dbeb48ad8ccf0255f727bf84af5_2_665x500.jpeg` | image | Ten players' effects on one screen. Count how many shapes you can still name: the case for quiet basic attacks and importance ratings | viewed |
-| 8 | [Block-ins and Timing](https://realtimevfx.com/t/29830), Jason Keyser, 2025: finished effect `RT/original/3X/3/a/3aca77cd3e6d5f27f0a3d94a349cb9f0323d8c04.gif` | image | Yellow pillar as anticipation, a magenta burst, then a dark cracked crater. Of six evenly spaced stills two are bright (pillar, burst); the rest is empty ground or residue fading | viewed |
-| 9 | Same thread: block-in version `RT/original/3X/8/b/8b3f66bf34297af7f290182f0368a001153c9dc0.gif` | image | The same beat built from a white dome, a ring and a four-point star, greyscale only. If this reads, the polish is safe | viewed |
+| 7 | Same thread: team fight `RT/optimized/3X/f/3/f3a6d478444c6dbeb48ad8ccf0255f727bf84af5_2_665x500.jpeg` | JPEG 0.4 MB | Ten players' effects on one screen. Count how many shapes you can still name: the case for quiet basic attacks and importance ratings | viewed |
+| 8 | [Block-ins and Timing](https://realtimevfx.com/t/29830), Jason Keyser, 2025: finished effect `RT/original/3X/3/a/3aca77cd3e6d5f27f0a3d94a349cb9f0323d8c04.gif` | GIF 4.2 MB, 58 frames | Yellow pillar as anticipation, a magenta burst, then a dark cracked crater. Of six evenly spaced stills two are bright (pillar, burst); the rest is empty ground or residue fading | viewed |
+| 9 | Same thread: block-in version `RT/original/3X/8/b/8b3f66bf34297af7f290182f0368a001153c9dc0.gif` | GIF 4.0 MB, 50 frames | The same beat built from a white dome, a ring and a four-point star, greyscale only. If this reads, the polish is safe | viewed |
 | 10 | [Very Cartoonic VFX for Brawl Stars made with Flash](https://realtimevfx.com/t/11032), Woo (Supercell), 2019: explosion source shapes `RT/original/2X/7/7559d269960c624369bf31cd5a6de4f708765ca8.png` | image | The whole explosion kit is about 14 flat white shapes: teardrops, a dot, a soft dot, quarter arcs from thick to hairline. Constraints stated in the post: no custom shaders, plain quads, many ground colours, team side must be obvious | viewed |
-| 11 | Same thread: explosion frames `RT/original/2X/f/f8f374267907103fddb8f19abf9cdef720732bca.gif` | image | Flat red blobs with a darker red shape inside each for volume; no gradients, no glow; ground part and air part animated separately with random cloud variants | viewed |
-| 12 | Same thread: in-game shot `RT/original/2X/e/ef7e2aed37fc1e9296afb60cfeef4f2e8c13907e.gif` | image | One-frame white star at the muzzle, a chunky cyan projectile, an impact puff, a damage number; green ring under the ally and red under the enemy. Opaque shapes read on a purple floor | viewed |
+| 11 | Same thread: explosion frames `RT/original/2X/f/f8f374267907103fddb8f19abf9cdef720732bca.gif` | GIF 0.2 MB, 18 frames | Flat red blobs with a darker red shape inside each for volume; no gradients, no glow; ground part and air part animated separately with random cloud variants | viewed |
+| 12 | Same thread: in-game shot `RT/original/2X/e/ef7e2aed37fc1e9296afb60cfeef4f2e8c13907e.gif` | GIF 3.1 MB, 84 frames | One-frame white star at the muzzle, a chunky cyan projectile, an impact puff, a damage number; green ring under the ally and red under the enemy. Opaque shapes read on a purple floor | viewed |
 | 13 | [VFX Staples: Shape, Color, and Motion](https://80.lv/articles/vfx-staples-shape-color-and-motion/), Stefan Jevremović (Nordeus, mobile), 2018: element table `LV/c7/images/5d2c6ca037af8/widen_920x0.png` | image | Twelve elements (fire to lightning), each with a 4–6 step colour ramp, its secondary elements (fire: smoke, sparks, embers) and which of shape, colour or motion defines it (lightning: forking motion) | viewed |
-| 14 | Same article: three stages `LV/c7/images/5d2c6ca0f313c/widen_920x0.png` | image | A meteor split into anticipation (ground ring and falling ball), climax (white-yellow core, purple rim as the complement, debris, dark smoke) and dissipation (a dark crack decal and nothing else) | viewed |
-| 15 | Same article: paladin attack `LV/84/5d2c6c9b91619.gif` | image | Top-down mobile camera on a mossy stone floor: gold flash on the caster, a warm cone, a white-gold flash on the target. Three beats, each readable at small size | viewed |
+| 14 | Same article: three stages `LV/c7/images/5d2c6ca0f313c/widen_920x0.png` | PNG 0.3 MB | A meteor split into anticipation (ground ring and falling ball), climax (white-yellow core, purple rim as the complement, debris, dark smoke) and dissipation (a dark crack decal and nothing else) | viewed |
+| 15 | Same article: paladin attack `LV/84/5d2c6c9b91619.gif` | GIF 7.6 MB, 135 frames | Top-down mobile camera on a mossy stone floor: gold flash on the caster, a warm cone, a white-gold flash on the target. Three beats, each readable at small size | viewed |
 | 16 | [How do I make my timing better?](https://realtimevfx.com/t/17547), reply by Limeslushie, 2021: curves `RT/optimized/3X/d/1/d177d426189a61e236185d7da104fa68b456842f_2_611x500.png` | image | Two hand-drawn curves: "flash" spikes then decays in a long tail; "explosion" scale jumps to most of its size at once then creeps. The reply steps a real explosion through four frames | viewed |
-| 17 | [Spyro: Sketch #22](https://realtimevfx.com/t/8642) (greyscale challenge), Spyro, 2019: tornado `RT/original/2X/6/6b980af2947f59a2c034102840639712e0844ec7.gif` | image | A tornado in white ribbons over a black core, capped and grounded by rings. Fully readable with no colour at all | viewed |
+| 17 | [Spyro: Sketch #22](https://realtimevfx.com/t/8642) (greyscale challenge), Spyro, 2019: tornado `RT/original/2X/6/6b980af2947f59a2c034102840639712e0844ec7.gif` | GIF 2.7 MB, 80 frames | A tornado in white ribbons over a black core, capped and grounded by rings. Fully readable with no colour at all | viewed |
 | 18 | [Lush: Sketch #22](https://realtimevfx.com/t/8474), Lush, 2019: grenade concept `RT/optimized/2X/6/673eecd118d595eb40d578bf45c1fd87362ece13_2_690x388.jpeg` | image | A greyscale concept painting with a top-down range diagram in the corner: the concept states the gameplay radius before any effect exists | viewed |
 
 ## 2. Slashes and trails
 
+Start here: rows 19 (crescent, streak and sparks), 20 (a dark shape takes over the arc), 23 (the same idea built on Roblox).
+
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 19 | [Siberi4: Slash VFX](https://realtimevfx.com/t/11020), Romel Heidi, 2019 `RT/original/2X/f/f92ca58b599bec76db02cc56d79eb9cf7dd5bed4.gif` | image | Thick orange crescent, white-yellow leading edge, one thin straight streak cutting across it, sparks trailing along the swing. The body is gone within a few frames; embers stay | viewed |
-| 20 | [Fire Swoosh 2D VFX](https://realtimevfx.com/t/15426), PBJayz, 2020 `RT/original/3X/4/2/422b330d8374009e7d664354b8472910ba24dbbf.gif` | image | Hand-drawn frames: white-yellow tip, orange-red body, then a near-black smoke shape takes over the same arc and breaks into blobs. Bright for under a third of its 30 frames; flat colours only | viewed |
+| 19 | [Siberi4: Slash VFX](https://realtimevfx.com/t/11020), Romel Heidi, 2019 `RT/original/2X/f/f92ca58b599bec76db02cc56d79eb9cf7dd5bed4.gif` | GIF 4.0 MB, 92 frames | Thick orange crescent, white-yellow leading edge, one thin straight streak cutting across it, sparks trailing along the swing. The body is gone within a few frames; embers stay | viewed |
+| 20 | [Fire Swoosh 2D VFX](https://realtimevfx.com/t/15426), PBJayz, 2020 `RT/original/3X/4/2/422b330d8374009e7d664354b8472910ba24dbbf.gif` | GIF 0.2 MB, 30 frames | Hand-drawn frames: white-yellow tip, orange-red body, then a near-black smoke shape takes over the same arc and breaks into blobs. Bright for under a third of its 30 frames; flat colours only | viewed |
 | 21 | [Venom Slash (breakdown included)](https://realtimevfx.com/t/18903), Geri, 2022: mesh and mask `RT/original/3X/4/0/404c1427f6100827fb5f732065bad8b73f491647.jpeg` | image | The slash is a static tilted ring (washer) mesh; a soft vertical capsule mask hides all but the swing segment | viewed |
 | 22 | Same thread: noise layers `RT/optimized/3X/7/e/7ef9a18a1fb91622f809e1494293fd70d1da8f37_2_690x274.jpeg` | image | Two noise textures multiplied; one scrolls while the mesh stays still, which makes the streaks travel | viewed |
 | 23 | [Crecent Sword Slash Effect](https://devforum.roblox.com/t/1113871), ImaginePowerq, 2021 (151 likes): result `DF/original/5X/a/3/0/e/a30e1b7bb83abbfa614fffb574ed6eb2f4620587.png`, mesh `DF/optimized/5X/b/6/f/4/b6f4fdc8669d8d1297c4ef8d3808576fa69c9f1e_2_517x282.jpeg` | image | The Roblox version: a squashed sphere modelled in Blender, UV-mapped per side, with two `Texture` objects on a transparent mesh | viewed |
 | 24 | Same thread: texture steps `DF/optimized/5X/e/1/0/9/e109e392ae9a4fe7ddca9ee6d3384699b68d051d_2_517x305.png`, `DF/optimized/5X/2/b/a/4/2ba488afee1c374b9b448da43c24271a8e74dd3e_2_517x315.png` | image | Horizontal lines of varied thickness and opacity, then GIMP's Polar Coordinates filter turns them into a swirl | viewed |
-| 25 | [Rubfish/Rafles VFX stuff](https://realtimevfx.com/t/8465), Sr. Rubfish, 2019 (94 likes): anime impact `RT/original/2X/1/1f4a1334e361f0f74070318667779c14e8b60a05.gif` | image | Cyan crescent with a white core and a warm rim glow at the contact point, thin speed lines back to the source; one bright still out of six | viewed |
+| 25 | [Rubfish/Rafles VFX stuff](https://realtimevfx.com/t/8465), Sr. Rubfish, 2019 (94 likes): anime impact `RT/original/2X/1/1f4a1334e361f0f74070318667779c14e8b60a05.gif` | GIF 3.4 MB, 80 frames | Cyan crescent with a white core and a warm rim glow at the contact point, thin speed lines back to the source; one bright still out of six. A 12-frame contact sheet adds one inverted frame at contact (black crescent on a white scene) and an otherwise empty arena before and after | viewed |
 
 ## 3. Impacts, explosions and shockwaves
 
+Start here: rows 26 (layered explosion, quiet last 60%), 27 (drawing a shock ring), 30 (one impact frame).
+
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 26 | [Stylized Frag Launcher Explosion](https://realtimevfx.com/t/1894), Atif, 2017 `RT/original/2X/3/30d2b1828d0525cb20281186f4167f7bff536f02.gif` | image | White core, radial streaks of uneven length, a thick orange ring with a wavy inner edge that breaks into arcs; then only sparks on brown haze. The post counts 18 short-lived layers; the last 60% of the clip is nearly empty | viewed |
+| 26 | [Stylized Frag Launcher Explosion](https://realtimevfx.com/t/1894), Atif, 2017 `RT/original/2X/3/30d2b1828d0525cb20281186f4167f7bff536f02.gif` | GIF 3.1 MB, 50 frames | White core, radial streaks of uneven length, a thick orange ring with a wavy inner edge that breaks into arcs; then only sparks on brown haze. The post counts 18 short-lived layers; the last 60% of the clip is nearly empty | viewed |
 | 27 | [Seeking advice to create shockwave textures](https://realtimevfx.com/t/25874), reply by McDonald, 2024 `RT/original/3X/3/e/3e2590725e8139493b7e2d2956b8677958035ebe.jpeg` | image | Four panels with ticks and crosses: guide lines at uneven angles and lengths (right) versus equal spacing (wrong); an outer line with varied curvature; an inner cut-out; the filled white ring | viewed |
 | 28 | Same thread: the target effect `RT/optimized/3X/6/f/6f6f7a66439018e49d3a18e74bd674667c7d3c40_2_534x500.jpeg` | image | A radial burst: white centre, long uneven spikes, slight colour fringing at the edges, dark silhouettes in front | viewed |
-| 29 | [Rolling rock shockwave breakdown, Rhei'a (Seekers of Skyveil)](https://realtimevfx.com/t/28613), McDonald, 2025 `RT/original/3X/d/4/d48ba44f97191ac91874b1fff2ca5f26d3e4db4b.gif` | image | Thin ring and crack lines as the warning, an orange crescent sweep with rocks rising, a rock wall with glowing cracks, then a dark cracked ring. Orange on green ground; the rim marks the exact radius | viewed |
+| 29 | [Rolling rock shockwave breakdown, Rhei'a (Seekers of Skyveil)](https://realtimevfx.com/t/28613), McDonald, 2025 `RT/original/3X/d/4/d48ba44f97191ac91874b1fff2ca5f26d3e4db4b.gif` | GIF 2.7 MB, 26 frames | Thin ring and crack lines as the warning, an orange crescent sweep with rocks rising, a rock wall with glowing cracks, then a dark cracked ring. Orange on green ground; the rim marks the exact radius | viewed |
 | 30 | [Easy Impact Frames](https://realtimevfx.com/t/30252), Lush (Vefects), 2026 `RT/optimized/3X/6/7/679a1a8a899cf459c3ba22dc9dfb8ef5c6931b9e_2_690x388.jpeg` | image | The anime impact frame: scene reduced to black and white, the character as a silhouette, radial streaks from the hit. One frame, not a strobe | viewed |
-| 31 | [Particle emitters: flipbooks](https://create.roblox.com/docs/effects/particle-emitters#flipbooks), Roblox docs: sample sheet `DOCS/lighting-and-effects/particle-emitter/8x8-Explosion.png` | image | An 8×8 explosion on black: a growing dot in row 1, the fireball for about 16 frames, darkening smoke for the second half. Spacing around every cell | viewed |
-| 32 | Rubfish thread (row 25): fire shot `RT/original/2X/c/c347c3ee481e07b8c5e1ac09f02256a57147fe4b.gif` | image | An orange streak with a dark smoke wake behind it; after the hit only a few sparks and a grey smear remain | viewed |
+| 31 | [Particle emitters: flipbooks](https://create.roblox.com/docs/effects/particle-emitters#flipbooks), Roblox docs: sample sheet `DOCS/lighting-and-effects/particle-emitter/8x8-Explosion.png` | PNG 0.4 MB | An 8×8 explosion on black: a growing dot in row 1, the fireball for about 16 frames, darkening smoke for the second half. Spacing around every cell | viewed |
+| 32 | Rubfish thread (row 25): fire shot `RT/original/2X/c/c347c3ee481e07b8c5e1ac09f02256a57147fe4b.gif` | GIF 1.8 MB, 143 frames | An orange streak with a dark smoke wake behind it; after the hit only a few sparks and a grey smear remain | viewed |
 | 33 | [Modular Approach to AOE VFX Breakdown](https://realtimevfx.com/t/31540), Jonathan Price, 2026 `RT/optimized/3X/f/3/f39c38aecb8011e5e70471ff72cf5200b418395e_2_690x389.jpeg` | image | An ice pool: a rune ring marks the exact radius and is brighter than the fill; shards stand inside. The post explains building AoEs from shared components driven by a data table | viewed |
 
 ## 4. Projectiles, beams and lightning
 
+Start here: rows 34 (five-beat storyboard), 36 (one hue plus a white core), 37 (charge, beam, dark debris).
+
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
 | 34 | [Lightning VFX WIP](https://realtimevfx.com/t/3936), jqarlsson, 2018 (137 topic likes): storyboard `RT/original/2X/a/a17526922b115e81462b12504bff314af72dc7a4.jpg` | image | Five greyscale beats on one strip: faint line, brighter line, jagged bolt, white spiky ground burst, black spiky debris on a ground disc. A whole effect planned before any engine work | viewed |
-| 35 | Same thread: first iteration `RT/original/2X/7/73114ab9e578c3e15ab3f22d97d95f27f945b2fa.gif` | image | A thin warning line, then dark spiky smoke with a small blue ember on the ground that lingers | viewed |
-| 36 | [Breakdown: Stylized Energy Beam](https://realtimevfx.com/t/21866), Fabrício Duarte, 2022 `RT/original/3X/8/0/804a3bdefad0e904129e81728ca9859d965672a0.gif` | image | One magenta hue plus a white core carries the whole effect: converging burst, four-point star, expanding rings, beam, collapse to a dot. The post lists each phase; the beam is a Blender mesh with a scrolling texture | viewed |
-| 37 | Rubfish thread (row 25): charged laser `RT/original/2X/6/61a75b90a8101dfc5bed30bdf52fff5728616e58.gif` | image | Glow gathering at the source, a thin blue beam, dark debris smoke at the impact; nothing left in the last still | viewed |
+| 35 | Same thread: first iteration `RT/original/2X/7/73114ab9e578c3e15ab3f22d97d95f27f945b2fa.gif` | GIF 2.6 MB, 75 frames | A thin warning line, then dark spiky smoke with a small blue ember on the ground that lingers | viewed |
+| 36 | [Breakdown: Stylized Energy Beam](https://realtimevfx.com/t/21866), Fabrício Duarte, 2022 `RT/original/3X/8/0/804a3bdefad0e904129e81728ca9859d965672a0.gif` | GIF 3.9 MB, 161 frames | One magenta hue plus a white core carries the whole effect: converging burst, four-point star, expanding rings, beam, collapse to a dot. The post lists each phase; the beam is a Blender mesh with a scrolling texture | viewed |
+| 37 | Rubfish thread (row 25): charged laser `RT/original/2X/6/61a75b90a8101dfc5bed30bdf52fff5728616e58.gif` | GIF 3.7 MB, 121 frames | Glow gathering at the source, a thin blue beam, dark debris smoke at the impact; nothing left in the last still | viewed |
 
 ## 5. Heal, shield and area effects
 
+Start here: rows 38 (soft heal: ring, column, petals), 40 (what made a heal read as hostile), 39 (shield as a flat disc).
+
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 38 | Rubfish thread (row 25): flower heal `RT/original/2X/f/f48ab08ebb3179d4b7cf90870f346604a3712487.gif` | image | A green ring on the ground marks the area, a pale column of light, small pink and white petals rising. Nothing sharp, nothing fast | viewed |
-| 39 | Rubfish thread (row 25): water shield `RT/original/2X/5/53207fabf2e9ce74db72560f009e11f02905dd18.gif` | image | An icon above the unit as anticipation, then a flattened disc of swirling pale-blue streaks with a bright centre and soft edges | viewed |
+| 38 | Rubfish thread (row 25): flower heal `RT/original/2X/f/f48ab08ebb3179d4b7cf90870f346604a3712487.gif` | GIF 1.7 MB, 129 frames | A green ring on the ground marks the area, a pale column of light, small pink and white petals rising. Nothing sharp, nothing fast | viewed |
+| 39 | Rubfish thread (row 25): water shield `RT/original/2X/5/53207fabf2e9ce74db72560f009e11f02905dd18.gif` | GIF 4.1 MB, 131 frames | An icon above the unit as anticipation, then a flattened disc of swirling pale-blue streaks with a bright centre and soft edges | viewed |
 | 40 | [Healing spell concept art](https://realtimevfx.com/t/21022), Ryukai, 2022 `RT/optimized/3X/f/2/f25fe07710d72350a7c00af7d78bffc4b8465bd3_2_690x487.jpeg` | image | A four-frame storyboard of a heal and the critique it received: too many components, a pentagram and a flame both read as hostile; later versions switch to vines and petals | viewed; read |
 
 ## 6. Texture and mesh authoring
+
+Start here: rows 41 (seven painting steps for a trail), 42 (straight UVs on a curved ribbon), 45 (the ember sprite behind `STREAK`).
 
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -88,16 +101,18 @@ Image host prefixes: `RT` = `https://realtimevfx.com/uploads/default`, `DF` = `h
 
 ## 7. Roblox diagrams and official samples
 
+Start here: rows 48 (beam curve handles), 49 (disc ring emission), 50 (break a reference into components).
+
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
-| 48 | [Beams](https://create.roblox.com/docs/effects/beams), Roblox docs `DOCS/engine-api/classes/Beam/Curvature-Diagram.png` | image | P0 to P3 of the Bézier: `CurveSize0` and `CurveSize1` push the control points along each attachment's axis, so rotating an attachment bends the beam | viewed |
+| 48 | [Beams](https://create.roblox.com/docs/effects/beams), Roblox docs `DOCS/engine-api/classes/Beam/Curvature-Diagram.png` | PNG 0.3 MB | P0 to P3 of the Bézier: `CurveSize0` and `CurveSize1` push the control points along each attachment's axis, so rotating an attachment bends the beam | viewed |
 | 49 | [Particle emitters: shape](https://create.roblox.com/docs/effects/particle-emitters#shape), Roblox docs `DOCS/lighting-and-effects/particle-emitter/Disc-ShapePartial-0.5.jpg` | image | A disc emitter with `ShapePartial` 0.5 drawn as a red ring: emission from an annulus, the basis of ground rings | viewed |
-| 50 | Create volcanoes (row 44): `DOCS/tutorials/creating-volcanoes/Sample-Components.jpg` | image | The sample labelled as five components (embers, smoke plume, lava splashes, surface ripples, lava flow): the official method is to break a reference into parts and assign one instance type to each | viewed |
+| 50 | Create volcanoes (row 44): `DOCS/tutorials/creating-volcanoes/Sample-Components.jpg` | JPEG 0.9 MB | The sample labelled as five components (embers, smoke plume, lava splashes, surface ripples, lava flow): the official method is to break a reference into parts and assign one instance type to each | viewed |
 | 51 | [Auto-quality level improvements](https://devforum.roblox.com/t/4977292), Roblox staff, 2026-11-05 `DF/optimized/5X/0/e/6/1/0e61d4422db53634360af9ca0401799b55d16580_2_690x495.png` | image | Where to preview low quality: Studio Settings → Rendering → Editor Quality Level set to Level 01 | viewed; read |
 
 ## 8. Critique cases from the DevForum
 
-Posts by developers who asked for feedback. Study what the replies suggested and what `vfx-and-juice.md` §14 would add.
+Posts by developers who asked for feedback. Study what the replies suggested and what `vfx-and-juice.md` §14 would add. Start here: rows 54 (the default-emitter look), 52 (no core, no ground contact), 55 (fire-to-smoke hand-over).
 
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -107,6 +122,8 @@ Posts by developers who asked for feedback. Study what the replies suggested and
 | 55 | [Out of place fire VFX compared to my smoke](https://devforum.roblox.com/t/4850341), 2026 | breakdown | Replies converge on one fix: overlap the two layers, fading the flame out while the smoke fades in, and vary colour | read |
 
 ## 9. Reels and showcases (video)
+
+Start here: rows 58 (full-speed versions of rows 25 and 37–39), 59 (the mesh method behind row 29), 61 (Roblox combat effects players compare against).
 
 | # | Reference | Type | Look at it for | Evidence |
 |---|---|---|---|---|
@@ -128,5 +145,5 @@ Posts by developers who asked for feedback. Study what the replies suggested and
 
 - realtimevfx.com: posts and images belong to their authors; read through the public forum JSON. League of Legends images are Riot Games' property, Brawl Stars images Supercell's, shown by their own artists.
 - 80.lv interview images belong to the interviewed artists. Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. DevForum uploads belong to their posters.
-- GIF rows were judged from six still frames each; motion and exact timing were not seen. Counts such as "8 of 30 frames" come from the frame indices of those stills.
+- GIF rows were judged from six still frames each; motion and exact timing were not seen. Counts such as "8 of 30 frames" come from the frame indices of those stills. File sizes are from the server's `Content-Length` (80.lv rows from the downloaded file); frame counts from decoding each GIF, 2026-11-11.
 - Not reachable: artstation.com, behance.net, vfxapprentice.com (403), the Riot VFX style guide PDF (old links redirect).

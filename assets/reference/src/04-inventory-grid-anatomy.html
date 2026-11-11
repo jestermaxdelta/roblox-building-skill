@@ -1,21 +1,21 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>04 Inventory grid anatomy</title><link rel="stylesheet" href="sheet.css">
 <style>
-.win{position:relative;width:744px;height:262px;background:#26324A;border:2.5px solid #1A1F2B;border-radius:14px;overflow:hidden}
-.head{height:40px;background:#2D6CDF;display:flex;align-items:center;gap:10px;padding-left:14px;color:#fff;font-weight:850;font-size:19px}
-.cap{font-size:13px;font-weight:750;background:rgba(0,0,0,.28);border-radius:10px;padding:2px 9px}
-.close{position:absolute;right:5px;top:3px;width:44px;height:44px;border-radius:10px;background:#CF2E3E;border:2.5px solid #1A1F2B;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
-.strip{display:flex;gap:8px;padding:9px 12px 0;align-items:center}
-.search{width:170px;height:30px;border-radius:8px;background:#1B2436;color:#8F9BB0;font-size:12px;display:flex;align-items:center;padding-left:10px;font-weight:600}
-.fchip{height:30px;padding:0 11px;border-radius:15px;background:#1B2436;color:#C8D2E3;font-size:12px;font-weight:700;display:flex;align-items:center}
+.win{position:relative;width:728px;height:308px;background:#26324A;border:3px solid #1A1F2B;border-radius:16px}
+.head{height:45px;background:#2D6CDF;border-radius:13px 13px 0 0;display:flex;align-items:center;gap:10px;padding-left:16px;color:#fff;font-weight:850;font-size:24px}
+.cap{font-size:14px;font-weight:750;background:rgba(0,0,0,.28);border-radius:12px;padding:3px 10px}
+.close{position:absolute;left:682px;top:-6px;width:52px;height:52px;border-radius:12px;background:#CF2E3E;border:3px solid #1A1F2B;color:#fff;font-weight:900;font-size:24px;display:flex;align-items:center;justify-content:center}
+.strip{position:absolute;left:12px;top:57px;display:flex;gap:8px;align-items:center}
+.search{width:156px;height:44px;border-radius:8px;background:#1B2436;color:#AEB8C9;font-size:14px;display:flex;align-items:center;padding-left:12px;font-weight:600}
+.fchip{height:44px;padding:0 12px;border-radius:22px;background:#1B2436;color:#C8D2E3;font-size:14px;font-weight:700;display:flex;align-items:center}
 .fchip.on{background:#fff;color:#1A1F2B}
-.grid{position:absolute;left:12px;top:88px;display:grid;grid-template-columns:repeat(6,68px);gap:8px}
+.gclip{position:absolute;left:8px;top:109px;width:456px;height:188px;padding:4px;overflow:hidden}.grid{display:grid;grid-template-columns:repeat(6,68px);gap:8px}
 .cell{position:relative;width:68px;height:68px;border-radius:10px;border:2.5px solid #1A1F2B;display:flex;align-items:center;justify-content:center}
 .cell .bar{position:absolute;left:0;right:0;bottom:0;height:7px;border-radius:0 0 7px 7px;background:rgba(0,0,0,.28)}
-.cnt{position:absolute;right:4px;bottom:3px;font-size:13px;color:#fff;font-weight:800;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill}
+.cnt{position:absolute;right:4px;bottom:3px;font-size:14px;color:#fff;font-weight:800;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill}
 .pips{position:absolute;left:5px;top:4px;display:flex;gap:2px}.pips i{width:5px;height:5px;border-radius:50%;background:#fff;border:1px solid #1A1F2B}
-.detail{position:absolute;left:476px;top:52px;width:254px;height:198px;background:#3A4A6B;border-radius:10px;border:2.5px solid #1A1F2B;padding:10px;color:#fff}
-.equip{position:absolute;left:10px;right:10px;bottom:10px;height:44px;border-radius:10px;border:2.5px solid #1A1F2B;background:#35B25D;-webkit-text-stroke:2.5px #1A1F2B;paint-order:stroke fill;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:17px}
-.pill{position:absolute;left:176px;top:226px;background:#fff;color:#1A1F2B;border:2px solid #1A1F2B;border-radius:12px;font-size:11.5px;font-weight:800;padding:2px 10px}
+.detail{position:absolute;left:472px;top:57px;width:238px;height:236px;background:#3A4A6B;border-radius:8px;border:2px solid #1A1F2B;padding:12px;color:#fff}
+.equip{position:absolute;left:12px;right:12px;bottom:12px;height:48px;border-radius:8px;border:2.5px solid #1A1F2B;background:#35B25D;color:#1A1F2B;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:20px}
+.pill{position:absolute;left:176px;top:252px;height:32px;display:flex;align-items:center;background:#fff;color:#1A1F2B;border:2px solid #1A1F2B;border-radius:16px;font-size:14px;font-weight:800;padding:0 12px}
 .states{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
 .st{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:10.5px;color:var(--ink2);line-height:1.3}
 .st b{display:block;color:var(--ink);font-size:11px}
@@ -28,14 +28,15 @@
 .rl{font-size:10.5px;color:var(--ink2);text-align:center;margin-top:3px}
 </style></head><body>
 <div class="sheet">
+  <h3>Phone · Phone-S px drawn 1:1: window 728×308, header 48, cells 68 · placeholder skin (ui-design-figma.md §15)</h3>
   <div style="position:relative;width:744px">
     <div class="win" data-lint="nosize">
       <div class="head"><span id="hi"></span>BACKPACK <span class="cap">480 / 500</span></div><div class="close">✕</div>
-      <div class="strip" style="width:470px"><div class="search">Search…</div><div class="fchip on">Rarity ▾</div><div class="fchip">All</div><div class="fchip">Pets</div><div class="fchip">Tools</div></div>
-      <div class="grid" id="grid"></div>
+      <div class="strip"><div class="search">Search…</div><div class="fchip on">Rarity ▾</div><div class="fchip">All</div><div class="fchip">Pets</div><div class="fchip">Tools</div></div>
+      <div class="gclip"><div class="grid" id="grid"></div></div>
       <div class="pill">1 new ↑</div>
-      <div class="detail"><div style="display:flex;gap:10px"><div class="cell" style="width:84px;height:84px;background:color-mix(in srgb, var(--c-epic) 25%, #26324A);border-color:var(--c-epic);flex:none" id="dicon"></div>
-        <div><div style="font-size:17px;font-weight:850">Storm Blade</div><div style="font-size:12px;font-weight:750;color:#E2D2FF">Epic ●●●●</div><div style="font-size:12px;color:#C8D2E3;margin-top:5px;line-height:1.35">+24 damage<br>Chains to 2 targets</div></div></div>
+      <div class="detail"><div style="display:flex;gap:12px"><div class="cell" style="width:88px;height:88px;background:color-mix(in srgb, var(--c-epic) 25%, #26324A);border-color:var(--c-epic);flex:none" id="dicon"></div>
+        <div><div style="font-size:20px;font-weight:850;line-height:1.2">Storm Blade</div><div style="font-size:14px;font-weight:750;color:#E2D2FF">Epic ●●●●</div></div></div><div style="font-size:14px;color:#C8D2E3;margin-top:8px;line-height:1.35">+24 damage · chains to 2 targets</div>
         <div class="equip">Equip</div></div>
     </div>
     <div id="pins"></div>
@@ -64,7 +65,7 @@ document.getElementById('dicon').innerHTML = I('sword', 58);
 const items = [['sword', 3, 0], ['potion', 4, 12], ['gem', 2, 3], ['egg', 1, 0], ['shield', 0, 0], ['key', 0, 7], ['bolt', 5, 0], ['star', 1, 2], ['heart', 0, 31], ['gem', 0, 480], ['potion', 2, 5], ['key', 3, 0], ['egg', 4, 0], ['sword', 0, 0], ['shield', 1, 0], ['star', 0, 9], ['bolt', 0, 0], ['gem', 1, 2]];
 const pipHtml = n => `<div class="pips">${'<i></i>'.repeat(n)}</div>`;
 document.getElementById('grid').innerHTML = items.map((it, i) => `<div class="cell" style="background:color-mix(in srgb, ${R[it[1]][1]} 25%, #26324A);border-color:${R[it[1]][1]};${i === 0 ? 'outline:3px solid #fff;outline-offset:1px' : ''}">${I(it[0], 40)}${pipHtml(it[1] + 1)}<div class="bar"></div>${it[2] ? `<span class="cnt">${it[2]}</span>` : ''}</div>`).join('');
-const pins = [[1, 262, 20], [2, 12, 64], [3, 94, 88], [4, 160, 164], [5, 476, 52], [6, 240, 262], [7, 300, 236]];
+const pins = [[1, 290, 24], [2, 12, 64], [3, 94, 113], [4, 160, 186], [5, 472, 57], [6, 240, 300], [7, 330, 268]];
 document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x - 9.5}px;top:${y - 9.5}px">${n}</span>`).join('');
 const L = [
   ['Explicit cap', '480 / 500', 'Always shown; "Full" is an inline status on the backpack, not a toast.'],
@@ -85,7 +86,7 @@ const st = [
   ['Equipped', 'Tick badge, not a colour change', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#35B25D', 'check'))],
   ['Favourite', 'Heart badge; blocks sell and trade', big(R[2][1], I('gem', 44) + pipHtml(3), badge('#CF2E3E', 'heart'))],
   ['New', 'Dot until first viewed', big(R[2][1], I('gem', 44) + pipHtml(3), `<div class="badge" style="background:var(--accent);width:16px;height:16px;right:-5px;top:-5px"></div>`)],
-  ['Locked', 'Lock plus the requirement in words', big('#3B4252', I('lock', 36, '#AEB8C9'), '<span class="cnt" style="left:0;right:0;text-align:center;font-size:10.5px">Zone 4</span>')],
+  ['Locked', 'Lock plus the requirement in words', big('#3B4252', I('lock', 36, '#AEB8C9'), '<span class="cnt" style="left:0;right:0;text-align:center">Zone 4</span>')],
   ['Undiscovered', 'Silhouette + ??, with 162 / 284 progress', big('#3B4252', I('gem', 44, '#1A1F2B'), '<span class="cnt" style="left:0;right:0;text-align:center">??</span>')],
 ];
 document.getElementById('states').innerHTML = st.map(s => `<div class="st"><div style="height:86px;display:flex;align-items:center">${s[2]}</div><div><b>${s[0]}</b>${s[1]}</div></div>`).join('');

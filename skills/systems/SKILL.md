@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Build a cookbook system (§1–24) | gameplay-systems-cookbook.md §0, the system's §N, §Build order by genre, §Review gate; data-and-purchases.md §ProfileStore essentials, §DataService with schema migration; networking-and-security.md §Remote guard and rate limiter | 285–314 |
+| Project structure | engineering-architecture.md §Project architecture, §Client-server model essentials, §Luau standards, §Level-up audit, §Review gate; studio-workflow.md §8 | 230 |
+| Combat, abilities, projectiles | gameplay-systems-cookbook.md §12, §14, §0, §Review gate; networking-and-security.md §Movement and combat checks, §Validation layers; physics-and-vehicles.md §9, §6 | 163 |
+| Vehicles, physics objects | physics-and-vehicles.md §10, §3, §4, §2, §1, §11, §Review gate | 240 |
+| Trading | gameplay-systems-cookbook.md §17, §0, §2; data-and-purchases.md §Duplication, §ProfileStore essentials, §Runbook: dupe incident, §Review gate; economy-and-progression.md §Trading | 223 |
+| Better Luau, patterns | luau-mastery.md §Intermediate, §Deprecated → modern, §Style conventions, §Review gate; architecture-patterns-luau.md §Pattern table, §Review gate | 204 |
+
 ## What to read
 
 | When | Open |

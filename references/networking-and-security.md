@@ -16,6 +16,16 @@ Terms: a *remote* is a RemoteEvent, UnreliableRemoteEvent or RemoteFunction. A *
 
 Related: gameplay-systems-cookbook.md lists the exploit surface of each gameplay system (wallet, shop, trading, combat, codes); physics-and-vehicles.md covers movement and vehicle validation; data-and-purchases.md covers dupes and receipts.
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Is it secure? (remotes) | "Remote review procedure", "Level-up audit: how to check an existing game", "Validation layers (cheapest first; reject silently)", "Remote guard and rate limiter (server-only module)", "Threat model: what an exploiting client can always do", "Threat modelling: procedure and walkthroughs by system", "Review gate" (about 310 lines) |
+| Speed, fly, teleport exploits | "Movement and combat checks", "Detection, honeypots and consequences", "Threat model: what an exploiting client can always do", "Exploit landscape, late 2026", "Server authority mode"; `physics-and-vehicles.md` §11; `community-moderation-safety.md` §7, §9; this file "Review gate" (about 167 lines) |
+| Backdoor or hijacked account | "Backdoors, plugins and team hygiene", "Level-up audit: how to check an existing game", "Ownership, access control and third-party code", "HttpService and secrets"; `community-moderation-safety.md` §15; this file "Review gate" (about 178 lines) |
+
 ## The three remote types
 
 | | `RemoteEvent` | `UnreliableRemoteEvent` | `RemoteFunction` |

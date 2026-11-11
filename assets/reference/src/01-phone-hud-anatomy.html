@@ -4,10 +4,10 @@
 .stage{width:800px;height:360px}
 .hudnum{position:absolute;display:flex;align-items:center;gap:6px}
 .coin{width:30px;height:30px;border-radius:50%;background:#F0B63A;border:2.5px solid #1A1F2B}
-.gem{width:17px;height:17px;background:#5FD0E8;border:2px solid #1A1F2B;transform:rotate(45deg);border-radius:3px;margin:0 6px 0 8px}
-.obj{position:absolute;left:300px;top:8px;width:200px;height:32px;border-radius:16px;background:rgba(26,31,43,.75);color:#fff;font-weight:750;font-size:15px;display:flex;align-items:center;justify-content:center}
+.gem{width:16px;height:16px;background:#5FD0E8;border:2px solid #1A1F2B;transform:rotate(45deg);border-radius:3px;margin:0 6px 0 8px}
+.obj{position:absolute;left:300px;top:8px;width:200px;height:32px;border-radius:16px;background:rgba(26,31,43,.75);color:#fff;font-weight:750;font-size:16px;display:flex;align-items:center;justify-content:center}
 .toast{position:absolute;left:290px;top:50px;width:220px;height:40px;border-radius:10px;background:#fff;border:2.5px solid #1A1F2B;border-left:8px solid var(--c-rare);font-weight:700;font-size:14px;display:flex;align-items:center;padding-left:10px;color:#1A1F2B}
-.tracker{position:absolute;left:564px;top:62px;width:220px;height:38px;border-radius:10px;background:rgba(26,31,43,.75);color:#fff;padding:0 12px;font-size:14px;font-weight:650;display:flex;align-items:center;justify-content:space-between}
+.tracker{position:absolute;left:564px;top:62px;width:220px;height:40px;border-radius:10px;background:rgba(26,31,43,.75);color:#fff;padding:0 12px;font-size:14px;font-weight:650;display:flex;align-items:center;justify-content:space-between}
 .cap{position:absolute;left:300px;top:332px;width:200px;height:16px;border-radius:8px;background:rgba(26,31,43,.75);overflow:hidden}.cap i{display:block;height:100%;width:68%;background:#F0B63A}
 .jump{position:absolute;left:705px;top:270px;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.22)}
 .stick{position:absolute;left:70px;top:226px;width:84px;height:84px;border-radius:50%;border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.18)}
@@ -16,7 +16,7 @@
 .core{position:absolute;top:7px;width:44px;height:44px;border-radius:50%;background:rgba(26,31,43,.78)}
 .notch{position:absolute;top:0;width:16px;height:360px;background:repeating-linear-gradient(135deg,rgba(26,31,43,.32) 0 5px,rgba(26,31,43,.08) 5px 10px)}
 .centre{position:absolute;left:267px;top:90px;width:266px;height:180px;border:1.5px dashed rgba(255,255,255,.85);border-radius:6px}
-.mb{flex-direction:column;gap:1px;font-size:10px!important}
+.mb{flex-direction:column;gap:2px;font-size:14px!important;letter-spacing:0}
 </style></head><body>
 <div class="sheet">
   <div class="wrap">
@@ -41,7 +41,7 @@
       <div class="cap"><i></i></div>
       <div class="mbtn lip" style="left:625px;top:275px;width:60px;height:60px;border-radius:50%;background:#DD4F27;font-size:13px;-webkit-text-stroke:2.2px #1A1F2B;paint-order:stroke fill">SELL</div>
       <svg width="800" height="360" style="position:absolute;left:0;top:0"><path d="M476 360A324 324 0 0 1 800 36" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 7" opacity=".9"/></svg>
-      <span class="zlabel" style="left:520px;top:206px;white-space:nowrap">right thumb arc, about 0.9 H</span>
+      <span class="zlabel" style="left:494px;top:206px;white-space:nowrap">right thumb arc, about 0.9 H</span>
     </div>
     <div id="pins"></div>
   </div>
@@ -59,15 +59,15 @@
 <script>
 const S = 0.93;
 document.getElementById('bg').innerHTML = Sheet.scene(800, 360) + `<svg width="800" height="360" style="position:absolute;left:0;top:0">${Sheet.avatar(400, 250, 60)}</svg>`;
-const names = ['SHOP', 'PETS', 'REBIRTH', 'MORE'], ic = ['gem', 'egg', 'star', 'key'];
-document.getElementById('menu').innerHTML = names.map((n, i) => `<div class="mbtn mb" style="left:${680 + (i % 2) * 56}px;top:${138 + Math.floor(i / 2) * 56}px;width:48px;height:48px;background:#2B3A54">${Sheet.icon(ic[i], 22)}<span style="font-size:8.500px">${n}</span></div>`).join('').replace('.500', '.5').replace(/8\.500/g, '8.5');
-const pins = [[1, 22, 56], [2, 8, 200], [3, 150, 78], [4, 668, 190], [5, 510, 24], [6, 520, 70], [7, 552, 81], [8, 330, 300], [9, 790, 258], [10, 612, 262], [11, 400, 130], [12, 400, 320]];
+const names = ['SHOP', 'PETS', 'GIFTS', 'MORE'], ic = ['gem', 'egg', 'star', 'key'];
+document.getElementById('menu').innerHTML = names.map((n, i) => `<div class="mbtn mb" style="left:${664 + (i % 2) * 64}px;top:${128 + Math.floor(i / 2) * 64}px;width:56px;height:56px;background:#2B3A54">${Sheet.icon(ic[i], 24)}<span>${n}</span></div>`).join('');
+const pins = [[1, 22, 56], [2, 8, 200], [3, 150, 78], [4, 652, 188], [5, 510, 24], [6, 520, 70], [7, 552, 81], [8, 330, 300], [9, 790, 258], [10, 612, 262], [11, 400, 130], [12, 400, 320]];
 document.getElementById('pins').innerHTML = pins.map(([n, x, y]) => `<span class="pin abs" style="left:${x * S - 9.5}px;top:${y * S - 9.5}px">${n}</span>`).join('');
 const L = [
   ['Top bar', 'Roblox controls 44 px tall, top-left; keep y &lt; about 58 clear on the left', 'The strip to their right is free (TopbarSafeInsets). Listen to <b>GuiService.TopbarInset</b>; it changes at runtime.'],
   ['Safe area', 'margin 16 px from the safe edge', 'Interactive UI uses <b>CoreUISafeInsets</b>; only full-bleed art uses None. The notch can be on either side.'],
-  ['Currency readout', 'icon 28–32 px, number 18–20 px · 0.08–0.09 H', 'Top-left under the top bar. Icon + outlined number, no panel; counts up. Second currency one tier smaller (22 / 16).'],
-  ['Menu buttons', '48–56 px, gap 8 · 0.13–0.155 H', 'One home edge: the right edge above the jump zone, or a row under the top bar. 4–6 at most, rest behind More. Never low on the left.'],
+  ['Currency readout', 'icon 28–32 px, number 20 px · 0.08–0.09 H', 'Top-left under the top bar. Icon + outlined number, no panel; counts up. Second currency one tier smaller (22 / 16).'],
+  ['Menu buttons', '56 px tiles here, gap 8 · 0.13–0.155 H', 'Icon 24 + a 14 px caption of one short word. One home edge: the right edge above the jump zone, or a row under the top bar. 4–6 at most, rest behind More.'],
   ['Next-goal chip / objective', 'height 32–40 px · 0.10 H', 'Top centre (0.3–0.7 W): read-only, the hardest thumb reach.'],
   ['Toast lane', 'height 36–44 px · 0.11 H', 'Under the objective; at most 2 visible at Phone-S; never a modal.'],
   ['Quest tracker', 'width ≤ 220 px · ≤ 0.28 W', 'Right edge under the top bar; 1–3 lines with progress; folded by default on phones.'],

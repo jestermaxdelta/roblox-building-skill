@@ -14,6 +14,15 @@ Terms: a **core loop** is the set of actions a player repeats to make progress i
 | Intermediate | Log the onboarding funnel plus skip and hint events; read the charts in the order of §5 every week; fix the earliest weak step; move every tunable number into Configs; run the full scorecard after each change to the first 10 minutes | Three-variant experiments and custom metrics, until daily users pass about 1,000 |
 | Expert | One-key experiments with custom metrics and guardrails (§7); cohort reads by acquisition source; versioned funnels when steps change; wall analysis from progression distribution; `fx_tier` and reward-size tests; the update-curve read in §5 | — |
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Boring loop, short sessions, low D1 | §6, §5, §4, §1; `design-foundations.md` §3; this file "Review gate" (about 171 lines) |
+| Test a fix (Configs, experiment) | §7; `analytics-and-discovery.md` "Experiments and Configs"; this file §6; `liveops-quests-retention.md` "Shipping an update: flags and staged rollout"; this file "Review gate" (about 175 lines) |
+
 ## Contents
 
 0 Evidence · 1 Loop spec, sentence test, session arc · 2 First-10-minutes script (pointer) · 3 Building the tutorial (pointer) · 4 Scorecard · 5 Finding the broken stage in Creator Analytics · 6 Symptom table · 7 Tuning with Configs and Experiments · 8 Juice by cost

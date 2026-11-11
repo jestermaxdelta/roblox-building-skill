@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Is it secure? (remotes) | networking-and-security.md §Remote review procedure, §Level-up audit, §Validation layers, §Remote guard and rate limiter, §Threat model: what an exploiting client can always do, §Threat modelling, §Review gate | 310 |
+| Speed, fly, teleport exploits | networking-and-security.md §Movement and combat checks, §Detection, §Threat model: what an exploiting client can always do, §Exploit landscape, §Server authority mode, §Review gate; physics-and-vehicles.md §11; community-moderation-safety.md §7, §9 | 167 |
+| Lost data, rollback | data-and-purchases.md §Runbook: data incident and rollback, §Practices that prevent data loss, §ProfileStore essentials, §DataStore limits, §Level-up audit, §Review gate; community-moderation-safety.md §15 | 155 |
+| Duped items | data-and-purchases.md §Runbook: dupe incident, §Duplication, §Level-up audit, §Review gate; community-moderation-safety.md §9, §15 | 223 |
+| Paid, got nothing | data-and-purchases.md §Developer products, §Game passes, §Subscriptions, §ProfileStore essentials, §Level-up audit, §Review gate; monetization-and-policy.md §Refunds | 192 |
+| Backdoor or hijacked account | networking-and-security.md §Backdoors, §Level-up audit, §Ownership, §HttpService and secrets, §Review gate; community-moderation-safety.md §15 | 178 |
+
 ## What to read
 
 | When | Open |

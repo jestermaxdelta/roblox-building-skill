@@ -14,6 +14,16 @@ Terms: **LiveOps** = everything done to a game after launch (updates, events, of
 
 Contents: Onboarding (pointer) · Social rewards · Reading retention · Retention toolkit (daily rewards, playtime gifts, offline, AFK) · Notifications · Quests · Season pass · Cadence and seasons · LiveOps calendar (capacity, event types, overlap rules, calendar as data, event brief, timeline) · Update-day ritual · Shipping an update · Patch notes · Resets · Social design · Level-up table. Related (implementation): gameplay-systems-cookbook.md §6 Quests and achievements, §7 Daily rewards and playtime rewards, §8 Codes, §24 Server-wide events and boosts.
 
+## Fast routes
+
+For a common task, read only these sections, in this order; the last one is the gate to pass. §N is the section numbered N in that file; quoted names are exact headings (trailing `[tags]` omitted).
+
+| Task | Read |
+|---|---|
+| Nobody returns (D7, D30) | "Level-up: retention symptoms → likely cause → fix", "Reading retention", "Retention toolkit (no punishment anywhere)", "Social design"; `economy-and-progression.md` "Level-up: economy symptoms → likely cause → fix", "Time to afford: price everything from one income model"; this file "Review gate" (about 156 lines) |
+| Daily rewards, playtime gifts, quests | "Retention toolkit (no punishment anywhere)", "Quests and missions", "Notifications done right", "Social rewards (group join, like, favourite, friend join)"; `gameplay-systems-cookbook.md` §0, §6, §7; this file "Review gate" (about 149 lines) |
+| Events, season pass, update plan | "Update and event cadence", "LiveOps calendar: from capacity to dated events", "Season pass", "Patch notes and player communication", "Resets, seasons and wipes", "Review gate" (about 273 lines) |
+
 ## Onboarding (first session)
 
 Moved to tutorial-and-onboarding.md: first-minute script (§2), teaching patterns (§3), funnel logging and reading (§9). What this file adds for the first session: no automatic pop-up of any retention system (daily reward, group card, event, offer) while onboarding runs, offline earnings start only after it ends, and the notification opt-in prompt waits for a warranted moment (§Notifications).
@@ -23,7 +33,7 @@ Moved to tutorial-and-onboarding.md: first-minute script (§2), teaching pattern
 Every 2025–26 hit rewards them (Steal An Egg gives 10K free Speed for like + favourite + group join; Climb For Animals Eggs the same). The owner's standing rule: social rewards are bonuses only, asked after the first win. Policy position, checked at source 2026-11-11 `[VS]`: no written rule against in-game rewards for likes or favourites was found in the Community Standards or the creator docs, and no staff statement either way; but one creator reported a game placed under review by automated moderation with a note that lists "artificially inflating experience statistics", and suspected a reward for joining an off-platform community server (DevForum t/4776239, August 2026; cause never confirmed). So: **group-join and friend-join bonuses are the safe default; like and favourite rewards are a risk, to re-check before shipping and leave out if in doubt; rewards for off-platform actions (joining a Discord, following a social account) carry their own risk.** What the docs do penalise is *metadata* that implies a monetary reward ("leading with giveaways") or does not match the content `[official]`. Build them like this:
 
 - **Bonus, never a gate.** The reward is a one-time boost or cosmetic (a 10–15 min 2× boost, a starter cash bump, a badge, a skin), never progress, a zone, a product or a core feature. A player who never joins loses nothing they need.
-- **Timing.** Show the "Join our group" card after the first win and after the 600 s grace, as one of the rate-limited cards from the offer gate (it counts toward the ≤ 3 cards per session). A permanent small "Rewards" button in the HUD lets the player claim later.
+- **Timing.** Show the "Join our group" card after the first win and after the 600 s grace, as one of the rate-limited cards from the offer gate (monetization-and-policy.md, "Offer and shop playbook"; it counts toward the ≤ 3 cards per session). A permanent small "Rewards" button in the HUD lets the player claim later.
 - **Group join is the only one Roblox can verify** `[official]` `[VS]`. Let the player join without leaving: a LocalScript calls `GroupService:PromptJoinAsync(groupId)` (native modal; returns an `Enum.GroupMembershipStatus`). Then verify on the server with `Player:IsInGroupAsync(groupId)` in a `pcall` (`IsInGroup` without `Async` is deprecated; role checks use `GroupService:GetRolesInGroupAsync`). The result is cached per peer and the prompt clears only that client's cache, so a server that already answered "no" this session keeps saying no: re-check with `GroupService:GetGroupsAsync(player.UserId)` behind a throttled "Check again" button (`pcall`, one retry). Grant once, save the flag in the profile.
 - **Likes and favourites cannot be verified from game code** and are the risky pair (see above). If the owner keeps them: an honour-based "I liked it" claim, a small one-time thank-you through the same claim flow, never a gate, and nothing that tells the player to like in order to receive. If in doubt, ship the group and friend bonuses only.
 - **Friend join and invites** are verified: `Player:GetJoinData().ReferredByPlayerId` for invites, friend presence for co-play. Pay the friend bonus (10–20%) to both players while they are in the same server; never require invites to progress.
@@ -419,13 +429,13 @@ Ladder of social interaction `[lihfolk]`, cheapest first: co-presence (a shared 
 | DAU spikes on update day and each trough is lower | Events have replaced progression | Fewer, real events; event currency; make ordinary play pay; put new content at the end of progression |
 | Update shipped, D7 and D30 unchanged | New content sat at the start of the game or was consumed in a day | Gate it behind existing progression; add a multi-week goal to it |
 | Notification opt-in rate low | Asked on join or with no reason | Ask when the player starts something that finishes later |
-| Notifications sent, few joins | Generic content; one-per-day slot spent on low-value messages | Personalised and actionable messages; compare analytics categories; apply the priority order |
+| Notifications sent, few joins | Generic content; one-per-day slot spent on low-value messages | Personalised and actionable messages; compare analytics categories; apply the priority order (§Notifications) |
 | Playtime per user high, play days low | Rewards pay for duration, not for days | Per-day playtime ladder capped at 60 min; daily quests; cumulative calendar |
 | Many idle players, session time inflated | The game pays for idling | Offline rate equal to AFK rate, capped; rewards on active play |
 | Co-play days near zero | No reason to bring a friend | Two-sided friend boost, shared goal, cheap private servers, invite prompt after a win |
 | Quest board finished in minutes by one play style | One mission category | At least three categories; one process goal per day |
 | Few players finish the season pass | XP plan assumes daily play | Re-plan for 4 active days a week; final-week double XP |
-| Update days slipping, quality falling | Cadence beyond the team | Move to the 2-week solo ritual; cut scope, not polish |
+| Update days slipping, quality falling | Cadence beyond the team | Move to the 2-week solo ritual ("The update-day ritual as top games run it"); cut scope, not polish |
 | Events announced, then quietly cancelled | Calendar drawn before throughput was measured; no buffer `[lihfolk]` | Plan from the last six weeks' output; one buffer week a month |
 | Weekday play falls while weekends hold | A multiplier every weekend `[lihfolk]` | Space multipliers; rotate event types |
 | An event starts an hour off, or needs a publish to move | Local times, or dates hard-coded in scripts | UTC everywhere; calendar in Configs with validation |

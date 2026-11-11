@@ -40,6 +40,19 @@ When a message sounds like the left column, go straight to that focus. As the `r
 | "exploiters", "players duped items", "players lost their data", "paid and got nothing" | Security and data (`security-data`) | `references/networking-and-security.md`, `references/data-and-purchases.md` |
 | "nobody plays my game", "make a thumbnail / icon", "should I run ads", "I'm launching" | Discovery and growth (`growth`) | `references/icons-thumbnails-and-store-page.md`, `references/analytics-and-discovery.md`, `references/growth-and-marketing.md` |
 
+## Fast routes
+
+For this skill's own jobs, read only these sections, in this order. Guides are in `references/`, `economy-balance-sheet.md` and `launch-checklist.md` in `templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost.
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Start a new game | workflow-phases.md (whole); market-scan-2026-11.md §The shape of the market, §The 14 shared patterns; genre-playbooks.md §How to pick a genre, §Routing table; process-and-playtesting.md §1, §2, §4, §5, §Review gate; design-foundations.md §1, §2; checklists.md §Gate 0 | 205 |
+| Choose a genre | genre-playbooks.md §How to pick a genre, §Routing table, §Hybrid genres, §Review gate; market-scan-2026-11.md §The shape of the market, §The 14 shared patterns, §Gap ranking, §Review gate; case-studies-teardowns.md §5; genres/<genre>.md §Snapshot, §Core loop with timings, §Systems to build, §The one-new-verb angle | 188–194 |
+| Beginner's first game | learning-paths.md §3, §8, §Review gate; studio-workflow.md §First hour; blender-modeling-craft.md §First kit walkthrough; genres/<genre>.md §Start here by level, §Systems to build | 317–318 |
+| Plan an economy | economy-and-progression.md §Design the economy before you build it, §Time to afford, §Progression curves, §Rebirth and prestige math, §Paid multipliers and the curve, §Offline income, §Hard currency or direct Robux prices?, §Pricing soft currency against Robux, §Review gate; economy-balance-sheet.md §Sheet 1, §Sheet 2, §Sheet 2b, §Sheet 3, §Sheet 3b, §Sheet 4, §Sheet 5, §Sheet 6, §Sheet 7, §Validation plan | 279 |
+| Prepare a launch | as growth "About to launch" | 234 |
+| Team, pay, splits, DevEx | team-business-legal.md §20, §3, §4, §5, §6, §7, §8, §11, §Review gate | 190 |
+
 ## How to work
 
 1. **Look first.** Read what exists (scripts, instances, numbers) before judging. Without access, give a short first pass and ask for at most three things that would change the answer.

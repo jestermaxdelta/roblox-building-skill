@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| Error or broken script | debugging-and-testing.md §Reading errors, §Symptom → likely causes → confirm → fix, §The method, §Tools, §Review gate; luau-mastery.md §Level-up, §Deprecated → modern | 166 |
+| Works in Studio, not live | debugging-and-testing.md §Live-only bugs, §Symptom → likely causes → confirm → fix, §Races and load order, §Logging and telemetry conventions, §Review gate; studio-workflow.md §2 | 173 |
+| Only sometimes; infinite yield | debugging-and-testing.md §Races and load order, §The method, §Symptom → likely causes → confirm → fix, §Error handling and retries, §Review gate; luau-mastery.md §Coroutines and the scheduler | 175 |
+| Memory keeps growing | debugging-and-testing.md §Memory-leak hunting, §Review gate; luau-mastery.md §Memory model and GC; performance.md §Measured investigation by problem class, §Mobile crashes and memory | 145 |
+| Flinging, jitter, rubber-banding | physics-and-vehicles.md §Level-up, §1, §2, §3, §4, §6, §7, §Review gate | 138 |
+| Leave a test behind | debugging-and-testing.md §Test strategy, §Pre-release regression checklist, §Review gate; engineering-architecture.md §Testing | 116 |
+
 ## What to read
 
 | When | Open |

@@ -20,6 +20,19 @@ Follow this loop every time.
 
 On a live game, change it safely: note the baseline number, put the change behind a Config flag where possible, never break saves, change one variable at a time.
 
+## Fast routes
+
+Pick the row that matches the task and read only those sections, in that order, instead of whole guides. Guides are in `${CLAUDE_PLUGIN_ROOT}/references/`; `game-audit-report.md`, `monetization-product-plan.md`, `economy-balance-sheet.md`, `launch-checklist.md` and `analytics-event-plan.md` are in `${CLAUDE_PLUGIN_ROOT}/templates/`. §N is the section numbered N; any other § name is the opening words of the heading. Lines is the reading cost. For anything else, use the table under "What to read".
+
+| Task | Read exactly | Lines |
+|---|---|---|
+| What to sell | monetization-and-policy.md §The house default product set, §Price ladder and product mix by genre, §Policy, §Review gate; genres/<genre>.md §Monetisation set that fits; monetization-product-plan.md §Product set, §Ladder check, §Policy checklist for this plan | 201–204 |
+| Nobody buys (live) | monetization-and-policy.md §Level-up, §What the numbers say, §The house default product set, §Price elasticity and experiments, §Review gate; analytics-and-discovery.md §Benchmarks; monetization-product-plan.md §Mode and baseline | 173 |
+| Starter pack, offers, shop | monetization-and-policy.md §Offer and shop playbook, §Anti-patterns and the reason each is banned, §Review gate; monetization-product-plan.md §Offer timing map, §Offer gate configuration | 193 |
+| Set or change prices | monetization-and-policy.md §Price ladder and product mix by genre, §Price elasticity and experiments, §What the numbers say, §Review gate; economy-and-progression.md §Pricing soft currency against Robux, §Paid multipliers and the curve, §Hard currency or direct Robux prices?; monetization-product-plan.md §Ladder check | 201 |
+| Purchase code | data-and-purchases.md §Developer products, §Game passes, §Subscriptions, §ProfileStore essentials, §DataService with schema migration, §Review gate; monetization-and-policy.md §Gift passes, §Refunds | 252 |
+| Inflation, upgrade costs, rebirth | economy-and-progression.md §Level-up, §Time to afford, §Progression curves, §Rebirth and prestige math, §Measuring a live economy, §Live rebalancing without angering players, §Design the economy before you build it, §Review gate; economy-balance-sheet.md §Sheet 0 | 206 |
+
 ## What to read
 
 | When | Open |

@@ -9,16 +9,16 @@
 .rad{display:flex;gap:12px;align-items:flex-end}
 .rad div{text-align:center;font-size:10.5px;color:var(--ink2)}
 .rad i{display:block;width:46px;height:46px;border:2.5px solid var(--ink);background:#fff;margin-bottom:4px}
-.strokeDemo{font-size:28px;font-weight:850;color:#fff;paint-order:stroke fill;letter-spacing:.02em;line-height:1.25}
+.strokeDemo{font-size:30px;font-weight:850;color:#fff;paint-order:stroke fill;letter-spacing:0;line-height:1.25}
 </style></head><body>
 <div class="sheet">
   <div class="row">
     <div class="card" style="flex:0 0 452px"><h3>Type scale (samples drawn 1:1 at phone-frame px; this image is 2×)</h3>
       <div class="ts">
-        <div class="k"><b>Display 30</b>window titles, reward names</div><div style="font-size:30px;font-weight:850;line-height:1.1">LEVEL UP!</div>
-        <div class="k"><b>Title 24</b>headers, card names</div><div style="font-size:24px;font-weight:800;line-height:1.1">Daily Rewards</div>
+        <div class="k"><b>Display 30</b>rewards, level-up</div><div style="font-size:30px;font-weight:850;line-height:1.1">LEVEL UP!</div>
+        <div class="k"><b>Title 24</b>window headers</div><div style="font-size:24px;font-weight:800;line-height:1.1">Daily Rewards</div>
         <div class="k"><b>HUD number 20</b>outlined, on the world</div><div><span class="world"><span class="outl" style="font-size:20px;-webkit-text-stroke:4px #1A1F2B">12,480</span></span></div>
-        <div class="k"><b>Body 16</b>descriptions, rows</div><div style="font-size:16px;line-height:1.25">Doubles all cash you earn.</div>
+        <div class="k"><b>Body 16</b>card names, rows, descriptions</div><div style="font-size:16px;line-height:1.25">Doubles all cash you earn.</div>
         <div class="k"><b>Caption 14</b>design floor</div><div style="font-size:14px;color:var(--ink2)">Resets at 00:00 UTC</div>
         <div class="k"><b class="bad">Under 12 rendered</b>fails the audit</div><div style="font-size:10.5px;color:var(--bad)" data-lint="nosize">Collect 500 coins to unlock the next zone</div>
       </div>
@@ -37,9 +37,9 @@
   <div class="card mt"><h3>Text outline: the stroke also grows inward and closes the holes in 0, 6, 8, 9, a, e</h3>
     <div class="row" style="align-items:center">
       <div class="world" style="padding:8px 14px"><div class="strokeDemo" style="-webkit-text-stroke:4px #1A1F2B">10 20 60 80 88 00 Fast</div></div>
-      <div class="note grow"><span class="chip good">reads</span> Thickness <span class="v">2 px at 28 px text</span>: about 7% of the text size for rounded heavy fonts (8–12% for geometric fonts; at most 2 px under 16 px text).</div></div>
+      <div class="note grow"><span class="chip good">reads</span> Thickness <span class="v">2 px at 30 px text</span>: about 7% of the text size for rounded heavy fonts (8–12% for geometric fonts; at most 2 px under 16 px text).</div></div>
     <div class="row mt6" style="align-items:center">
-      <div class="world" style="padding:8px 14px"><div class="strokeDemo" style="-webkit-text-stroke:11px #1A1F2B">10 20 60 80 88 00 Fast</div></div>
+      <div class="world" style="padding:8px 18px"><div class="strokeDemo" style="-webkit-text-stroke:11px #1A1F2B">10 20 60 80 88 00 Fast</div></div>
       <div class="note grow"><span class="chip bad">fails</span> Thickness 5–6 px at the same size: counters fill in and digits merge. Scaling the label up does not help; UIScale scales the stroke too. Test with this string at the smallest phone size.</div></div>
   </div>
   <div class="row mt">
@@ -56,7 +56,7 @@ document.getElementById('sp').innerHTML = [4, 8, 12, 16, 24, 32].map(v => `<div>
 document.getElementById('nest').innerHTML = `<svg width="194" height="112" viewBox="0 0 194 112">
   <rect x="4" y="4" width="92" height="74" rx="16" fill="#fff" stroke="#1A1F2B" stroke-width="3"/>
   <rect x="16" y="16" width="68" height="50" rx="4" fill="#E9E5DA" stroke="#1A1F2B" stroke-width="2"/>
-  ${Sheet.txt(50, 39, 'outer 16', { 'text-anchor': 'middle' })}${Sheet.txt(50, 53, 'pad 12, inner 4', { 'text-anchor': 'middle' })}
+  ${Sheet.txt(50, 34, 'outer 16', { 'text-anchor': 'middle' })}${Sheet.txt(50, 47, 'pad 12', { 'text-anchor': 'middle' })}${Sheet.txt(50, 60, 'inner 4', { 'text-anchor': 'middle' })}
   ${Sheet.txt(4, 106, 'window: UICorner 16', {})}
   <rect x="112" y="34" width="76" height="34" rx="10" fill="#1F7A3D" stroke="#1A1F2B" stroke-width="2.5"/><rect x="112" y="28" width="76" height="34" rx="10" fill="#35B25D" stroke="#1A1F2B" stroke-width="2.5"/>
   ${Sheet.txt(150, 18, 'stroke 3 (thin 2)', { 'text-anchor': 'middle' })}${Sheet.txt(150, 86, 'lip 5 px', { 'text-anchor': 'middle' })}
