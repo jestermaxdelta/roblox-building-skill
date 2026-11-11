@@ -181,7 +181,7 @@ Left out on purpose: the readiness gate (guide §12), the anchor transform (mult
 
 ## Review gate
 
-- [ ] Every exit tested by hand: reset the character mid-scene, call `play` twice, call `play` from a state cue, stop the scene from inside a cue, give a shot no keys, teleport mid-scene, let the watchdog fire. After each, camera type, subject and FOV, controls, HUD and lighting flags are back.
+- [ ] Every exit tested by hand: reset the character mid-scene, call `play` twice, call `play` from a state cue, stop the scene from inside a cue, give a shot no keys, teleport mid-scene, and unbind `CutsceneRunner` from the command bar in the client view mid-scene (the watchdog must restore everything 2 s after the scene's length). After each, camera type, subject and FOV, controls, HUD and lighting flags are back.
 - [ ] A three-key shot moves at one steady speed between its ramps (watch the middle key; print distance per frame if unsure), and the camera ends exactly on the last key.
 - [ ] With Reduce Motion on, each shot holds its last framing.
 - [ ] Nothing in `step` waits or creates instances; the bound name is unbound on every exit.

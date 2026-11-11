@@ -32,7 +32,7 @@ Pick the row that matches the task and read only those sections, in that order, 
 | Build a first kit | BM The numbers, Edges, Recipes, Rubric, First kit walkthrough · LD §8–§9 · AP Naming, Modular kits, Acceptance | Sheet 17 · env #7, #11, #29, #44, #55 |
 | Export to Roblox, or an import went wrong (size, pivot, collision) | AP Pipeline overview, Units, Mesh specifications, Naming, Collision authoring, Upload routes, Import traps, Level-up, Review gate · `scripts/README.md` | none needed |
 | Keep several artists consistent | AD §6, §8 · BM Edges, Colour, Rubric · AP Texturing, Naming, Acceptance | Sheet 18 · models #1, #8, #10–11 |
-| Make an attack, hit reaction or walk feel good | AR §4, §5, §6, Review gate | Sheet 21 · `animation.md`, "Start here" rows |
+| Make an attack, hit reaction or walk feel good | AR §4, §5, §6, Review gate | Sheet 21 · `animation.md`, the section for that move type |
 | Animation is stiff, broken or not replicating | AR §12 first, then the section it points to (§5 playback, §7 replication, §3 pipeline), Review gate | Sheet 21 |
 | Rig and animate from Blender | AR §1, §2, §3, Review gate · AP Upload routes | `animation.md` tool rows |
 
