@@ -98,7 +98,7 @@ Drawn from the captures rejected or marked "badly" while building this file (meg
 - DevForum threads and megathread posts (devforum.roblox.com, read through its JSON API): text and images belong to their authors; linked for study only.
 - Fandom wikis (`growagarden`, `adoptme`, `tds`, `bee-swarm-simulator`, `fisch`), read through each wiki's `api.php` because the wiki pages return HTTP 403 to automated clients (rows marked †; the linked `File:` pages open in a browser): wiki text is CC BY-SA, the screenshots show copyrighted games and stay their developers'.
 - interfaceingame.com: screenshots of commercial games collected for reference; each stays its publisher's.
-- Roblox Creator Docs and its asset host (`create.roblox.com/docs`, `Roblox/creator-docs`): CC BY 4.0.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed.
 - gamedeveloper.com articles (read). Removed in review (2026-11-11): rows 30 and 31, two videos that were never watched and whose notes only restated their titles.
 - GitHub licences read from each repository's LICENSE file on 2026-11-11: Satchel MPL-2.0, TopbarPlus MPL-2.0 with a credit condition, StickyBillboard MIT. Star counts were not available (the GitHub API is blocked on this network).
 - Not reachable: gameuidatabase.com (listed from search results only), reddit.com, the Blade Ball and Pet Simulator wiki pages (no usable HUD capture found), TikTok (no usable result surfaced through search).

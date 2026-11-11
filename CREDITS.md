@@ -4,7 +4,7 @@ This skill is a synthesis. It stands on other people's work, and this page says 
 
 ## Roblox Creator Documentation
 
-Platform facts (APIs, limits, policy, dashboards) are checked against the official docs, mirrored at [Roblox/creator-docs](https://github.com/Roblox/creator-docs) and licensed CC BY 4.0, © Roblox Corporation. Facts tagged `[official]` or `[VS]` in the references come from there. They change often: re-check at <https://create.roblox.com/docs> before relying on a number.
+Platform facts (APIs, limits, policy, dashboards) are checked against the official docs, mirrored at [Roblox/creator-docs](https://github.com/Roblox/creator-docs), whose text is licensed CC BY 4.0, © Roblox Corporation. That licence statement names the prose, not the images, so no docs images are bundled here: they are only linked for study. Facts tagged `[official]` or `[VS]` in the references come from there. They change often: re-check at <https://create.roblox.com/docs> before relying on a number.
 
 ## LihFolk Vault V2
 

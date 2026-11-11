@@ -95,7 +95,7 @@ Staff posts on custom flipbook layouts and on quality levels are rows 46 and 51 
 ## Sources and licences
 
 - Licences read on 2026-11-11: MIT for rows 38 (`LICENSE.md`) and 43 (`LICENSE`); GPL-3.0 for row 39; CC0 for rows 48 and 49. Rows marked "licence not verified" had no licence text on the page read. A licence on a plugin covers its code, not every asset in its library.
-- Roblox documentation is CC BY 4.0 (https://github.com/Roblox/creator-docs, commit 7cbffff). Forum posts belong to their authors.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. Forum posts belong to their authors.
 - Videos were verified through YouTube oEmbed (title and channel) and were not watched; notes on them come from the linking page.
 - Not reachable: vfxapprentice.com (403: its blog summaries of the Riot style guide and its courses were seen only in search results), the Riot VFX style guide PDF (2017 links redirect to the League home page), artstation.com, reddit.com.
 - Thin spots: no Reddit thread with concrete Roblox VFX numbers was found; DevForum critique threads on effects are short, so the critique method in `vfx-and-juice.md` §16 leans on realtimevfx.com.

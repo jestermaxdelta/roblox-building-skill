@@ -12,7 +12,7 @@ Tags: `[official]` Roblox docs, `[community]` forum or third-party practice, `[l
 | Cutscene and scripted cameras, shots, skip | `cutscenes-and-cinematics.md` |
 | Teaching the verb, first minute, guidance devices | `tutorial-and-onboarding.md` |
 | Map layout, scale table, spawn area, wayfinding, blockout | `level-design-worldbuilding.md` |
-| Style bible and art review. Two rules kept here because that guide does not state them yet `[house]`: approve one hero asset before producing its family; judge every asset close, at gameplay distance and far | `art-direction-and-quality-bar.md` §6, §8 |
+| Style bible, hero-asset-first and three-distance rules, art review | `art-direction-and-quality-bar.md` §6, §8 |
 | Shake, flash and motion settings; reduced motion | `accessibility-and-player-qol.md` §5, §10 |
 | Juice ordered by build cost; loop scorecard | `core-loop-tuning.md` §8 |
 | UI layout and input devices | `ui-input-crossplatform.md` |

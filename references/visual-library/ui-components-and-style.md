@@ -134,7 +134,7 @@ Drawn from the images rejected while building this file (megathread posts 12, 25
 ## Sources and licences
 
 - DevForum threads, megathread posts and Roblox staff announcements (read through the forum's JSON API): text and images belong to their authors or to Roblox; linked for study only.
-- Roblox Creator Docs: CC BY 4.0. Builder font: its own licence, read at `create.roblox.com/docs/resources/builder-font-license`.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. Builder font: its own licence, read at `create.roblox.com/docs/resources/builder-font-license`.
 - Licences read from each project's own licence file or page on 2026-11-11: Lucide ISC; lucide-roblox MIT; Phosphor MIT; game-icons.net CC BY 3.0 (CC0 where a contributor says so); Material Symbols Apache-2.0; Kenney UI Pack CC0; spr MIT; Text+ MIT; NumberSpinnerV2 MIT; OnyxUI MIT; Slither MIT; ExpressivePrompts MIT; UI Labs GPL-3.0; flipbook MIT-style text. No licence file was found for Screen3D. Star counts were not recorded (the GitHub API is blocked on this network).
 - interfaceingame.com and the Dress to Impress wiki (Fandom, text CC BY-SA): screenshots of commercial games, which stay their publishers'.
 - YouTube titles and channels verified through oEmbed; the videos were not watched. Removed in review (2026-11-11): row 36 (an unwatched video described only by its title) and row 46 (Tabler Icons, a second stroke-icon set that added nothing to row 41).

@@ -113,7 +113,7 @@ None of these were watched; each row says what to look for. Count shots, time th
 
 ## Sources and licences
 
-- Roblox documentation (create.roblox.com/docs; mirror `Roblox/creator-docs` commit 7cbffff) is CC BY 4.0. Roblox staff posts and their images belong to Roblox.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. Roblox staff posts and their images belong to Roblox.
 - DevForum threads and attached images belong to their authors; linked for study only. Like counts are first-post likes read on 2026-11-11.
 - Repositories were shallow-cloned to check the `LICENSE` file and last commit: CutsceneService, CutsceneManager, CameraService, RbxCameraShaker, GG-CameraShake, MrDialogue and chirp are MIT. Creator Store plugins and models (CineCam, Cutscene Cinematics, Smooth Cutscenes, Apex Animator, Moon2Cutscene, Dialogue Kit, the spline and Bezier modules, the captions model, Camera Replication Focus) were not installed; their licences are not verified.
 - StudioBinder images and articles, Game Developer articles and all YouTube videos belong to their publishers. Videos were verified through YouTube oEmbed only.

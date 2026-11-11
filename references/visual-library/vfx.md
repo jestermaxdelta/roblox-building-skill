@@ -127,6 +127,6 @@ Posts by developers who asked for feedback. Study what the replies suggested and
 ## Sources and licences
 
 - realtimevfx.com: posts and images belong to their authors; read through the public forum JSON. League of Legends images are Riot Games' property, Brawl Stars images Supercell's, shown by their own artists.
-- 80.lv interview images belong to the interviewed artists. Roblox documentation and its images are CC BY 4.0 (https://github.com/Roblox/creator-docs). DevForum uploads belong to their posters.
+- 80.lv interview images belong to the interviewed artists. Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. DevForum uploads belong to their posters.
 - GIF rows were judged from six still frames each; motion and exact timing were not seen. Counts such as "8 of 30 frames" come from the frame indices of those stills.
 - Not reachable: artstation.com, behance.net, vfxapprentice.com (403), the Riot VFX style guide PDF (old links redirect).

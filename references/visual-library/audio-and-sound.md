@@ -84,7 +84,7 @@ Not recommended, with reasons: generating shipped music or effects with AI tools
 
 ## Sources and licences
 
-- Roblox documentation and diagrams: Roblox/creator-docs, CC BY 4.0. DevForum posts belong to their authors; announcements belong to Roblox.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. DevForum posts belong to their authors; announcements belong to Roblox.
 - Licence rows quote or paraphrase the source's own page as fetched on 2026-11-11: kenney.nl/support and the Interface Sounds page, 99sounds.org/license, opengameart.org FAQ, incompetech.com licences, sfbgames.itch.io/chiptone, sfxr.me, beepbox.co (all re-fetched in the review pass); sonniss.com/gdc-bundle-license and the zapsplat.com standard licence (fetched early that day; the review pass got a challenge page).
 - Could not be read from here: freesound.org (403), pixabay.com (403), sonniss.com bundle page (challenge page), bbcrewind licensing page and mixkit licence text (script-rendered). The Roblox Terms of Use were read through the help-centre API because the HTML page returns 403. Removed in review: two GDC talks whose notes only restated their titles, and an Audiokinetic article that could not be opened.
 - Videos were verified through YouTube oEmbed (title and channel) and not watched; years are given only where the talk's event year was confirmed by its coverage.

@@ -97,7 +97,7 @@ Frame-stepping and review tools (home pages read): [Kinovea](https://www.kinovea
 
 ## Sources and licences
 
-- Roblox documentation and its images: Roblox/creator-docs, CC BY 4.0. DevForum posts and their media belong to their authors; announcements belong to Roblox. Linked for study only.
+- Roblox Creator Docs text is CC BY 4.0 (`Roblox/creator-docs`); that licence statement names the prose, not the images, so docs images are © Roblox and are linked here for study, not redistributed. DevForum posts and their media belong to their authors; announcements belong to Roblox. Linked for study only.
 - gamedeveloper.com and 80.lv articles, YouTube videos, Tumblr and wiki pages: copyright their authors; linked, not copied. Muybridge's plates are public domain.
 - Videos were verified through YouTube oEmbed (title and channel) and not watched; upload years are omitted where they could not be confirmed. Sakurai episode notes come from GoNintendo and NintendoWire coverage found by search; New Frame Plus notes come from the channel's video list and a search summary.
 - Removed in review: a frame-data video whose note rested on its title alone (the Dustloop and Ultimate Frame Data rows cover the topic).

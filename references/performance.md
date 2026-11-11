@@ -167,7 +167,7 @@ Collision groups: register them in Studio's Collision Groups editor, or once at 
 
 `Touched` fires only from physical movement, needs a debounce and is spoofable by the owning client; use spatial queries for gameplay (`Raycast`, `GetPartBoundsInBox`, `GetPartBoundsInRadius`, `GetPartsInPart`, `Blockcast`/`Spherecast`/`Shapecast` for fast projectiles). Reuse params, cap `MaxParts`, dedupe hits by model, and validate on the server. For contact points and impact strength use `BasePart:BindToCollisionSummaries(callback)` `[VS]`.
 
-Network ownership: hand vehicles to the driver on `Occupant` change and back with `SetNetworkOwnershipAuto()`; `SetNetworkOwner(nil)` sparingly. Debug colours: green your client owns, red buffer zone, white/grey server or another client, black nobody. Server authority mode (`AuthorityMode = Server`) reached full release in 2026 `[VS]`; see networking-and-security.md before adopting it.
+Network ownership (rules and sketch in physics-and-vehicles.md): give a vehicle to its driver on `Occupant` change and to the server (`SetNetworkOwner(nil)`) or anchor it when parked, because automatic ownership lets the nearest client grab it; anchoring then unanchoring resets ownership, so set it again. Debug colours: green your client owns, red buffer zone, white/grey server or another client, black nobody. Server authority mode (`AuthorityMode = Server`) reached full release in 2026 `[VS]`; see networking-and-security.md before adopting it.
 
 Humanoids: disable unused `HumanoidStateType`s with `SetStateEnabled`; AnimationController for static NPCs; play NPC animations on the client; spawn NPCs near players and pool them; animate via `Motor6D.Transform` in PreSimulation.
 

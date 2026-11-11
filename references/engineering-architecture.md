@@ -38,7 +38,7 @@ Client load order: ReplicatedFirst runs; the DataModel replicates and `game.Load
 
 `[VS]` Rojo's `emitLegacyScripts` defaults to `true`, which turns `*.client.luau` into a `LocalScript`. A client entry in `ReplicatedStorage` needs `"emitLegacyScripts": false` in `default.project.json`.
 
-Network ownership: anchored parts are server-owned; unanchored assemblies default to automatic ownership near a player. `BasePart:SetNetworkOwner(player)` pins ownership (give vehicles to the driver on `VehicleSeat.Occupant` change). The owner's physics cannot be verified, so see networking-and-security.md.
+Network ownership: anchored parts are server-owned; unanchored assemblies default to automatic ownership near a player. `BasePart:SetNetworkOwner(player)` pins ownership (give a vehicle to its driver on `VehicleSeat.Occupant` change and to the server, `SetNetworkOwner(nil)`, when parked; physics-and-vehicles.md owns the rules). The owner's physics cannot be verified, so see networking-and-security.md.
 
 `[VS]` Server authority mode (`Workspace.AuthorityMode = Server`, `RunService:BindToSimulation`, `SetPredictionMode`) reached full release in 2026. Use it for competitive physics games (racing, sports, shooters); keep client ownership plus server validation elsewhere. Requirements and trade-offs: networking-and-security.md.
 
@@ -178,7 +178,7 @@ Luau Execution API: `POST /cloud/v2/universes/{universeId}/places/{placeId}/luau
 
 Place publishing: `PATCH https://apis.roblox.com/assets/v1/assets/{placeId}` with `request={"assetId":<placeId>,"assetType":"Place","published":true}` and `fileContent` (`.rbxl` as `application/octet-stream`); poll `GET /assets/v1/operations/{id}`. Key needs assets Read and Write.
 
-Pipeline: on every PR run `rokit install`, `wally install` + lock diff, `selene src`, `stylua --check src`, `rojo sourcemap`, `luau-lsp analyze`, Lune unit tests. On merge: `rojo build -o game.rbxl`, publish to a test place in a separate test universe, run in-engine tests. On release tag: publish to production with a manual approval, using Migrate To Latest Update for non-backwards-compatible data migrations. Keys live in CI secrets, scoped to one universe and minimum permissions, created on a dedicated automation account with an IP allowlist and an expiry (networking-and-security.md).
+Pipeline: on every PR run `rokit install`, `wally install` + lock diff, `selene src`, `stylua --check src`, `rojo sourcemap`, `luau-lsp analyze`, Lune unit tests. On merge: `rojo build -o game.rbxl`, publish to a test place in a separate test universe, run in-engine tests. On release tag: publish to production with a manual approval, then run Restart Servers ("outdated versions only", with a delay) when the release changes saved data or remote payloads: the runbook below. Keys live in CI secrets, scoped to one universe and minimum permissions, created on a dedicated automation account with an IP allowlist and an expiry (networking-and-security.md).
 
 Collaboration: place files do not merge; code merges in git; one place-file owner at a time; Git LFS with locking for binaries; only CI publishes production.
 
@@ -189,7 +189,7 @@ Publishing does not move players: old and new servers run side by side until old
 1. **Every saved record carries a schema version**, and old code never writes data newer than it understands (the guard in data-and-purchases.md).
 2. **Expand, then contract.** Release N reads old and new shapes and still writes what old servers need. Release N+1, after every server has restarted, removes the old shape. The same applies to remote payloads: keep remote names stable and accept the previous payload for one release.
 3. **Cross-place messages are versioned contracts.** Teleport data, MemoryStore tickets and MessagingService payloads carry a `v` field; receivers accept the current and previous version.
-4. **Features ship dark** behind a Configs flag and are switched on after the restart completes.
+4. **Features ship dark** behind a Configs flag and are switched on after the restart completes. A flag change takes up to about a minute to reach servers, and code must read the refreshed value, not one cached at boot (Configs detail: liveops and data guides).
 5. **Multi-place order:** publish the receiving place (match, dungeon) first and restart its outdated servers with a short delay (5–10 minutes); then publish the sender (lobby) with a longer bleed-off (15–30 minutes); then flip the flag; drop the old version next release.
 6. **Restart** from Creator Hub > Configurations > Server management (or Open Cloud): "Restart only servers with outdated versions", plus "Delay server restart" of 1–60 minutes. Roblox stops matchmaking into those servers (invites and teleports can still enter), waits, then teleports each old server's players together to a new one `[official]`.
 7. **Drain** when `game.ServerRestartScheduled(restartTime, source, attributes)` fires `[official]`: warn players with a countdown, save everyone once early, refuse new trades, stop enqueuing matchmaking tickets, and start no round that cannot finish before `restartTime`. `source` is `DeveloperUpdate` for your restarts and `RobloxMaintenance` (with empty attributes) for Roblox's, so the handler needs a default policy.
@@ -247,7 +247,7 @@ OpenGameEval (Roblox's agent benchmark, `Roblox/open-game-eval`): the best Pass@
 3. **Runtime health.** Play in Studio and read the Output; Creator Hub > Monitoring > Error report for the top live errors by count; F9 server log on a live server.
 4. **Read the entry points.** Count auto-running Scripts and LocalScripts and write down the real boot order.
 5. **Triage in ROI order** `[house]`: errors that hit every player; security and data findings (the other audits); leaks in per-player and per-character code; identical scripts copied into models (one tagged component instead); removed or deprecated APIs on hot paths; source control and lint in CI; types on touched files only.
-6. **Refactor a live game by strangling, not rewriting.** New features go through the loader; old scripts move when they are touched, one system per release; remote names and data keys stay stable; risky switches sit behind a Configs flag; test in a separate universe; ship with Migrate To Latest Update.
+6. **Refactor a live game by strangling, not rewriting.** New features go through the loader; old scripts move when they are touched, one system per release; remote names and data keys stay stable; risky switches sit behind a Configs flag; test in a separate universe; ship with the update runbook above (Restart Servers, outdated versions only, with a delay).
 
 Sketch F, code inventory (unexecuted sketch; read-only; command bar or Studio MCP `execute_luau`, Edit; ignore hits in services you do not own):
 
