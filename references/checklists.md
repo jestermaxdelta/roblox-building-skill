@@ -109,7 +109,7 @@ Data and purchases
 - [ ] Session-locked loading; a failed load never saves; migrations before `Reconcile`; newer-schema guard; key pattern unchanged.
 - [ ] No DataStore reads during gameplay; staggered autosave; no custom BindToClose on top of ProfileStore.
 - [ ] Exactly one `ProcessReceipt` (or filtered handlers); dedupe by `PurchaseId` in saved data; `PurchaseGranted` only after confirmed save.
-- [ ] Nothing granted from `PromptProductPurchaseFinished`; pass ownership checked on the server with correct caching.
+- [ ] Nothing granted from `PromptProductPurchaseFinished`; pass ownership checked live on the server when access matters and pass benefits never saved (free trials, from 2 Dec 2026).
 - [ ] Prices from `GetProductInfoAsync`; gifts gated by price level; boosts extend, never stack.
 - [ ] Leaderboard writes throttled; trades mutate both locked profiles synchronously; RTBF templates cover every user-keyed store.
 
@@ -124,8 +124,8 @@ Tooling
 - [ ] No offers in the first 10 minutes, before the first win, on loading, or during combat; ≥ 8 min between offers, ≤ 3 per session, ≤ 1 starter pack per day, 24 h suppression after two dismissals; offers ≤ 25% of the screen with an X, never stacked, no sound stings.
 - [ ] Rewarded-video rewards fixed, opt-in, never a gate; eligibility met.
 - [ ] A free alternative sits next to every paid shortcut.
-- [ ] Content-maturity questionnaire truthful; rating-raising features deliberate; no playable gambling.
-- [ ] All user-generated text filtered on the server.
+- [ ] Content Ratings Questionnaire truthful; rating-raising features deliberate; no playable gambling; a Kids & Select game has accepted its IARC rating (needed in Australia from 26 Jan 2027).
+- [ ] All user-generated text filtered on the server; player text that is not chat limited to one submission per player per minute on the server.
 - [ ] Social rewards (group join, like, favourite, friend join) are bonuses only: no progress, product or content gated on them; group join verified server-side; shown after the first win; nothing about them in title, thumbnail or description.
 - [ ] Thumbnails and video follow policy (no spoken audio, real footage or ad text in video).
 
@@ -172,7 +172,7 @@ Monetization and compliance
 Discovery and metadata
 
 - [ ] Five custom 16:9 1920×1080 thumbnails under 3 MB (2–5 active on Home), each with its own first-minute promise, passing the three gates and 8.5+ on the rubric in `icons-thumbnails-and-store-page.md` §15; icon subject named at 32 px and genre at 64 px (tile test, its §5); title keeps the name inside the first 23 characters; first description sentence summarises the game; genre and supported languages set.
-- [ ] Age-tier plan: launch 16+ (or Select if eligible), then pursue the 250 engaged age-checked plays for under-16 reach; questionnaire complete.
+- [ ] Age-tier plan: launch 16+ (or Select if eligible), then pursue the 100 engaged age-checked plays for under-16 reach (250 until 19 Nov 2026); questionnaire complete.
 - [ ] Share links, invite prompt (`CanSendGameInviteAsync` → `PromptGameInvite`) and referral banner wired.
 
 Analytics and LiveOps
@@ -207,7 +207,7 @@ Detail in `references/growth-and-marketing.md`.
 - [ ] One share link per channel and per creator; creatives are real captures of the game and match the first minute.
 - [ ] (HR) No giveaway, Robux or "free" wording in title, thumbnails or description; social rewards stay bonuses after the first win; no restarting countdowns or false scarcity in event marketing.
 - [ ] No URLs, invite codes or handles in-game; social links only on the details page; paid creator content disclosed.
-- [ ] Engagement-objective spend (for the 250-play gate) has its own budget and is paused at the goal.
+- [ ] Qualify for Kids and Select spend (the 100-play gate; the objective was called Engagement) has its own budget; the campaign stops by itself at the threshold.
 - [ ] Soft launch done with "Exclude from recommendations" on: 85%+ of new players reach the first reward within 60 s, no step in the first 3 minutes loses over 15%, median first session 10+ min.
 - [ ] Ad and share-link joins tagged through LaunchData; cohort value computed per unique user, not per play.
 - [ ] Server size fits current CCU; the loop works with one to three players.
@@ -221,6 +221,6 @@ Detail in `references/growth-and-marketing.md`.
 
 ## Sources
 
-This file restates gates defined in the topic references; evidence and source lists live there. Gates 0–5 came from knowledge-base sections 1.12.3, 3.8, 3.10, 4.11 and 5.13; Gate A and the growth gate from `references/audit-existing-game.md` and `references/growth-and-marketing.md`. Rubric pointers and platform facts re-checked on 2026-11-11 (creator docs mirror, commit 7cbffff of 2026-11-10; `MarketplaceService:GetProductInfoAsync` signature read in the engine reference).
+This file restates gates defined in the topic references; evidence and source lists live there. Gates 0–5 came from knowledge-base sections 1.12.3, 3.8, 3.10, 4.11 and 5.13; Gate A and the growth gate from `references/audit-existing-game.md` and `references/growth-and-marketing.md`. Rubric pointers and platform facts re-checked on 2026-11-11 (creator docs mirror, commit 7cbffff of 2026-11-10; `MarketplaceService:GetProductInfoAsync` signature read in the engine reference). Platform items (100-play gate, pass free trials, Content Ratings Questionnaire and IARC, text limits, the renamed ads objective) updated on 2026-11-26 against commit 47ec857 of 2026-11-25; sources are in the owning guides.
 
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/quality-score/SKILL.md`, `skills/council-method/SKILL.md`, `commands/audit.md`, `27 Marketing and Growth/Launch Strategy - The First Two Weeks.md`, `Rescuing a Weak Launch - Empty Servers, Low CCU and Relaunch Tactics.md` (read). Source of the evidence-grade, second-opinion, deliverable-score and soft-launch items, rewritten in our own words `[lihfolk]`.

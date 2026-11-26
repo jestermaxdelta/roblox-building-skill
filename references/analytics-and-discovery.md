@@ -1,6 +1,6 @@
 # Analytics, discovery and the Roblox platform
 
-Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs and the staff announcements on 2026-11-11. Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: this file holds the one benchmark table; `references/audit-existing-game.md` holds the triage order, `references/growth-and-marketing.md` ads, creators and community, `references/icons-thumbnails-and-store-page.md` the craft of the tile, and `references/tutorial-and-onboarding.md` the onboarding funnel. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
+Distilled from knowledge-base sections 3.1, 3.9, 3.10 and 3.11, re-checked against the creator docs and the staff announcements on 2026-11-11 and updated on 26 Nov 2026 (100-play threshold, Promotional Text, sticky experiment enrolment, Sponsored Ads metrics). Use it to plan the analytics event schema, read Creator Analytics, set up experiments and Configs, and design for Recommended For You, search, thumbnails and matchmaking. In level-up mode it is the reference for reading a live game's numbers: this file holds the one benchmark table; `references/audit-existing-game.md` holds the triage order, `references/growth-and-marketing.md` ads, creators and community, `references/icons-thumbnails-and-store-page.md` the craft of the tile, and `references/tutorial-and-onboarding.md` the onboarding funnel. Most platform numbers here are version-sensitive `[VS]`; re-check https://create.roblox.com/docs and the owner's vault (`Roblox Research/2026-11 Market Scan/`, snapshot 2026-11-07) before quoting them.
 
 ## Start here by level
 
@@ -24,12 +24,12 @@ For a common task, read only these sections, in this order; the last one is the 
 ## Platform facts that shape design `[VS]`
 
 - Mobile is the majority; Android is about 65% of players, most on 2–4 GB phones (see performance.md).
-- 13+ players outnumber under-13 players. 64% of DAU were age-checked in Q3 2026. Q3 2026 DAU was about 138 million (−9% year on year). The concurrent-user record was 47.4 million on 23 August 2025 (one source says 47.3).
+- 13+ players outnumber under-13 players. 64% of DAU were age-checked in Q3 2026, and on 31 Oct 2026 users 18+ were 29% of age-checked DAU (newsroom, 18 Nov 2026). Q3 2026 DAU was about 138 million (−9% year on year). The concurrent-user record was 47.4 million on 23 August 2025 (one source says 47.3).
 - Home is over 90% of traffic, about 10.5 billion impressions a day. Discovery, not search, decides who sees you.
 - Players sort into "tourists" (try, bounce) and "locals" (return daily). Fun must land within 5 minutes or the tourist is gone.
 - Appointment timers you pay to skip are downvoted; players accept honest waits with free alternatives.
 - Wave lifecycle: hits peak in 7–8 weeks, plateau for 2–5 months, then fall 90–99% within 6–12 months.
-- Age tiers and reach: Kids (5–8) see Minimal and Mild content; Select (9–15) adds Moderate; 16+ sees everything except Restricted. To reach under-16 audiences a creator must be ID-verified with 2FA, complete the questionnaire, hold Plus/Premium for 2 months or pay a 1,000 R$ refundable fee, run a trial to 16+, and reach 250 engaged age-checked plays within 60 days (evaluated hourly); 50,000 R$ buys an expedited review. The docs disagree on the refund timing (90 days vs 25 engaged players kept for 60 days).
+- Age tiers and reach: Kids (5–8) see Minimal and Mild content; Select (9–15) adds Moderate; 16+ sees everything except Restricted. To reach under-16 audiences a creator must be ID-verified with 2FA, complete the Content Ratings Questionnaire, hold Plus/Premium for 2 months or pay a 1,000 R$ refundable fee (waived until 19 Dec 2026 for creators who had the free Plus grant), run a trial to 16+, and reach 100 engaged age-checked plays within 60 days (250 until 19 Nov 2026; counted hourly at Publish Settings ⟩ Manage Audience); 50,000 R$ buys an expedited review. The docs disagree on the refund timing (90 days vs 25 engaged players kept for 60 days). Kids & Select games also need an accepted IARC rating to stay playable in Australia from 26 Jan 2027 (`community-moderation-safety.md` §3).
 
 ## Analytics: what to measure
 
@@ -71,7 +71,7 @@ Other dashboards worth a weekly look `[official][VS]`:
 | Audience → Feedback | Up/down vote trend and player comments (from 2025); a downvote spike dates a bad update |
 | Thumbnails → Home Page tab | Impressions, qualified plays, average playtime and qualified PTR per active thumbnail |
 
-Open Cloud `[official][VS]`: the Analytics Query API (`/analytics-query-api/v1/universes/{id}/metrics`) returns the same metrics with breakdowns and filters, and the experimental Benchmarks API (`/analytics-benchmark/v1/universes/{id}/benchmarks`) returns the P10/P50/P90 benchmark series; both use the `universe.analytics:read` scope, which the Studio MCP exposes through `open_cloud_invoke`. Standard metrics go back 4 years, performance metrics 28 days. Metric names are listed in audit-existing-game.md §1.
+Open Cloud `[official][VS]`: the Analytics Query API (`/analytics-query-api/v1/universes/{id}/metrics`) returns the same metrics with breakdowns and filters, and the experimental Benchmarks API (`/analytics-benchmark/v1/universes/{id}/benchmarks`) returns the P10/P50/P90 benchmark series; both use the `universe.analytics:read` scope, which the Studio MCP exposes through `open_cloud_invoke`. Standard metrics go back 4 years, performance metrics 28 days. Since 17 Nov 2026 the query API also returns `SponsoredAdsClicks`, `SponsoredAdsImpressions` and `SponsoredAdsSpendUsd` by campaign, ad, age group, platform and OS, so ad spend and organic metrics can sit in one sheet `[VS]`. Metric names are listed in audit-existing-game.md §1.
 
 ## Benchmarks: one table
 
@@ -121,11 +121,11 @@ Standard schema (see templates/analytics-event-plan.md):
 - Offer funnel: Shown, Viewed, Prompted, Purchased, with CustomField01 = trigger.
 - Rewarded video funnel: Offered, Started, Completed, Rewarded.
 - Economy: every earn and spend of each currency with the item SKU.
-- Custom: RoundEnded (value = duration), Rebirth (value = count), ServerLowMemoryWarning.
+- Custom: RoundEnded (value = duration), Rebirth (value = count), ServerLowMemoryWarning. Put `game.ServerRegion` (a three-letter airport code of the hosting data centre, server-only, empty in Studio; released 19 Nov 2026 `[VS]`) in a custom field of performance and latency events so regional problems separate out.
 
 ## Experiments and Configs `[VS]`
 
-- Experiments `[official]` run 14–60 days with up to 2 variants plus control, a percent rollout and a metric set: the default (D1, D7, playtime, ARPU, ARPPU, payer conversion, session time), a rewarded-video set, or the default plus up to 3 custom metrics built from your own custom, economy and funnel events (for example per-user conversion on the last onboarding step). Nothing can be edited after scheduling. Playtime, payer conversion and ARPU refresh every 5 minutes in the first 24 hours (early harm), but a harm verdict needs 10,000 players enrolled across variant and control. Roblox recommends a simple 50/50 on a large rollout and says games under 1,000 DAU "might struggle to get useful data"; watch the minimum detectable effect. A result is significant when the confidence interval excludes 0.
+- Experiments `[official]` run 14–60 days with up to 2 variants plus control, a percent rollout and a metric set: the default (D1, D7, playtime, ARPU, ARPPU, payer conversion, session time), a rewarded-video set, or the default plus up to 3 custom metrics built from your own custom, economy and funnel events (for example per-user conversion on the last onboarding step). Nothing can be edited after scheduling. Playtime, payer conversion and ARPU refresh every 5 minutes in the first 24 hours (early harm), but a harm verdict needs 10,000 players enrolled across variant and control. Roblox recommends a simple 50/50 on a large rollout and says games under 1,000 DAU "might struggle to get useful data"; watch the minimum detectable effect. A result is significant when the confidence interval excludes 0. For experiments that start after 17 Nov 2026, targeting is only an entry check: a player enrolled by the first `GetValue` keeps that arm across sessions even after leaving the target group (a new-player tutorial test keeps its variant on day 3); earlier experiments still re-evaluate targeting per session. A one-time surface therefore needs its own "already shown" flag `[official]` `[VS]`.
 - High-value experiments: offer grace 10 vs 20 minutes; offers per session 2 vs 3; starter-pack trigger; 29 vs 49 R$ for the 10-minute boost; rewarded-video placement; hint delay 5 vs 10 s; starting currency.
 - Configs: `ConfigService:GetConfigAsync()` or `GetConfigForPlayerAsync(player)` returns a snapshot with `GetValue(key)`; connect `UpdateAvailable` and call `Refresh()`. Limits: 1,000 configs, 100,000 JSON characters. `SetTestingValue` for Studio. Make every tunable (prices, timers, offer gate numbers, drop rates) a config key with a safe code default. A new value is staged first (visible only in Studio sessions), then "Publish now" reaches servers in about 15 s to 1 min `[VS]` (clients may take a few minutes to reflect it), or "Publish over 15 min" rolls it out gradually; History → Restore re-stages the previous value `[official]`. Configs and in-game experiments can target by country, language, tenure and payer status.
 - Matchmaking experiments: one at a time, 3 variants, 100% rollout.
@@ -173,7 +173,8 @@ How it behaves `[official]`:
 - Four things move impressions: your changes, algorithm changes, seasonality (Saturday peak, summer, back to school, holidays) and competitors improving faster than you.
 - When impressions drop, read the Home Recommendations signals in order: PTR, bounce, play days and playtime first, across D8–28, D2–7 and D1; only if those are stable look at co-play, qualified sessions, spend days and Robux per user.
 - Since 15 June 2026 the algorithm reads a 28-day view instead of 7 days and measures play-through, session quality (bounce) and retention separately, so a tile that wins the click and loses the session no longer helps.
-- A user acquired by an ad generally stops seeing the organic tile, so organic impressions can dip during a campaign; that is not a penalty.
+- A user acquired by an ad generally stops seeing the organic tile, so organic impressions can dip during a campaign; that is not a penalty. Since October 2026 the sponsored tile and the organic tile can both show on one user's Home, spaced apart.
+- Since 23 Oct 2026 Roblox has tested a Home layout with a side pane on large landscape screens (PC, console, tablet); staff say ranking and the Recommended For You grid do not change, only where the details page opens.
 
 - Most important signals: PTR, bounce, play days, playtime (capped).
 - Important: co-play days, qualified sessions, spend days, Robux per user.
@@ -184,9 +185,10 @@ How it behaves `[official]`:
 Thumbnails and metadata:
 
 - Custom 16:9 thumbnails at 1920×1080 under 3 MB are required for Home. Up to 10 thumbnails; keep 2–5 active so personalization can pick (average +8.5%, up to +50%). Gameplay video: 3 uploads per month (rejections count), authentic gameplay only, not shown on console or VR; it autoplays in the Recommended For You tile since 29 July 2026, and YouTube embeds were removed from details pages on 30 September 2026 (icons-thumbnails-and-store-page.md §9).
-- Craft (icon, composition, colour, text, Blender renders, video, the upload procedure and the review rubric) is owned by `icons-thumbnails-and-store-page.md`; the owner's thumbnail rules 1–13 are in `market-scan-2026-11.md`. Title pattern in brief: a short status tag plus a verb phrase, with the name inside the first 23 characters.
+- Craft (icon, composition, colour, text, Blender renders, video, the upload procedure and the review rubric) is owned by `icons-thumbnails-and-store-page.md`; the owner's thumbnail rules 1–13 are in `market-scan-2026-11.md`. Title pattern in brief: a short status tag plus a verb phrase, with the name inside the first 23 characters; since the Promotional Text beta the tag may be shortened away on some tiles, so the name must stand alone (below).
 - Description hook in the first 160 characters. (Roblox labels this guidance experimental, for select creators and aimed at external search engines; the general rule is a first sentence that summarises the game, plus relevant keywords.)
-- Name and description rules `[official]`: keep the name consistent (frequent renames break search for the old name); no repeated or irrelevant keywords ("may result in demotion"); one or two well-placed emoji at most. A beta Promotional Text field holds a short secondary line `[VS]`.
+- Name and description rules `[official]`: keep the name consistent (frequent renames break search for the old name); no repeated or irrelevant keywords ("may result in demotion"); one or two well-placed emoji at most.
+- Promotional Text (beta for all creators since 3 Nov 2026; Creator Hub ⟩ Game details) `[official]` `[VS]`: an optional short line shown beside the name on some surfaces (tested in Recommended For You, the Continue row and details pages). Roblox tells creators to move what they now put in brackets, parentheses or emoji in the name (mode, update, event, status) into it, and is testing shortened names on some tiles for small new-user audiences. So a bracket status tag in the title can be cut for some players: keep the name itself first and short, and put the live tag in Promotional Text as well. The beta has no end date.
 
 Thumbnail and icon testing `[official][VS]`:
 
@@ -233,7 +235,7 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 
 ## Scaling, safety and matchmaking `[VS]`
 
-- Platforms: PlayStation, Xbox, Android, iOS, PC, Mac, Meta Quest. Automatic translation covers text and chat when the player enables it; set supported languages in Localization. Icon-led UI travels better than text. Holidays are not universal; pick event themes that travel.
+- Platforms: PlayStation, Xbox, Android, iOS, PC, Mac, Meta Quest, and the web in Chrome (Web Play: creators-only test from 29 Oct 2026, "Play in Browser" in Creator Hub, WebGPU rendering from 19 Nov; no voice; opening to players was announced for late 2026 `[VS]`). Automatic translation covers text and chat when the player enables it; set supported languages in Localization. Icon-led UI travels better than text. Holidays are not universal; pick event themes that travel.
 - Safety: filter all user text; monitor user creation; for under-18 audiences avoid private-space settings and add bounding-box limits on beds; `Players:BanAsync` detects alt accounts; gate high-trust features on `Player:IsVerified` or account age. The safety dashboard needs 1,000+ daily hours.
 - Matchmaking: server score = Σ(signal score 0–1 × weight). Built-in signals: Estimated Player Latency, Has Friends, Is Voice Chat Enabled, Player Age, Player Device Type, Player Language, Player Play History, Server Occupancy, Player Text Chat Group. Custom signals come from data-store attributes (skill rating, level band). Social games weight Friends and Occupancy highest; competitive games add a skill signal and Latency; keep Player Age and Text Chat Group on for mixed audiences. Lower-risk: raise only Friends and Occupancy. Bold: a custom skill or veteran-mix signal under a matchmaking experiment, watching D1 daily.
 
@@ -243,7 +245,7 @@ Growth plan. Lower-risk: launch in a seasonal window, fill thumbnails and metada
 - [ ] Onboarding funnel, shop funnel, offer funnel and economy events live in a published test place first.
 - [ ] Configs for every tunable; Experiments planned for the two riskiest numbers.
 - [ ] Bounce under 60 s measured on a low-end phone before launch.
-- [ ] Content-maturity questionnaire answered; age-tier plan chosen (16+ first, then under-16 after 250 engaged plays).
+- [ ] Content Ratings Questionnaire answered; age-tier plan chosen (16+ first, then under-16 after 100 engaged plays).
 - [ ] Launch date inside a seasonal window, ideally a Saturday; weekly update day announced.
 - [ ] Share links, invite prompt and referral banner wired.
 
@@ -288,6 +290,7 @@ Accessed 2026-11-10 and 2026-11-11. Creator docs read from the `Roblox/creator-d
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/configs.md, experiments.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/thumbnails.md, descriptions.md, publish-games-and-places.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/ads-manager.md, social-media-links.md (read)
+- Update of 26 Nov 2026, `Roblox/creator-docs` commit 47ec857 (2026-11-25) (read): `production/experiments.md` (sticky enrolment, 17 Nov), `cloud/guides/analytics/metrics.md` (Sponsored Ads metrics), `production/publishing/kids-and-select.md`, `reference/engine/classes/DataModel.yaml` (`ServerRegion`). Staff posts (read): Promotional Text, 2026-11-03, https://devforum.roblox.com/t/4973915 · New Home layout test, 2026-10-22, https://devforum.roblox.com/t/4950387 · A Simpler Path to Publish, update of 2026-11-19, https://devforum.roblox.com/t/4930524 · Server region API, 2026-11-19, https://devforum.roblox.com/t/4996710 · Creators Can Test Games on the Web, 2026-10-29, https://devforum.roblox.com/t/4964592 · Weekly Recap 19–23 Oct 2026 (sponsored and organic tile together), https://devforum.roblox.com/t/4953263. Newsroom: https://about.roblox.com/newsroom/2026/11/introducing-classmates-a-new-way-for-us-college-students-to-connect-on-roblox (18+ share of age-checked DAU)
 - https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox (search summary)
 - https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575, /t/how-we-are-improving-home-this-year/4502571, /t/improved-discovery-measurement-in-creator-analytics/4930122, /t/4542233 (weekly recap, 27 Mar 2026), /t/4945086 (custom thumbnail required), /t/4879633 (YouTube embeds removed) (read, 2026-11-11)
 - https://devforum.roblox.com/t/live-now-personalize-your-thumbnails-to-attract-more-users/3257233, /t/icon-ab-testing/3274267 (search summaries)

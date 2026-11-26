@@ -58,7 +58,8 @@ Owner: `references/data-and-purchases.md`.
 - A failed load kicks with a clear message. It never falls through to default data, and a profile that failed to load never saves.
 - Never change the key pattern of a live store; never wipe data in a migration; never read DataStores in a gameplay hot path. Snapshot before any change to save logic.
 - One `ProcessReceipt`. Grant and record the `PurchaseId` in one step, return `PurchaseGranted` only after the save is confirmed, and never grant from `PromptProductPurchaseFinished` or any client signal.
-- No yield between a check and its write: that gap is where dupes live. Fetch web facts (group, pass, policy) at join and cache them.
+- No yield between a check and its write: that gap is where dupes live. Fetch group and policy facts at join and cache them.
+- Game passes `[VS]`: ownership is checked live when access matters (join, spawn, use; Roblox caches the call), because a free trial (from 2 Dec 2026) or a refund ends it mid-session. Pass benefits are applied at runtime and never saved; anything kept, used up or traded is a developer product; a permanent bonus waits for `GetPassOwnershipAsync(...).Owned`.
 - One-way transfers (gift, mail) debit the giver and confirm that save before crediting the receiver.
 - Trading needs all of: immutable item GUIDs; the two-profile commit protocol, built from its full text (both profiles session-locked on one server, item locks honoured by every path that consumes or changes an item, currency escrowed); its fault-injection test passed; a ledger; a kill switch.
 
@@ -142,7 +143,8 @@ Owners: `references/audit-existing-game.md` (safe-change protocol, §9), `refere
 
 Owners: `references/community-moderation-safety.md`, `references/monetization-and-policy.md` (policy), `references/team-business-legal.md`.
 
-- Players converse only through `TextChatService`; every player-written string is filtered.
+- Players converse only through `TextChatService`; every player-written string is filtered, and any other player text that others see accepts at most one submission per player per minute, enforced on the server (Roblox imposes the same limit on a whole game it catches hosting chat elsewhere, from 3 Dec 2026 `[VS]`).
+- An age-check prompt (`Player:PromptAgeCheck()`) appears only from an optional button the player taps in a game built for adults; nothing in the core loop depends on it, and no age is inferred.
 - No links, invite codes, handles or requests for personal data inside the game. Social links live on the game's page.
 - Legal, tax and IP topics: state the documented fact with its date and point to the current Roblox terms and a professional. Never present it as advice.
 
@@ -151,5 +153,5 @@ Owners: `references/community-moderation-safety.md`, `references/monetization-an
 Owners: `references/studio-workflow.md`, `references/engineering-architecture.md` (Studio MCP rules), `references/ai-toolchain-skills.md`.
 
 - Never run Script Sync and Rojo on the same scripts. Never point `rojo serve` at a Studio-owned live place: pull it into files first (`rojo syncback`) and set `servePlaceIds` to the dev place.
-- Through the Studio MCP on a live game: read-only first, edits in edit mode behind a saved version, never save, publish or delete unasked.
+- Through the Studio MCP on a live game: read-only first, edits in edit mode behind a saved version, never save (`save_place` included), publish or delete unasked.
 - Never install a third-party skill, plugin or MCP server unread: pin a commit, never pipe to a shell, never paste keys or cookies.

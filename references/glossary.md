@@ -1,6 +1,6 @@
 # Glossary: the words a Roblox developer meets
 
-264 terms across the platform, the engine, Luau, networking, data, monetisation, analytics, discovery, the art pipeline, UI and community slang, each in one or two plain lines with the reference to open for more. Open it when a term in another reference, a forum thread or a dashboard is unclear, when explaining something to a beginner (define the term the first time it appears), and in an audit to confirm two people mean the same thing by a word. File names in the last column are under `references/` (the full file map is `references/INDEX.md`). Numbers are `[VS]`: version-sensitive, re-check at create.roblox.com/docs. `[house]` marks house conventions.
+266 terms across the platform, the engine, Luau, networking, data, monetisation, analytics, discovery, the art pipeline, UI and community slang, each in one or two plain lines with the reference to open for more. Open it when a term in another reference, a forum thread or a dashboard is unclear, when explaining something to a beginner (define the term the first time it appears), and in an audit to confirm two people mean the same thing by a word. File names in the last column are under `references/` (the full file map is `references/INDEX.md`). Numbers are `[VS]`: version-sensitive, re-check at create.roblox.com/docs. `[house]` marks house conventions.
 
 Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · M–P · Q–S · T–Z · Level-up: words that flag a problem · Review gate · Sources
 
@@ -10,7 +10,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 |---|---|
 | Beginner | Learn these 25 first: Experience, Place, Studio, Explorer, Output, Instance, Workspace, Script, LocalScript, ModuleScript, Client, Server, RemoteEvent, ReplicatedStorage, ServerScriptService, Anchored, CanCollide, MeshPart, Stud, DataStore, Game pass, Developer product, Robux, Core loop, Publish ("Studio" is under Roblox Studio; "Publish" is under Confusable pairs). Ignore the rest until a word shows up in front of you |
 | Intermediate | The metric words (CCU, DAU, D1/D7/D30, ARPDAU, ARPPU, PTR, payer conversion), the data words (session lock, idempotent, migration, `UpdateAsync`) and the performance words (draw call, frame budget, instance streaming) |
-| Expert | A shared vocabulary for briefs and audits, and a list of names that changed recently: LightingStyle, Input Action System, Creator Store, Roblox Plus, Managed Pricing, server authority mode, age tiers |
+| Expert | A shared vocabulary for briefs and audits, and a list of names that changed recently: LightingStyle, Input Action System, Creator Store, Roblox Plus, Managed Pricing, server authority mode, age tiers, Content Ratings Questionnaire (was Maturity & Compliance), the 100-play gate (was 250), pass free trials |
 
 ## Confusable pairs
 
@@ -20,7 +20,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | Save / publish | Save to Roblox stores a new version in the cloud. Publish makes a version the one new servers run. Neither moves players already in old servers |
 | Script / LocalScript / ModuleScript | Script runs on the server (or wherever its `RunContext` says). LocalScript runs on one player's device, only in client containers. ModuleScript runs nowhere until something `require`s it |
 | ReplicatedStorage / ServerStorage | Both hold things not in the world. Every client can read ReplicatedStorage; no client can see ServerStorage |
-| Game pass / developer product / subscription | Pass: bought once, owned forever. Product: bought repeatedly, granted by `ProcessReceipt`. Subscription: renews monthly |
+| Game pass / developer product / subscription | Pass: bought once, owned until refunded; a free trial lends it for one session. Product: bought repeatedly, granted by `ProcessReceipt`. Subscription: renews monthly |
 | Anchored / CanCollide | Anchored: physics never moves it. CanCollide: things cannot pass through it. A floor needs both |
 | CCU / DAU | CCU: players online at this moment. DAU: distinct players in a day |
 | CTR / PTR | CTR: clicks per impression (ads). PTR: plays per impression on Home; qualified PTR counts only plays that last |
@@ -35,13 +35,13 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 
 | Term | Meaning | More |
 |---|---|---|
-| **250-play gate** | The evaluation a game passes before players under 16 can see it: 250 unique plays by highly engaged, age-checked 16+ players within 60 days, on top of creator verification and a fee or subscription `[VS]` | analytics-and-discovery.md |
+| **100-play gate** | The evaluation a game passes before players under 16 can see it: 100 unique plays by highly engaged, age-checked 16+ players within 60 days (250 until 19 Nov 2026), on top of creator verification and a fee or subscription; progress at Publish Settings ⟩ Manage Audience `[VS]` | analytics-and-discovery.md |
 | **9-slice** | An image cut into nine regions so the corners keep their shape while the middle stretches (`ScaleType = Slice`); how one small texture makes panels and buttons of any size | ui-design-figma.md |
 | **A/B test** | Showing different versions to random groups and comparing a metric. On Roblox: Experiments | analytics-and-discovery.md |
 | **Actor** | Container whose scripts may run in parallel with others | performance.md |
 | **AFK** | Away from keyboard. Idle players are disconnected after about 20 minutes `[VS]`; AFK rewards must not gate progress | liveops-quests-retention.md |
-| **Age check** | Facial age estimation or ID check. Needed for chat, for Team Create with others and for public release `[VS]` | studio-workflow.md |
-| **Age tiers** | Roblox Kids (5–8), Roblox Select (9–15), Roblox (16+). Tier plus content label decides who can see a game `[VS]` | analytics-and-discovery.md |
+| **Age check** | Facial age estimation or ID check. Needed for chat, for Team Create with others and for public release. A game can offer one with `Player:PromptAgeCheck()` and read `Player.AgeChecked` (checked or not, never the age) `[VS]` | studio-workflow.md |
+| **Age tiers** | Roblox Kids (5–8), Roblox Select (9–15), Roblox (16+). Tier plus content maturity rating decides who can see a game `[VS]` | analytics-and-discovery.md |
 | **Albedo** | The colour texture of a PBR set, with no lighting baked in | art-pipeline-blender.md |
 | **AnalyticsService** | API that logs funnel, economy and custom events to Creator Analytics | analytics-and-discovery.md |
 | **Anchored** | Property that stops physics moving a part. Static scenery is always anchored | performance.md |
@@ -57,7 +57,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Audio API** | The newer audio graph (`AudioPlayer`, `AudioEmitter`, `AudioListener`, wires, effects) next to the classic `Sound` | audio-sfx-music.md |
 | **Backdoor** | Hidden code, usually from a free model or plugin, that lets an outsider run commands in your servers | networking-and-security.md |
 | **Badge** | A permanent achievement shown on a player's profile | liveops-quests-retention.md |
-| **Ban API** | Engine bans by user, with duration and alt-account handling | networking-and-security.md |
+| **Ban API** | Engine bans by user, with duration and alt-account handling; ban lists shared across games are planned for 29 Jan 2027 `[VS]` | networking-and-security.md |
 | **BasePart** | Parent class of everything physical: Part, MeshPart, and others | performance.md |
 | **Beam / Trail** | Beam: a textured ribbon between two attachments. Trail: a ribbon left behind a moving attachment | vfx-and-juice.md |
 | **BillboardGui** | UI that floats in the world and faces the camera (name tags, damage numbers) | ui-input-crossplatform.md |
@@ -79,7 +79,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **CollisionFidelity** | How closely a mesh's physics shape follows its look: Box, Hull, Default, Precise | art-pipeline-blender.md |
 | **Command Bar** | Studio input that runs Luau against the open place, with elevated rights | studio-workflow.md |
 | **Configs** | Values changed from Creator Hub without republishing (`ConfigService`); the basis of flags and experiments | analytics-and-discovery.md |
-| **Content maturity label** | The rating from the maturity questionnaire: Minimal, Mild, Moderate, Restricted, or Content May Vary | analytics-and-discovery.md |
+| **Content maturity rating (label)** | Roblox's rating from the Content Ratings Questionnaire (the Maturity & Compliance Questionnaire before 11 Nov 2026): Minimal, Mild, Moderate, Restricted, or Content May Vary. Shown beside a regional IARC rating (ESRB, PEGI, USK and others) where one applies `[VS]` | community-moderation-safety.md |
 | **Core loop** | The short cycle a player repeats most: act, get rewarded, improve, act again | core-loop-tuning.md |
 | **CoreGui** | Roblox's own UI over your game: top bar, menu, chat | ui-input-crossplatform.md |
 | **CPP** | Cost per play: ad spend divided by plays bought | growth-and-marketing.md |
@@ -120,6 +120,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Flipbook** | A grid of frames in one texture (2×2, 4×4 or 8×8), played as an animated particle. Also the name of a UI storybook plugin | vfx-and-juice.md, vfx-recipes.md |
 | **FPS** | Frames per second. House floor: 30 on a low-end Android phone `[house]` | performance.md |
 | **Frame budget** | Time available per frame: 16.7 ms at 60 FPS, 33.3 ms at 30 | performance.md |
+| **Free trial (pass)** | A creator can let each player try a game pass once, for one session, from the Shop (from 2 Dec 2026). Pass benefits must therefore come from a live ownership check and never be saved `[VS]` | data-and-purchases.md |
 | **Free model** | A Creator Store model made by someone else. Common source of backdoors; banned from shipped content `[house]` | networking-and-security.md |
 | **FTUE** | First-time user experience: the first minutes of a new player, including any tutorial | tutorial-and-onboarding.md |
 | **Funnel** | Ordered steps (joined, first reward, first upgrade…) with the share of players reaching each | analytics-and-discovery.md |
@@ -214,6 +215,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **PolicyService** | Tells the server what a player may see by region and age (for example whether paid random items are restricted) | monetization-and-policy.md |
 | **Primitive Part** | A built-in block, sphere, wedge or cylinder. Allowed only as invisible helpers `[house]` | art-pipeline-blender.md |
 | **Private server** | A server only invited players can join, free or paid | monetization-and-policy.md |
+| **Promotional Text** | Optional short line shown beside a game's name on some Home tiles and the details page (beta since Nov 2026), for the live mode, update or event instead of a bracket tag in the name `[VS]` | growth-and-marketing.md |
 | **ProcessReceipt** | The single server callback that grants developer-product purchases | data-and-purchases.md |
 | **ProfileStore** | Library that adds session locking and safe saving on top of DataStores; the house default | data-and-purchases.md |
 | **ProximityPrompt** | Built-in "hold E to interact" prompt that adapts to touch and gamepad | ui-input-crossplatform.md |
@@ -290,7 +292,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 | **Team Create** | Several people editing one place at once | studio-workflow.md |
 | **Team Test** | A shared playtest on Roblox servers for collaborators | studio-workflow.md |
 | **Telegraph** | A visible warning (ring, flash, wind-up) that shows where and when an attack will land, long enough to react | vfx-and-juice.md, vfx-recipes.md |
-| **TeleportService** | Moves players between places and servers. Does not work in Studio playtests | data-and-purchases.md |
+| **TeleportService** | Moves players between places and servers. `TeleportAsync` can be tested in Studio Test and Team Test since Nov 2026, within one experience | data-and-purchases.md |
 | **Terrain** | Roblox's voxel landscape. Needs the owner's approval per game `[house]` | art-pipeline-blender.md |
 | **Texel density** | Texture pixels per stud; keep it even across assets (about 50 px per stud `[house]`, fixed in the style bible) | art-pipeline-blender.md, art-direction-and-quality-bar.md |
 | **Text filtering** | Mandatory moderation of any player-written text before others see it | ui-input-crossplatform.md |
@@ -350,7 +352,7 @@ Contents: Start here by level · Confusable pairs · A–C · D–F · G–L · 
 
 ## Sources
 
-Accessed 2026-11-10; routing and the facts on PTR, Roblox Plus and the MicroProfiler shortcut re-checked 2026-11-11 (creator-docs commit 7cbffff).
+Accessed 2026-11-10; routing and the facts on PTR, Roblox Plus and the MicroProfiler shortcut re-checked 2026-11-11 (creator-docs commit 7cbffff); the 100-play gate, age check, ban, content rating, free trial, Promotional Text and TeleportService entries updated 2026-11-26 against creator-docs commit 47ec857 and the staff posts cited in the owning guides.
 
 - Definitions follow the existing references in this skill (the file named in each row), which carry their own sources.
 - Roblox/creator-docs, commit ccc2b01 (2026-11-07), `content/en-us/`: `studio/{testing-modes,device-simulator,overview,output}.md`, `scripting/sync.md`, `projects/{collaboration,version-history,place-files,update-games}.md`, `projects/assets/packages.md`, `production/publishing/{publish-games-and-places,kids-and-select}.md`, `production/monetization/roblox-plus.md` and the file list of `production/monetization/`, `creator-rewards.md`, `cloud-services/data-stores/index.md` (read) — https://github.com/Roblox/creator-docs
