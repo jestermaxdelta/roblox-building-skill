@@ -17,7 +17,7 @@ One row per job. Find the row, open that file, and read only the section you nee
 
 | Job | Open |
 |---|---|
-| What to build, what is winning or saturated, the 14 shared patterns, cozy-management and +1 format norms, the 13 thumbnail and title rules, the 250-play gate, launch timing, gap ranking (snapshot 2026-11-07) | `references/market-scan-2026-11.md` (raw report: `references/market-research-v2-raw.md`, grep only) |
+| What to build, what is winning or saturated, waves since 7 Nov, the holiday season so far, off-platform signals, the 14 shared patterns, cozy-management and +1 format norms, the 13 thumbnail and title rules, the 100-play gate, launch timing, gap ranking and a 13-idea bank (snapshots 2026-11-07 and 2026-11-26) | `references/market-scan-2026-11.md` (raw report: `references/market-research-v2-raw.md`, grep only) |
 | Choosing or shaping a genre | `references/genre-playbooks.md` (index), then one file in `references/genres/`: `tycoon-and-cozy-management`, `simulator-incremental`, `pet-collection-hatching`, `plus-one-evolution`, `throw-for-distance`, `rng-rolling`, `steal-and-defend`, `obby-tower`, `horror-coop-escape`, `rpg-dungeon`, `fighting-battlegrounds`, `tower-defense`, `shooter-pvp`, `survival-crafting`, `social-roleplay`, `fashion-dress-up`, `social-deduction`, `party-minigames`, `physics-sandbox`, `racing-driving`, `fishing`, `sports` (`.md`) |
 | How successful games work; doing a teardown; trend or evergreen | `references/case-studies-teardowns.md` |
 | Design theory on paper: the target feeling (MDA), fun, nested loops and the paper loop rubric, motivation, ethics for a young audience, flow and difficulty, first-session theory and goal clarity, light narrative | `references/design-foundations.md` |

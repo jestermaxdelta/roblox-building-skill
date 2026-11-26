@@ -125,25 +125,27 @@ What separates hits from flops (inference):
 
 ## Thumbnail and title playbook v2 (13 rules)
 
-Roblox ranks thumbnails by qualified plays, not clicks, so the first minute must deliver what the tile shows. Home shows 16:9 tiles and uses only slot 1 (+7.2% plays after the switch); personalization rotates 2–5 images hourly per age group (+8.5–12% qualified plays, up to +50–56%). Tiles show at about 150 px; text under about 40 px is unreadable; nothing important on the bottom edge.
+Roblox ranks thumbnails by qualified plays, not clicks, so the first minute must deliver what the tile shows. Home shows 16:9 tiles and uses slot 1 when personalisation is off (+7.2% plays after the switch); with 2–5 thumbnails active on the Home Page tab, personalisation picks one per user (thumbnails docs, read 26 Nov 2026); personalization rotates 2–5 images hourly per age group (+8.5–12% qualified plays, up to +50–56%). Tiles show at about 150 px; text under about 40 px is unreadable; nothing important on the bottom edge.
 
 | # | Rule | Do | Don't |
 |---|---|---|---|
 | 1 | Show the first minute of gameplay | The progression players actually get | A boss they never meet |
 | 2 | One focal point, at most 5 elements | Giant character with one item | A busy map overview |
 | 3 | Big number in the game's own unit | "1,000,000,000 SIZE" with a heavy outline | Small "earn money" text |
-| 4 | Show the climb in one frame | NOOB → GOD, Day 1 → Day 100, $1/s → $9.8M/s | Only the end state |
+| 4 | Show the climb in one frame | NOOB → GOD, Day 1 → Day 100, $1/s → $9.8M/s, or one throw arc over rising zone steps to the top prize | Only the end state |
 | 5 | Readable at 150 px | 3–4 words, top or middle | Key text on the bottom edge |
 | 6 | Colour to genre, or break it on purpose | Saturated for sims; a number-style tile for a management game | Bright art for horror |
-| 7 | A face sells the emotion | Shock, crying, screaming | A blank standing avatar |
+| 7 | A face sells the emotion | Shock, crying, screaming (26 Nov 2026: faces on 78% of established games' thumbnails, 49% of new games'; test it, it is not a law) | A blank standing avatar |
 | 8 | Fill all 5 personalization slots with different hooks | Ladder, odds, VS, rare item, gag; keep each 7+ days | 5 recolours, or resets every 2 days |
-| 9 | Title = [STATUS/emoji] + verb phrase, refreshed every update | `[🎄 UPD] +1 Snowball Size For Eggs` | Halloween tags in late November |
-| 10 | Copy the format, not the art | Same formula, your own theme | Cloned art or names |
+| 9 | Title = short name with the verb; status in Promotional Text, refreshed every update | Name `+1 Snowball Size For Eggs`, Promotional Text "Winter Update"; any tag left in the name 6 characters or fewer | Halloween tags in late November; a seasonal tag with no seasonal art; a long leading tag such as `[WEEK 4 🎃 x BUTCHER]` |
+| 10 | Copy the format, not the art | Same formula, your own theme | Cloned art or names; a shared template still carrying another game's labels (26 Nov: five games, one template) |
 | 11 | Show your rarest odds only if they are real | "1 in 50,000,000", same odds shown in-game | Odds that don't exist |
-| 12 | Put the live boost in the title tag | `[2X SIZE]`, `[⏳6H EVENT]`, rotated with events | A permanent fake "2X" |
+| 12 | Put the live boost in Promotional Text (or a tag of 6 characters or fewer) | "2X SIZE", "6H EVENT", rotated with events | A permanent fake "2X"; "SALE!" or prices on the icon |
 | 13 | Don't run ads until the rating is 85% or higher | Wait for the rating to settle | Paying to show "66% Rating" (ad median is 79%; non-ad median 92%) |
 
-Feed stats (coded from 72 + 177 tiles): [TAG] titles 53–64%, emoji 39–52%, giant number 22–37%, before → after 8–16%, "1 in X" 3–10%, no text at all 27–31%. Established games use a logo and moody art because the name is the hook; new format games use saturated colour, a giant number and a visible climb because the mechanic is the hook.
+Rules 9 and 12 changed on 26 Nov 2026: since 3 Nov Roblox's Promotional Text beta takes status, update and event lines (Creator Hub ⟩ game details), and Roblox tests shortened names that drop bracket and emoji tags for some new users (DevForum /t/4973915, beta). Keep the name readable alone; put the live tag in Promotional Text (icons-thumbnails-and-store-page.md §10).
+
+Feed stats (coded from 72 + 177 tiles): [TAG] titles 53–64%, emoji 39–52%, giant number 22–37%, before → after 8–16%, "1 in X" 3–10%, no text at all 27–31%. Established games use a logo and moody art because the name is the hook; new format games use saturated colour, a giant number and a visible climb because the mechanic is the hook. 26 Nov 2026 re-count (60 chart games, 158 thumbnails; 386 titles across Top Playing Now, Top Trending, Up-and-Coming and Top Earning): any bracket tag 48–58% by sort (leading 38–51%), emoji 44–57%, a number on 11% of thumbnails (18% for games created since September, 3% for established games), before → after split 1%, "1 in X" 3%, no text 44%; 17 of 44 leading tags on Top Playing Now were a bare emoji.
 
 ## Discovery facts that change design decisions `[VS]`
 
