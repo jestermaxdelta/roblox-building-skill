@@ -76,7 +76,7 @@ Rules that hold across recipes:
 - **Placement**: the face or key point on a third, upper half; dead centre only for symmetrical boss shots. The subject looks or moves into the frame, toward the second element `[lihfolk]`.
 - **Diagonal action**: tilt the line from weapon to target, rod to fish or avatar to prize 15–30° off horizontal; level horizons are for calm genres. Blade Ball, Fish It and Volleyball Legends are built on one diagonal each `[house]` viewed.
 - **Depth in three layers**: a dark or blurred foreground edge, the lit subject, a simpler and lower-contrast background. If the background is as sharp and saturated as the hero, blur it or drop its contrast.
-- **Faces**: a face reads only when it is about 8–10% of frame height or more `[lihfolk]`; choose shock, fear, joy or effort, never the default smile (rule 7). On 26 Nov 2026 a readable face (avatar, character, pet or creature) was on 97 of 158 chart thumbnails and 43 of 60 icons: on 78% of established games' thumbnails but 49% of those of games created since September `[house]` viewed. Evidence is mixed outside Roblox: one analysis of about 300,000 YouTube videos found faces perform about the same as no face on average and vary by niche (search summary). Treat "add a face" as a hypothesis for §13, not a law.
+- **Faces**: a face reads only when it is about 8–10% of frame height or more `[lihfolk]`; choose shock, fear, joy or effort, never the default smile (rule 7). On 26 Nov 2026 a readable face was on 61% of 158 chart thumbnails (78% for established games, 49% for games created since September) `[house]` viewed. Evidence is mixed outside Roblox: one analysis of about 300,000 YouTube videos found faces perform about the same as no face on average and vary by niche (search summary). Treat "add a face" as a hypothesis for §13, not a law.
 - **Safe area**: nothing essential in the bottom 20% or within 5% of a corner. An established brand can break this (DOORS puts its wordmark in the bottom fifth of one slot); a new game cannot.
 - **Five slots, five promises** (rule 8): ladder, odds, versus, rare item, gag for a simulator; place, activity, friends, home, event for roleplay. Staff: near-identical thumbnails give personalisation nothing to tell apart `[official]`.
 
@@ -94,7 +94,7 @@ Medians from 62 icons and 171 thumbnails of Top Playing Now games, fetched 2026-
 | Tower defence (10) | 0.48 | 0.32 | Dark with neon accents |
 | Horror (28) | 0.59 | 0.19 | Very dark with one saturated hue: red, green or violet |
 
-A 26 Nov 2026 re-measure of 60 chart games (218 images) held the pattern: simulation 0.55 / 0.55, survival luminance 0.33, roleplay 0.65.
+A 26 Nov 2026 re-measure of 60 chart games (218 images) held the pattern: simulation thumbnails at 0.55 saturation and 0.55 luminance, survival at 0.33 luminance, roleplay at 0.65.
 
 - **Value first.** Convert to greyscale: the subject must sit 30–40 lightness points (of 100) from its surroundings `[lihfolk]`. Saturation cannot rescue a subject that shares its background's value.
 - **Subject owns the most saturated colour**; background calmer; a complementary pair (orange on blue, magenta on green, gold on violet).
@@ -116,7 +116,7 @@ What survived when the 62 chart icons were reduced (`[house]` viewed):
 - **The survivors share three things**: three or fewer value masses, a subject filling 60% or more, a flat or two-tone ground.
 - **Text**: on 26 Nov 31 of 60 chart icons had none, 21 a wordmark only, 8 a hook or badge ("+1", "ZZZ", "VS"); the wordmark was on 14 of 24 established games' icons and 9 of 36 new ones. A wordmark is brand, and only worth its space once players know the name. A new game spends the icon on the subject.
 - **One subject, cropped for tension**: let it break the frame; face or focal point upper-middle; nothing vital in the corners (rounded on every surface viewed).
-- **No rounded corners, drop shadow or badge baked in**: the platform masks the tile. Google Play's icon spec forbids ranking and deal text or graphics on icons and applies its own corners and shadow (Android developer docs, read); a baked "UPDATE!" ribbon also goes stale the day after. On 26 Nov 5 of 60 chart icons still baked one in: "NEW" twice, "LEVEL 2", an "UPDATE" ribbon, and a "SALE!" ribbon on Tower Defense Simulator the day before Black Friday (a price claim; §12).
+- **No rounded corners, drop shadow or badge baked in**: the platform masks the tile. Google Play's icon spec forbids ranking and deal text or graphics on icons and applies its own corners and shadow (Android developer docs, read); a baked "UPDATE!" ribbon also goes stale the day after. On 26 Nov 5 of 60 chart icons baked one in ("NEW", "LEVEL 2", "UPDATE", and a "SALE!" price claim the day before Black Friday; §12).
 - **Colour identity**: pick the hue pair once and keep it through every refresh; change the prop, not the palette (§14).
 - **Icon and thumbnails share anchors**: same hero, same two colours, same wordmark shape, so the Home tile and the Continue icon read as one game.
 
@@ -137,7 +137,7 @@ Pass marks: at 32 px a stranger names the subject; at 64 px they name the genre;
 - 26 Nov 2026, 158 chart thumbnails `[house]` viewed: no text on 70, a wordmark only on 40, a number on 18 (16 from games created since September), "1 in X" on 4, a before → after split on 1 ("LVL 1 → LVL 999") plus 3 throw-arc ladders. Numbers are a new-format habit; the climb now shows as arcs and odds more than splits.
 - Text is not translated. Automatic image translation (beta, 9 Nov 2026) covers in-game images only, "not icons and thumbnails" `[official][VS]`; the 2024 icon-translation experiment drew developer complaints about wrong translations `[community]`. Keep one text-free thumbnail active for every market, and upload per-locale icons only where a market earns it.
 - Set type in Figma on its own layer over the exported render, with the same display font as the in-game UI (`ui-design-figma.md` tokens). Never set type in Blender `[lihfolk]`.
-- **Brand system**: fix three things across the set and let the scene vary. Seen working: a fixed frame (Brookhaven), a fixed sign (Berry Avenue), a wordmark locked to one corner (Adopt Me) or always in a corner (Driving Empire, Dandy's World), one recurring flat-colour character (RIVALS). Build it once as a Figma component; each new thumbnail is a new render dropped under the same layers. A shared template is not a brand: on 26 Nov five games from five different groups used one template (an arc to the prize, a "?" silhouette, a checkered lane, a rainbow-gradient number), and one still showed another game's label (library rows 94–95; §11, §12).
+- **Brand system**: fix three things across the set and let the scene vary. Seen working: a fixed frame (Brookhaven), a fixed sign (Berry Avenue), a wordmark locked to one corner (Adopt Me) or always in a corner (Driving Empire, Dandy's World), one recurring flat-colour character (RIVALS). Build it once as a Figma component; each new thumbnail is a new render dropped under the same layers. A shared template is not a brand: on 26 Nov five games from five groups used one (arc to the prize, "?" silhouette, rainbow-gradient number), one still showing another game's label (library rows 94–95).
 - Established games lead with a logo and mood because the name is the hook; new format games lead with colour, a number and the climb because the mechanic is the hook (vault).
 
 ## 7. Character renders in Blender
@@ -220,9 +220,9 @@ Budget: route A is about half a day for five images once the PhotoStudio place e
 
 Search, renames, keyword rules and the 160-character hook are in `analytics-and-discovery.md` §Thumbnails and metadata and §Search. Craft points that belong with the images:
 
-- **The name must survive the cut.** Of 99 Top Playing Now titles on 26 Nov 2026, 44% opened with a bracket tag (43% on 11 Nov), 55% carried an emoji (66%), the median length was 22 characters and 38% ran past 23, where the staff's phone tile cuts the title; Up-and-Coming: 38%, 44% and 43% `[house]`. A tag such as `[WEEK 4 🎃 x BUTCHER]` leaves almost no name.
+- **The name must survive the cut.** Of 99 Top Playing Now titles on 26 Nov 2026, 44% opened with a bracket tag (43% on 11 Nov), 55% carried an emoji (66%), the median length was 22 characters and 38% ran past 23, where the staff's phone tile cuts the title; Up-and-Coming: 38%, 44% and 43% `[house]`. 17 of the 44 leading tags were a bare emoji such as `[🦃]`; a tag such as `[WEEK 4 🎃 x BUTCHER]` leaves almost no name.
 - **Status goes in Promotional Text.** Since 3 Nov 2026 a beta field carries the mode, update or event beside the name, and Roblox tests shortened names on some tiles when a name holds brackets, parentheses or emoji (`analytics-and-discovery.md` §Thumbnails and metadata) `[official][VS]`. The name stands alone and first; a tag left in it is 6 characters or fewer. This updates rule 9.
-- **Tag and art change together.** Of 6 sample games with Thanksgiving art on 26 Nov, 2 tagged the title; 4 others had the tag and no such art, one more `[WINTER UPDATE ❄️]` over a red concert `[house]` viewed. A tag the tile does not show is a small mismatch.
+- **Tag and art change together.** Of 6 sample games with Thanksgiving art on 26 Nov, 2 tagged the title; 4 others had the tag and no such art, and a fifth ran `[WINTER UPDATE ❄️]` over a red concert scene `[house]` viewed. A tag the tile does not show is a small mismatch.
 - **Title says the verb, tile shows the verb.** "Cut a Rock" under a tile of a rock being cut needs no further text; a clever title under an atmospheric tile needs a subtitle in the art.
 - **First description line = the tile's promise in words**, second line = this update. The player who clicked should read the same promise three times: tile, title, first line.
 - **Stale tags cost trust**: 14 of 98 chart titles still carried Halloween marks on 11 November and 7 of 99 on 26 November, when 12 carried Thanksgiving marks and none yet a Christmas one `[house]`. Put tag changes, with a take-down date, on the update checklist (rule 9).
@@ -230,7 +230,7 @@ Search, renames, keyword rules and the 160-character hook are in `analytics-and-
 
 ## 11. Low-effort and generated tells, and the fix for each
 
-Why it matters: forum sentiment toward generated tiles is hostile (in the Oct 2026 staff thread several of the most-liked developer replies asked whether generated tiles would be excluded and called them slop; artists now label showcases "NO AI") `[community]`; Roblox's roadmap lists takedowns for games that imitate another game's title or thumbnail (late 2026) `[official][VS]`; and several tiles in the 2026-11-11 sample share one generated look, so a designed tile is now the difference cue. On 26 Nov 2026 two or more tells from the table below showed on 18 of 36 icons and 34 of 91 thumbnails of chart games created since September, and on none of the 24 established games' 91 images `[house]` viewed (a judgement from the image, not proof of a tool). Chart position does not prove the art earned it, and the house rule stands regardless: nothing generated ships.
+Why it matters: forum sentiment toward generated tiles is hostile (in the Oct 2026 staff thread several of the most-liked developer replies asked whether generated tiles would be excluded and called them slop; artists now label showcases "NO AI") `[community]`; Roblox's roadmap lists takedowns for games that imitate another game's title or thumbnail (late 2026) `[official][VS]`; and on 26 Nov 2026 two or more tells below showed on 52 of 127 images of chart games created since September and on none of 91 from established games `[house]` viewed (judged from the image, not proof of a tool), so a designed tile is now the difference cue. Chart position does not prove the art earned it, and the house rule stands regardless: nothing generated ships.
 
 | Tell | Why it reads as cheap or generated | Fix |
 |---|---|---|
@@ -251,13 +251,7 @@ Why it matters: forum sentiment toward generated tiles is hostile (in the Oct 20
 | Arrow, red circle, "!!" on everything | YouTube habit without a reason | One arrow only when it carries the before → after |
 | Stock font with a default stroke | No brand | The game's display font, fixed outline token |
 
-What transfers from other stores and what does not:
-
-| Transfers | Does not transfer |
-|---|---|
-| App-icon rules: one subject, full-bleed art, no badges, test at small size (Apple and Google guidance) | App screenshots with captions and device frames |
-| YouTube's lesson that the winner is judged on watch time, not clicks (its Test & Compare picks by watch-time share), which matches qPTR | Reaction faces of a real creator, red circles, a teaser that hides the subject: on Roblox the tile must show the game |
-| Mobile A/B lesson: brighter and simpler usually wins, seasonal icons sometimes win (vendor cases report about +9% for a Halloween icon) | Trusting any published uplift figure: they are vendor case studies (search summaries) |
+From other stores, take app-icon discipline (one subject, full-bleed, no badges, small-size test; Apple and Google), YouTube's judging by watch time rather than clicks (like qPTR), and the mobile A/B habit that brighter and simpler usually wins and seasonal icons sometimes do (vendor cases, about +9%; search summaries). Leave app-screenshot captions, creator reaction faces, red circles and teasers that hide the subject: on Roblox the tile must show the game.
 
 ## 12. Clickbait and policy lines `[official]`
 
@@ -289,10 +283,10 @@ Method, interval formula, verdict table and the bandit's behaviour are in `analy
 
 - **Always keep the current winner in the new set.** Since 1 July 2025 a new test that includes the existing winner leaves most traffic on it while the newcomers are measured (21% fewer impressions on non-winners in Roblox's test) `[official]`.
 - **Do not restart inside 7 days**; staff call this the first rule. Start with an update, then leave the set alone `[official]`.
-- **Sample size.** Roblox's own illustrative table shows qPTR of 1.4–2.1%. At a 1.8% baseline, telling a +30% relative lift from noise needs about 10,000 impressions per thumbnail, and +15% needs about 39,000 (`n ≈ 16(1 − p) ÷ (p × L²)`, same approximation as the owner file). Two thumbnails at 2.1% and 2.0% on 9,000 impressions each are a tie. Under about 1,000 DAU, test only round 1.
-- **Which rate**: the Thumbnail Performance table and the personalisation bandit use qualified PTR; ranking itself has used plain PTR plus first-play bounce since 15 June 2026, and staff said they would test moving personalisation to PTR `[official][VS]`. Read whichever the table shows, always beside bounce.
+- **Sample size.** Roblox's illustrative qPTRs run 1.4–2.1%. At 1.8%, a +30% relative lift needs about 10,000 impressions per thumbnail and +15% about 39,000 (formula in the owner file); 2.1% against 2.0% on 9,000 each is a tie. Under about 1,000 DAU, test only round 1.
+- **Which rate**: the Thumbnail Performance table and the bandit use qualified PTR, ranking uses PTR plus first-play bounce (owner file) `[official][VS]`; read the table's rate beside bounce.
 - **Reading it**: judge on qPTR and average playtime per qualified play together; a "loser" that wins one age segment stays active. A dip right after a traffic surge is normal `[official]`.
-- **Do not change the name and the tiles in one update.** During the Promotional Text beta Roblox shows different name treatments to small new-user audiences, so a play-through shift after a rename may not come from the art (inference from the staff post).
+- **Rename and re-tile in different updates**: Roblox tests name treatments on new-user audiences during the Promotional Text beta, so a shift after a rename may not be the art (inference).
 - **Fatigue is real**: one developer reported a tile falling from about 2% to 0.6% over time while the trend it rode faded `[community]`. Plan a new round each update instead of hunting for a permanent winner.
 - **The icon has no A/B tool.** Change it only with an update, one element at a time (prop, expression or ground, never all three), and compare the same weekdays before and after on Search and Continue traffic. A sponsored campaign's even split across up to 10 creatives is the quick way to compare thumbnail ideas, not icons.
 - **Before any impressions**: the stranger test. Show the tile for one second and ask "what do you do in this game?". Five strangers are enough to kill a bad idea.
@@ -302,24 +296,24 @@ Method, interval formula, verdict table and the bandit's behaviour are in `analy
 | Pattern seen on live games | Change | Keep |
 |---|---|---|
 | One-prop swap (Jujutsu Shenanigans hat, Jailbreak leaf) | A seasonal prop on the icon's subject | Silhouette, palette, crop |
-| Logo variant (Blox Fruits pumpkin "O") | One glyph of the wordmark | Everything else |
+| Logo variant (one glyph of the wordmark made seasonal) | One glyph of the wordmark | Everything else. Check a brand mark against an off-season upload first: the face-fruit "O" in Blox Fruits' wordmark, read as a pumpkin on 11 Nov, is on a 5 Sep 2026 image too |
 | Scene swap in a fixed frame (Brookhaven, Berry Avenue, Theme Park Tycoon 2 with an update caption) | The inside scene | Frame, sign, logo position |
 | Full art swap with a locked wordmark (Adopt Me) | Hero and colours for the new content | Wordmark, its corner, the style |
-| Holiday prop on the icon only (26 Nov: a turkey held by or replacing the hero on Steal An Egg, Throw Food For Animals, 99 Nights in the Forest, Shoot Arrows For Animals) | The icon's subject or its prop | The thumbnails (the first three games' slot 1 images date from Aug, Oct and Sep 2026) |
+| Holiday prop on the icon only (26 Nov: a turkey held by or replacing the hero; changed since 11 Nov on Throw Food For Animals and 99 Nights in the Forest, also on Steal An Egg and Shoot Arrows For Animals) | The icon's subject or its prop | The thumbnails (the first three games' slot 1 images date from Aug, Oct and Sep 2026) |
 | Last year's seasonal file re-activated (Fisch "FISCHGIVING" slot 1, uploaded 26 Nov 2025, live again on 26 Nov 2026) | The active image, one upload | The archived file |
+
+- Each major update: two or three new thumbnails that show the new content beside the standing winner; staff say fresh thumbnails with new gameplay signal an active game `[official]`. The detail-page list gets the update image in slot 2, after the video.
+- Seasonal art goes up with the event and comes down with it; keep the off-season files ready so the revert is one upload, and keep the seasonal files for next year, as Fisch did (table above). Switching back to an older icon or thumbnail does not hurt discovery `[official]` (discovery FAQ).
+- An Experience Event gets its own thumbnail; a unique one lifts engagement with the event `[official]`.
+- Recognition budget: returning players find the game by the icon. Change at most one of silhouette, palette and wordmark per refresh.
+- After every art pass in the game, re-render the heroes from the linked file (§7) so the store never shows last season's model.
 
 Holiday evidence, 26 Nov 2026 (US Thanksgiving; 60 chart games; upload dates from the assets API) `[house]`:
 
 - 6 of 60 showed Thanksgiving art, all on the icon, 2 also on thumbnails; Pet Simulator 99 uploaded its slots 12 and 5 days ahead. None showed Christmas art yet.
-- Stale art lasted weeks: Blox Fruits' jack-o'-lantern wordmark on every image (uploaded 31 Oct), Bloodlines' Halloween bats, a Fisch summer slot from Aug 2025. Set the take-down date when the art goes up.
+- Stale art lasted weeks: Bloodlines kept October bat art under a `[🎃]` title, Fisch a summer slot from Aug 2025, 7 of 99 Top Playing Now titles a Halloween mark. Set the take-down date when the art goes up.
 - Cadence: the first detail-page image had a median age of 13 days (19 of 60 under a week, mostly new games); established hits keep winners for years (Murder Mystery 2 images from 2019). The Home set is not public, so this says nothing about test restarts.
 - A seasonal event submitted 7 or more days ahead can be featured off-platform (`growth-and-marketing.md` §7).
-
-- Each major update: two or three new thumbnails that show the new content beside the standing winner; staff say fresh thumbnails with new gameplay signal an active game `[official]`. The detail-page list gets the update image in slot 2, after the video.
-- Seasonal art goes up with the event and comes down with it; keep the off-season files ready so the revert is one upload. Switching back to an older icon or thumbnail does not hurt discovery `[official]` (discovery FAQ).
-- An Experience Event gets its own thumbnail; a unique one lifts engagement with the event `[official]`.
-- Recognition budget: returning players find the game by the icon. Change at most one of silhouette, palette and wordmark per refresh.
-- After every art pass in the game, re-render the heroes from the linked file (§7) so the store never shows last season's model.
 
 ## 15. Critique rubric
 
