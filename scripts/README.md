@@ -31,6 +31,17 @@ Conventions the scripts assume (from `references/art-pipeline-blender.md`): 1 Bl
 |---|---|---|
 | `house_rule_scan.luau` | Read-only scan of a place for house-rule debt: visible primitive Parts, meshes uploaded by someone other than the game's owner, world geometry players can walk through. Groups findings by area and caps its output. Unexecuted sketch: reviewed by reading, never run in Studio | Edit mode only: paste into the command bar, or send through the Studio MCP's `execute_luau` with `datamodel_type = "Edit"`. How to read the result: `references/checklists.md`, Gate 4 |
 
+## Vault (`scripts/vault/`)
+
+Python 3, standard library only.
+
+| Script | What it does | Run |
+|---|---|---|
+| `build_vault.py` | Turns this repository into an Obsidian vault for humans and agents: about 200 notes in numbered topic folders, YAML front matter (title, aliases, tags, summary, source), wikilinks in place of repo paths (heading links where a § points to a numbered section), the knowledge base split by section, a gallery of the reference sheets, a vault map, a path map and `vault-index.json`. Ends with a link check. Deletes and rewrites only `<out>/Roblox Game Dev Playbook/`. | `python scripts/vault/build_vault.py . "<vault folder>"` |
+| `search_vault.py` | Copied into the vault's `99 Meta/`: ranks notes for a query by title, aliases, skill trigger phrases, tags, headings, summary and full text. | `python "99 Meta/search_vault.py" "my game is laggy" -n 10` |
+
+`AGENTS.md`, `CLAUDE.md` and `Start Here.md` in the same folder are the vault's entry pages; the builder copies them in.
+
 ## What was tested, and what was not
 
 - Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS Python module, driving each script the way `blender -b file.blend -P script.py -- args` does: a five-piece test file, every flag above, and the exported GLBs re-read to confirm names, triangle counts, sizes and vertex colour.
