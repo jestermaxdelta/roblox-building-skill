@@ -217,7 +217,7 @@ If you leave something out, Claude picks a sensible default and tells you.
 | `references/visual-library/` | The curated reference library, one file per topic |
 | `assets/reference/` | The 22 bundled reference sheets, with their sources |
 | `templates/` | Fill-in documents: audit report, one-page plan, design doc, economy sheet, product plan, analytics plan, playtest plan, launch checklist |
-| `scripts/` | Ready-to-run helper scripts (Blender export and checks, thumbnail tile test, a read-only Studio scan for house-rule problems) |
+| `scripts/` | Ready-to-run helper scripts (Blender export and checks, thumbnail tile test, a read-only Studio scan for house-rule problems, and an Obsidian vault builder with a search script) |
 | `CREDITS.md` | Where the knowledge comes from |
 
 ## Where the knowledge comes from
@@ -225,6 +225,7 @@ If you leave something out, Claude picks a sensible default and tells you.
 - **Roblox's official Creator Docs**, for every platform fact
 - **31 open-source repositories**, for the original knowledge base
 - **The owner's market research**, a November 2026 snapshot of what's winning on Roblox
+- **Live chart data, refreshed 26 Nov 2026**: 931 games from Roblox's own charts, 60 games' icons and thumbnails looked at one by one, store prices, update dates and player-count history, plus Roblox's Q3 2026 shareholder letter. This refresh added the throw-for-distance genre, five new teardowns, a 13-idea bank, a 2026–27 holiday LiveOps calendar and every platform change from mid-October to 26 Nov
 - **[LihFolk Vault V2](https://github.com/lihfolk-cy/v2-vault)** (CC BY 4.0), compared against our research and credited wherever we learned from it
 - **The Roblox DevForum and RealtimeVFX**, read directly: tutorials, staff announcements, and threads where experienced developers critique each other's work
 - **Game-craft writing and talks from outside Roblox** (UI, effects, animation, cinematography, onboarding), where the principles carry over
