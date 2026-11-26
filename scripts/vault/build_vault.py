@@ -281,6 +281,19 @@ for row in TABLE.strip().splitlines():
                  "argument_hint": fm.get("argument-hint", "")}
     add_note(name, fk, tags.split(), body, src=src, extra=extra)
 
+# ---- files added to the repo after the table was written
+for gp in sorted((REPO / "references/genres").glob("*.md")):
+    src = gp.relative_to(REPO).as_posix()
+    if src not in by_src:
+        title = re.sub(r"^#\s*", "", gp.read_text(encoding="utf-8").splitlines()[0])
+        title = re.sub(r"\s*playbook$", "", title, flags=re.I)
+        name = fold("Genre - " + title.replace(" and ", " and ").strip())[:70]
+        add_note(name, "genres", ["type/genre", "topic/genre"], gp.read_text(encoding="utf-8"), src=src)
+mapped = set(by_src) | {"references/knowledge-base.md"}
+for rp in sorted(REPO.glob("references/**/*.md")):
+    if rp.relative_to(REPO).as_posix() not in mapped:
+        print("WARNING: not in the vault table:", rp.relative_to(REPO).as_posix())
+
 # ---- knowledge base: split by H1 part and H2 section (fence-aware)
 kb_text = (REPO / "references/knowledge-base.md").read_text(encoding="utf-8")
 kb_lines = kb_text.splitlines()
@@ -437,6 +450,11 @@ def expand_prefixes(line, prefixes):
     def rep(m):
         tok = m.group(1)
         for p, url in prefixes:
+            if p == "TR:" and re.match(r"^TR:[0-9a-f]{16,}$", tok):
+                full = url.replace("<hash>", tok[3:])
+                if "icon" in m.string[max(0, m.start() - 14):m.start()].lower():
+                    full = full.replace("/768/432/", "/512/512/")
+                return f"[{tok}]({full})"
             if p == "t" and re.match(r"^t/\d+", tok):
                 return f"[{tok}]({url.replace('<id>', tok[2:])})"
             if tok.startswith(p + "/"):
@@ -450,8 +468,8 @@ def expand_prefixes(line, prefixes):
 def convert_body(nm, body):
     prefixes = []
     if notes[nm]["folder_key"] == "lib":
-        for m in re.finditer(r"`([A-Za-z]+|t/<id>)` = `(https?://[^`]+)`", body):
-            p = "t" if m.group(1) == "t/<id>" else m.group(1)
+        for m in re.finditer(r"`([A-Za-z]+|t/<id>|TR:<hash>)` = `(https?://[^`]+)`", body):
+            p = {"t/<id>": "t", "TR:<hash>": "TR:"}.get(m.group(1), m.group(1))
             prefixes.append((p, m.group(2)))
     out, fence = [], False
     for line in body.splitlines():
@@ -462,7 +480,7 @@ def convert_body(nm, body):
         if fence:
             out.append(line)
             continue
-        if prefixes and not re.search(r"` = `https?://", line):
+        if prefixes and not re.search(r"` = `https?://", line):  # skip the definitions line
             line = expand_prefixes(line, prefixes)
         res, pos = [], 0
         for m in TICK.finditer(line):
