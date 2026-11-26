@@ -376,6 +376,7 @@ Foundation for every genre, in order: DataService → RemoteGuard and Net → Wa
 |---|---|---|---|
 | Simulator, incremental, +1 | Core verb earn tick, Upgrades (5) | Rebirth (5), Pets (4), Zones and gates (15), Daily (7) | Quests (6), Leaderboards (9), Boosts (24), Codes (8), Trading (17) only with a team to run it |
 | Pet collection, RNG | Hatch with odds (4), Inventory (2) | Index, Luck and pity (4), Daily (7), Quests (6) | Trading (17), Server luck (24), Leaderboards (9) |
+| Throw-for-distance | Zone config, server throw service (power + timing grade → distance → zone → rolls) | Collectibles and Index (4), plot income (16), training bar (5), shop and sell (3) | Timed boosts and Server Luck (24), weekly zones, prestige (5) |
 | Tycoon, cozy management | Plots and income tick (16) | Rebirth (5), Offline income, Placement (16) | Friends visits (21), Quests (6), Events (24) |
 | Obby, tower | Checkpoints (20) | Stage saves and skips (20), Speedrun board (9) | Rounds (10) for tower modes, Daily (7) |
 | Round minigames, horror co-op | Round loop (10), Teams (11) | Map voting, Spectate, NPC AI (13) for horror | Queues and reserved servers (11), Party (21) |
