@@ -10,7 +10,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 
 ## T-21 days: reach and audience
 
-- [ ] Kids/Select path chosen and started: creator verified with 2FA, questionnaire done, Plus/Premium for 2 months or the 1,000 R$ fee; plan for 250 engaged age-checked 16+ plays inside 60 days (older-audience content, community, or an Engagement-objective campaign with its own budget), or the 50,000 R$ expedited review. Owner: __ Date: __
+- [ ] Kids/Select path chosen and started: creator verified with 2FA, questionnaire done, Plus/Premium for 2 months or the 1,000 R$ fee; plan for 100 engaged age-checked 16+ plays inside 60 days (older-audience content, community, or a Qualify for Kids and Select campaign with its own budget; it stops at the threshold), or the 50,000 R$ expedited review. Owner: __ Date: __
 - [ ] Roblox group live and linked; social links set on the details page (owner age-verified 16+); no URLs, invite codes or handles anywhere in-game.
 - [ ] One share link per channel and per creator created; LaunchData perks tested.
 - [ ] Clip features in the build: hide-UI creator cam, reveal moments with real odds, readable in-world numbers, private servers.
@@ -38,7 +38,7 @@ Do not start this checklist while any of these is true: nobody outside the team 
 - [ ] Paid random items: odds UI shows every outcome, sums to 100%, boosted odds live; `PolicyService` fallbacks tested with a restricted test account.
 - [ ] No fake discounts, restarting countdowns or false scarcity anywhere in UI or store copy.
 - [ ] Rewarded video eligibility confirmed; rewards fixed; placements live.
-- [ ] Content-maturity questionnaire submitted truthfully; expected label <Minimal / Mild / Moderate>.
+- [ ] Content Ratings Questionnaire submitted truthfully (IARC rating accepted for Kids & Select); expected content maturity rating <Minimal / Mild / Moderate>.
 - [ ] All user-generated text filtered on the server.
 
 ## T-7 days: discovery and metadata

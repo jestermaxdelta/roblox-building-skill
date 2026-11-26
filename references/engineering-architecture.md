@@ -137,7 +137,7 @@ Latest tags, tag dates and changelogs read from the GitHub repositories on 2026-
 | Tool | Latest (tag date) | Role and notes |
 |---|---|---|
 | Rokit | 1.2.0 (2025-09) | Pins every CLI in `rokit.toml` (supersedes Aftman and Foreman) |
-| Rojo | 7.7.1 (2026-10) | Filesystem ↔ Studio sync; `rojo build`, `serve`, `sourcemap`. 7.7 adds `rojo syncback [project] --input <file>` (pulls an existing place into project files, controlled by `syncbackRules`), a WebSocket link between server and plugin, and `Host`/`Origin` checks on `rojo serve` (changelog, read); upgrade the CLI and the Studio plugin together. Never `rojo upload --cookie` in CI |
+| Rojo | 7.7.1 (2026-10) | Filesystem ↔ Studio sync; `rojo build`, `serve`, `sourcemap`. 7.7 adds `rojo syncback [project] --input <file>` (pulls an existing place into project files, controlled by `syncbackRules`), a WebSocket link between server and plugin, and `Host`/`Origin` checks on `rojo serve` (changelog, read); upgrade the CLI and the Studio plugin together. 7.7.1 is also the minimum since Studio started saving asset references as `…Content` properties on 11 Nov 2026 (DevForum /t/4975546). Never `rojo upload --cookie` in CI |
 | Studio Script Sync | Built in | Scripts and folders only; 10,000 scripts per synced root, 128 roots; works with Team Create; no sourcemap. It ignores attributes and tags on scripts (data loss if you rely on them) `[official]`. Conflict: `scripting/sync.md` treats it as a standard feature, `ai/coding-harness.md` still says to enable it under Beta Features |
 | Wally | 0.3.2 (2023-06) stable; 0.4.0-alpha.1 (2026-10) | Packages; commit `wally.lock`; CI runs `wally install` then `git diff --exit-code wally.lock`. Stay on the stable line |
 | Selene | 0.32.0 (2026-10) | Lint, `std = "roblox"`. Parses `const` from 0.31.0 |
@@ -221,9 +221,10 @@ Studio has a built-in MCP server `[official]`: Assistant > … > Manage MCP Serv
 |---|---|
 | Scripts | `script_read` (whole or line range), `multi_edit` (several edits in one call; creates the script if the path is missing), `script_search` (fuzzy name, 10 results), `script_grep` (50 matches at most) |
 | DataModel | `search_game_tree`, `inspect_instance`, `execute_luau` (`datamodel_type` Edit, Client or Server) |
-| Playtest | `get_studio_state`, `start_stop_play`, `get_console_output`, `screen_capture` (optional camera position), `character_navigation`, `user_keyboard_input`, `user_mouse_input`. A paused MicroProfiler capture and `SceneAnalysisService` data are also readable through the server `[official]` |
+| Playtest | `get_studio_state`, `start_stop_play`, `get_console_output`, `screen_capture` (optional camera position; can record video during a playtest since 20 Nov 2026), `character_navigation`, `user_keyboard_input`, `user_mouse_input`. A paused MicroProfiler capture and `SceneAnalysisService` data are also readable through the server `[official]` |
+| Place | `save_place` (saves a version with a note; never publishes; only with the user's go-ahead), `submit_feedback` |
 | Delegation and docs | `subagent` (`explore`, `playtest`), `http_get` (allow-listed Roblox docs), `skill` |
-| Assets | `upload_image`, `store_image`, `insert_asset`, `search_asset`, `generate_mesh`, `generate_material`, `generate_procedural_model`, `wait_job_finished` |
+| Assets | `upload_image`, `store_image`, `insert_asset`, `search_asset`, `generate_mesh`, `generate_material`, `generate_procedural_model`, `generate_avatar`, `generate_animation`, `wait_job_finished` |
 | Open Cloud | `open_cloud_invoke`: calls Open Cloud with no API key, limited to the scopes the user enabled for this game (levels Safe, Balanced, Full access; each game starts at Balanced) |
 
 Working rules:
@@ -234,7 +235,7 @@ Working rules:
 4. A write is not done until a read shows it, and a gameplay change is not done until a play session shows it: `script_read`, then `start_stop_play`, drive the character with `character_navigation` and the input tools, and check `get_console_output` and a `screen_capture`.
 5. Modify what exists; never add parallel copies; preserve the hierarchy.
 6. `execute_luau` freezes Studio until it yields; batch about 1,000 items per `task.wait()`. `require` in Edit context gives fresh module state. Never publish, save or delete unasked. Stop after the same error repeats twice.
-7. House rules override convenient tools: never ship visible 3D content from `generate_procedural_model`, `generate_mesh`, `insert_asset` or `search_asset`. Visible assets come from the Blender pipeline (art-pipeline-blender.md); `open_cloud_invoke` with `asset:read` and `asset:write` and an approved upload folder is the sanctioned way to upload those exports. The generators are acceptable only for throwaway experiments that never reach the shipped place.
+7. House rules override convenient tools: never ship visible 3D content or animation from `generate_procedural_model`, `generate_mesh`, `generate_avatar`, `generate_animation`, `insert_asset` or `search_asset`. Visible assets come from the Blender pipeline (art-pipeline-blender.md); `open_cloud_invoke` with `asset:read` and `asset:write` and an approved upload folder is the sanctioned way to upload those exports. The generators are acceptable only for throwaway experiments that never reach the shipped place.
 8. Verify APIs with `http_get`, `https://create.roblox.com/docs/llms.txt` or the `.md` page versions; do not guess.
 9. Permissions are per person and per game. Ask the user to enable a scope; never work around a refusal. "Save & load data" makes `execute_luau` hit live DataStores, and publishing, monetisation, ban and secret scopes act on the live game: use a test universe.
 

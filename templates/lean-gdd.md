@@ -5,7 +5,7 @@ Write this after the one-pager is approved and before the vertical slice. Keep e
 ## 1. Overview
 
 - Pitch, fantasy, pillars (copy from the one-pager; update if they changed).
-- Target audience, age tier, content-maturity label, platforms, server size.
+- Target audience, age tier, content maturity rating, platforms, server size.
 - Success metrics at soft launch: D1 <x%>, D7 <x%>, bounce under 60 s <x%>, median session <n> min, ARPDAU <>.
 
 ## 2. Core gameplay

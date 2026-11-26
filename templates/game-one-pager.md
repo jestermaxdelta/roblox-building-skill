@@ -11,7 +11,7 @@ Fill every field before any code or art. Keep it to one page. If a field is hard
 
 ## Audience and platform
 
-- **Target age tier:** <Kids 5–8 / Select 9–15 / 16+> and planned content-maturity label <Minimal / Mild / Moderate>.
+- **Target age tier:** <Kids 5–8 / Select 9–15 / 16+> and planned content maturity rating <Minimal / Mild / Moderate>.
 - **Platform priority:** Mobile first (3 GB Android baseline), then PC, console, VR <yes/no>.
 - **Social shape:** <Solo with shared world / co-op 6–12 / hub 20–30 / competitive>.
 - **Server size:** <number> (set from playtests).

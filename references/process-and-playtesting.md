@@ -110,7 +110,7 @@ Worked 4-week solo MVP (heuristic; small incrementals are commonly 2–4 weeks `
 - Week 1: core loop in the real project; Blender hero assets (launcher, pad, first zone); collision pass.
 - Week 2: progression and economy sheet in code; rebirth; shop; collection index; monetisation products wired but rate-limited.
 - Week 3: FTUE script, funnel telemetry, feel pass, thumbnails and video; closed test with 16+ testers; bug freeze in the last 2 days.
-- Week 4: launch to the 16+ audience; gather 250 engaged plays (under-16 users can't see a new game until then `[VS]`); first weekly update on the fixed day.
+- Week 4: launch to the 16+ audience; gather 100 engaged plays (250 until 19 Nov 2026) (under-16 users can't see a new game until then `[VS]`); first weekly update on the fixed day.
 
 Game page is the "before" chapter: 3–5 distinct thumbnails left at least 7 days with personalisation on; a real gameplay video (up to +39% RFY playtime reported `[VS]`); unique title and place with your own twist, since near-duplicate clones are penalised `[VS]`. If the audience skews young, plan how to reach 250 engaged age-checked 16+ players within 60 days (older-skewing hooks, Discord, TikTok) `[VS]`.
 
@@ -186,4 +186,4 @@ After every jam, launch and major update: goal and hypothesis with pre-set thres
 ## Sources
 
 - `references/knowledge-base.md` sections 1.10–1.13 (concept, prototyping, scope, playtesting, source conflicts) and 2.13 (jam workflow); grep `## 1.10` to `## 1.13` and `## 2.13`. Those sections list their own upstream repositories and the owner's vault notes. No web sources were opened for this file: its sample sizes, timeboxes and rubric thresholds are practitioner rules of thumb, not measurements.
-- Market facts tagged `[VS]` (250-play gate, wave length, thumbnail and video figures) come from `references/market-scan-2026-11.md`, a 2026-11-07 snapshot.
+- Market facts tagged `[VS]` (100-play gate, wave length, thumbnail and video figures) come from `references/market-scan-2026-11.md`, a 2026-11-07 snapshot.

@@ -101,7 +101,7 @@ Schedules `[lihfolk]`: small jobs 100% upfront from a new client or on delivery 
 
 | | Robux | Money |
 |---|---|---|
-| Mechanism | Group one-time payout from the group's earned funds (`[official]`: recipient must be a member; 2-step verification challenge). The Community Standards allow group payouts only as "compensation for collaborative content development"; using them for anything else, or to evade penalties, is listed as fraud | Bank or payment service |
+| Mechanism | Group one-time payout from the group's earned funds (`[official]`: recipient must be a member; 2-step verification challenge). The Community Standards allow group payouts only as "compensation for collaborative content development"; using them for anything else, or to evade penalties, is listed as fraud | Bank or payment service Since early Nov 2026 a payout reaches a member after 3 days if they have completed at least one approved DevEx (otherwise 14 days), and Roblox may put an Extended Hold of days to weeks on transactions it flags as risky (staff weekly recap 2–6 Nov 2026, https://devforum.roblox.com/t/4979364). |
 | Value | 10,000 R$ is $38 at the DevEx rate, and only once the recipient holds 30,000 Earned Robux and passes DevEx review `[official]`. A quote of 10,000 R$ for 20 hours is under $2 an hour `[lihfolk]` | Clear |
 | Who carries rate risk | Recipient | Payer, who must DevEx first (4–8 weeks from sale to bank `[lihfolk]`) |
 | Trap | "Buy my game pass to pay me": Earned Robux excludes passes sold for template games with no legitimate user visits, direct Robux purchases and Robux transfers `[official]`, so Robux that arrives this way may never be exchangeable | Fees; minors need an adult's account |
@@ -190,7 +190,7 @@ Scope gates, milestone exit criteria and the 4-week solo plan are in `process-an
 - **The vertical slice is the estimate:** a plan of eight zones is a 24-week plan when one zone at final Blender quality cost three weeks.
 - **Change budget:** reserve about 10% of capacity for requests arriving mid-milestone; when it is spent, a new request replaces something of equal size. Keep a scope ledger (date, request, asked by, size, decision, paid for by).
 - **Kill list** written at milestone start: what gets cut first, in order.
-- **Platform lead-time items** go on the roadmap with owners: maturity questionnaire, asset upload and moderation, products and prices tested in a test universe, odds disclosure and `PolicyService` gates, localisation, thumbnails and video, analytics events before soft launch, phone test pass, the 250 engaged-play evaluation for under-16 reach.
+- **Platform lead-time items** go on the roadmap with owners: Content Ratings Questionnaire (and the IARC rating for Kids & Select games), asset upload and moderation, products and prices tested in a test universe, odds disclosure and `PolicyService` gates, localisation, thumbnails and video, analytics events before soft launch, phone test pass, the 250 engaged-play evaluation for under-16 reach.
 - **Live game capacity split:** roughly 60–70% new content and features, 20–30% fixes and debt, 10% experiments `[lihfolk]`. Without an explicit split, debt gets time only after an incident.
 - **Public roadmap:** share themes and items already in the current milestone; never dates for Next or Later.
 - A decisions log (date, decision, why, who) and a one-page onboarding note outlive any single member.

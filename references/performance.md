@@ -63,7 +63,7 @@ Device reality `[official][VS]`: Android is about 65% of a typical game's player
 | Join to playable, low-end Android | ≤ 10–15 s | House |
 | Repeating state remotes | ≤ 10–20 Hz, deltas only | House |
 
-Server heartbeat below about 50 Hz is an incident (house threshold). Server memory does not shrink when players leave. Connect `DataModel.ServerLowMemoryWarning` to log and to drop non-essential caches; it can fire repeatedly and does not mean a shutdown is certain `[official]`.
+Server heartbeat below about 50 Hz is an incident (house threshold). Server memory does not shrink when players leave. Connect `DataModel.ServerLowMemoryWarning` to log and to drop non-essential caches; it can fire repeatedly and does not mean a shutdown is certain `[official]`. It fires only on live servers and in Team Test (not in Studio playtests) and repeats every 60 s while memory stays high (DevForum /t/4972486).
 
 Frame order for scripts: PreRender (camera only), PreAnimation, PreSimulation (set forces and `Motor6D.Transform`), physics, PostSimulation/Heartbeat (read final positions). `WaitingHybridScriptJob` resumes threads waiting in `WaitForChild` or legacy `wait()` about 30 times a second with a time budget; exceed it and they resume late `[official]`. `task.wait` resumes on Heartbeat instead.
 
@@ -92,7 +92,7 @@ Tag table: `physicsStepped`/`worldStep` → anchor, lower fidelity; `stepContact
 
 ## Luau performance idioms
 
-1. Event-driven before polling. 2. Chunk long work into about 5 ms slices with `task.wait()`. 3. Disconnect everything; destroy player and character instances on leave (`Workspace.PlayerCharacterDestroyBehavior` `[VS]` or `task.defer(player.Destroy, player)` on `PlayerRemoving`). 4. Parallel Luau for large independent computations, measured.
+1. Event-driven before polling. 2. Chunk long work into about 5 ms slices with `task.wait()`. 3. Disconnect everything; destroy player and character instances on leave (`Workspace.PlayerCharacterDestroyBehavior`: since 11 Nov 2026 `Default` behaves as `Enabled`, DevForum /t/4975616 `[VS]`; or `task.defer(player.Destroy, player)` on `PlayerRemoving`). 4. Parallel Luau for large independent computations, measured.
 
 Language-level rules (why each works, and the benchmark method: luau-mastery.md, "Expert"): build objects in one literal with every field; `__index` is a table, not a function; never `getfenv`, `setfenv` or `loadstring`; call builtins directly (`math.floor(x)`, `string.byte(s, i)`); `table.create(n)` for known sizes; no temporary tables or capturing closures in hot loops; keep hot helpers as small `local function`s.
 

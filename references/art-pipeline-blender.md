@@ -156,6 +156,7 @@ curl -s -X POST "https://apis.roblox.com/assets/v1/assets" -H "x-api-key: $ROBLO
 - The key needs the assets scope with Read and Write (OAuth `asset:read`, `asset:write`). Upload under the group that owns the game or the place may not load the asset. Never commit the key; scope it to one group and the assets API.
 - Check `moderationResult.moderationState` before publishing a build that depends on the asset. Uploads are permanent assets of the owner; remove them in the Creator Dashboard.
 - Conflict: the earlier rule "every GLB re-upload creates a new asset id" is true for raw `POST` uploads only. Package versions (Blender add-on, Studio publish) keep the package id, and Reimport keeps the instances and their properties but "does not version assets": every reimport uploads new meshes and textures with new asset ids, with mesh and image versioning announced as in progress `[official: staff post, 2026-09-08]`. So: reference kit pieces by package, let a script own `assets/asset-ids.json` (name → package id, MeshIds, file hash) and regenerate `Shared/Config/Assets.luau`; never hand-edit or hard-code MeshIds.
+- Asset versioning `[official]` `[VS]`: from 19 Jan 2027 meshes and images (audio and video from 17 Feb) can take new versions under the same asset id. An id without `&version=` then loads the version frozen at launch (or version 1 for newer assets), and `AssetService:GetLatestVersionUriAsync()` returns the latest (DevForum /t/4977769, read 2026-11-26).
 - Audio uploads have quotas and their own rules: `audio-sfx-music.md` §4.
 
 ## Studio 3D Importer preset (manual imports)
@@ -277,7 +278,7 @@ Instancing rule `[official]`: MeshParts share a draw call only when they have th
 | Doors, stairs or furniture feel the wrong size | Modelled in metres or without the R15 dummy | Rescale against the dummy; lock the grid and proportions in the bible |
 | Characters snag, hover or stutter on stairs and trims | Default or Precise fidelity on detailed meshes, per-step collision | `_COL` ramp and simple hulls; Box on trims; reserve Precise for approved cases |
 | Meshes missing or failing to load for players | Asset still in moderation, uploaded under the wrong creator, Restricted asset not granted to the game | Check the operation's moderation state; upload under the owning group; grant the game in the asset's permissions |
-| Every art tweak breaks references | Raw re-uploads mint new ids | Package versioning (Blender add-on or Reimport) and the generated ids manifest |
+| Every art tweak breaks references | Raw re-uploads mint new ids | Package versioning (Blender add-on or Reimport) and the generated ids manifest; from 19 Jan 2027 asset versioning (below) |
 | Attachments missing after import (no light, prompt or seat points) | `_Att` markers not converted | Check the test import; one-triangle `_Att` mesh markers or Attachments added by the fix-up script |
 | Distant meshes look crushed or pop | Automatic LOD on a mesh whose silhouette does not survive simplification; mesh streaming enabled | Thicken thin parts; compare with `MeshStreamingAndImprovedLods` both ways; Precise only on approved hero pieces |
 

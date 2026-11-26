@@ -42,8 +42,8 @@ Pick the row that matches the task and read only those sections, in that order, 
 | Icons, thumbnails, video thumbnails, the game page: composition recipes, tile tests, AI-look tells, rubric | `${CLAUDE_PLUGIN_ROOT}/references/icons-thumbnails-and-store-page.md` |
 | KPIs, benchmarks, analytics events, Configs, Experiments, Recommended For You, age tiers | `${CLAUDE_PLUGIN_ROOT}/references/analytics-and-discovery.md` |
 | Ads, TikTok and YouTube Shorts, creators, community, launch and update marketing, what breaks the rules | `${CLAUDE_PLUGIN_ROOT}/references/growth-and-marketing.md` |
-| What is winning or saturated, thumbnail rules, the 250-play gate, launch timing | `${CLAUDE_PLUGIN_ROOT}/references/market-scan-2026-11.md` |
-| Community, moderation, child safety, maturity labels | `${CLAUDE_PLUGIN_ROOT}/references/community-moderation-safety.md` |
+| What is winning or saturated, thumbnail rules, the 100-play gate, launch timing | `${CLAUDE_PLUGIN_ROOT}/references/market-scan-2026-11.md` |
+| Community, moderation, child safety, content ratings | `${CLAUDE_PLUGIN_ROOT}/references/community-moderation-safety.md` |
 | Launch gate | `${CLAUDE_PLUGIN_ROOT}/templates/launch-checklist.md` and `${CLAUDE_PLUGIN_ROOT}/references/checklists.md` |
 | Event plan to fill in | `${CLAUDE_PLUGIN_ROOT}/templates/analytics-event-plan.md` |
 | Reference images: icons and thumbnails of hit games, GFX tutorials | `${CLAUDE_PLUGIN_ROOT}/references/visual-library/icons-and-thumbnails.md` |
