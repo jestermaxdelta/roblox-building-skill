@@ -138,7 +138,7 @@ Every ladder needs four rungs: entry (under 100 R$), core (100–399), premium (
 | Roleplay, social | Passes and cosmetics; subscription suits regulars | Emote or prop pack 49–99 | Premium pass 275; vehicle pack 349–399 | House or estate pass 499–799 | Season or founder bundle | Access to social spaces that raises the maturity rating unplanned |
 | Competitive PvP, shooter | Cosmetics, bundles, season pass only | Skin 49–99; key or crate with odds 79 | Bundle 199–399; season premium track | Prestige skin 499–999 | Collector bundle 1,000+ | Stat power of any kind (house rule) |
 
-Observed live prices `[community]` `[VS]` (wikis, guides and the owner's 2026-11-07 scan; fan sources disagree on some, check the game's store page):
+Observed live prices `[community]` `[VS]` (wikis, guides and the owner's 2026-11-07 scan; rows marked † read from the game-passes and developer-products APIs on 26 Nov 2026; fan sources disagree on some, check the game's store page):
 
 | Game | Prices (R$) |
 |---|---|
@@ -146,9 +146,16 @@ Observed live prices `[community]` `[VS]` (wikis, guides and the owner's 2026-11
 | Blox Fruits | 2× Money 450, 2× Mastery 450, Fast Boats 350, Fruit Notifier 2,700 |
 | Brookhaven | Premium 275; vehicle pack 349–399 (sources differ) |
 | Doors | VIP 400 |
-| Grow a Garden / Grow a Garden 2 | Shop restock 79 / 39; seed packs 199 ×1, 575 ×3, 1,699 ×10 (bulk −4% and −15%); limited pack 1,999 |
+| Grow a Garden / Grow a Garden 2 | Shop restock 79 / 39; seed packs 199 ×1, 575 ×3, 1,699 ×10 (bulk −4% and −15%; unchanged 26 Nov †); premium eggs 149 / 429 / 1,249 †; Event Shop Restock 79 †; Divine Seed Rain 699 †; limited pack 1,999 |
+| Steal An Egg † | X2 Money 299, X2 Growth Speed 467; limited egg ×1 / ×3 / ×10 / ×50 at 99 / 249 / 799 / 3,499; shop reroll 49 |
+| Throw Food For Animals † | x2 Cash 99, x2 Training Power 149; Server Luck 2× / 4× / 8× / 16× at 19 / 39 / 79 / 159; training boost 5 / 15 / 30 min at 39 / 99 / 179; eggs ×1 / ×3 / ×10 at 79 / 199 / 649 |
+| Steal a Brainrot † | 2× Money 299, VIP 375, Admin Commands 7,999 |
+| Fish It † | Server boost ×2 / ×4 / ×8 at 99 / 396 / 792; ×8 for 6 h 1,287, 12 h 1,989; gift versions of each |
+| RIVALS † | Season-pass levels +1 at 99 up to +70 at 6,999; Season Bundle 689, Deluxe 749; bundles 59–1,425 |
 | +1 / Evolution format | Pads ×8 / ×15 / ×30 / ×99 at 79 / 199 / 499 / 1,299; 2× Wins 90–99; size packs 10 / 41 / 86 / 167; idle pad 69; Robux egg 79 |
 | Obbies (DevForum anecdotes) | Skip stage 5–20; one reply argues 19–49 |
+
+Pass prices across the top 41 games on 26 Nov 2026 (265 passes on sale, games API): median 299 R$; 15% under 100, 53% at 100–399, 25% at 400–999, 7% at 1,000+; 61% end in 9; the most common points are 299, 199, 99, 399 and 149. Several hits sell only 1–3 passes (Steal An Egg 2, Throw Food For Animals 2, 99 Nights 1, Steal a Brainrot 3) and carry their whole range in developer products. Black Friday 2026 (RIVALS from 25 Nov, Evade 20% off 27–30 Nov) was run by cutting the price and labelling the pass name ("[30% OFF]"); none of the 265 passes used the platform discount field, so keeping the reference price honest is the creator's job ("Anti-patterns" below) `[community]` `[VS]`.
 
 Conflict (starter-pack price): the house default is 49–99 R$. Roblox's starter-pack guide names 99, 199 and 299 R$ as common points, "anything less than 399" as reasonable, and recommends a discount of around 90% against the contents' value `[official]`. Keep 49–99 as the first-purchase rung (the median payer spends under a dollar) and add a second, larger value pack at 199–399 for the second purchase; test rather than replace. Whatever discount is shown is computed from the contents' real shop prices.
 
@@ -156,7 +163,7 @@ Conflict (starter-pack price): the house default is 49–99 R$. Roblox's starter
 
 For a category sold in sizes (packs, boost bundles), compute value per Robux for each rung, `v = amount ÷ price`, and run three tests `[lihfolk]`:
 
-1. **Monotone value.** v rises with size. If a rung gives worse value than the rung under it, it is a trap; players notice, and it shows as near-zero sales of that rung.
+1. **Monotone value.** v rises with size. If a rung gives worse value than the rung under it, it is a trap; players notice, and it shows as near-zero sales of that rung. Live failures on 26 Nov 2026 †: an egg ladder 1 / 3 / 10 / 50 at 399 / 1,200 / 3,200 / 14,999 (×3 costs more per egg than ×1), and an exclusive-egg ladder 2 / 8 / 35 / 170 / 400 at 240 / 950 / 2,950 / 14,500 / 32,000 (170 costs more per egg than 35).
 2. **Diminishing extra bonus.** Each step up adds less bonus than the last, or the top rung makes the middle look foolish and you lose mid-tier buyers who would never spend 1,999.
 3. **Computed labels.** "+15%" and "Best value" come from the same table the grant uses, asserted at server start. A typed label drifts the first time an amount changes.
 
@@ -354,6 +361,7 @@ local function canSubscribe(info: PolicyInfo): boolean return info.IsEligibleToP
 |---|---|---|
 | Item permanently "on sale"; fake struck-through price | Not a genuine discount `[official]` | Real end date, or no discount |
 | Countdown that restarts; "deal of the day" shown every login | False urgency `[official]` | One `endsAt`; rerun later under a new name |
+| Selling a missed calendar day (seen at 9 and 37 R$, Nov 2026) | Monetises a loss the calendar created; reads as punishment `[house]` | A cumulative calendar that counts days played: nothing to buy back |
 | "Only 3 left" on unlimited stock | False scarcity `[official]` | Real server-counted stock or nothing |
 | Minutes-long flash sale popups | "Not fair" discount; pressure on minors `[official]` | Sales that last days, shown in the Featured tab |
 | "GET IT NOW", "LAST CHANCE" | Language Roblox tells creators to avoid `[official]` | "View Item", "See Price", "Open Shop" |

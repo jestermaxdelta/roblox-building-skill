@@ -225,7 +225,7 @@ Search, renames, keyword rules and the 160-character hook are in `analytics-and-
 - **Tag and art change together.** Of 6 sample games with Thanksgiving art on 26 Nov, 2 tagged the title; 4 others had the tag and no such art, and a fifth ran `[WINTER UPDATE ❄️]` over a red concert scene `[house]` viewed. A tag the tile does not show is a small mismatch.
 - **Title says the verb, tile shows the verb.** "Cut a Rock" under a tile of a rock being cut needs no further text; a clever title under an atmospheric tile needs a subtitle in the art.
 - **First description line = the tile's promise in words**, second line = this update. The player who clicked should read the same promise three times: tile, title, first line.
-- **Stale tags cost trust**: 14 of 98 chart titles still carried Halloween marks on 11 November and 7 of 99 on 26 November, when 12 carried Thanksgiving marks and none yet a Christmas one `[house]`. Put tag changes, with a take-down date, on the update checklist (rule 9).
+- **Stale tags cost trust**: 14 of 98 chart titles still carried Halloween marks on 11 November and 7 of 99 on 26 November, when 12 carried Thanksgiving marks and none yet a Christmas one `[house]`. Put tag changes, with a take-down date, on the update checklist (rule 9). None of 326 chart titles carried a countdown that day.
 - Never a boost, reward or code in title, tile or first line (house rule; rule 12 allows only a live, real event tag).
 
 ## 11. Low-effort and generated tells, and the fix for each

@@ -185,7 +185,7 @@ Analytics and LiveOps
 
 Timing
 
-- [ ] Launch inside a seasonal window (summer 10–30 June, Halloween, winter) and on or just before a Saturday; weekly update day announced.
+- [ ] Launch inside a seasonal window (summer 10–30 June, Halloween, winter: by the Saturday before Christmas week, since 1–19 Dec is a lull) and on or just before a Saturday; weekly update day announced.
 - [ ] Rollback plan: previous place version noted; server-restart decision made for any data migration (Creator Hub: Restart Servers, outdated servers only, with a delay; see the live-update runbook in engineering-architecture.md).
 
 ## After launch (weekly)
