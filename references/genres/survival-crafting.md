@@ -1,6 +1,6 @@
 # Survival and crafting playbook
 
-Covers co-op night-survival games, gather-craft-build survival, and round-based hazard survival. Open it when "prepare, then survive" is the loop, when planning base building and its save format, or when auditing a live survival game for horde performance and mid-game drop-off. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers co-op night-survival games, gather-craft-build survival, and round-based hazard survival. Open it when "prepare, then survive" is the loop, when planning base building and its save format, or when auditing a live survival game for horde performance and mid-game drop-off. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *run-based* = each session is a complete arc that resets; *DAG* = a direc
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **durable**. 99 Nights in the Forest 221K CCU (began as a jam in Mar 2025, launched Jun 2025 per Roblox's creator spotlight; 11.2–14.2M peak in 2025; 2.17M tracked on 17 Oct 2026; "the most durable 2025 hit": weekly updates, friend co-op, an older audience), Survive Your Ideas 41K, co-op chase Evade 64K. Survival was the fastest-growing genre in the week of 28 Sep–4 Oct 2026 (+45.4%).
+- Market position: **durable**. 7 Nov (vault) → 26 Nov 2026 at 10:00 UTC: 99 Nights in the Forest 221K → 151K (began as a jam in Mar 2025, launched Jun 2025 per Roblox's creator spotlight; all-time 14.15M on 4 Oct 2025, Rolimons; 2.17M tracked on 17 Oct 2026; "the most durable 2025 hit": weekly updates, friend co-op, an older audience), Survive Your Ideas 41K → 15K (peak 108K in mid-Nov but 6.3 min average playtime), co-op chase Evade 64K → 35K.
+- Rising since 7 Nov: **co-op journey survival**, a vehicle or route as the progress bar with a run that can end. 100 Miles Down the River 23.8K (created 12 Oct; build a raft, survive a storm-borne hunter, reach Mile 100 in one run; peak 91.4K; 95.1% approval; teardown in `case-studies-teardowns.md` §2.23), 100 Days at Sea 14.6K (97.0%), Chase a Storm! 4.7K (created 9 Nov; a 1–4 player crew films tornadoes). Also rising: cozy-by-day, hunted-by-night (Stay the Night 11.9K) and grow-from-baby animal survival (FERAL 9.1K; Ant Evolution 12.9K, `plus-one-evolution.md`). Survival was the fastest-growing genre in the week of 28 Sep–4 Oct 2026 (+45.4%).
 - Durable games share co-op or skill play, real depth and weekly updates (vault lifecycle model); survival fits all three.
 - The 99 Nights team is small: three leads (design and art direction, programming, building and modelling) plus an artist and an animator; they describe building a feature, then scaling it "to the thousands", and keeping part, vertex and instance counts low across the map for phones (Roblox creator spotlight, 2025-10-31) `[official]`.
 - Audience: older than average, plays with friends, long sessions. Roblox's doc example for the genre is round-based hazard survival (Natural Disaster Survival) `[official]`.
@@ -174,4 +175,6 @@ Accessed 2026-11-10.
 - https://github.com/Zyn-ic/Stoway (read README; 13 stars, MIT; inventory and hotbar system; reference only)
 - GitHub search for open survival frameworks (2026-11-10): only small personal projects without licences found.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Survival and Crafting.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
+- https://allthings.how/roblox-100-miles-down-the-river-how-to-reach-mile-100-and-every-badge/ (read 2026-11-26; badges, run rules, Ember and classes)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Shooter and PvP duels playbook
 
-Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena and team modes. Open it when aiming and shooting is the core action, when choosing a netcode model for hit registration, or when auditing a live shooter for cheating, time-to-kill balance and cosmetic revenue. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers first- and third-person shooters, round-based duels (1v1 to 5v5), arena and team modes. Open it when aiming and shooting is the core action, when choosing a netcode model for hit registration, or when auditing a live shooter for cheating, time-to-kill balance and cosmetic revenue. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *TTK* = time to kill; *STK* = shots to kill; *hitscan* = an instant ray r
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **one durable leader, thin middle**. RIVALS 217K CCU (#7 on the platform): 1v1–5v5 duels, first to 5 rounds, ranked and contracts, money from cosmetics and keys. Duels were a main cluster on the owner's first feed (MVSD 10K). The vault lists RIVALS among durable games: skill play, real depth, weekly updates.
+- Market position: **one durable leader, thin middle**. RIVALS 217K CCU on 7 Nov (vault) and 121K on 26 Nov 2026 at 10:00 UTC, still #7 on Top Playing Now: 1v1–5v5 duels, first to 5 rounds, ranked and contracts, money from cosmetics and keys. Duels were a main cluster on the owner's first feed (MVSD 10K → 6.4K). The middle on 26 Nov: Hypershot 14.3K, One Tap 10.5K, Deagle Arena 9.7K.
+- New since 7 Nov (26 Nov reads): **destructible large-team war** (Voxel Wars 19.9K, created 28 Oct: 15v15 on 30-player servers, walls and bases break block by block, tanks, helicopters, killstreaks, map vote after each round; peak 38.8K; 80.6% approval) and a stealth assassination sim (Silent Killer Simulator 5.4K, created 5 Nov). Block-style PvP with Java-edition combat sits in `fighting-battlegrounds.md`. The vault lists RIVALS among durable games: skill play, real depth, weekly updates.
 - Roblox's own genre table calls action "less popular on Roblox than elsewhere" (example: Arsenal) `[official]`; the audience exists but concentrates in a few polished games.
 - One tracker reports D1 22–30% for shooters with traffic `[community]` (no sample or method stated; a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks: never set a target from it).
 - Audience: older, competitive, PC-heavy but increasingly mobile and console; sessions are chains of short matches.
@@ -183,4 +184,5 @@ Accessed 2026-11-10.
 - https://github.com/1Axen/Secure-Cast (read README; 30 stars, MIT, archived)
 - https://github.com/weenachuangkud/FastCast2 (search listing; 30 stars, licence unclear; not used)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Shooters FPS and TPS.md`, `10 Game Design and Genres/Time-to-Kill Math and a Weapon Balance Sheet.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

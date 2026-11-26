@@ -41,7 +41,7 @@ This folder is a playbook for designing, building, monetizing and growing Roblox
 | `00 Start Here` | Agent tutorial, task router, house rules, vault map, glossary |
 | `01 Workflow and Process` | Twelve phases, decision rules, playtesting, Studio workflow, audits, ship gates, AI tooling |
 | `02 Game Design` | Fun, motivation, core loops, game feel, camera, AI, accessibility, teardowns |
-| `03 Genres` | 21 genre playbooks plus cross-genre rules |
+| `03 Genres` | 22 genre playbooks plus cross-genre rules |
 | `04 Market Research` | What is winning or saturated on Roblox, gaps, timing (Nov 2026) |
 | `05 UI and UX` | Visual design and Figma, screen recipes, motion, input and cross-platform |
 | `06 VFX, Audio and Game Feel` | VFX principles, 22 effect recipes, audio |

@@ -1,6 +1,6 @@
 # Steal-and-defend (base raid) playbook
 
-Covers "Steal a ___" games: each player owns a base that earns per second from collected items, and every other player can walk in and carry one off. Open it when theft between players is the core action, or when auditing a live steal game for exploit load, complaints and the house-rule conflicts this genre carries. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers "Steal a ___" games: each player owns a base that earns per second from collected items, and every other player can walk in and carry one off. Open it when theft between players is the core action, or when auditing a live steal game for exploit load, complaints and the house-rule conflicts this genre carries. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *base lock* = a timed shield during which nothing can be stolen; *carry s
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **peaked, saturated, still the largest genre**. Steal An Egg 1.14M CCU (#1; peak 14.31M on 19 Sep 2026), Break and Steal an Egg 129K (a clone shipped about 6 weeks into the parent's rise; peak 1.31M), Steal a Brainrot 103K (peak 25.4–25.8M in Oct 2025, now event-driven). About 1.55M CCU across the genre, but of 40 "Steal a" results only 7 exceed 10K.
+- Market position: **peaked, saturated, still the largest genre**. 7 Nov (vault) → 26 Nov 2026 at 10:00 UTC: Steal An Egg 1.14M → 706K (still #1; peak 14.31M on 19 Sep 2026; a 6.9M tracker spike on its Turkey Takeover event from 21 Nov), Break and Steal an Egg 129K → 57K (a clone shipped about 6 weeks into the parent's rise; peak 1.31M on 18 Oct), Steal a Brainrot 103K → 24K (peak 25.4–25.8M in Oct 2025; event-driven, 722K on the same weekend). Of the first 40 "Steal a" results only 7 exceeded 10K on 7 Nov and 3 on 26 Nov.
+- The 7 Nov followers fell hardest (26 Nov, Rolimons peaks): Fake an Egg 164K peak → 4.8K, Steal A Pet And Ride It 126K → 6.1K, Steal Eggs From Tsunami 21K → 2.7K. One follower rose: Steal an Anime Pack 18K (created 14 Aug; a record 57.6K about 22 Nov; 26.7 min sessions, 96.1% approval): it steals packs that open into anime units and adds dungeons, a second activity beside the theft.
 - Lifecycle (vault): mega-hits peak 7–8 weeks after launch, plateau 2–5 months on weekly updates and events, then fall 90–99%. Theme-only brainrot clones settle at 4–15K (median 8.4K across 21 games); a remix with a new mechanic (Escape Tsunami For Brainrots, about 5M peak) beats straight clones.
 - Legal and policy heat: "hundreds" of Steal a Brainrot clones and at least 4 lawsuits; Steal An Egg was briefly pulled in Aug 2026 over an in-game video feed (vault). Near-identical titles, visuals or place files are penalised in discovery.
 - Audience: broad and young; drama between players is the content. Large shared lobbies. Sessions are driven by "just catch the next spawn" timers.
@@ -178,4 +179,5 @@ Accessed 2026-11-10.
 - https://www.pcgamer.com/games/sim/one-of-robloxs-biggest-experiences-right-now-is-a-bizarre-italian-brainrot-character-stealing-simulator-and-lord-help-me-i-now-understand-why-its-so-popular (search summary)
 - Web search for DevForum threads on building base-lock or steal systems (2026-11-10): no evidence found; results were player guides and exploit-script pages (not opened).
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `skills/roblox-trend-game/SKILL.md` and `references/trend-games-research.md` §1.2, §2, §3.2–3.3, §7, §8; `59 Viral and Trend Game Teardowns/Teardown - Steal An Egg.md`; `32 Case Studies of Top Roblox Games/Case Study - Steal a Brainrot.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Party and minigame-collection playbook
 
-Covers round-based collections of short minigames, elimination game shows and hazard-survival rounds. Open it when "a different one-rule game every two minutes" is the product, when building a round framework that makes each new minigame cheap, or when auditing a live party game for dead time, repeats and bugs that appear after thirty rounds. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers round-based collections of short minigames, elimination game shows and hazard-survival rounds. Open it when "a different one-rule game every two minutes" is the product, when building a round framework that makes each new minigame cheap, or when auditing a live party game for dead time, repeats and bugs that appear after thirty rounds. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *minigame contract* = the interface every minigame module implements so t
 
 ## Snapshot
 
-- Market position: a long-standing category with spikes tied to outside trends. A show-themed elimination game fell from 151K tracked CCU (Oct 2025) to 14K as the show faded (vault, 2026-11-07). Roblox's dashboard lists Party & casual › Minigame as its own subgenre, and its design docs use a hazard-survival round game as a genre example `[official]`.
+- Market position: a long-standing category with spikes tied to outside trends. A show-themed elimination game fell from 151K tracked CCU (Oct 2025) to 14K as the show faded (vault, 2026-11-07) and to 3.9K by 26 Nov 2026.
+- New since 7 Nov (26 Nov 2026, 10:00 UTC): **word and draw-to-play party games**. Name Them All 7.2K (created 4 Nov; name as many answers as you can in 60 s, rarer answers score more; 1v1 duels and party modes; 25-player servers), Draw Your Cart! 9.1K (created 9 Nov; draw a cart with limited ink, then joust it in a physics fight), Hyper Draw! 5.6K, Tumble Dash 3.6K. A drawn shape that other players see may count as free-form user creation (16+) `[official]` `[VS]`: answer the questionnaire for the drawing, not for the fight. Roblox's dashboard lists Party & casual › Minigame as its own subgenre, and its design docs use a hazard-survival round game as a genre example `[official]`.
 - Why it works `[lihfolk]`: variety (the next round is different), a low skill floor (one rule, one sentence), cheap losses (two minutes, then a fresh start) and social chaos that produces clips.
 - Why it fails `[lihfolk]`: dead time, too few minigames (repeats inside 15 minutes), unclear rules and empty servers (most minigames need four or more players).
 - Audience: the youngest and broadest; friend groups; very phone-heavy. Sessions 15–40 min.
@@ -170,4 +171,5 @@ Accessed 2026-11-10.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Party and Minigame Collections.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/experience-genres.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/survival.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # RNG and aura-rolling playbook
 
-Covers games whose core verb is one button: roll for an item, aura or title with a "1 in N" rarity, keep the rarest, and feed luck, crafting and a collection around it. Open it when rolling is the game or a major layer, when writing roll tables whose shown odds must equal real odds, or when auditing a live RNG game for compliance, inventory flooding and a flat long loop. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For egg and pet rolls inside another loop see `pet-collection-hatching.md`.
+Covers games whose core verb is one button: roll for an item, aura or title with a "1 in N" rarity, keep the rarest, and feed luck, crafting and a collection around it. Open it when rolling is the game or a major layer, when writing roll tables whose shown odds must equal real odds, or when auditing a live RNG game for compliance, inventory flooding and a flat long loop. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For egg and pet rolls inside another loop see `pet-collection-hatching.md`.
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *luck* = a modifier that raises the chance of rarer outcomes; *pity* = a 
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **winner-take-most**. Sol's RNG 41K CCU, holding about 40K for 2+ years by adding depth; Anime Dice 30K (up 19 of 19 weekdays in September); then a fast drop under 3K (PlaneRNG 3K, Case Simulator RNG 1.8K, Barber RNG 453). RNG was 18% of the owner's second feed. The vault's reading: RNG works best as a layer inside another loop (a fishing game's "1 in 10M", an incremental's runes).
+- Market position: **winner-take-most**. Sol's RNG 41K CCU on 7 Nov (vault) and 39.6K on 26 Nov 2026 at 10:00 UTC, holding about 40K for 2+ years by adding depth and one of the few games level with its 7 Nov figure that day; Anime Dice 30K (up 19 of 19 weekdays in September) → 7.1K after a 103K peak on 25 Oct; then a fast drop under 3K (PlaneRNG 3K, Case Simulator RNG 1.8K, Barber RNG 453; of the first 40 "rng" results on 26 Nov, 32 were under 1K).
+- RNG as a layer won November: in throw-for-distance games the throw's distance is the luck multiplier and the reveal shows "1 in X" (Throw Food For Animals 164K on 26 Nov after a 2.45M event peak; `throw-for-distance.md`). Card-pack opening is a small new pocket (a toy-brand card opening game at 8.1K, created 7 Nov; licensing not verified; look-alike pack openers under 50). RNG was 18% of the owner's second feed. The vault's reading: RNG works best as a layer inside another loop (a fishing game's "1 in 10M", an incremental's runes).
 - The leader `[lihfolk]` `[VS]`: created Dec 2023, 20-player servers, about 91% positive, 400+ auras; it outlasted the early-2024 wave by turning the button into a world (biomes on server time, crafting from duplicates, potions, numbered seasons).
 - Why it works `[lihfolk]`: anticipation on every press, big denominators that are stories by themselves, a collection, status worn on the avatar, clips of rare pulls, and one-button input ideal for phones.
 - The same mechanics are borrowed from gambling. On a platform full of children that creates duties: honest odds, no paid gambling loops, policy compliance `[lihfolk]`.
@@ -189,3 +190,4 @@ Accessed 2026-11-10.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - RNG and Collection Games.md`, `59 Viral and Trend Game Teardowns/Teardown - Sol's RNG.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read; percentage format, rounding, one-instance rule, luck disclosure)
 - See also `references/economy-and-progression.md` §Random rewards and `references/case-studies-teardowns.md`.
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.

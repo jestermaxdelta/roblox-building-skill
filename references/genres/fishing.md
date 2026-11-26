@@ -1,6 +1,6 @@
 # Fishing and catch-collection playbook
 
-Covers fishing games and their close relatives (bug catching, digging, netting): a short skill minigame on top of a luck roll, a bestiary per zone, a gear ladder and travel between waters. Open it when "cast, catch, collect" is the loop, when designing catch odds and luck products that pass policy, or when auditing a live fishing game for AFK abuse and expansion design. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers fishing games and their close relatives (bug catching, digging, netting): a short skill minigame on top of a luck roll, a bestiary per zone, a gear ladder and travel between waters. Open it when "cast, catch, collect" is the loop, when designing catch odds and luck products that pass policy, or when auditing a live fishing game for AFK abuse and expansion design. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,10 +14,11 @@ Terms: *bestiary* (index) = the collection log of species caught; *mutation* or 
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **durable, up 55% year on year**. Fisch 79K CCU (510K tracked on a 17 Oct 2026 event), Fish It 63K (2.7M peak), Net a Fish 14K, Deep Fishing 4.3K. A bare "+1 Fishing" had 4 players.
+- Market position: **durable, up 55% year on year** (vault, 7 Nov), and the genre that held best into 26 Nov 2026 (10:00 UTC): Fish It 63K → 68K (2.7M peak), Fisch 79K → 56K (510K tracked on a 17 Oct 2026 event; all-time 1.27M on 18 Oct 2025, Rolimons), Net a Fish 14K → 12K, Deep Fishing 4.3K → 5.3K, against a median 0.63× for evergreens that day. A bare "+1 Fishing" had 4 players.
+- Rising inside the genre since 7 Nov: **cast-for-distance fishing**, the throw-for-distance format applied to a rod (cast further, rarer catch, catches earn per second at your base): Fish For Sea Animals 29K (created 31 Oct), Fish for Secret Animals 16.5K (renamed from "Catch Rare Fish" to match the format's title pattern), Cast For Fish! 14K (20 zones, 182 fish, 12 sizes up to a 1-in-125,000 INFINITE) (26 Nov). Their loop and build plan: `throw-for-distance.md`. Regional fishing also charted: River Hunter 13.4K (created 5 Nov), built around a Thai Loy Krathong festival event.
 - Two proven shapes `[lihfolk]`: the deeper original (Fisch: hundreds of species, a reel-bar skill minigame, weather, time and seasons; about 91% positive; 20-player servers) and the simplified follower (Fish It: click to charge, click fast to reel, auto-equipped rod, quest arrows, islands close together; about 83% positive; average session about 30 min linked to AFK auto-fish, unverified).
 - The follower grew when the leader stumbled `[lihfolk]`: an expansion that required level 200, added a new currency, weakened old rods and raised the level cap told players their progress was worth less; in-game polls later decided its fate.
-- Open gap (vault): fishing × anomaly or deep-sea horror; nothing above 2K (It Hears The Water 1.5K). The vault's shelved co-op anomaly-fishing concept scored 30/35 with a 6–8 week MVP and the longest expected life on its list.
+- Open gap (vault): fishing × anomaly or deep-sea horror; still nothing above 2K on 26 Nov (It Hears The Water fell from 1.5K to 36). The vault's shelved co-op anomaly-fishing concept scored 30/35 with a 6–8 week MVP and the longest expected life on its list.
 - Audience: broad and calm; parallel play where nobody can harm anyone. Dashboard genre: Simulation `[VS]`.
 
 ## Core loop with timings
@@ -157,4 +158,5 @@ Accessed 2026-11-10.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `32 Case Studies of Top Roblox Games/Case Study - Fisch.md`, `59 Viral and Trend Game Teardowns/Teardown - Fish It.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/cloud-services/data-stores/error-codes-and-limits.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Obby and tower playbook
 
-Covers obstacle courses, round-based towers, difficulty-chart obbies and movement-skill platformers. Open it when jumping is the core action, when tuning jump feel and stage difficulty, or when auditing a live obby with low return rates and thin monetisation. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers obstacle courses, round-based towers, difficulty-chart obbies and movement-skill platformers. Open it when jumping is the core action, when tuning jump feel and stage difficulty, or when auditing a live obby with low return rates and thin monetisation. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,7 @@ Terms: *checkpoint* = the pad a player respawns at; *coyote time* = a short wind
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **evergreen leader, cooling wave**. Tower of Hell 36K CCU. +1 Speed Keyboard Escape 33K from a 4.04M peak (down 61% Aug → Sep 2026); obby share of top-10 CCU went from 4.2% to 0% in October. Remixes did better than straight obbies: Escape Tsunami For Brainrots about 5M peak, Swing Obby for Brainrots 87K peak.
+- Market position: **evergreen leader, wave over**. Tower of Hell 36K CCU on 7 Nov (vault) and 16K on 26 Nov 2026 at 10:00 UTC (all-time 171K on 4 Sep 2020, Rolimons). +1 Speed Keyboard Escape 33K → 13K, from a 4.04M peak (V-7; Rolimons has 7.26M on 18 Jul 2026), down 61% Aug → Sep 2026; obby share of top-10 CCU went from 4.2% to 0% in October. No straight obby broke out between 7 and 26 Nov; the obby-shaped games that charted add a physical gimmick (Troll Grab Tower 9.6K: grab, throw and fling friends on a tower, with free escapes; Drive a Bed Downhill 3.3K) or a chase (Barry's Prison Run 10.7K at 60.9% approval). Remixes did better than straight obbies: Escape Tsunami For Brainrots about 5M peak, Swing Obby for Brainrots 87K peak.
 - Third-party trackers describe the genre as in gradual decline since mid-2024 `[community]`. It remains the cheapest genre to ship, so the tail is very long.
 - Audience: the youngest and broadest; also a skilled niche (tower and difficulty-chart communities).
 - Session shape: short attempts, natural stop points at each failure. Obbies should not be judged against simulator day-1 clocks, and Roblox publishes no genre-specific retention benchmark `[community]`. One tracker reports D1 25–35% for obbies with traffic (no sample or method stated; a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks); one developer of a themed obby reported D1 6.36% and D7 0.79% `[community]`. Use your own Creator Analytics benchmark.
@@ -178,4 +178,5 @@ Accessed 2026-11-10.
 - https://rolearn.dev/insights/genre-saturation-opportunity (search summary; third-party)
 - GitHub search for open obby kits (2026-11-10): no maintained, licensed kit of note found; results were mostly automation or exploit scripts (not used).
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Obbies and Platformers.md`, `43 Genre Systems End to End/Obby Checkpoints and Stage Saves End to End.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

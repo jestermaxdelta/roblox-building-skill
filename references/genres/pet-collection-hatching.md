@@ -1,6 +1,6 @@
 # Pet collection and hatching playbook
 
-Covers games where the collection is the game: egg hatching, pet or creature collecting, merge and mutation tiers, indexes, trading, and the "___ For Eggs" journey formats. Open it when eggs, pets, units or cards with rarities drive progression, or when auditing a live game's hatch economy, odds compliance or trade safety. For roll-first games see `rng-rolling.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers games where the collection is the game: egg hatching, pet or creature collecting, merge and mutation tiers, indexes, trading, and the "___ For Eggs" journey formats. Open it when eggs, pets, units or cards with rarities drive progression, or when auditing a live game's hatch economy, odds compliance or trade safety. For roll-first games see `rng-rolling.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,8 +14,8 @@ Terms: *paid random item* = any random reward bought with Robux or with currency
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): pets and eggs are **peaked but dominant**, with one rising pocket. Adopt Me! 167K CCU (about $60M a year; CCU roughly triples on updates), Pet Simulator 99 46–48K, Throw Food For Animals 311–324K (casual animal luck/collect, up 388% in 30 days, **rising**).
-- Egg journeys are **crowded; only journey games break out**: Bike For Egg! 38K, Climb For Animals Eggs 27K, Ride An Egg 15K, Hike For Eggs 11.5K. Stat-only "+1 ___ For Eggs" sit at 27–1.5K and about ten "Dive for Eggs" at 0–213. Ride A Pet peaked at 1.55M on 3 Oct 2026 and left the top 10 within weeks.
+- Market position: pets and eggs are **peaked but dominant** (vault, 7 Nov). On 26 Nov 2026 (10:00 UTC): Adopt Me! 167K → 125K (about $60M a year; CCU roughly triples on updates), Pet Simulator 99 46–48K → 86–92K in its Turkey update week. The 7 Nov rising pocket, Throw Food For Animals (311–324K, up 388% in 30 days), reached a 2.45M tracker peak on its 21–22 Nov event and stood at 164K; it is now its own format with its own file: `throw-for-distance.md`.
+- Egg journeys were **crowded; only journey games broke out** (vault, 7 Nov), and by 26 Nov the whole cluster was **fading**: Bike For Egg! 38K → 6.3K (peak 149K on 24 Oct), Climb For Animals Eggs 27K → 9.5K (peak 167K on 17 Oct), Ride An Egg 15K → 1.4K, Hike For Eggs 11.5K → 4.1K (Rolimons; G-26). The audience moved to throw-for-distance, where the trip is a throw instead of a ride. Stat-only "+1 ___ For Eggs" sit at 27–1.5K and about ten "Dive for Eggs" at 0–213. Ride A Pet peaked at 1.55M on 3 Oct 2026 and left the top 10 within weeks.
 - Pattern (vault #4, #5): the collection is the multiplier, 4–5 items per egg with the top one about 0.1%; merge or fuse tiers (3 into 1, 4 into 1) reuse the same assets for more rarity levels.
 - Audience: the youngest on the platform; collectors and traders skew older. Sessions are hatch bursts (minutes) wrapped in a longer earn loop.
 - Compliance weight is the highest of any genre: every Robux-linked egg is a paid random item `[official]`.
@@ -168,7 +168,7 @@ Accessed 2026-11-10.
 
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read; 2026-11-07 snapshot).
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read; questionnaire item on `ArePaidRandomItemsRestricted`)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-ratings.md (read; questionnaire item on `ArePaidRandomItemsRestricted`)
 - https://devforum.roblox.com/t/should-i-restrict-egg-opening-based-on-arepaidrandomitemsrestricted-policy/3278299 (read 2026-11-11)
 - https://devforum.roblox.com/t/update-on-paid-random-items-restriction-for-uk-users-under-18/3072183 (read 2026-11-11)
 - https://devforum.roblox.com/t/optimize-pet-follow/3166935 (opened 2026-11-11: thread and topic confirmed, details not re-read)
@@ -178,4 +178,5 @@ Accessed 2026-11-10.
 - https://github.com/MadStudioRoblox/ProfileStore (search listing; 352 stars, Apache-2.0; session locking)
 - https://www.metaversemarcom.io/post/inside-the-monetization-playbook-of-roblox-s-biggest-hit (search summary; third-party, Pet Simulator X premium egg price)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `32 Case Studies of Top Roblox Games/Case Study - Adopt Me.md`, `Case Study - Pet Simulator 99.md`, `10 Game Design and Genres/Genre Playbook - Simulators.md` §Pets and eggs, `skills/roblox-trend-game/references/trend-games-research.md` §8 (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

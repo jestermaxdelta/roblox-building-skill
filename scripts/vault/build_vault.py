@@ -657,7 +657,7 @@ For a small request (one system, one bug, one tweak), jump to the matching step 
 
 ## Learn from what already works
 
-- Genre numbers and loops: [[Genre Playbooks - Index]] and the 21 notes in folder 03.
+- Genre numbers and loops: [[Genre Playbooks - Index]] and the genre notes in folder 03.
 - What hits did and what killed the rest: [[Case Studies and Teardowns]].
 - What to build now: [[Market Scan - Nov 2026]] and [[Market Research v2 - Nov 2026 (Raw)]].
 - Deep background (archive): [[Knowledge Base Archive - Index]].

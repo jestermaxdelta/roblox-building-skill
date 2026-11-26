@@ -1,6 +1,6 @@
 # RPG, dungeon and roguelite playbook
 
-Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon crawlers and run-based roguelites. Open it when stats, gear and enemies drive progression, when sizing a content plan a small team can sustain, or when auditing a live RPG for mob performance, inventory bloat or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers open-world and anime RPGs (quest, fight, loot, level), instanced dungeon crawlers and run-based roguelites. Open it when stats, gear and enemies drive progression, when sizing a content plan a small team can sustain, or when auditing a live RPG for mob performance, inventory bloat or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,7 @@ Terms: *mob* = a non-player enemy; *elite* = a stronger variant with extra drops
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **evergreen at the top, expensive to enter**. Blox Fruits 325K CCU (one of the 2014–2020 evergreens; Fourth Sea due December), Attack on Titan Revolution 50K, King Legacy 40K. Roguelike Dead Rails about 29K from a 79K tracked peak ("roguelike variety, now niche").
+- Market position: **evergreen at the top, expensive to enter**. Blox Fruits 325K CCU on 7 Nov (vault) and 210K on 26 Nov 2026 at 10:00 UTC (one of the 2014–2020 evergreens; the "Fourth Sea in December" date is fan speculation: no developer date was found), Attack on Titan Revolution 50K → 35K, King Legacy 40K → 32K. Roguelike Dead Rails about 29K → 10.5K ("roguelike variety, now niche"; its all-time peak was 1.48M on 19 Apr 2025, Rolimons, not the 79K the vault quoted). Long-session anime grinds hold best: My Anime Mine 11.7K with 41-min average playtime and 98.9% approval (Rolimons).
 - Evergreens swing 2–5× on events and updates (vault lifecycle model). Anime incrementals and tower defence are the rising anime formats; anime RPGs are the incumbents.
 - Third-party trackers list "open world action" among categories with search demand and thin competition `[community]`; treat as a lead, not data.
 - Audience: older than the platform average (16+ invest more time and money and form communities); long sessions; guilds and trading communities.
@@ -174,4 +174,6 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/devas-of-creations-npc-replication-idea-smoothness/3151754 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Combat and RPG.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
+- https://timesaver.gg/blog/blox-fruits-fourth-sea (search summary, 2026-11-26; post dated 4 Oct 2026: no official Fourth Sea date)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

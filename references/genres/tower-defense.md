@@ -1,6 +1,6 @@
 # Tower defence playbook
 
-Covers wave-based tower defence: classic path TD, anime unit TD with summons and traits, and co-op lobby-to-match structures. Open it when placing and upgrading units against waves is the core action, when designing a summon economy that passes policy, or when auditing a live TD for enemy-count lag and bandwidth. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers wave-based tower defence: classic path TD, anime unit TD with summons and traits, and co-op lobby-to-match structures. Open it when placing and upgrading units against waves is the core action, when designing a summon economy that passes policy, or when auditing a live TD for enemy-count lag and bandwidth. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,7 @@ Terms: *leak* = an enemy reaching the base; *DPS* = damage per second; *banner* 
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **rising, led by anime TD**. Anime Adventures 99K CCU, Cameraman Tower Defense 46K. Anime incrementals and tower defence form an active wave. Theme hybrids are small so far: Garden TD 6.8K, Brainrot TD 932.
+- Market position: **led by anime TD**. 7 Nov (vault) → 26 Nov 2026 at 10:00 UTC: Anime Adventures 99K → 68K, Cameraman Tower Defense 46K → 19K (peak 133K in mid-Nov). The surge of the period: Anime Crusaders X 104.7K, #8 on the platform, an all-time 115K on 25 Nov after a relaunch event with a new name (16–20 Nov; 98.1% approval, 46.4-min sessions; teardown in `case-studies-teardowns.md` §2.22). Toilet Tower Defense 27K and Tower Defense Simulator 9.8K hold; Anime Vanguards, renamed "Vanguards: Embers of Justice", 8.5K. Anime incrementals and tower defence form an active wave. Theme hybrids are small so far: Garden TD 6.8K (5.4K on 26 Nov), Brainrot TD 932.
 - Gap (vault): steal × tower defence ("raid other players' bases for towers, then defend with them") scored 27/35 with an 8–12 week MVP; a partial gap.
 - Money: one anime TD was reported as the platform's top earner within 10 days of release `[community]`. The summon-and-trait layer is the revenue engine and the compliance risk.
 - Audience: older and grind-tolerant; co-op groups; long sessions made of several matches. Macro tools for leading TD games are widespread on GitHub, a sign of how much repetition players will automate.
@@ -183,4 +183,6 @@ Accessed 2026-11-10.
 - https://deltiasgaming.com/?p=349658 and https://progameguides.com/roblox/anime-vanguards-traits-tier-list-all-traits-ranked/ (search summary; fan guides for summon cost, trait rates and pity)
 - GitHub search "roblox tower defense" (2026-11-10): top results are macro and automation tools for existing games (not used).
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Tower Defense.md`, `43 Genre Systems End to End/Tower Defense Waves and Placement End to End.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
+- https://bloxodes.com/wiki/anime-crusaders-x (read 2026-11-26; modes, traits, relics, training, event dates)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

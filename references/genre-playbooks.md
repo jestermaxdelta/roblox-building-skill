@@ -1,6 +1,6 @@
 # Genre playbooks: index and cross-genre rules
 
-Routes a concept or a live game to its deep playbook in `references/genres/`, and holds the rules that apply to every genre and to hybrids. Open it first when choosing or naming a genre, then open the one or two genre files it points to. Market positions are the owner's vault snapshot of 2026-11-07 `[VS]` (see `market-scan-2026-11.md`); rewarded-video benchmarks are Roblox's genre playbooks `[official]` `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Routes a concept or a live game to its deep playbook in `references/genres/`, and holds the rules that apply to every genre and to hybrids. Open it first when choosing or naming a genre, then open the one or two genre files it points to. Market positions are the owner's vault snapshot of 2026-11-07 `[VS]` (see `market-scan-2026-11.md`), refreshed on 2026-11-26 from Roblox's chart and games endpoints at 10:00 UTC on a Thursday (pre-2026 games then stood at a median 0.63× of their 7 Nov level, so read every 26 Nov figure against that); rewarded-video benchmarks are Roblox's genre playbooks `[official]` `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -15,7 +15,7 @@ Terms: *host loop* = the loop that fills most minutes of play; *layer* = a syste
 ## How to pick a genre
 
 1. **Start from the spine, then the verb.** Every 2025–26 mega-hit runs a stat or income per second → multipliers from a collection → rebirth, plus one new action or a visible journey (steal, grow, kick, throw, climb, bike, dig, roll, draw routes). Put originality in the verb, not the theme.
-2. **Read the status column below.** Rising or durable with an open pairing beats saturated. A clone wins only if it ships 2–8 weeks into the parent's rise; format clones get about two weeks of attention; remixes with a new action far outperform reskins.
+2. **Read the status column below.** Rising or durable with an open pairing beats saturated. A clone wins only if it ships 2–8 weeks into the parent's rise; format clones get about two weeks of attention; remixes with a new action far outperform reskins. In November 2026 whole formats turned in 3–6 weeks: the +1, egg-journey and cozy-management leaders of 7 Nov kept a median 0.27× of their CCU by 26 Nov while throw-for-distance and ragdoll games rose for the same audience (`case-studies-teardowns.md` §4, §5).
 3. **Match the team to the content bill.** Every visible asset is a Blender model. Obby, +1, simulator and tycoon need tens of assets; RPG, roleplay and shooter need hundreds. Count the asset list before committing.
 4. **Match the audience and reach.** Younger players prefer exploration, experimentation and socialising over competition; older players (16+) invest more time and money and form communities `[official]`. Social beats solo. A Moderate label loses Roblox Kids (5–8) and keeps Select (9–15) and 16+; Content May Vary, social hangouts and free-form user creation are 16+; Restricted is 18+ `[official]` `[VS]`.
 5. **Check lifecycle against patience.** Mega-hits peak in 7–8 weeks and fall 90–99% within 6–12 months; single-gimmick format hits lose 90%+ in 1–4 months; durable games (co-op or skill play, real depth, weekly updates) hold for years.
@@ -26,29 +26,30 @@ Dashboard genre settings `[official]` `[VS]`: set genre and optional subgenre in
 
 ## Routing table
 
-| Genre | File | Loop in one line | Vault status (2026-11-07) | Dashboard genre › subgenre |
+| Genre | File | Loop in one line | Status (7 Nov → 26 Nov 2026) | Dashboard genre › subgenre |
 |---|---|---|---|---|
-| Tycoon and cozy management | `genres/tycoon-and-cozy-management.md` | Do the job by hand on your plot → hire → expand → idle income → rebirth | Cozy management rising (10–20K leaders); menu sims under 1K | Simulation › Tycoon |
-| Simulator, incremental, clicker | `genres/simulator-incremental.md` | Act → number up → upgrade → zone → rebirth | Crowded long tail; simulators cooling | Simulation › Incremental Simulator / Idle |
-| RNG and aura rolling | `genres/rng-rolling.md` | Roll → reveal → keep best → convert duplicates → shift luck → raise cap | Winner-take-most (41K, 30K, then under 3K) | Simulation › Incremental Simulator / Idle |
-| Fishing and catch collection | `genres/fishing.md` | Cast → reel minigame → catch with rarity → index → better rod → new water | Durable, up 55% year on year (79K, 63K) | Simulation |
-| Pet collection and hatching | `genres/pet-collection-hatching.md` | Earn → hatch (odds shown) → equip → merge → index → trade | Peaked but dominant; casual animal games rising; egg journeys crowded | Roleplay & avatar sim › Pet Care, or the host loop's genre |
-| +1 per second and Evolution | `genres/plus-one-evolution.md` | Train a stat → run the stage lane for Wins → eggs and pads → World → rebirth | Healthy middle tier (14–46K); +1 obbies cooling | Simulation › Incremental Simulator |
-| Steal-and-defend (base raid) | `genres/steal-and-defend.md` | Acquire → earn per second at base → steal rarer → lock and defend → rebirth | Peaked, saturated, still #1 (1.14M) | No steal subgenre exists; pick by core loop (Simulation › Tycoon or Incremental Simulator) |
-| Obby and tower | `genres/obby-tower.md` | Attempt → fail → checkpoint → next stage | Evergreen leader; wave cooling | Obby & platformer › Classic / Tower Obby |
-| Horror and co-op escape | `genres/horror-coop-escape.md` | Explore → tension → chase → escape → next floor | Strong; liminal anomaly rising | Survival › Escape / 1 vs All (no horror genre exists) |
-| RPG, dungeon, roguelite | `genres/rpg-dungeon.md` | Quest or room → fight → XP and loot → stronger → harder | Evergreen top (Blox Fruits 325K); costly to enter | RPG › Action RPG / Open World & Survival RPG |
-| Fighting, battlegrounds, anime gacha | `genres/fighting-battlegrounds.md` | Spawn → combo and abilities → kill or die → respawn | Durable upper-middle (73–89K) | Action › Battlegrounds & Fighting |
-| Tower defence | `genres/tower-defense.md` | Loadout → place and upgrade → survive waves → summon and level | Rising, anime-led (46–99K) | Strategy › Tower Defense |
-| Social roleplay and life-sim | `genres/social-roleplay.md` | Customise self and space → act out roles → show off and collect | Evergreen, dominant (Brookhaven 438K) | Roleplay & avatar sim › Life |
-| Fashion, dress-up, judged creation | `genres/fashion-dress-up.md` | Theme → timed creation → runway → peer vote → podium → payout | Established, past peak, still large (67K) | Roleplay & avatar sim › Dress Up |
-| Social deduction and hidden roles | `genres/social-deduction.md` | Role reveal → short round of hunt and survive → full reveal → rewards | Evergreen (MM2 242K) | Survival › 1 vs All |
-| Survival and crafting | `genres/survival-crafting.md` | Gather → craft → build → survive the night → expand | Durable (99 Nights 221K) | Survival, or RPG › Open World & Survival RPG |
-| Shooter and PvP duels | `genres/shooter-pvp.md` | Queue → rounds of engage, shoot, reposition → result → rank | One durable leader (RIVALS 217K); thin middle | Shooter › Deathmatch Shooter |
-| Racing and driving | `genres/racing-driving.md` | Drive → earn → buy or tune a car → races and meets | Steady middle (33K, 29K); scooter micro-wave cooling | Sports & racing › Racing; Simulation › Vehicle Sim |
-| Sports and physics sports | `genres/sports.md` | Kick-off → possessions → score → result → rematch | Solid middle (36–38K); physics sports rising | Sports & racing › Sports |
-| Party and minigame collections | `genres/party-minigames.md` | Intermission → rule card → 1–3 min minigame → results → next | Long-standing; show-tied spikes fade | Party & casual › Minigame |
-| Physics sandbox and ragdoll | `genres/physics-sandbox.md` | Grab or launch → fling → be flung → invent games | Forming wave (21–45K); gap in progression hybrids | Simulation › Physics Sim |
+| Throw-for-distance collection | `genres/throw-for-distance.md` | Train power → throw down a runway → distance is luck → collect → plot income | New and rising: Throw Food For Animals 164K (2.45M event peak, 21–22 Nov), followers 10–35K; crowded tail | Simulation › Tycoon or Incremental Simulator |
+| Tycoon and cozy management | `genres/tycoon-and-cozy-management.md` | Do the job by hand on your plot → hire → expand → idle income → rebirth | Was rising (10–20K leaders); the 7 Nov leaders fell 40–95% (My Small Business 20K → 1K) while new hands-on shops took the slots (Warnetopia 12K, Barber Empire 11K); menu sims under 1K | Simulation › Tycoon |
+| Simulator, incremental, clicker | `genres/simulator-incremental.md` | Act → number up → upgrade → zone → rebirth | Crowded long tail; "clean the ___" clearing games rising (Clean The Ballpit 17K); Tap Simulator REBORN up to 45K | Simulation › Incremental Simulator / Idle |
+| RNG and aura rolling | `genres/rng-rolling.md` | Roll → reveal → keep best → convert duplicates → shift luck → raise cap | Winner-take-most: Sol's RNG holds 40K; Anime Dice 30K → 7K | Simulation › Incremental Simulator / Idle |
+| Fishing and catch collection | `genres/fishing.md` | Cast → reel minigame → catch with rarity → index → better rod → new water | Durable (Fish It 68K, Fisch 56K); cast-for-distance followers rising (Fish For Sea Animals 29K) | Simulation |
+| Pet collection and hatching | `genres/pet-collection-hatching.md` | Earn → hatch (odds shown) → equip → merge → index → trade | Dominant (Adopt Me 125K, Pet Simulator 99 86–92K); egg journeys fell 65–90% (Bike For Egg 37K → 6K) | Roleplay & avatar sim › Pet Care, or the host loop's genre |
+| +1 per second and Evolution | `genres/plus-one-evolution.md` | Train a stat → run the stage lane for Wins → eggs and pads → World → rebirth | Fading fast: 7 Nov leaders kept 6–24% (+1 Venom 46K → 8.6K, +1 Spider Arm 30K → 2.2K) | Simulation › Incremental Simulator |
+| Steal-and-defend (base raid) | `genres/steal-and-defend.md` | Acquire → earn per second at base → steal rarer → lock and defend → rebirth | Peaked, saturated, still #1 (Steal An Egg 706K; 6.9M event spike 21 Nov) | No steal subgenre exists; pick by core loop (Simulation › Tycoon or Incremental Simulator) |
+| Obby and tower | `genres/obby-tower.md` | Attempt → fail → checkpoint → next stage | Evergreen leader at under half its 7 Nov level (Tower of Hell 16K); +1 obby wave over | Obby & platformer › Classic / Tower Obby |
+| Horror and co-op escape | `genres/horror-coop-escape.md` | Explore → tension → chase → escape → next floor | Post-Halloween fall; liminal spike faded (DONT SPLASH 81K → 12K); Dandy's World 1.0 relaunch hit about 790K; ape and monster-tag games rising | Survival › Escape / 1 vs All (no horror genre exists) |
+| RPG, dungeon, roguelite | `genres/rpg-dungeon.md` | Quest or room → fight → XP and loot → stronger → harder | Evergreen top (Blox Fruits 210K); costly to enter | RPG › Action RPG / Open World & Survival RPG |
+| Fighting, battlegrounds, anime gacha | `genres/fighting-battlegrounds.md` | Spawn → combo and abilities → kill or die → respawn | Durable upper-middle (32–48K); physics fighters and block-style PvP new (Half Punch 13K, Unstable SMP FFA 17K) | Action › Battlegrounds & Fighting |
+| Tower defence | `genres/tower-defense.md` | Loadout → place and upgrade → survive waves → summon and level | Anime-led; Anime Crusaders X relaunch to 105K (record); Anime Adventures 68K | Strategy › Tower Defense |
+| Social roleplay and life-sim | `genres/social-roleplay.md` | Customise self and space → act out roles → show off and collect | Evergreen, dominant (Brookhaven 194K) | Roleplay & avatar sim › Life |
+| Fashion, dress-up, judged creation | `genres/fashion-dress-up.md` | Theme → timed creation → runway → peer vote → podium → payout | Past peak, still large (Dress To Impress 35K) | Roleplay & avatar sim › Dress Up |
+| Social deduction and hidden roles | `genres/social-deduction.md` | Role reveal → short round of hunt and survive → full reveal → rewards | Evergreen (MM2 66K; 2.24M spike on 25 Oct) | Survival › 1 vs All |
+| Survival and crafting | `genres/survival-crafting.md` | Gather → craft → build → survive the night → expand | Durable (99 Nights 151K); co-op journey survival rising (100 Miles Down the River 24K) | Survival, or RPG › Open World & Survival RPG |
+| Shooter and PvP duels | `genres/shooter-pvp.md` | Queue → rounds of engage, shoot, reposition → result → rank | One durable leader (RIVALS 121K); destructible voxel war new (Voxel Wars 20K) | Shooter › Deathmatch Shooter |
+| Racing and driving | `genres/racing-driving.md` | Drive → earn → buy or tune a car → races and meets | Middle (Driving Empire 20K); scooter wave over (Kukirin Life 29K → 2K); crash physics rising (BloxNG 21K) | Sports & racing › Racing; Simulation › Vehicle Sim |
+| Sports and physics sports | `genres/sports.md` | Kick-off → possessions → score → result → rematch | Middle (Volleyball Legends 24K); physics sports confirmed (Ragdoll Soccer 19K, Volley Bomb 9K) | Sports & racing › Sports |
+| Party and minigame collections | `genres/party-minigames.md` | Intermission → rule card → 1–3 min minigame → results → next | Long-standing; show-tied spikes fade; word and drawing party games new (Name Them All 7K, Draw Your Cart! 9K) | Party & casual › Minigame |
+| Physics sandbox and ragdoll | `genres/physics-sandbox.md` | Grab or launch → fling → be flung → invent games | Wave peaked mid-Nov: Hyper Realistic Ragdoll 55K (201K peak) with an unlock ladder on 1-player servers; 17 of 40 "ragdoll" results above 2K | Simulation › Physics Sim |
 
 Each genre file uses the same headings: Start here by level · Snapshot · Core loop with timings · First 5 minutes · Progression and economy shape · Monetisation set that fits · Retention and social hooks · UI patterns · Systems to build, in order · Technical hot spots · The one-new-verb angle · Common failure modes · Level-up checklist for a live game · Review gate · Sources. They hold genre specifics only: tutorial craft is in `tutorial-and-onboarding.md` (its §10 has a row per genre), screen recipes in `ui-screen-recipes.md`, effect recipes in `vfx-recipes.md`, the look in `art-direction-and-quality-bar.md`, intros in `cutscenes-and-cinematics.md`.
 
@@ -61,7 +62,7 @@ Design:
 - Timers at 5 / 15 / 30 minutes, capped and stated offline progress, a fixed weekly update day, events with real end dates.
 - Sessions of 19+ minutes are the target; a discovery player should complete one full loop (run, rebirth, match set) in the first session.
 - Retention never through punishment: no progress wipes, no streak-loss anxiety, loss capped to the current run.
-- Longevity signal `[lihfolk]`: games that held their rank combined about 90%+ approval with 25–30 min sessions; spikes with 15-minute sessions faded fastest. Depth and rating predict life better than peak size.
+- Longevity signal `[lihfolk]`: games that held their rank combined about 90%+ approval with 25–30 min sessions; spikes with 15-minute sessions faded fastest. Depth and rating predict life better than peak size. **Conflict (26 Nov 2026):** in a fading format, 95%+ approval and 20-minute sessions did not save the leaders (My Small Business fell 98% from peak in three weeks); treat the signal as necessary, not sufficient (`case-studies-teardowns.md` §5).
 - Bosses, walls and first losses are funnel cliffs in every genre: state the requirement, keep the retry cheap, and make the fix one step away `[lihfolk]`.
 
 Monetisation:
@@ -91,19 +92,20 @@ Most 2026 hits are hybrids: an idle core plus one borrowed system. Rules:
 - **The stat must become a place.** Hybrids that only add a number (a "+1" on an egg game) fail; hybrids that add a trip or an action (bike, climb, steal, draw) chart (vault).
 - **Check the pairing is open** by searching the first 40 results for both parents and counting games above 2K CCU.
 
-| Pairing | Host file (in `genres/`) | Layer file | Vault verdict (2026-11-07) |
+| Pairing | Host file (in `genres/`) | Layer file | Vault verdict (2026-11-07; 26 Nov notes in brackets) |
 |---|---|---|---|
-| +1 Stage lane × eggs × snowball theme | plus-one-evolution | pet-collection-hatching | Gap (owner's December game) |
-| Hands-on warehouse × drawn routes | tycoon-and-cozy-management | — | Gap, with real competition still rising |
-| Fishing × anomaly horror | fishing | horror-coop-escape | Gap; longest expected life |
-| Ragdoll launch × incremental | physics-sandbox | plus-one-evolution | Gap; 1–4 month lifespan |
+| +1 Stage lane × eggs × snowball theme | plus-one-evolution | pet-collection-hatching | Gap (owner's December game) (still open: snowball titles at 18–197 players) |
+| Hands-on warehouse × drawn routes | tycoon-and-cozy-management | — | Gap, with real competition still rising (26 Nov: LINE UP! 11.7K → 7.0K; warehouse and delivery titles 100–400) |
+| Fishing × anomaly horror | fishing | horror-coop-escape | Gap; longest expected life (still nothing above 2K) |
+| Ragdoll launch × incremental | physics-sandbox | plus-one-evolution | Gap; 1–4 month lifespan (partly filled: Throw a Friend for Monsters 10K, a throw-a-friend collection) |
 | Steal × tower defence | tower-defense | steal-and-defend | Partial gap |
 | +1 stat × eggs with no journey | — | — | Fails |
-| Steal a ___ × new theme; X Incremental × any theme; standalone RNG; anomaly × job sim | — | — | Saturated or crowded |
+| Throw-for-distance × fishing cast | throw-for-distance | fishing | (Taken by 26 Nov: Fish For Sea Animals 29K, Cast For Fish! 14K) |
+| Steal a ___ × new theme; X Incremental × any theme; standalone RNG; anomaly × job sim; "Throw ___ For ___" × a new noun | — | — | Saturated or crowded (26 Nov: 23 of 31 "Throw ___" titles under 1K) |
 
 ## Formats without a dedicated file
 
-Racing, fishing, sports, RNG, fashion, social deduction, party minigames and physics sandboxes now have their own files (see the routing table). The formats below have less market evidence in the vault; each entry points to the files to combine.
+Racing, fishing, sports, RNG, fashion, social deduction, party minigames, physics sandboxes and throw-for-distance collection now have their own files (see the routing table). The formats below have less market evidence in the vault; each entry points to the files to combine.
 
 - **Zombie and wave-survival co-op.** A director with a spawn budget releases enemies in a trickle, not all at once; party scaling is sublinear with a global cap on living enemies; downed, revive, bleed-out and spectate replace instant death with long respawns `[lihfolk]`. Use `genres/survival-crafting.md` (hordes, revives) and `genres/tower-defense.md` (wave sheets).
 - **Battle royale.** Choose lobby size and match length for the CCU the game really has; a large-lobby requirement at launch population is the classic failure. Lobby and match are separate places with reserved servers and teleport-failure handling; the zone is server-owned with timed damage checks and reachable final circles `[lihfolk]`. Use `genres/shooter-pvp.md`.
@@ -126,7 +128,7 @@ Racing, fishing, sports, RNG, fashion, social deduction, party minigames and phy
 | Server lag grows with players or waves | Humanoid crowds, physical parts, per-frame replication | Data on the server, pooled visuals on clients | Genre file §Technical hot spots |
 | Exploiters ruin leaderboards or fights | Client-trusted amounts, hits or checkpoints | Intent-only remotes; server validation or server authority | `networking-and-security.md` |
 | Impressions fall after a clone wave | Near-duplicate title, art or place file | Distinct metadata, art and verb | `market-scan-2026-11.md` |
-| Under-16 audience missing | Hangout or free-form-creation classification (16+), a label above Moderate, or the 250-play gate not yet passed; Kids (5–8) missing alone means a Moderate label | Redesign to a structured activity and the lowest honest label; retake the questionnaire; bring age-checked 16+ players first | `genres/social-roleplay.md`, `genres/horror-coop-escape.md`, `market-scan-2026-11.md` |
+| Under-16 audience missing | Hangout or free-form-creation classification (16+), a label above Moderate, or the 100-play gate (250 until 19 Nov 2026) not yet passed; Kids (5–8) missing alone means a Moderate label | Redesign to a structured activity and the lowest honest label; retake the questionnaire; bring age-checked 16+ players first | `genres/social-roleplay.md`, `genres/horror-coop-escape.md`, `market-scan-2026-11.md` |
 
 ## Review gate
 
@@ -144,10 +146,11 @@ Accessed 2026-11-10.
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` (read; 2026-11-07 snapshot); `references/knowledge-base.md` §2.11 and §3.2 (read; source of the puzzle, card, visual-novel and sports entries kept here).
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/experience-genres.md (read; genre and subgenre list, three-month rule)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-ratings.md (read 2026-11-26; replaced content-maturity.md on 11 Nov 2026)
 - https://github.com/Roblox/creator-docs/tree/main/content/en-us/production/promotion/rewarded-video-playbooks (read: incremental-sim, tycoon, obby, rpg, shooter, survival, sports)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/templates.md and `resources/boneheads/index.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/` genre playbooks (summaries of Battle Royale, Naval and Open-Sea Adventure, Open-World City and Crime Roleplay, Zombie and Wave Survival Co-op, Puzzle and Escape Rooms; full notes cited in each genre file), `skills/roblox-trend-game/references/trend-games-research.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:02 UTC, a parallel market pull of the 7 Nov games at 10:05 UTC, Rolimons game pages for tracker peaks, and the first 40 omni-search results for format names; method and per-game figures in `references/case-studies-teardowns.md` §0 and the genre files' Snapshot sections.
 - Full game teardowns: `references/case-studies-teardowns.md`. Systems: `references/gameplay-systems-cookbook.md`.

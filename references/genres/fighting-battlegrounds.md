@@ -1,6 +1,6 @@
 # Fighting, battlegrounds and anime gacha playbook
 
-Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or-reroll ("gacha") ability layer that many of them carry. Open it when melee or ability PvP is the core action, when deciding where hit detection runs, or when auditing a live fighter for ping complaints, exploit load or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers open-arena battlegrounds brawlers, anime ability fighters and the spin-or-reroll ("gacha") ability layer that many of them carry. Open it when melee or ability PvP is the core action, when deciding where hit detection runs, or when auditing a live fighter for ping complaints, exploit load or pay-to-win drift. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *M1* = the basic attack chain; *hitstun* = time a victim cannot act after
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **durable upper-middle tier**. Jujutsu Shenanigans 89K CCU, The Strongest Battlegrounds 73K; adjacent anime action Attack on Titan Revolution 50K. Battlegrounds was one of the main clusters on the owner's first feed. Durable games share skill play, real depth and weekly updates (vault lifecycle model).
+- Market position: **durable upper-middle tier**. Jujutsu Shenanigans 89K CCU on 7 Nov (vault) and 48K on 26 Nov 2026 at 10:00 UTC, The Strongest Battlegrounds 73K → 32K; adjacent anime action Attack on Titan Revolution 50K → 35K. All three kept 45–71% of their 7 Nov level, in line with other evergreens that day.
+- Rising since 7 Nov (26 Nov reads): **physics-based fighters** (Half Punch 12.6K, created 26 Oct, "inspired by Half Sword", record 33K on 25 Nov; Realistic Ragdoll MMA 11.0K, peak 33.9K but 75.5% approval and 5.8 min average playtime; Mechs vs Kaiju's Ragdoll 10.8K) and **block-style PvP** (Unstable SMP FFA 16.7K, created 21 Oct, peak 40.2K, built on a Minecraft video series' characters, so an IP risk; Kit PVP FFA 9.7K). Fading: arena brawlers without depth: Cat Battles peaked at 100K on 24 Oct and stood at 1.3K (73% approval, 7.8 min sessions) (Rolimons). Battlegrounds was one of the main clusters on the owner's first feed. Durable games share skill play, real depth and weekly updates (vault lifecycle model).
 - Anime remains the strongest licence-free aesthetic for the format; anime incrementals and tower defence are the rising anime wave (vault). Blue Lock Rivals is Roblox's own rewarded-video example for the sports-anime hybrid `[official]`.
 - Money (vault pattern): PvP and skill games sell cosmetics, not power. Third-party earnings lists put gacha-driven anime games among top earners and note rising scrutiny of gacha for a young audience `[community]`.
 - Audience: older, competitive, clip-driven (combos and ultimates are the marketing). Sessions are open-ended: drop in, fight, leave.
@@ -180,4 +181,5 @@ Accessed 2026-11-10.
 - https://github.com/Swordphin/raycastHitboxRbxl (search listing; 69 stars, MIT; predecessor)
 - https://rowatcher.com/news/the-10-highest-earning-roblox-games-in-2026-and-what-they-mean-for-the-platform (search summary; third-party estimates)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Battlegrounds and Arena Fighters.md`, `43 Genre Systems End to End/Arena Rounds with Teams and Spectating End to End.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

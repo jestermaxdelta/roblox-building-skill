@@ -1,6 +1,6 @@
 # Sports and physics-sports playbook
 
-Covers team ball sports (football, volleyball, basketball), ability or anime sports, and individual physics sports (golf, bowling). Open it when a shared ball and short matches are the game, when choosing how the ball is simulated over the network, or when auditing a live sports game for laggy kicks, uneven teams and pay-to-win pressure. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers team ball sports (football, volleyball, basketball), ability or anime sports, and individual physics sports (golf, bowling). Open it when a shared ball and short matches are the game, when choosing how the ball is simulated over the network, or when auditing a live sports game for laggy kicks, uneven teams and pay-to-win pressure. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,7 @@ Terms: *possession model* = while a player has the ball it is positioned at thei
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **solid middle tier; physics sports rising**. Volleyball Legends 38K CCU, Illegal Soccer 36K; Practical Basketball rose 523% on an update. A physics-sports × incremental pairing was judged weak (already covered by a lucky-block kicker).
+- Market position: **solid middle tier; physics sports rising** (vault, 7 Nov), confirmed by 26 Nov 2026 (10:00 UTC): Volleyball Legends 38K → 24K, Illegal Soccer 36K → 19K, Practical Basketball 17K after a 147K peak in early Nov (it rose 523% on an update). New physics and arcade sports created in Oct–Nov: Ragdoll Soccer 18.5K (created 13 Oct; 4v4 quickplay and 8v8 pro servers with referees, offsides and VAR; peak 87.6K; but 73.7% approval and 9.1 min sessions), Volley Bomb 9.2K (created 1 Nov; the ball explodes when it lands in your square; peak 45K), Slap Volleyball 7.8K, Volleyball: Spike Evolved 4.9K, CRAZY 8 Ball 4.0K (pool with abilities), Turbo Soccer 5.2K (car soccer, peak 32.8K). Volleyball variants are the densest pocket. A physics-sports × incremental pairing was judged weak (already covered by a lucky-block kicker).
 - Roblox publishes a rewarded-video playbook for the genre and cites NFL Universe Football and Blue Lock Rivals `[official]`.
 - Styles `[lihfolk]`: realistic (teamwork, positioning; older fans and leagues), arcade (simplified rules, exaggerated physics; broad and young) and ability sports (powers and character kits; the anime and battlegrounds audience). Arcade and ability styles fit phones and the platform's audience better.
 - Audience: competitive but social; community-run leagues on private servers are a major growth source `[lihfolk]`.
@@ -178,4 +178,5 @@ Accessed 2026-11-10.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Sports.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/sports.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

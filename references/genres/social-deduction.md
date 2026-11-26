@@ -1,6 +1,6 @@
 # Social deduction and hidden-role rounds playbook
 
-Covers murder-mystery rounds (murderer, sheriff, innocents), impostor-style discussion games and other hidden-role formats. Open it when secret roles and short rounds are the game, when deciding how role information is kept from exploiters, or when auditing a live deduction game for role leaks, teaming and a cosmetic trading economy. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For killer-versus-survivors horror see `horror-coop-escape.md`.
+Covers murder-mystery rounds (murderer, sheriff, innocents), impostor-style discussion games and other hidden-role formats. Open it when secret roles and short rounds are the game, when deciding how role information is kept from exploiters, or when auditing a live deduction game for role leaks, teaming and a cosmetic trading economy. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For killer-versus-survivors horror see `horror-coop-escape.md`.
 
 ## Start here by level
 
@@ -14,9 +14,9 @@ Terms: *hidden information* = state some clients must not be able to read; *team
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **evergreen**. Murder Mystery 2 242K CCU (#5 on the platform), one of the 2014–2020 evergreens; it went from 192K to 473K in October 2026 with a 2.24M spike. Evergreens swing 2–5× on events.
+- Market position: **evergreen**. Murder Mystery 2 242K CCU on 7 Nov (vault; #5 on the platform), one of the 2014–2020 evergreens; it went from 192K to 473K in October 2026 with an all-time 2,240,579 on 25 Oct during Roblox's Halloween platform event (Rolimons), and stood at 66K on 26 Nov 2026 at 10:00 UTC, the steepest post-Halloween fall among the evergreens. Evergreens swing 2–5× on events; platform events can swing them 10×.
 - Money (vault): knife trading, where old seasonal items gain value, plus a battle pass and crates.
-- Show-tied round games fade with the show: Ink Game fell from 151K tracked (Oct 2025) to 14K (vault).
+- Show-tied round games fade with the show: Ink Game fell from 151K tracked (Oct 2025) to 14K (vault) and 3.9K (26 Nov). Duel formats hold a small tier: MVSD 6.4K, Murderers VS Sheriffs DUELS 5.2K (26 Nov). No new deduction game broke out between 7 and 26 Nov.
 - Two families `[lihfolk]`: *action deduction* (murder mystery; 2–4 min rounds; killer eliminates everyone or is shot by a gun holder; works without chat) and *discussion deduction* (impostor style; 5–15 min; meetings and votes; needs chat or voice). Most of the audience is on phones and many have limited chat, so action deduction fits better.
 - Chat is off by default for Roblox Kids and for self-declared Select accounts `[official]` `[VS]`: a discussion game for under-16s needs non-chat tools (accuse buttons, vote UI, quick phrases).
 - Dashboard genre: Survival › 1 vs All `[VS]`. Violence level sets the maturity label; keep eliminations bloodless for Mild.
@@ -161,4 +161,5 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/kids-and-select.md (read; chat defaults)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/experience-genres.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Physics sandbox and ragdoll playbook
 
-Covers physics toys and playgrounds: grab-and-fling sandboxes, ragdoll engines, launch and destruction toys, and their progression hybrids. Open it when one physical verb applied to props and other players is the whole game, when deciding who simulates what, or when auditing a live sandbox for fling abuse, part-count lag and a low approval rating. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers physics toys and playgrounds: grab-and-fling sandboxes, ragdoll engines, launch and destruction toys, and their progression hybrids. Open it when one physical verb applied to props and other players is the whole game, when deciding who simulates what, or when auditing a live sandbox for fling abuse, part-count lag and a low approval rating. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,10 +14,11 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *fl
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **a forming wave with a gap in progression**. Fling Things and People 45K CCU; Ragdoll Physics 28K, Ragdoll Reality 25K, Ragdoll Research 24K, Ragdoll Sandbox 22K; five new ragdoll games entered the top 100 in October 2026. All are sandbox-only. Every progression hybrid is under about 2K (Broken Bones IV 2K, +1 Launch to Break Bones 5).
+- Market position: **a forming wave with a gap in progression** on 7 Nov (vault: Fling Things and People 45K CCU; Ragdoll Physics 28K, Ragdoll Reality 25K, Ragdoll Research 24K, Ragdoll Sandbox 22K, all sandbox-only; every progression hybrid under about 2K). By 26 Nov 2026 (10:00 UTC) the wave had **peaked and its leader had a progression ladder**: Hyper Realistic Ragdoll 54.5K (created 29 Oct; tracker peak 201K in mid-Nov; 1-player servers; knock-outs unlock the next tool; 91.8% approval, 18.4 min sessions; teardown in `case-studies-teardowns.md` §2.20), BloxNG 21.2K (soft-body car crashes, peak 61K), Fling Things and People 26K, Bloody Ragdoll Physics 8.7K (1-player, peak 62.9K), Ragdoll Research 24K → 7.0K, Ragdoll Sandbox 22K → 3.4K. Of the first 40 "ragdoll" search results, 17 were above 2K and most were created in Oct–Nov 2026.
+- The gap is partly filled (26 Nov): unlock ladders (Hyper Realistic Ragdoll), power-pack collection on ragdoll kills (Defeat Ragdolls for Powers 6.0K, created 9 Nov, 120 powers) and a launch-for-distance collection where your friend is the thrown object (Throw a Friend for Monsters 10.0K, `throw-for-distance.md`). A pure "launch, distance pays, rebirth" incremental is still under 2K. Broken Bones IV holds about 0.8K.
 - The vault's shelved concept: a ragdoll launch incremental (power grows per second, launch your ragdoll, distance pays) scored 30/35 with a 2–4 week MVP and a 1–4 month expected lifespan.
 - LihFolk's teardown of the grab-and-fling leader `[lihfolk]` `[VS]`: 25-player servers, about 80% positive (lower than calmer games: being grabbed against your will is both the comedy and the friction), dashboard genre Simulation › Physics Sim, a one-sentence store description.
-- Why it lasts `[lihfolk]`: a toy, not a task (nothing to finish and leave); players are the content; clip-ready physics.
+- Why it lasts `[lihfolk]`: a toy, not a task (nothing to finish and leave); players are the content; clip-ready physics. The November 2026 leader shows a second shape: a 1-player toy whose content is a reaction system (limb-by-limb damage, X-ray scans, revives), with micro-priced one-use disasters and tools (5–49 R$) and no other player to grief.
 - Roblox's own reference game for co-op physics on server authority is Boneheads `[official]`.
 - Audience: young, friend groups, clip-driven.
 
@@ -105,7 +106,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §15 Interaction,
 
 - Add a goal to the toy: distance pays (the vault's open gap), build-and-destroy rounds, co-op puzzles with thrown objects.
 - Change the verb: magnetise, inflate, stretch, glue.
-- A sixth plain ragdoll playground joins five at 21–28K with nothing to tell them apart.
+- A sixth plain ragdoll playground joins five at 21–28K with nothing to tell them apart (on 26 Nov the plain playgrounds of 7 Nov kept 15–29% of their CCU; the leader with a reaction system and an unlock ladder kept its place).
 
 ## Common failure modes
 
@@ -151,4 +152,7 @@ Accessed 2026-11-10.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `59 Viral and Trend Game Teardowns/Teardown - Fling Things and People.md` (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/resources/boneheads/index.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/server-authority/index.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
+- https://allthings.how/hyper-realistic-ragdoll-guide-controls-and-how-body-damage-works/ and https://bloxodes.com/wiki/hyper-realistic-ragdoll (read 2026-11-26; controls, unlocks, events, 1-player servers)
+- https://www.ggrecon.com/articles/roblox-top-games-didnt-exist-before-october/ (read 2026-11-26; four ragdoll or crash-physics games created Oct–Nov held 173,624 players on 18 Nov)
 - See also `references/case-studies-teardowns.md` for full game teardowns.

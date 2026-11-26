@@ -1,6 +1,6 @@
 # Tycoon and cozy management playbook
 
-Covers plot-based income games: the classic button/dropper tycoon and its 2026 successor, hands-on cozy management (shop, farm, business, warehouse). Open it when the concept is "own a plot, earn per second, expand", or when auditing a live tycoon whose sessions are short or whose players go AFK. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers plot-based income games: the classic button/dropper tycoon and its 2026 successor, hands-on cozy management (shop, farm, business, warehouse). Open it when the concept is "own a plot, earn per second, expand", or when auditing a live tycoon whose sessions are short or whose players go AFK. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *button chain* = the ordered list of purchasable pads; *payback time* = c
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): cozy management is **rising with a real middle tier**. My Small Business 20.0K CCU (peak 44.8–46K), Sell a Million Sushi 12.9K, LINE UP! Metro Tycoon 11.6K, Run A Farm! 10.2K. Classic and army tycoons hold a similar tier: Command An Army 15.4K, Military Army Tycoon 11.3K, Build a Phone Empire 9.0K, Restaurant Tycoon 3 8.0K (evergreen). Menu, map and spreadsheet managers sit at 284–993 CCU however deep they are (Fleet Empire peaked at 1.8–2K).
+- Market position: cozy management was **rising with a real middle tier** on 7 Nov (vault) and **churned within three weeks**. 7 Nov → 26 Nov 2026 at 10:00 UTC (evergreens then at about 0.63× of 7 Nov): My Small Business 20.0K → 992 (peak 44.9K in early Nov; 95.5% approval and 20.5 min sessions did not hold it), Sell a Million Sushi 12.9K → 4.0K (no update after 5 Nov), LINE UP! Metro Tycoon 11.6K → 7.0K (held best), Run A Farm! 10.2K → 3.0K. Classic and army tycoons fell with them: Command An Army 15.4K → 3.9K, Military Army Tycoon 11.3K → 3.5K, Build a Phone Empire 9.0K → 1.0K, Restaurant Tycoon 3 8.0K → 4.2K (evergreen).
+- Who took the slots (26 Nov): new **hands-on themed shops**, which confirms the hands-on rule while showing that each theme's wave lasts weeks: Warnetopia: Internet Cafe 12.4K (created 5 Nov; furnish, serve and cook in an Indonesian-style internet cafe), Barber Empire 11.5K (created 31 Oct; strand-by-strand haircuts filmed as before-and-after posts that bring followers), Build a Bakery 9.8K, My Cookie Factory 8.0K, Prison Tycoon 5.3K; plus plot building (Build Your World! 19.3K: build anything, troll other plots with TNT and tornadoes) and a heist crew sim (Criminal Simulator 12.9K). Menu, map and spreadsheet managers sit at 284–993 CCU however deep they are (Fleet Empire peaked at 1.8–2K).
 - About 25% of the owner's second feed was management/tycoon tiles. Third-party trackers call the idle-tycoon tail "extremely saturated" `[community]`; "Sell a Million ___" copycats sit at 3–116 CCU and most "Run a ___" games under 100 (vault).
 - Audience: young and casual, low skill floor, plays in short bursts and returns for offline income.
 - Session shape (vault): 15.2 min (My Small Business), 15.6 (Sushi), 20.7 (LINE UP!), 21.3 (Run A Farm!), 26.7 (Sari-Sari Store); decorating-led Pocket Landlord only 7.9 min. Target 19+ min.
@@ -125,6 +126,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §16 Plots, tycoo
 - Nothing to do while waiting, so players AFK and sessions end at the first long price.
 - Decoration as the main loop: favourites up, session length down.
 - Required driving: hard for young players; keep it optional.
+- A hit theme with no next update: Sell a Million Sushi had 98.9% approval, shipped nothing after 5 Nov and kept 31% of its 7 Nov CCU by 26 Nov, while LINE UP! kept updating and kept 59%. In a churning format, the weekly update is what holds the slot.
 - Near-duplicate of My Small Business or Sell a Million Sushi (theme, art, place file): exposure penalty. Format clones get about two weeks of attention (vault).
 - Robux pads in the main path; plots that fail to save; income outrunning prices after the first rebirth.
 - Ten buttons visible at once; payback rising sharply mid-chain; a rebuild animation for every owned button on join `[lihfolk]`.
@@ -176,4 +178,5 @@ Accessed 2026-11-10.
 - https://github.com/evilbocchi/eternal-empire (read README; 17 stars, CC BY-NC 4.0, roblox-ts tycoon; reference only, non-commercial licence)
 - https://github.com/B-Ricey763/Roblox-Studio-Tycoon (search listing; 34 stars, no licence, 2022 tutorial code; reference only)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Tycoons.md`, `43 Genre Systems End to End/Tycoon Plots and Droppers End to End.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

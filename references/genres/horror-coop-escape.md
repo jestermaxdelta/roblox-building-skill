@@ -1,6 +1,6 @@
 # Horror and co-op escape playbook
 
-Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror, asymmetric killer-versus-survivors rounds and co-op chase games. Open it when fear, tension and escape drive the loop, when choosing a maturity target, or when auditing a live horror game for replay value and mobile lighting cost. For hidden-role rounds without horror see `social-deduction.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers co-op run-based horror (rooms, floors, nights), liminal "anomaly" horror, asymmetric killer-versus-survivors rounds and co-op chase games. Open it when fear, tension and escape drive the loop, when choosing a maturity target, or when auditing a live horror game for replay value and mobile lighting cost. For hidden-role rounds without horror see `social-deduction.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,10 +14,11 @@ Terms: *tension director* = server logic that decides when threats appear based 
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **strong after Halloween, liminal sub-wave rising**. Dandy's World 128K CCU, DONT SPLASH 81K (launched 16 Oct 2026, peak 97–167K, poolrooms, tense 10-player servers), Evade 64K, Violence District 57K, Forsaken 42K (launched Dec 2024, 138K+ peak, steady roster updates and lore), Sell Fries! [Anomaly] 40K.
+- Market position: **strong after Halloween** on 7 Nov (vault), then a post-season fall by 26 Nov 2026 (10:00 UTC): Dandy's World 128K → 57K (after its 1.0 relaunch on 20 Nov took it to a 789K tracker peak; `case-studies-teardowns.md` §2.21), DONT SPLASH 81K → 12K (launched 16 Oct 2026, poolrooms, tense 10-player servers; peak 167K about 5 Nov, 85% approval, 7.5 min average playtime: the liminal sub-wave was a spike), Evade 64K → 35K, Violence District 57K → 35K, Forsaken 42K → 28K (launched Dec 2024, steady roster updates and lore), Sell Fries! [Anomaly] 40K → 6.3K.
+- Rising since 7 Nov (26 Nov reads): **monster-tag and ape horror** with a movement gimmick or a play-the-monster mode: Lethal Ape Experience 18K (a record 31.8K about 22 Nov), Fatal Baboons 10K ("be the monster" update), untitled monkey game 9.5K (created 17 Nov: a legless ape that pushes off floors and walls with its arms to flee). **Cozy-by-day, hunted-by-night** hybrids: Stay the Night 11.9K (furnish a house, survivors pay rent, a beast hunts the street at night). A Malay-language party horror, NIGHT WITH OPAH, reached 82.7K (2.57M favourites) and sat at 24K with 7.6 min sessions: regional audiences can carry a hit.
 - Seasonality: horror runs about 4× normal on 28–31 Oct; Roblox's The Hollow event (22 Oct–2 Nov 2026) peaked at 507.6K and lifted partner games (Dandy's World +711% on its update).
-- Volatility: Animal Hospital (Anomaly) won Best New Game and still fell about 90% (564K → 21.5K). "Anomaly × job sim" is now crowded (vault).
-- Open gap (vault): fishing or deep-sea horror; nothing above 2K (It Hears The Water 1.5K, Scary Fishing 37).
+- Volatility: Animal Hospital (Anomaly) won Best New Game and still fell about 90% (564K → 21.5K). "Anomaly × job sim" is now crowded (vault), and its 7 Nov leader Sell Fries! kept 16% of its CCU by 26 Nov.
+- Open gap (vault): fishing or deep-sea horror; still nothing above 2K on 26 Nov (It Hears The Water fell from 1.5K to 36).
 - Audience: older than the platform average and friend-group driven; durable hits share co-op or skill play, real depth and weekly updates.
 - Maturity decides reach `[official]` `[VS]`: mild fear fits a Mild label, moderate fear needs Moderate. Minimal and Mild games are eligible for Roblox Kids (5–8) and Select (9–15); Moderate is eligible for Select and 16+ but not Kids, so a Moderate label costs the 5–8 audience only. Content May Vary is 16+ and Restricted 18+ age-verified: heavy realistic blood lands there. (Corrected 2026-11-11: an earlier vault note said Moderate also removed Select reach; the content-maturity doc says otherwise.)
 
@@ -116,7 +117,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enem
 ## The one-new-verb angle
 
 - Pair a calm job with dread: the anomaly formula works when the routine is itself a satisfying verb (fishing by day, cutting loose what is on the line at night: the vault's shelved concept).
-- A new setting with a clear rule (poolrooms: do not splash) beats a new monster.
+- A new setting with a clear rule (poolrooms: do not splash) beats a new monster for the launch, but DONT SPLASH kept 7% of its peak three weeks later (26 Nov): the rule needs a run meta (unlocks, roles, floors) behind it before the spike ends.
 - Co-op roles that force talking (one sees, one acts).
 
 ## Common failure modes
@@ -166,7 +167,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §13 NPC and enem
 Accessed 2026-11-10.
 
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` §Genre deep dives, §Trend lifecycle (read; 2026-11-07 snapshot).
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-ratings.md (read 2026-11-26; replaced content-maturity.md on 11 Nov 2026)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/contextual-purchases.md (read; DOORS lobby and pre-run shop)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/rewarded-video-playbooks/survival.md (read)
 - https://devforum.roblox.com/t/guide-to-making-better-horror-experiences/2212571 (opened 2026-11-11: thread and topic confirmed, details not re-read)
@@ -176,4 +177,5 @@ Accessed 2026-11-10.
 - https://endsights.com/horror-game-design (search summary; host not reachable for a full read)
 - https://github.com/ahmicy/simplepath (search listing; 70 stars, MIT; pathfinding wrapper, reference only)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Horror and Story.md`, `43 Genre Systems End to End/Horror Monster Chase AI End to End.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

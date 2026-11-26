@@ -135,7 +135,7 @@ Claude runs the matching checklist and fixes problems in order of impact.
 | | |
 |---|---|
 | 🎯 **Game design** | Core loops, first-time experience, progression, what makes players come back |
-| 🗂️ **21 genre playbooks** | Tycoon, simulator, pet collecting, obby, horror, RPG, fighting, tower defense, roleplay, survival, shooter, racing, fishing and more |
+| 🗂️ **22 genre playbooks** | Tycoon, simulator, pet collecting, obby, horror, RPG, fighting, tower defense, roleplay, survival, shooter, racing, fishing and more |
 | 🔍 **Real game teardowns** | How 18 hit games actually work, and why some collapsed |
 | 💰 **Monetization** | What to sell, what to charge, when to offer it, and Roblox's rules |
 | 📈 **Economy** | Currencies, upgrade costs, rebirths, luck odds, trading, inflation |
@@ -213,7 +213,7 @@ If you leave something out, Claude picks a sensible default and tells you.
 | `skills/` | The 13 focused skills (level-up, retention, monetization, ui, vfx-and-audio, cinematics, world-and-lighting, models-and-animation, systems, debug, performance, security-data, growth). Each is short and points at its own guides |
 | `.claude-plugin/` | What makes this installable as a plugin |
 | `references/` | 49 topic guides, plus `INDEX.md` (which guide to open for which job). Each guide starts with a "start here by level" table and ends with a checklist |
-| `references/genres/` | 21 genre playbooks |
+| `references/genres/` | 22 genre playbooks |
 | `references/visual-library/` | The curated reference library, one file per topic |
 | `assets/reference/` | The 22 bundled reference sheets, with their sources |
 | `templates/` | Fill-in documents: audit report, one-page plan, design doc, economy sheet, product plan, analytics plan, playtest plan, launch checklist |

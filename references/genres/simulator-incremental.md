@@ -1,6 +1,6 @@
 # Simulator, incremental and clicker playbook
 
-Covers click-or-collect simulators, "X Incremental" upgrade-board games, standalone RNG rollers and collection sims such as fishing. Open it when the loop is "act → number goes up → upgrade → new zone → rebirth", or when auditing a live simulator that bleeds players at the first wall. For stat-per-second lane games use `plus-one-evolution.md`; for the egg and pet layer use `pet-collection-hatching.md`. For a roll-first game use `rng-rolling.md`; for fishing use `fishing.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers click-or-collect simulators, "X Incremental" upgrade-board games, standalone RNG rollers and collection sims such as fishing. Open it when the loop is "act → number goes up → upgrade → new zone → rebirth", or when auditing a live simulator that bleeds players at the first wall. For stat-per-second lane games use `plus-one-evolution.md`; for the egg and pet layer use `pet-collection-hatching.md`. For a roll-first game use `rng-rolling.md`; for fishing use `fishing.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *rebirth* (prestige) = resetting soft progress for a permanent multiplier
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **crowded with a long tail**. "X Incremental": Depth Incremental 19.8K CCU and Noob Incremental 5.5K lead; about 30 of the first 40 results are under 1K. Standalone RNG is **winner-take-most**: Sol's RNG 41K (about 40K held for 2+ years by adding depth), Anime Dice 30K, then a fast drop under 3K. Clicker/collect: Tap Simulator REBORN 36–37K, Bee Swarm Simulator 32K, Cut a Rock 26K. Fishing is **durable, up 55% year on year**: Fisch 79K, Fish It 63K, Net a Fish 14K.
+- Market position: **crowded with a long tail** (vault, 7 Nov). Figures are 7 Nov → 26 Nov 2026 at 10:00 UTC, when games created before 2026 stood at a median 0.63× of 7 Nov. "X Incremental": Depth Incremental 19.8K → 7.7K (32-min sessions, 96.7%) and Noob Incremental 5.5K → 3.1K; 25 of the first 40 results are under 1K. Standalone RNG is **winner-take-most**: Sol's RNG 41K → 40K, Anime Dice 30K → 7.1K, then a fast drop under 3K. Clicker/collect: Tap Simulator REBORN 36–37K → 45K (68-min average playtime), Bee Swarm Simulator 32K → 45K, Cut a Rock 26K → 3.6K. Fishing is **durable**: Fisch 79K → 56K, Fish It 63K → 68K, Net a Fish 14K → 12K. The deep, long-session simulators held or grew while the 2026 format games fell (Rolimons; G-26).
+- Rising since 7 Nov: **clear-the-world incrementals**, where the number is how much of a place you have cleaned, swept or flattened (Clean The Ballpit! 16.7K, created 31 Oct, a new map every day in its first week, 20.5 min sessions; Clean The Bugs 6.4K; Flat the Mountain 6.1K; Sweep The Moon 4.3K after a 48.5K peak; a squishy-stacking ASMR game 8.7K), and **throw-for-distance collection**, which has its own file (`throw-for-distance.md`).
 - Simulators overall cooled from 55% to 35% of top-10 CCU between September and October 2026 (vault). A third-party tracker reports 189 new simulator launches in one quarter with average CCU per game down 20% `[community]`.
 - The leaders add a visible journey: Depth Incremental digs down a pit ("Day 1 → Day 100, +$23/s → +$23,382,465/s"); menu-only incrementals sit under 2K.
 - Audience: young, casual, plays one-handed on a phone; session 14–34 min in comparable games (vault). Server size is flexible: shared lobbies of 12–30 work because players do not compete for space `[house]`.
@@ -169,4 +170,5 @@ Accessed 2026-11-10.
 - https://github.com/LILRINO71/power-punch-simulator (read README; 1 star, MIT; small Rojo clicker with server-side rate limiting; reference only)
 - https://github.com/MadStudioRoblox/ProfileStore (search listing; 352 stars, Apache-2.0)
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Simulators.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

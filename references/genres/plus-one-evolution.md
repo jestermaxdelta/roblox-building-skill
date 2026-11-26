@@ -14,12 +14,13 @@ Terms: *Wins* = the soft currency paid by lane gates; *World* = a themed lane wi
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **healthy middle tier**. +1 Venom Evolution 46K CCU, +1 Spider Arm 30K, Bug Evolution 29K, +1 Anime Eyes 17K, +1 Power Fruit Evolution 14K, +1 Gun Forge 8.1K; most of the first 40 "evolution" results are under 1K.
-- +1 obbies are **cooling**: +1 Speed Keyboard Escape 33K from a 4.04M peak, down 61% from August to September 2026, with dozens of "+1 ___ Escape" clones.
+- Market position: a **healthy middle tier on 7 Nov** (vault) that was **fading fast by 26 Nov 2026** (10:00 UTC; evergreens then stood at about 0.63× of 7 Nov): +1 Venom Evolution 46K → 8.6K (peak 102K about 12 Nov), +1 Spider Arm 30K → 2.2K (peak 63.9K, 97.6% approval), Bug Evolution 29K → 1.9K, +1 Anime Eyes 17K → 1.1K, +1 Power Fruit Evolution 14K → 3.4K, +1 Gun Forge 8.1K → 2.8K (Rolimons; parallel market pull). New +1 entries since 7 Nov sit at 2–6K (+1 Arise a Shadow 5.7K, +1 Ghoul Evolution 2.6K, +1 Leviathan Evolution 2.2K). The one evolution riser has a body, PvP bites, a boss and rebirth: Ant Evolution 12.9K (created 28 Oct, peak 65.9K, 21.7 min sessions). Most of the first 40 "evolution" results are under 1K.
+- Where the audience went: throw-for-distance games kept the +1 training stat but made it a visible distance that sets your luck (`throw-for-distance.md`), which is this file's own rule that a stat must become a trip.
+- +1 obbies are **over as a wave**: +1 Speed Keyboard Escape 33K (7 Nov) → 13K (26 Nov), from a 4.04M peak (V-7; Rolimons 7.26M on 18 Jul 2026), with dozens of "+1 ___ Escape" clones.
 - "+1 ___ For Eggs" without a journey fails: +1 Strength 1.5K, +1 Wings 606, +1 Muscle 339, +1 Speed 27 (vault).
-- The owner's gap: snowball Size plus eggs on a Stage lane; nearest rival is an ad-driven game at a 66% rating with almost no players.
+- The owner's gap: snowball Size plus eggs on a Stage lane; nearest rival is an ad-driven game at a 66% rating with almost no players. Still open on 26 Nov 2026: the snowball titles in the first 40 search results had 18–197 players, one of them already borrowing the throw-for-animals title pattern (Roll Snowballs for Animals!, 27).
 - Audience: young, idle-tolerant, phone-first. Sessions: Venom 14.0 min, Gun Forge 33.8 min (longest found); aim for 19+. Larger shared lobbies suit the format (players watch each other's stat).
-- Lifecycle: format hits peak at 0.5–4M and lose 90%+ within 1–4 months; a clone after the parent's peak settles at 4–32K (vault). Ship into a seasonal window.
+- Lifecycle: format hits peak at 0.5–4M and lose 90%+ within 1–4 months; a clone after the parent's peak settles at 4–32K (vault). In November 2026 it ran faster: +1 Spider Arm was created 19 Oct, peaked about 12 Nov and kept 3% of that peak by 26 Nov. Ship into a seasonal window and have the next World and the next verb ready before week 3.
 - LihFolk's teardown of the +1 obby leader `[lihfolk]`: its twist is that more speed makes the course harder to control, so progress raises power and difficulty together and the game stays a skill test. It read the hook as the shortest on the platform (you get stronger even while failing) with a concrete, sensory theme (a keyboard you can hear).
 
 ## Core loop with timings
@@ -167,4 +168,5 @@ Accessed 2026-11-10.
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/monetization/paid-random-items.md (read)
 - Web search for developer write-ups of the +1 format (2026-11-10): no developer analysis found, only code-list and guide pages; no new claims taken from them.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `59 Viral and Trend Game Teardowns/Teardown - +1 Speed Keyboard Escape.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

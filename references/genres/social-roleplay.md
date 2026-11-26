@@ -1,6 +1,6 @@
 # Social roleplay and life-sim playbook
 
-Covers town and life roleplay, role-driven RP (jobs, emergency services, school), fashion and dress-up shows, avatar games and social hangouts. Open it when players are each other's content, when deciding how the maturity questionnaire will classify the game, or when auditing a live RP game for reach, moderation load and monetisation depth. For judged dress-up rounds see `fashion-dress-up.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers town and life roleplay, role-driven RP (jobs, emergency services, school), fashion and dress-up shows, avatar games and social hangouts. Open it when players are each other's content, when deciding how the maturity questionnaire will classify the game, or when auditing a live RP game for reach, moderation load and monetisation depth. For judged dress-up rounds see `fashion-dress-up.md`. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *social hangout* = Roblox's classification for games whose primary activi
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **evergreen and dominant at the top**. Brookhaven RP 438K CCU (#2 on the platform; no goals; 115+ houses, 190+ vehicles; updates every Friday), Adopt Me! 167K (pets plus trading inside a life-sim), Dress To Impress 67K (651K peak in Aug 2024; celebrity and IP collaborations), Catalog Avatar Creator 52K.
+- Market position: **evergreen and dominant at the top**. 7 Nov (vault) → 26 Nov 2026 at 10:00 UTC: Brookhaven RP 438K → 194K (#3 that morning; no goals; 115+ houses, 190+ vehicles; updates every Friday), Adopt Me! 167K → 125K (pets plus trading inside a life-sim), Dress To Impress 67K → 35K (651K in Aug 2024, all-time 1.74M on 14 Dec 2024; celebrity and IP collaborations), Catalog Avatar Creator 52K → 37K. Second tier on 26 Nov: LifeTogether 17.6K, Berry Avenue 12.1K, Huss Valley 12.1K (peak 174K on 10 Oct), San Diego Roleplay 9.6K.
+- New since 7 Nov: **animal life-sim RP** in large servers (FERAL Animal Survival 9.1K, created 19 Oct, 50 players: be born a wolf or a deer and grow up as hunter or prey; Creatures of Sonaria 14.6K holds). Roblox's own The Great Build (25–30 Nov 2026, "Roblox Presents", 44K on 26 Nov) turns one chosen gratitude message per player per hour into a block in a shared global tower that unlocks free items at milestones: a structured, shared-construction social event in which players appear to pick messages rather than type them (store description; not played).
 - Evergreens swing 2–5× on events and updates. New entrants face incumbents with years of content; the openings are a new structured activity (as Dress To Impress did with a timed runway) rather than a bigger town.
 - Roblox's own guidance: many players treat the platform as a place to hang out; Brookhaven is "house" for kids; younger players prefer exploration, experimentation and socialising over competition `[official]`.
 - One tracker reports D1 15–22% for roleplay games with traffic `[community]` (no sample or method stated; a weak row in the one benchmark table, `analytics-and-discovery.md` §Benchmarks: never set a target from it). Sessions are long and unstructured; return is driven by friends and fresh props.
@@ -165,7 +166,7 @@ Closest sections of `references/gameplay-systems-cookbook.md`: §15 Interaction,
 Accessed 2026-11-10.
 
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` §Shared DNA, §Trend lifecycle (read; 2026-11-07 snapshot).
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read; social hangout, private spaces, free-form user creation)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-ratings.md (read; social hangout, private spaces, free-form user creation)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/kids-and-select.md (read; chat defaults by account type)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/design-for-roblox.md (read)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/game-design/contextual-purchases.md (read)
@@ -176,4 +177,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/vehiclescars-driven-by-different-players-fling-sometimes-when-colliding/2791026 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - GitHub search for open roleplay frameworks (2026-11-10): no maintained, licensed reference of note found.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `10 Game Design and Genres/Genre Playbook - Roleplay and Social Hangouts.md` (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

@@ -1,6 +1,6 @@
 # Fashion, dress-up and judged-creation playbook
 
-Covers timed dress-up shows judged by other players, avatar and outfit games, and the wider "create to a theme, show it, get voted on" format (building, drawing, decorating, cooking). Open it when peer voting on something a player made is the core of the round, when designing a fair vote and a cosmetic catalogue, or when auditing a live show game for vote abuse, thin free wardrobes and decline after a peak. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For open-ended town roleplay see `social-roleplay.md`.
+Covers timed dress-up shows judged by other players, avatar and outfit games, and the wider "create to a theme, show it, get voted on" format (building, drawing, decorating, cooking). Open it when peer voting on something a player made is the core of the round, when designing a fair vote and a cosmetic catalogue, or when auditing a live show game for vote abuse, thin free wardrobes and decline after a peak. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026). For open-ended town roleplay see `social-roleplay.md`.
 
 ## Start here by level
 
@@ -14,8 +14,8 @@ Terms: *judged round* = a round whose winner is decided by other players' rating
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **established, past its peak, still large**. Dress To Impress 67K CCU (launched Nov 2023; 651K peak in Aug 2024 after a pop-star collaboration); Catalog Avatar Creator 52K. Evergreens in this space swing with collaborations and seasonal drops.
-- LihFolk's case study `[lihfolk]` `[VS]`: 13-player servers; dashboard genre Roleplay & avatar sim › Dress Up; trackers report an all-time peak near 1.7M in Dec 2024 (not confirmed by strong sources). Its 2025 collaborations landed during a long decline: collaborations bring press and new audiences but do not by themselves fix a shrinking base.
+- Market position: **established, past its peak, still large**. Dress To Impress 67K CCU on 7 Nov (vault) and 35K on 26 Nov 2026 at 10:00 UTC (launched Nov 2023; 651K after a pop-star collaboration in Aug 2024, then its all-time 1.74M on 14 Dec 2024, Rolimons); Catalog Avatar Creator 52K → 37K. A second tier of avatar games holds 10K each on 26 Nov: Catalog Avatar Runway 9.8K (created May 2026; 33K peak in early Nov) and My Avatar! 10.2K. No new judged-creation format broke out between 7 and 26 Nov. Evergreens in this space swing with collaborations and seasonal drops.
+- LihFolk's case study `[lihfolk]` `[VS]`: 13-player servers; dashboard genre Roleplay & avatar sim › Dress Up; all-time peak 1,743,147 on 14 Dec 2024 (Rolimons, read 26 Nov 2026; earlier only reported by trackers). Its 2025 collaborations landed during a long decline: collaborations bring press and new audiences but do not by themselves fix a shrinking base.
 - Why the format works `[lihfolk]`: the theme is a creative constraint (no blank page), the timer forces a finished result, and distributed judging produces winners and stories every few minutes. The first reward is social: real people voted on your look.
 - The same loop fits building, drawing, cooking and decorating. Drawing or writing shown to others is free-form user creation and makes the game 16+ `[official]` `[VS]`; assembling outfits or builds from 3D assets does not.
 - Audience: skews female and teen, streamer-driven discovery from outside the platform, phone-first.
@@ -155,6 +155,7 @@ Accessed 2026-11-10.
 
 - Owner's vault distillation: `references/market-scan-2026-11.md`, `references/market-research-v2-raw.md` §Shared DNA, §Trend lifecycle (read; 2026-11-07 snapshot).
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault): `32 Case Studies of Top Roblox Games/Case Study - Dress to Impress.md` (read)
-- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-maturity.md (read; free-form user creation, romantic themes)
+- https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/promotion/content-ratings.md (read; free-form user creation, romantic themes)
 - https://github.com/Roblox/creator-docs/blob/main/content/en-us/production/publishing/experience-genres.md (read)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.

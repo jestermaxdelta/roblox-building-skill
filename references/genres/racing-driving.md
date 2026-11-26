@@ -1,6 +1,6 @@
 # Racing and driving playbook
 
-Covers lap and sprint racing, open-world driving and car collection, drift and stunt parks, and vehicle life games. Open it when a vehicle is the player's main body, when choosing a chassis and a netcode model, or when auditing a live driving game for flings, missed checkpoints, mobile handling and a thin car economy. Market numbers are the vault's 2026-11-07 snapshot `[VS]`; points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
+Covers lap and sprint racing, open-world driving and car collection, drift and stunt parks, and vehicle life games. Open it when a vehicle is the player's main body, when choosing a chassis and a netcode model, or when auditing a live driving game for flings, missed checkpoints, mobile handling and a thin car economy. Market numbers are the vault's 2026-11-07 snapshot `[VS]`, refreshed with Roblox and Rolimons reads on 2026-11-26 (Snapshot section); points tagged `[lihfolk]` are adapted from LihFolk Vault V2 (October 2026).
 
 ## Start here by level
 
@@ -14,7 +14,8 @@ Terms: *network ownership* = which machine simulates an unanchored assembly; *ra
 
 ## Snapshot
 
-- Market position (vault, 2026-11-07): **steady middle tier, micro-waves on top**. Driving Empire 33K CCU, Kukirin Life about 29K. The Aug–Sep 2026 scooter and bike launches were a micro-wave (Drive A Kukirin 109K peak, now 6–29K each) and are cooling.
+- Market position: **steady middle tier, micro-waves on top** (vault, 7 Nov). Driving Empire 33K CCU on 7 Nov and 20K on 26 Nov 2026 at 10:00 UTC (in line with other evergreens that day). The Aug–Sep 2026 scooter and bike micro-wave is over: Kukirin Life about 29K → 2.1K (peak 161K in early Nov), Drive A Kukirin 109K peak → 644 (Rolimons; parallel market pull).
+- Rising since 7 Nov (26 Nov reads): **crash and soft-body physics** (BloxNG [CRASH PHYSICS] 21.2K, created 13 Oct, metal crumples where it is hit, peak 61K, 90.2% approval; Crash Engine 5.6K, created 17 Nov) and **co-op or off-road driving** (Backseat Offroad 7.3K, where one player drives and the other reads the road; Low Range: Offroad 4x4 5.8K; Illegal Bikes 6.0K, created 10 Nov). Damage you can see is the new reason to drive; see `physics-sandbox.md` for the simulation side.
 - LihFolk's teardown of the genre leader `[lihfolk]` `[VS]`: 31.8M favourites (players bookmark car games and return), all-time peak 89.6K on 15 Aug 2026, average session about 16.4 min, 22-player servers, dashboard genre Simulation › Vehicle Sim. Its CCU reading (16.7K on 29 Oct) differs from the vault's because CCU swings 2–3× by hour.
 - Third-party trackers list driving among categories with search demand and thin competition `[community]`.
 - Two families `[lihfolk]`: *racing* (laps, times, positions) and *open-world driving* (cruise, collect, jobs, meets). The open-world model retains better on Roblox: driving is fun alone, cars are a collection, the map is a social space. Pure racing needs full lobbies and scares off newcomers; the common winner is an open world with races as optional activities.
@@ -170,4 +171,5 @@ Accessed 2026-11-10.
 - https://devforum.roblox.com/t/if-cars-network-owner-is-set-to-driver-it-makes-every-moving-object-laggy-on-passengers-screen/4732327 (opened 2026-11-11: thread and topic confirmed, details not re-read)
 - https://rowatcher.com/news/roblox-genre-opportunity-map-2026-where-smart-developers-are-building-next (search summary; third-party)
 - https://github.com/Astrophsica/Racing-Kit-Roblox (read README; 2 stars, MIT; go-kart kit distributed as a toolbox model; reference only, never ship)
+- 26 Nov 2026 refresh (accessed 2026-11-26): Roblox explore sorts and `games.roblox.com/v1/games` read at 10:01–10:05 UTC on a Thursday (games created before 2026 then stood at a median 0.63× of their 7 Nov level, so compare against that), Rolimons game pages for peaks, average playtime and rating (https://www.rolimons.com/game/<placeId>), and first-40 omni-search counts; method in `references/case-studies-teardowns.md` §0.
 - See also `references/case-studies-teardowns.md` for full game teardowns.
