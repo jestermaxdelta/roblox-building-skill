@@ -18,6 +18,8 @@ Points tagged `[lihfolk]` in the references are adapted from [LihFolk Vault V2](
 
 Market data (trending genres, discovery, thumbnails) comes from the owner's Roblox research vault, snapshot 2026-11-07. It is distilled in `references/market-scan-2026-11.md`.
 
+The refresh of 2026-11-26 adds live pulls from Roblox's public charts, games, thumbnails, game-pass and developer-product endpoints, CCU history from Rolimons, coverage from RoMonitor Stats, GGRecon and Bloxodes, YouTube search results, and Roblox's Q3 2026 shareholder letter (SEC exhibit 99.1). Each guide's `## Sources` section dates every pull. Game icons, thumbnails and screenshots stay their owners' and are linked, never copied.
+
 ## Community knowledge
 
 Points tagged `[community]` come from the Roblox DevForum, RealtimeVFX, developer blogs, talks and videos. In the first research pass (2026-11-10) these were seen only as search summaries; in the second pass (2026-11-11) the DevForum, RealtimeVFX and the Roblox docs site were read directly, and a full review re-checked the guides against them. Each guide's `## Sources` section says, source by source, whether it was read, viewed or seen only as a search summary. Reddit could not be read directly in either pass. Community practice is a heuristic from working developers, not a guarantee.
