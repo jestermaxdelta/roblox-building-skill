@@ -2,9 +2,9 @@
 
 How Roblox UI should move and answer the player: a small set of motion tokens, the rules that keep motion from breaking under fast input, what a button does in the first 100 ms, how rewards are staged from a +5 coin to a top-tier reveal, which engine or library to animate with, and what replaces motion when the player turns it down. Open it when adding motion to a screen, staging a reward, or when players call the UI laggy, flat or slow. Visual design is in `ui-design-figma.md`; screens in `ui-screen-recipes.md`; the presenter that opens windows in `ui-input-crossplatform.md` §UI architecture; world effects, hit-stop and camera in `vfx-and-juice.md`; UI sound sets in `audio-sfx-music.md` §9. Examples to study: `visual-library/ui-components-and-style.md` §5 (motion references, spring libraries) and `visual-library/ui-screens.md` §7 (reward popups and summaries).
 
-Tags: `[official]` Roblox docs and staff announcements, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; field values from one production game: starting points, not laws), `[VS]` version-sensitive, `[house]` house rule or estimate.
+Tags: `[official]` Roblox docs and staff announcements, `[community]` DevForum, GitHub and third-party craft writing, `[lihfolk]` adapted from LihFolk Vault V2 (CC BY 4.0, rewritten; field values from one production game: starting points, not laws), `[rei]` Rei Ultra UI community package, supplied by the owner 2026-11-27, no licence; ideas restated, not copied, `[VS]` version-sensitive, `[house]` house rule or estimate.
 
-**Fast routes** (the full table with sheets and library rows: `ui-design-figma.md` §Fast routes). Motion pass on an existing UI: §1–5, §7, §8 and the Level-up table, plus the presenter in `ui-input-crossplatform.md` §UI architecture. Redesign one screen or a new HUD: §2 and §8 only. Every section here uses the tokens defined in §2.
+**Fast routes** (the full table with sheets and library rows: `ui-design-figma.md` §Fast routes). Motion pass on an existing UI: §1–5, §7, §8 and the Level-up table, plus the presenter in `ui-input-crossplatform.md` §UI architecture. Redesign one screen or a new HUD: §2 and §8 only. Apply a named look (`ui-design-figma.md` §7 "Style profiles"): §3 and §7. Every section here uses the tokens defined in §2.
 
 ## Start here by level
 
@@ -45,7 +45,7 @@ Define motion as a handful of tokens; no screen creates its own `TweenInfo`.
 
 Durations are `[lihfolk]` field values. Perception bands: under 0.1 s reads as instant, 0.1–0.2 snappy (feedback, exits), 0.2–0.35 visible (entrances), 0.35–0.6 deliberate (big reveals only), above 0.6 the player is waiting. Elastic and Bounce are for a single reward icon, never a panel the player must read. Direction carries meaning: HUD parts slide from their edge, overlays scale from the centre.
 
-**Conflict:** the official accessibility sample tweens a settings panel over 0.75 s, and a Style Editor transition is inserted with a default of 1 s `[official]`. Field reports have players calling 0.3 s opens sluggish and settle at 0.14–0.26 s open, 0.12–0.14 s close `[lihfolk]`. Use the short values for navigation; keep long durations for reward sequences the player is enjoying.
+**Conflict:** the official accessibility sample tweens a settings panel over 0.75 s, and a Style Editor transition is inserted with a default of 1 s `[official]`. Field reports have players calling 0.3 s opens sluggish and settle at 0.14–0.26 s open, 0.12–0.14 s close `[lihfolk]`. Use the short values for navigation; keep long durations for reward sequences the player is enjoying. The Rei studded kit's values sit in the same band (press 0.05 s, Back Out release 0.12 s, open from 0.86 in 0.32 s, close 0.16 s) `[rei]`; its 0.05 s press is under the 0.08 s floor, so set that pose directly rather than tweening it.
 
 ## 3. Rules that hold up under fast input
 
@@ -58,7 +58,9 @@ Durations are `[lihfolk]` field values. Perception bands: under 0.1 s reads as i
 - **Proportional retarget.** A close interrupted at 80% needs about 20% of the enter time to reopen: multiply the token time by the remaining fraction, floor about 0.3.
 - **Input from the first visible frame.** Never disable buttons until an entrance ends; set the gamepad selection when the entrance starts. Locked input is the usual cause of "the UI feels laggy" with short tweens.
 - **Pick the property.** Pop with a child `UIScale` (cheap, scales text and strokes with it); tweening `Size` re-runs sibling layout, re-wraps text and makes `TextScaled` text step. Never tween `Position` of a child owned by a layout: animate an inner face. Fade a panel with `CanvasGroup.GroupTransparency` (a transparent group 20 px larger than the window, because a group clips its children: `ui-design-figma.md` §6 Window) or per element toward each stored base transparency. Do not tween `UIStroke.Thickness` on text `[official]`.
-- **Two scales, two objects.** The root carries device scale, an inner frame carries pop scale; two `UIScale`s on one object fight.
+- **Two scales, two objects.** The root carries device scale, an inner frame carries pop scale; two `UIScale`s on one object fight. Recompute the fit scale on every `Camera.ViewportSize` change and never tween back to a fit value saved earlier: for a moment at the start of Play the viewport is near zero, and a window that tweens back to that saved value stays invisible. Only a real Play start shows this; code pasted into a running client does not `[rei]`.
+- **One scale target per button** `[rei]`: hover and press multiply into one value (1.05 × 0.92 while held), so releasing over the button returns to the hover scale, not to 1. Position effects (bob, shake, pointer pull) add into one offset owned by one function; a child of a `UIListLayout` or `UIGridLayout` gets rotation or scale effects only, because the layout owns its `Position`.
+- **Focus behind a window.** A `BlurEffect` blurs the 3D view and not the UI; parented to `Workspace.CurrentCamera` on the client it shows for that player only, which is the docs' own example for an open menu `[official]`. Both studded kits tween it to a size of about 18 with the window and back to 0 on close, and one also nudges the field of view up by about 8° `[rei]`. Any FOV change goes through the single FOV owner and is skipped under reduced motion (`accessibility-and-player-qol.md` §5); every close path (button, gamepad B, death, respawn, teleport) removes the blur.
 - **Squash honestly.** `UIScale` is uniform; a real squash sets width = 1 / height on the art layer only (never the text), jumps to the extreme pose at once and springs back.
 
 ## 4. Button and control feedback
@@ -79,6 +81,19 @@ What one press does, in order `[house]` (timings from §2; sound rules in `audio
 - Studio-authored buttons can get hover and press from style rules on `GuiState` (`:Hover`, `:Press`) with transitions, no script `[official][VS]`; anything stateful (pending, retarget) still needs code.
 - Controls: a toggle moves its knob and changes a word or icon; a slider's fill follows the finger with no tween; a tab indicator slides (`toggle` token) or springs; a disabled control explains itself on tap instead of staying silent.
 - Tutorial pointers: a pulse, wiggle or arrow on exactly the next button, one at a time `[official]`.
+
+**Named effects and when to use them**, distilled from the Rei package's catalogue of 89 effect tags `[rei]`. Pick one effect per job; near-duplicates stacked on one object fight.
+
+| Job | Effects | Use | Avoid |
+|---|---|---|---|
+| Press response | press (scale down), squish (squash and rebound) | One per button, from the `press` token | Both on one button; a press effect on a decorative child instead of the button |
+| Hover (mouse only) | lift, small tilt, one sheen pass | Cards and buttons on desktop; gamepad focus gets the same look | Anything a touch player needs to see; pointer-pull ("magnet") on dense grids, small controls or touch screens |
+| Entrance | pop, reveal, drop, fade-in, typewriter text | Once, on appear; a container staggers its children (one cascade) instead of each child carrying its own entrance; typewriter only on short lines, with tap to finish | Two entrance effects on one object; drop-in under a layout, which fights the layout's positions |
+| Idle | pulse, bob, spin, wiggle, ray spin, outline glow, sheen sweep, drifting texture | One per screen (§2 `idle`, `shine`), on icons and badges, paused when hidden | Spinning text or whole panels; colour cycling on text or on any colour that carries meaning; blinking faster than about once a second |
+| Feedback | ripple, small burst, shake | Ripple or burst on a confirmed action; shake with a written reason for a refusal | A burst or sparkle that suggests a reward before the server confirmed it |
+| Not available in a `ScreenGui` | true 3D perspective tilt (only 2D rotation exists), world-space prompts or billboards from a screen tag | Build the real host (`BillboardGui`, `SurfaceGui`, `ProximityPrompt`) | Promising the effect because an editor lists its name |
+
+A tag shown in a design tool is not proof that the effect runs in the exported UI: test it in Play before calling it done `[rei]`.
 
 ## 5. Reward and feedback sequences
 
@@ -140,6 +155,50 @@ The general comparison of `TweenService`, `GetValue`, `SmoothDamp` and hand-roll
 - Starting points `[house]`: follow motion, damping 1.0 at 4–6 Hz; playful pop, damping 0.5–0.7 at 3–5 Hz.
 - Run all Lua springs from one shared connection that disconnects when everything has settled: an idle HUD costs zero Lua per frame `[lihfolk]`. Infinite tweens keep running while a screen is hidden: cancel them on close.
 - A constantly animated element re-composes its whole ScreenGui every frame: give it its own small ScreenGui (`ui-input-crossplatform.md` §UI performance).
+- Sweeps, sheens and rainbow cycles move a `UIGradient` through `Offset` or `Rotation`; rewriting its `Color` or `Transparency` each frame rebuilds the sequence, which the docs call expensive `[official]`.
+- **Idle motion set by attributes** `[rei]`: both studded kits let designers mark objects in Studio (`Spin`, `Float`, `Wiggle`, `Beat`, `Glint`) and one client loop animates whatever is marked, so edits in Studio survive and no screen owns its own loop. Their loops stay connected all session; one ignores reduced motion and the other reads it only at start. This version starts on open, stops on close and follows the setting (`UIGridStyleLayout` is the base class of the list, grid, page and table layouts `[official]`):
+
+```lua
+--!strict
+-- Unexecuted sketch. Client/UI/IdleLoop.luau. Attributes set in Studio: Spin (degrees a second), Bob (px), Pulse (scale amplitude, needs a child UIScale).
+local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
+local Motion = require(script.Parent.Motion)
+type Item = { obj: GuiObject, base: UDim2, rot: number, scale: UIScale? }
+local items: { Item } = {}
+local conn: RBXScriptConnection? = nil
+local IdleLoop = {}
+function IdleLoop.stop() -- the presenter calls this on close, and the in-game reduced-motion toggle calls it too
+	if conn then conn:Disconnect(); conn = nil end
+	for _, it in items do
+		it.obj.Position, it.obj.Rotation = it.base, it.rot -- back to rest
+		if it.scale then it.scale.Scale = 1 end
+	end
+end
+function IdleLoop.start(screen: ScreenGui) -- the presenter calls this on open
+	IdleLoop.stop(); table.clear(items)
+	for _, d in screen:GetDescendants() do
+		if d:IsA("GuiObject") and (d:GetAttribute("Spin") or d:GetAttribute("Bob") or d:GetAttribute("Pulse")) then
+			table.insert(items, { obj = d, base = d.Position, rot = d.Rotation, scale = d:FindFirstChildOfClass("UIScale") })
+		end
+	end
+	if #items == 0 or Motion.reduced() then return end
+	conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock()
+		for i, it in items do
+			local spin, bob, pulse = it.obj:GetAttribute("Spin"), it.obj:GetAttribute("Bob"), it.obj:GetAttribute("Pulse")
+			if spin then it.obj.Rotation = (it.rot + t * spin) % 360 end
+			local laidOut = it.obj.Parent ~= nil and it.obj.Parent:FindFirstChildWhichIsA("UIGridStyleLayout") ~= nil
+			if bob and not laidOut then it.obj.Position = it.base + UDim2.fromOffset(0, math.sin(t * 2 + i) * bob) end
+			if pulse and it.scale then it.scale.Scale = 1 + pulse * math.max(0, math.sin(t * 4)) end
+		end
+	end)
+end
+GuiService:GetPropertyChangedSignal("ReducedMotionEnabled"):Connect(function()
+	if Motion.reduced() then IdleLoop.stop() end
+end)
+return IdleLoop
+```
 
 ## 7. Reduced motion is not "no feedback"
 
@@ -153,6 +212,9 @@ The general comparison of `TweenService`, `GetValue`, `SmoothDamp` and hand-roll
 | Currency flies to the counter | Counter pulses its colour once and counts up |
 | Shake, idle bobbing, rays behind an item | Static |
 | Reveal with shake, zoom, particle storm | Tier colour, banner and sound stay; movement goes |
+| World blur and FOV nudge behind an open window | Blur stays (scaled by the screen-effects slider); no FOV change |
+
+**Conflict:** the Rei studded kit calls motion "part of the style" (sunbursts always spinning, bounce on every open), and its motion module never reads `ReducedMotionEnabled` and writes `Camera.FieldOfView` itself `[rei]`. The setting wins; blur and FOV rules are in §3.
 
 ## 8. Motion module (unexecuted sketch)
 
@@ -243,4 +305,6 @@ Accessed 2026-11-11 unless noted.
 - LihFolk Vault V2 (CC BY 4.0, https://github.com/lihfolk-cy/v2-vault) (read): `05 UI and UX/UI Motion Language and Timing.md`; `47 Game Feel and Juice/Reward Moments and Celebrations.md`; `47 Game Feel and Juice/Squash Stretch and Anticipation in UI and Characters.md` (TL;DR and the latency-mask section heading only)
 - Google, "Designing engaging apps" (kids; read) https://developers.google.com/building-for-kids/designing-engaging-apps
 - Talks verified to exist, not watched (oembed): Martin Jonasson and Petri Purho, "Juice it or lose it" https://www.youtube.com/watch?v=Fy0aCDmgnxg · Jan Willem Nijman, "The art of screenshake" https://www.youtube.com/watch?v=AJdEqssNZ-U
+- Rei Ultra UI package (owner-supplied 2026-11-27, no licence; read): Stud UI Clean `motion-and-sound.md` and `checklist.md`, `tag-catalog.md` (89 tags with support notes), `tag-gradient-assets.md`, Folk Stud UI `SKILL.md` and `style-spec.md`; modules `StudMotion.luau`, `ReiTagGradientKit.luau` and `FolkStudUI.lua` skimmed for technique (no code copied; the idle-loop sketch above is original)
+- Creator docs re-read on 2026-11-27: `UIGradient` (cost of rewriting `Color`), `BlurEffect` and `environment/post-processing-effects.md` (camera-parented blur for an open menu), `UIGridStyleLayout`, `GuiService.ReducedMotionEnabled`
 - Related in this repo (read): `game-craft.md` §1, `vfx-and-juice.md` §9 and §12, `audio-sfx-music.md` §9; `visual-library/ui-screens.md` §7 (rows cited in §5)
