@@ -60,6 +60,7 @@ Curated, quality-gated references with a note on what to study in each. Rows mar
 | HUDs by genre and platform | `references/visual-library/ui-hud.md` |
 | Shop, inventory, menus, settings, rewards, loading and other screens | `references/visual-library/ui-screens.md` |
 | Buttons, icons, type, colour, panels, UI motion, kits and tools | `references/visual-library/ui-components-and-style.md` |
+| Free UI icon and vector packs with their licences checked, and how to adapt and ship one (one family, recolour, sprite sheets, Restricted upload, licence checklist) | `references/visual-library/ui-components-and-style.md` §8 |
 | VFX showcases and breakdowns | `references/visual-library/vfx.md` |
 | VFX tutorials, courses, tools and texture sources | `references/visual-library/vfx-learning.md` |
 | Cutscenes, camera work and trailers | `references/visual-library/cutscenes-and-cameras.md` |
