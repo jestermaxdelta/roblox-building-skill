@@ -59,12 +59,13 @@ This folder is a playbook for designing, building, monetizing and growing Roblox
 | `18 Skills` | The 14 agent skills as notes, plus Skills Overview |
 | `19 Templates` | Fill-in documents for each phase |
 | `20 Scripts and Tools` | Blender helpers and exporter, Studio house-rule scan, image tile test |
+| `21 Private Kits` | Only when the owner built the vault with `--kit`: their own UI kits and downloaded asset packs, kept verbatim. Not in the public repo; check each licence before shipping a file; the guides win where a kit disagrees |
 | `90 Archive - Knowledge Base` | The original 90,000-word knowledge base, split by section |
 | `99 Meta` | `vault-index.json`, `search_vault.py`, Path Map, credits, a copy of `build_vault.py` |
 
 ## 5. Tags
 
-- Type: `type/guide`, `type/genre`, `type/skill`, `type/template`, `type/visual-library`, `type/reference-sheet`, `type/research`, `type/archive`, `type/index`, `type/tutorial`, `type/code`, `type/meta`, `type/rules`, `type/reference`.
+- Type: `type/private-kit` (folder 21), `type/guide`, `type/genre`, `type/skill`, `type/template`, `type/visual-library`, `type/reference-sheet`, `type/research`, `type/archive`, `type/index`, `type/tutorial`, `type/code`, `type/meta`, `type/rules`, `type/reference`.
 - Topic: `topic/<name>`, for example `topic/ui`, `topic/vfx`, `topic/audio`, `topic/monetization`, `topic/economy`, `topic/retention`, `topic/onboarding`, `topic/performance`, `topic/security`, `topic/data`, `topic/luau`, `topic/systems`, `topic/blender`, `topic/animation`, `topic/art`, `topic/lighting`, `topic/level-design`, `topic/cinematics`, `topic/growth`, `topic/analytics`, `topic/genre`, `topic/market`. The full list is at the end of the Vault Map.
 
 ## 6. Keeping it current

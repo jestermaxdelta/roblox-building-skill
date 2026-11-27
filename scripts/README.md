@@ -37,7 +37,7 @@ Python 3, standard library only.
 
 | Script | What it does | Run |
 |---|---|---|
-| `build_vault.py` | Turns this repository into an Obsidian vault for humans and agents: about 200 notes in numbered topic folders, YAML front matter (title, aliases, tags, summary, source), wikilinks in place of repo paths (heading links where a § points to a numbered section), the knowledge base split by section, a gallery of the reference sheets, a vault map, a path map and `vault-index.json`. Ends with a link check. Deletes and rewrites only `<out>/Roblox Game Dev Playbook/`. | `python scripts/vault/build_vault.py . "<vault folder>"` |
+| `build_vault.py` | Turns this repository into an Obsidian vault for humans and agents: about 200 notes in numbered topic folders, YAML front matter (title, aliases, tags, summary, source), wikilinks in place of repo paths (heading links where a § points to a numbered section), the knowledge base split by section, a gallery of the reference sheets, a vault map, a path map and `vault-index.json`. Ends with a link check. Deletes and rewrites only `<out>/Roblox Game Dev Playbook/`. | `python scripts/vault/build_vault.py . "<vault folder>"`; add `--kit "<folder>"` (repeatable) to copy a private UI kit or a downloaded icon pack into `21 Private Kits/` with an index note, without it ever entering this repo |
 | `search_vault.py` | Copied into the vault's `99 Meta/`: ranks notes for a query by title, aliases, skill trigger phrases, tags, headings, summary and full text. | `python "99 Meta/search_vault.py" "my game is laggy" -n 10` |
 
 `AGENTS.md`, `CLAUDE.md` and `Start Here.md` in the same folder are the vault's entry pages; the builder copies them in.

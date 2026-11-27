@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
 """Build an Obsidian-style, agent-searchable vault from the roblox-building-skill repo.
 
-Usage: python scripts/vault/build_vault.py <repo_dir> <out_dir>
+Usage: python scripts/vault/build_vault.py <repo_dir> <out_dir> [--kit <folder> ...]
 Writes <out_dir>/Roblox Game Dev Playbook/ (deleting and rewriting only that folder)
 and prints a link-check report. Point <out_dir> at an Obsidian vault to install it.
 The other files in this folder (AGENTS.md, CLAUDE.md, Start Here.md, search_vault.py)
-are copied into the playbook.
+are copied into the playbook. Each --kit folder (a private UI kit, an icon pack the
+owner downloaded) is copied as-is into "21 Private Kits/" with an index note; kits are
+never part of the public repo, so check their licences before shipping anything.
 """
-import datetime, json, re, shutil, sys, unicodedata
+import argparse, datetime, json, re, shutil, sys, unicodedata
 from pathlib import Path
 
-REPO = Path(sys.argv[1]).resolve()
-OUT = Path(sys.argv[2]).resolve()
+_ap = argparse.ArgumentParser(description="Build the Roblox Game Dev Playbook vault from the repo.")
+_ap.add_argument("repo")
+_ap.add_argument("out")
+_ap.add_argument("--kit", action="append", default=[], help="private kit or pack folder to add under 21 Private Kits (repeatable)")
+_args = _ap.parse_args()
+REPO = Path(_args.repo).resolve()
+OUT = Path(_args.out).resolve()
+KITS = [Path(k).resolve() for k in _args.kit]
+KITS_FOLDER = "21 Private Kits"
 ROOT = OUT / "Roblox Game Dev Playbook"
 BUILT = datetime.date.today().isoformat()
 
@@ -713,8 +722,61 @@ img_dir.mkdir(parents=True, exist_ok=True)
 for im in images:
     shutil.copy2(REPO / "assets/reference" / im, img_dir / im)
 shutil.copytree(REPO / "assets/reference/src", ROOT / FOLDERS["sheets"] / "src")
-for sub in ("blender", "studio", "images"):
-    shutil.copytree(REPO / "scripts" / sub, ROOT / FOLDERS["scripts"] / sub)
+for sub in ("blender", "studio", "images", "ui"):
+    if (REPO / "scripts" / sub).is_dir():
+        shutil.copytree(REPO / "scripts" / sub, ROOT / FOLDERS["scripts"] / sub)
+
+# ---------------------------------------------------------------- private kits (--kit)
+DUP = re.compile(r"^(.*) \(\d+\)(\.[^.]+)$")
+kit_entries, kit_images = [], []
+for kit in KITS:
+    if not kit.is_dir():
+        sys.exit(f"--kit {kit} is not a folder")
+    dest_root = ROOT / KITS_FOLDER / kit.name
+    for f in sorted(kit.rglob("*")):
+        if not f.is_file():
+            continue
+        m = DUP.match(f.name)
+        if m and (f.parent / (m.group(1) + m.group(2))).exists() and \
+                (f.parent / (m.group(1) + m.group(2))).read_bytes() == f.read_bytes():
+            continue  # " (1)" copy identical to the original
+        rel = f.relative_to(kit)
+        if "source-attachments" in rel.parts:
+            continue  # byte-for-byte originals kept by some kits; the structured copies are enough
+        d = dest_root / rel
+        d.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(f, d)
+        vrel = d.relative_to(ROOT).as_posix()
+        if f.suffix.lower() == ".md":
+            txt = f.read_text(encoding="utf-8", errors="replace")
+            _, kbody = split_frontmatter(txt)
+            h1 = next((h for lvl, h in headings_of(kbody) if lvl == 1), f.stem)
+            kit_entries.append({"title": f"{kit.name}: {plain(h1)}", "path": vrel, "folder": f"{KITS_FOLDER}/{kit.name}",
+                                "tags": ["type/private-kit"], "aliases": [rel.as_posix()], "summary": summary_of(kbody),
+                                "triggers": "", "source": f"private kit {kit.name}",
+                                "headings": [h for lvl, h in headings_of(kbody) if lvl in (2, 3)][:60],
+                                "links_to": [], "lines": txt.count("\n") + 1, "kit": kit.name, "rel": rel.as_posix()})
+        elif f.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+            kit_images.append((kit.name, rel.as_posix(), vrel))
+if KITS:
+    hub = ["---", 'title: "Private Kits - Index"', 'tags: ["type/private-kit", "type/index"]',
+           'summary: "UI kits and asset packs the owner added to this vault. Not part of the public repo."', f"built: {BUILT}", "---", "",
+           "# Private Kits - Index", "",
+           "> [!warning] Private material",
+           "> These folders were added from the owner's own files with `--kit`. They are not in the public repository and most carry "
+           "no licence of their own: study them freely, but check each licence before shipping any file in a released game, and never republish them.",
+           "> The playbook's guides distil what is useful from them (tag `[rei]` and others); where a kit and a guide disagree, the guide and the house rules win.", ""]
+    for kit in KITS:
+        hub += [f"## {kit.name}", ""]
+        for e in [e for e in kit_entries if e["kit"] == kit.name]:
+            hub.append(f"- [{e['rel']}](<{kit.name}/{e['rel']}>): {esc_cell(e['summary'][:160]) if 'esc_cell' in globals() else e['summary'][:160]}")
+        imgs = [r for k, r, _ in kit_images if k == kit.name]
+        if imgs:
+            hub += ["", "### Images", ""]
+            for r in imgs:
+                hub += [f"![{r}](<{kit.name}/{r}>)", ""]
+        hub.append("")
+    (ROOT / KITS_FOLDER / "Private Kits - Index.md").write_text("\n".join(hub), encoding="utf-8")
 
 # ---------------------------------------------------------------- vault map, path map, index json
 vm = ["# Vault Map", "", "Every note in the playbook, by folder, with one line on what it is for. "
@@ -733,6 +795,13 @@ for fk, folder in FOLDERS.items():
         vm.append(f"| `images/` | {len(images)} PNG sheets, embedded in [[Reference Sheets Gallery]] |")
     if fk == "scripts":
         vm.append("| `blender/`, `studio/`, `images/` | The script files themselves |")
+    vm.append("")
+if KITS:
+    vm += [f"## {KITS_FOLDER}", "", "The owner's private UI kits and packs (built with `--kit`; not in the public repo; check licences before shipping). "
+           "Start at `21 Private Kits/Private Kits - Index.md`.", ""]
+    for kit in KITS:
+        vm.append(f"- `{kit.name}`: {sum(1 for e in kit_entries if e['kit'] == kit.name)} notes, "
+                  f"{sum(1 for k, _, _ in kit_images if k == kit.name)} images")
     vm.append("")
 tags_all = sorted({t for n in notes.values() for t in n["tags"]})
 vm += ["## Tags", "", "Search by tag in Obsidian (`tag:#topic/ui`) or grep the front matter (`topic/ui`).", "",
@@ -783,6 +852,8 @@ index["notes"].append({"title": "AGENTS", "path": "AGENTS.md", "folder": "", "ta
 for im in images:
     index["images"].append({"file": f"{FOLDERS['sheets']}/images/{im}", "title": fold(im[:-4].replace('-', ' ')),
                             "used_by": sorted(img_uses[im]), "source_html": f"{FOLDERS['sheets']}/src/{im[:-4]}.html"})
+for e in kit_entries:
+    index["notes"].append({k: v for k, v in e.items() if k not in ("kit", "rel")})
 (ROOT / FOLDERS["meta"] / "vault-index.json").write_text(json.dumps(index, indent=1, ensure_ascii=False), encoding="utf-8")
 
 shutil.copy2(Path(__file__).resolve(), ROOT / FOLDERS["meta"] / "build_vault.py")
@@ -798,6 +869,8 @@ all_files = {p.name for p in ROOT.rglob("*") if p.is_file()}
 heads_cache = {}
 bad = []
 for p in ROOT.rglob("*.md"):
+    if KITS_FOLDER in p.relative_to(ROOT).parts[:1]:
+        continue  # kit files are kept verbatim; their own links are not checked
     fence = False
     for ln, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
         if FENCE.match(line):
