@@ -98,6 +98,7 @@ Owners: `references/ui-design-figma.md` (look), `references/ui-input-crossplatfo
 - Images carry no text, are at most 1024 px on the longest side, and stretch by 9-slice.
 - No colour, font, size, spacing or timing outside the theme module.
 - Never hard-code the top-bar height or the jump-button position: read the insets.
+- Size interactive UI from the live safe frame, not the screen; phone HUD at idle within the coverage, centre-box and button budgets in `ui-input-crossplatform.md` §Mobile layout, checked with `scripts/ui/ui_device_check.luau`.
 - Pass lines, measured on the drawn result: text at least 12 px (design targets: HUD 18, body 16, captions 14), taps at least 44 px (48 on the HUD), gaps at least 8 px, no overlapping targets, at most 7 HUD groups, no signal carried by colour alone.
 
 ## Feel, effects, camera and audio

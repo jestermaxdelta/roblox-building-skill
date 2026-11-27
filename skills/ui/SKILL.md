@@ -30,10 +30,11 @@ Pick the row that matches the task and read only those sections, in that order, 
 |---|---|---|---|
 | Redesign one screen | figma §Fast routes, §3, §4, §6, §9, §10 · recipes §1, §3, the screen's own section · input §UI architecture (from the `DisplayOrder` band plan to the presenter note) · motion §2, §8 | Sheets 03/04, 05, 09 · `ui-screens.md`, that screen's section (shops #1, #4, #10) · `ui-components-and-style.md` §1 #1–3 against #8 · before using any icon pack: `ui-components-and-style.md` §8 (licence checklist first) | ~350 |
 | New HUD | figma §1–4, §6 · recipes §1, §2, §4 · input §Containers, §Mobile layout · motion §2 | Sheets 01, 02, 19 · `ui-hud.md` #1–28, "Start here" rows first · icon packs: `ui-components-and-style.md` §8 (#59–#61 for key prompts and ranks) | ~330 |
-| Fix phone layout | figma §2, §4, §11 · input §Containers, §Text, §Mobile layout, §Level-up, the audit scan · recipes §1, §4 | Sheets 01, 19, 06 · `ui-hud.md` #4, #18, #20, #36 | ~270 |
+| Fix phone layout | figma §2, §4, §11 · input §Containers, §Text, §Mobile layout, §Level-up, the audit scan · recipes §1, §4 · input §Mobile layout "Device sweep" (run `scripts/ui/ui_device_check.luau`) | Sheets 01, 19, 06 · `ui-hud.md` #4, #18, #20, #36 | ~270 |
 | Motion and feedback | figma §3 "States" · motion §1–5, §7, §8, §Level-up · input, the presenter and its note | Sheets 05, 08 · `ui-components-and-style.md` #33, #38, #39 · `ui-screens.md` #67, #68, #72 | ~270 |
 | Figma to Roblox | figma §3, §4, §7, §9, §11–15 · input §Containers | Sheets 06, 05 · `ui-components-and-style.md` #27–31, #47, #51 | ~310 |
 | Critique a UI | figma §1, §3, §4, §8, §9, §Level-up · input, the pass criteria and §Level-up · recipes and motion §Level-up | Sheets 02, 09, 07 · the "weak examples" section of each `ui-*` library file | ~250 |
+| Apply a named look (toy brick, chunky simulator, dark fantasy) | figma §3, §5, §6, §7 including "Style profiles" · motion §3, §7 · input "Sizing strategies" in §Containers · recipes §3 | Sheets 05, 09, 18 · `ui-components-and-style.md` §1 #1–3 against #8 | ~200 |
 
 ## What to read
 
@@ -65,6 +66,7 @@ Pick the row that matches the task and read only those sections, in that order, 
 - Pass lines, measured on the drawn result: text at least 12 px (design at HUD 18, body 16, captions 14), taps at least 44 px (48 on the HUD), gaps at least 8 px, no overlapping targets, at most 7 HUD groups, no signal carried by colour alone.
 - Build the game's own look. Do not copy another game's style or a stock kit.
 - With the Figma MCP: its output is a spec to translate, not code to paste.
+- Size interactive UI from the live safe frame, not the screen (about 705×280 on the 800×360 Galaxy A06 preset). Phone HUD at idle: game UI covers at most 16% of the screen and 2% of the centre box, with at most 9 visible buttons (`ui-input-crossplatform.md` §Mobile layout).
 
 ## House rules (the owner's; they override generic advice)
 

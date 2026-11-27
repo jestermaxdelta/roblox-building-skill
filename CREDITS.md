@@ -10,6 +10,14 @@ Platform facts (APIs, limits, policy, dashboards) are checked against the offici
 
 Points tagged `[lihfolk]` in the references are adapted from [LihFolk Vault V2](https://github.com/lihfolk-cy/v2-vault), © 2026 LihFolk, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). We compared its notes with our own research, kept what added depth, rewrote most of it, and rejected what conflicts with this skill's house rules. Some facts, figures, lists and table rows still follow its wording closely; those are used under the same licence, with changes. Each reference file lists the notes it drew on in its `## Sources` section. No LihFolk assets, images or system code are included here, and this skill does not depend on the LihFolk plugin. If you want a large note vault and ready-made systems, their plugin is worth a look.
 
+## JoCoding-Inc roblox-skills
+
+Points tagged `[jocoding]` come from the `roblox-ui-layout` skill in [JoCoding-Inc/roblox-skills](https://github.com/JoCoding-Inc/roblox-skills), © 2026 JoCoding-Inc, MIT licence. Its measurements (Studio preset safe frames, phone HUD budgets from top games) are restated with credit. `scripts/ui/ui_device_check.luau` is its device sweep, shipped unchanged under an added header, with the licence in `scripts/ui/LICENSE-JoCoding.txt`.
+
+## Rei Ultra UI package
+
+Points tagged `[rei]` come from the Rei Ultra UI community package the owner supplied on 2026-11-27 (Stud UI Clean, Folk Stud UI, Dark Fantasy GUI mode, the Rei Design tag catalogue). It carries no licence file, so its ideas are restated in our own words and none of its text, code, values, asset ids, sounds or images are included. Its screenshots of live games stay in the owner's private vault.
+
 ## The 31 repositories behind the knowledge base
 
 `references/knowledge-base.md` was compiled on 2026-11-08 from 31 open-source repositories. Every subsection there ends with a `Sources:` line naming the repository and path.

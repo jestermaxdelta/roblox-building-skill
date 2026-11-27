@@ -70,7 +70,7 @@ FOLDER_ABOUT = {
     "sheets": "22 original reference-sheet diagrams (PNG) with their HTML sources and a gallery note.",
     "skills": "The 14 agent skills: when each triggers, how it works, which notes it reads.",
     "tpl": "Fill-in templates: one-pager, lean GDD, economy sheet, monetization plan, analytics plan, playtest plan, launch checklist, audit report.",
-    "scripts": "Shipped tools: Blender helpers and exporter, house-rule scanner for Studio, image tile test.",
+    "scripts": "Shipped tools: Blender helpers and exporter, house-rule scanner for Studio, image tile test, UI device sweep.",
     "kb": "Archive: the original 90,000-word knowledge base split by section. Background only; the guides win where they differ.",
     "meta": "Index files, search script, path map, credits, the build script.",
 }
@@ -818,7 +818,7 @@ for src, nm in sorted(by_src.items()):
     pm.append(f"| `{src}` | [[{nm}]] |")
 pm += ["| `assets/reference/*.png` | `17 Reference Sheets/images/` (see [[Reference Sheets Gallery]]) |",
        "| `assets/reference/src/` | `17 Reference Sheets/src/` |",
-       "| `scripts/blender/`, `scripts/studio/`, `scripts/images/` | `20 Scripts and Tools/blender/`, `.../studio/`, `.../images/` |",
+       "| `scripts/blender/`, `scripts/studio/`, `scripts/images/`, `scripts/ui/` | `20 Scripts and Tools/blender/`, `.../studio/`, `.../images/`, `.../ui/` |",
        "| `references/knowledge-base.md` §N.N | the note `KB xx - N.N ...` in `90 Archive - Knowledge Base/` |", ""]
 (ROOT / FOLDERS["meta"] / "Path Map.md").write_text(
     "---\ntitle: \"Path Map\"\ntags: [\"type/meta\", \"type/index\"]\nsummary: \"Original repo paths mapped to vault notes.\"\n"

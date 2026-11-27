@@ -32,10 +32,10 @@ One row per job. Find the row, open that file, and read only the section you nee
 | Job | Open |
 |---|---|
 | Art direction: choosing a look that differs from the genre default (named directions for tycoon, simulator, obby, horror, roleplay), the style bible, the tells of a generic or AI-made game and the fix for each, keeping several artists consistent, art review rubric, six-week plan for a live game | `references/art-direction-and-quality-bar.md` |
-| UI look: visual hierarchy (three reads), grid, colour, type and icon systems, native-first construction recipes for buttons, panels and cards, generic-UI tells, critique rubric, redesign procedure, Figma and Figma MCP hand-off, theme module | `references/ui-design-figma.md` |
+| UI look: visual hierarchy (three reads), grid, colour, type and icon systems, native-first construction recipes for buttons, panels and cards (studded button, gradient and texture recipes), style profiles (toy brick, chunky simulator, dark fantasy), generic-UI tells, critique rubric, redesign procedure, Figma and Figma MCP hand-off, theme module | `references/ui-design-figma.md` |
 | Screen-by-screen build recipes with phone sizes: HUD layouts by genre, shop, inventory, settings, codes, daily rewards, rebirth, notifications, loading | `references/ui-screen-recipes.md` |
-| UI motion: motion tokens, button feedback, reward sequences, tween or spring, reduced-motion replacements | `references/ui-motion-and-feedback.md` |
-| UI engine rules: containers, insets and sizing, UI architecture and performance, text filtering, thumb zones and pass lines, input mapping, gamepad focus, console, VR, audit scan | `references/ui-input-crossplatform.md` |
+| UI motion: motion tokens, button feedback, named effects, reward sequences, tween or spring, attribute-driven idle loop, world blur behind windows, reduced-motion replacements | `references/ui-motion-and-feedback.md` |
+| UI engine rules: containers, insets and sizing, UI architecture and performance, text filtering, thumb zones, preset safe frames, phone HUD budgets and pass lines, device sweep, input mapping, gamepad focus, console, VR, audit scan | `references/ui-input-crossplatform.md` |
 | Accessibility and comfort: colour, text size, motion and flashes, the comfort resolver and settings schema (§10), captions, remapping, assists, quality-of-life catalogue | `references/accessibility-and-player-qol.md` |
 | VFX principles: shape, value, timing, particles, beams, trails, effect meshes, hit-stop and camera shake numbers (§7), client-only replication, pooling, budgets and quality scaling, flash safety | `references/vfx-and-juice.md` |
 | 22 effect build recipes, layer by layer (slash, impact, projectile, explosion, aura, heal, reward burst and more) | `references/vfx-recipes.md` |
@@ -116,3 +116,4 @@ How to use them: pick three to five references that fit the game's genre and ton
 | `scripts/blender/` (`export_kit.py`, `check_asset.py`, `silhouette_sheet.py`, `modeling_helpers.py`) | Headless Blender export and checks; see `scripts/README.md` |
 | `scripts/images/tile_test.py` | See an icon and thumbnails the way the Home grid shows them |
 | `scripts/studio/house_rule_scan.luau` | Read-only scan of a place for house-rule debt (edit mode only) |
+| `scripts/ui/ui_device_check.luau` (MIT, JoCoding-Inc; licence in `scripts/ui/LICENSE-JoCoding.txt`) | Device Simulator sweep of a game's live UI in Play: safe frames, reserved zones, HUD coverage budgets, tap and text floors; see `scripts/README.md` |

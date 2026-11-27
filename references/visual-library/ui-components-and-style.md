@@ -120,6 +120,7 @@ Figma-to-Roblox converters are in `ui-design-figma.md` §13; UI frameworks are i
 | 51 | [Pixel Perfect (plugin)](https://devforum.roblox.com/t/4927833), RiotDestrudo, 2026, 41 likes; Creator Store | tool | Figma-style editing in the Studio viewport: properties, layers and zoom. For nudging native UI after the Figma hand-off. | read |
 | 52 | [ExpressivePrompts](https://github.com/MiaGobble/ExpressivePrompts), Mia Gobble, 2026, 252 likes; MIT (LICENSE read) | repo | A customisable ProximityPrompt UI with animation and sound, configured from one dictionary. A starting point for prompts that match the game's kit. | read |
 | 53 | [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/), WebAIM | tool | Type the text and background colours, read the ratio. Check body text at 4.5:1 and large text and icons at 3:1 against a colour sampled from a real gameplay capture. | read |
+| 65 | [roblox-skills: roblox-ui-layout](https://github.com/JoCoding-Inc/roblox-skills), JoCoding-Inc, 2026; MIT (LICENSE read) | repo | Phone HUD budgets measured on top games, Studio preset safe frames, and a Device Simulator sweep (shipped here as `scripts/ui/ui_device_check.luau`). Read for method and numbers; the look is set elsewhere. | read |
 
 ## 8. Free icon and vector packs, licence-checked (2026-11-27)
 

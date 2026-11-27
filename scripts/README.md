@@ -31,6 +31,12 @@ Conventions the scripts assume (from `references/art-pipeline-blender.md`): 1 Bl
 |---|---|---|
 | `house_rule_scan.luau` | Read-only scan of a place for house-rule debt: visible primitive Parts, meshes uploaded by someone other than the game's owner, world geometry players can walk through. Groups findings by area and caps its output. Unexecuted sketch: reviewed by reading, never run in Studio | Edit mode only: paste into the command bar, or send through the Studio MCP's `execute_luau` with `datamodel_type = "Edit"`. How to read the result: `references/checklists.md`, Gate 4 |
 
+## UI (`scripts/ui/`)
+
+| Script | What it does | Run |
+|---|---|---|
+| `ui_device_check.luau` | Switches Studio's Device Simulator through six presets (Galaxy A06, iPhone 17 Pro, Fire HD 10, iPad 10th generation, Average Windows, HD 1080), reads the live UI's `AbsolutePosition`/`AbsoluteSize` and reports per device: safe frame, HUD coverage and centre-box share, buttons in the jump, thumbstick, hotbar, chat or player-list zones, taps under 44 px, text under 14 px (12 for bold stroked or plated text), off-frame elements, short backdrops and overlaps between ScreenGuis. By JoCoding-Inc, MIT (`LICENSE-JoCoding.txt`), unchanged below an added header. Reviewed by reading, not run here. Adds three probe ScreenGuis and changes the simulated device, then removes and restores them | Studio MCP `execute_luau` in Play with the Client datamodel (Edit checks `StarterGui` only, with a frame 58 px too tall). How to read it: `references/ui-input-crossplatform.md` §Mobile layout and thumb zones |
+
 ## Vault (`scripts/vault/`)
 
 Python 3, standard library only.
@@ -45,5 +51,6 @@ Python 3, standard library only.
 ## What was tested, and what was not
 
 - Tested on 2026-11-10 with the standalone `bpy` 5.2.3 LTS Python module, driving each script the way `blender -b file.blend -P script.py -- args` does: a five-piece test file, every flag above, and the exported GLBs re-read to confirm names, triangle counts, sizes and vertex colour.
+- `scripts/ui/ui_device_check.luau`: read line by line on 2026-11-27; not run in this repository. Its author reports testing in Studio 0.747 on 2026-11-12.
 - Not tested: the Blender desktop binary itself, any Blender version other than 5.2.3, skinned meshes (`SK_`), very large files, and what Roblox Studio does with the exported GLBs. Do one test import of a piece with an obvious front, a `_COL` child and an `_Att` marker before trusting a whole kit. In particular, the scripts treat `_Att` markers as Blender empties, while the Roblox docs describe the `_Att` conversion for mesh objects: if an empty does not arrive as an Attachment, see "Naming and hierarchy" in `references/art-pipeline-blender.md`.
 - Not shipped: a Blender-to-Studio upload script and the owner's live-Blender bridge (`tools/blender_exec.py` in the owner's game repos). Upload with the Studio MCP `open_cloud_invoke` tool, the official Roblox Blender add-on, or the 3D Importer by hand; drive a live Blender with the official Blender MCP server, or skip live control and run these scripts headless. Details: "Upload routes" in `references/art-pipeline-blender.md`.
